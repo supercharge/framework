@@ -1,7 +1,8 @@
 'use strict'
 
 const Path = require('path')
-const Config = util('config')
+const Config = require('./../config')
+const Helper = require('./../helper')
 const Handlebars = require('handlebars')
 const HandlebarsHelpers = require('handlebars-helpers')
 
@@ -71,7 +72,7 @@ class Views {
    * @returns {String}
    */
   viewsPath () {
-    return __resourcePath('views')
+    return Helper.resourcePath('views')
   }
 
   /**

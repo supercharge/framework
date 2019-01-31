@@ -1,14 +1,15 @@
 'use strict'
 
 const Path = require('path')
-const Fs = util('filesystem')
-const middlewarePath = Path.resolve(__appRoot, 'app', 'http', 'middleware')
+const Fs = require('@root/filesystem')
 
 /**
- * All Boost middlewares that apply to all
+ * Load middlewares that apply to all
  * or a group of requests.
  */
-async function loadMiddleware ({ exclude } = {}) {
+async function loadMiddleware ({ exclude, appRoot } = {}) {
+  const middlewarePath = Path.resolve(appRoot, 'app', 'http', 'middleware')
+
   const middleware = await Fs.readDir(middlewarePath)
   const excludes = Array.isArray(exclude) ? exclude : [exclude]
 

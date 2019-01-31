@@ -1,8 +1,9 @@
 'use strict'
 
 const Path = require('path')
-const Fs = util('filesystem')
-const pluginPath = Path.resolve(__appRoot, 'app', 'http', 'web')
+const Fs = require('./../filesystem')
+const Helper = require('./../helper')
+const pluginPath = Path.resolve(Helper.appRoot(), 'app', 'http', 'web')
 
 /**
  * Register your hapi application plugins here.

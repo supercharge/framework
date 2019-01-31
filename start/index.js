@@ -2,9 +2,9 @@
 
 const Hapi = require('hapi')
 const Boom = require('boom')
-const Config = util('config')
-const DatabaseManager = util('database')
-const Dispatcher = util('event/dispatcher')
+const Config = require('@root/config')
+const DatabaseManager = require('@root/database')
+const Dispatcher = require('@root/event/dispatcher')
 
 class Launch {
   constructor () {

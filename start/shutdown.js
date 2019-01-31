@@ -1,6 +1,6 @@
 'use strict'
 
-const Database = util('database')
+const Database = require('@root/database')
 
 /**
  * Encapsulates the application shutdown

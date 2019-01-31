@@ -1,6 +1,6 @@
 'use strict'
 
-const Config = util('config')
+const Config = require('@root/config')
 const AppShutdown = require('./shutdown')
 
 /**
