@@ -37,35 +37,27 @@ class Setup extends BaseCommand {
    * @param {Object} arguments
    */
   async handle (_, { force: forceSetup, name: appName }) {
-    console.log(this.chalk.green(`Initialize your Boost application.\n`))
-
     const tasks = new Listr([
       {
         title: 'Prepare .env file',
-        task: async () => {
-          await this.createEnvFileFromExample(forceSetup)
-        }
+        task: async () => this.createEnvFileFromExample(forceSetup)
       },
       {
         title: 'Generate application key',
-        task: async () => {
-          await this.generateAppKey(appName)
-        }
+        task: async () => this.generateAppKey(appName)
       },
       {
         title: 'Set application name',
         enabled: () => !!appName,
-        task: async () => {
-          await this.setAppName(appName)
-        }
+        task: async () => this.setAppName(appName)
       }
     ])
 
-    try {
+    await this.run(async () => {
       await this.ensureNotInstalled(forceSetup)
       await tasks.run()
       this.finalNote(appName)
-    } catch (ignoreErr) {}
+    })
   }
 
   /**
@@ -84,7 +76,7 @@ class Setup extends BaseCommand {
    * Generate an application key.
    */
   async generateAppKey () {
-    await Execa('node', ['craft', 'key:generate'], { cwd: __appRoot })
+    await Execa('node', ['craft', 'key:generate', '--force'], { cwd: __appRoot })
   }
 
   /**
@@ -108,10 +100,11 @@ class Setup extends BaseCommand {
 
     const lines = [
       '',
-      '🚀  Your project is ready for take off',
-      `👉  Launch the ${appName} server with:`,
+      '    Your project is ready for take off',
+      `    Launch the server with:`,
       '',
-      `   ${this.chalk.dim('$')} ${this.chalk.cyan('node server')}`,
+      `    ${this.chalk.dim('$')} ${this.chalk.cyan(`cd ${appName}`)}`,
+      `    ${this.chalk.dim('$')} ${this.chalk.cyan('node server')}`,
       ''
     ]
 
