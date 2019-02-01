@@ -18,8 +18,9 @@ class Dispatcher {
    */
   constructor () {
     this.emitter = new EventEmitter()
-    this.eventsFolder = Path.resolve(Helper.appRoot(), 'app', 'events')
-    this.listenersFolder = Path.resolve(Helper.appRoot(), 'app', 'listeners')
+
+    this.eventsFolder = 'app/events'
+    this.listenersFolder = 'app/listeners'
   }
 
   /**
@@ -216,9 +217,11 @@ class Dispatcher {
    * @param {String} folder
    */
   async loadFiles (folder) {
-    if (await Fs.pathExists(folder)) {
+    const location = Path.resolve(Helper.appRoot(), folder)
+
+    if (await Fs.pathExists(location)) {
       return RequireAll({
-        dirname: folder,
+        dirname: location,
         filter: /(.*)\.js$/
       })
     }

@@ -16,7 +16,7 @@ class Env {
    * Initialize the applications environment by
    * reading the .env file.
    */
-  constructor () {
+  loadEnvironmentVariables () {
     this.load(this.envFileName())
     this.load('.env')
   }
