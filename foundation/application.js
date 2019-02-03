@@ -14,17 +14,17 @@ class Application {
     this.exceptionHandler = new ExceptionHandler()
   }
 
-  withAppRoot (appRoot) {
-    this.appRoot = appRoot
-
-    return this
-  }
-
   /**
    * Returns the HTTP server instance.
    */
   getServer () {
     return this.server
+  }
+
+  fromAppRoot (appRoot) {
+    this.appRoot = appRoot
+
+    return this
   }
 
   /**
