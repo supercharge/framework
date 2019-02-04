@@ -31,7 +31,7 @@ class Application {
    * Initialize the hapi server to run
    * your application.
    */
-  async launchWithFullSpeed () {
+  async httpWithFullSpeed () {
     try {
       this.exceptionHandler.listenForSystemErrors()
 
