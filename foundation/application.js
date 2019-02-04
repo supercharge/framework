@@ -3,8 +3,8 @@
 const Env = require('./../env')
 const Config = require('./../config')
 const Helper = require('./../helper')
-const Console = require('./../console')
 const HttpKernel = require('./http/kernel')
+const ConsoleKernel = require('./console/kernel')
 const Dispatcher = require('../event/dispatcher')
 const ExceptionHandler = require('./exceptions/handle-system-exceptions')
 
@@ -95,8 +95,22 @@ class Application {
   }
 
   async consoleForLife () {
-    this.craft = new Console()
-    await this.craft.makeItHappen()
+    this.exceptionHandler.listenForSystemErrors()
+
+    if (!this.appRoot) {
+      throw new Error('Cannot start Craft console without app root directory. Ensure to call .appRoot() inside the "craft" file.')
+    }
+
+    Helper.setAppRoot(this.appRoot)
+    this.loadEnvironmentVariables()
+    this.loadApplicationConfig()
+
+    await this.bootstrapConsole()
+  }
+
+  async bootstrapConsole () {
+    const kernel = new ConsoleKernel()
+    await kernel.bootstrap()
   }
 }
 
