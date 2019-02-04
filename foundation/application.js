@@ -3,12 +3,14 @@
 const Env = require('./../env')
 const Config = require('./../config')
 const Helper = require('./../helper')
+const Console = require('./../console')
 const HttpKernel = require('./http/kernel')
 const Dispatcher = require('../event/dispatcher')
 const ExceptionHandler = require('./exceptions/handle-system-exceptions')
 
 class Application {
   constructor () {
+    this.craft = null
     this.server = null
     this.appRoot = null
     this.exceptionHandler = new ExceptionHandler()
@@ -90,6 +92,11 @@ class Application {
    */
   async initializeEvents () {
     await Dispatcher.init()
+  }
+
+  async consoleForLife () {
+    this.craft = new Console()
+    await this.craft.makeItHappen()
   }
 }
 
