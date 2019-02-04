@@ -1,8 +1,8 @@
 'use strict'
 
 const Path = require('path')
-const Config = require('../../config')
-const Helper = require('../../helper')
+const Config = require('../../../config')
+const Helper = require('../../../helper')
 const Handlebars = require('handlebars')
 const HandlebarsHelpers = require('handlebars-helpers')
 
@@ -34,26 +34,27 @@ class Views {
    *
    * @returns {Object}
    */
-  load () {
-    return {
-      engines: {
-        hbs: this.handlebars()
-      },
-      path: this.viewPaths(),
-      layoutPath: this.layoutLocations(),
-      layout: 'default',
-      helpersPath: this.helpersLocations(),
-      partialsPath: this.partialsLocations(),
-      isCached: Config.get('app.isProduction'),
-      context: function (request) {
-        return {
-          request,
-          user: request.auth.credentials,
-          title: Config.get('app.name'),
-          description: Config.get('app.description')
+  extends (server) {
+    server.views(
+      {
+        engines: {
+          hbs: this.handlebars()
+        },
+        path: this.viewPaths(),
+        layoutPath: this.layoutLocations(),
+        layout: 'default',
+        helpersPath: this.helpersLocations(),
+        partialsPath: this.partialsLocations(),
+        isCached: Config.get('app.isProduction'),
+        context: function (request) {
+          return {
+            request,
+            user: request.auth.credentials,
+            title: Config.get('app.name'),
+            description: Config.get('app.description')
+          }
         }
-      }
-    }
+      })
   }
 
   /**
@@ -124,4 +125,4 @@ class Views {
   }
 }
 
-module.exports = new Views()
+module.exports = Views

@@ -3,7 +3,7 @@
 const Env = require('./../env')
 const Config = require('./../config')
 const Helper = require('./../helper')
-const Server = require('./http/server')
+const HttpKernel = require('./http/kernel')
 const Dispatcher = require('../event/dispatcher')
 const ExceptionHandler = require('./exceptions/handle-system-exceptions')
 
@@ -80,7 +80,8 @@ class Application {
    * plugins and configure views.
    */
   async bootstrapHttpServer () {
-    this.server = await new Server().bootstrap()
+    const kernel = new HttpKernel()
+    this.server = await kernel.bootstrap()
   }
 
   /**

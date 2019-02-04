@@ -2,20 +2,29 @@
 
 const Hapi = require('hapi')
 const Boom = require('boom')
+const Path = require('path')
+const { forEachSeries } = require('p-iteration')
 const Config = require('./../../config')
 
-class Server {
+class HttpKernel {
   constructor () {
     this.server = null
+
+    this.bootstrappers = [
+      'bootstrap/load-core-plugins.js',
+      'bootstrap/graceful-shutdown.js',
+      'bootstrap/handle-views.js',
+      'bootstrap/load-routes.js',
+      'bootstrap/serve-assets.js',
+      'bootstrap/load-middleware.js',
+      'bootstrap/extend-app-from-userland.js'
+    ]
   }
 
   async bootstrap () {
     this.createServer()
 
     await this.warmUpCore()
-    await this.configureViews()
-    await this.loadMiddleware()
-    await this.loadAppPlugins()
     await this.server.initialize()
 
     return this.server
@@ -65,41 +74,19 @@ class Server {
   }
 
   /**
-   * Register the Boost core dependencies.
+   * Register the core dependencies.
    */
-  async warmUpCore (options) {
-    const loadCore = require('./load-server-core')
-    const core = await loadCore(options)
-    await this.server.register(core)
+  async warmUpCore () {
+    await forEachSeries(this.bootstrappers, async bootstrapper => {
+      await this.resolve(bootstrapper).extends(this.server)
+    })
   }
 
-  /**
-   * Configure the Boost view engine.
-   */
-  configureViews () {
-    const config = require('./initialize-view-handler')
-    this.server.views(config.load())
-  }
+  resolve (bootstrapper) {
+    const Bootstrapper = require(Path.resolve(__dirname, bootstrapper))
 
-  /**
-   * Register all middleware.
-   *
-   * @param {Object} options
-   */
-  async loadMiddleware (options) {
-    const loadMiddleware = require('./load-middleware')
-    const middleware = await loadMiddleware(options)
-    await this.server.register(middleware)
-  }
-
-  /**
-   * Register all application plugins.
-   */
-  async loadAppPlugins () {
-    const loadAppPlugins = require('./load-app-plugins')
-    const plugins = await loadAppPlugins()
-    await this.server.register(plugins)
+    return new Bootstrapper()
   }
 }
 
-module.exports = Server
+module.exports = HttpKernel
