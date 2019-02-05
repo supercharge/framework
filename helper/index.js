@@ -59,6 +59,17 @@ class Helper {
   resourcePath (...path) {
     return Path.resolve(this.appRoot(), 'resources', ...path)
   }
+
+  /**
+   * Absolute path to the routes directory.
+   *
+   * @param {String}
+   *
+   * @returns {String}
+   */
+  routesPath (...path) {
+    return Path.resolve(this.appRoot(), 'app', 'http', 'routes', ...path)
+  }
 }
 
 module.exports = new Helper()
