@@ -3,6 +3,7 @@
 const Path = require('path')
 const Ace = require('@adonisjs/ace')
 const ReadRecursive = require('recursive-readdir')
+const MakeAuthCommand = require('../../auth/console/make-auth')
 
 class ConsoleKernel {
   async bootstrap () {
@@ -12,6 +13,8 @@ class ConsoleKernel {
       Ace.addCommand(require(commandFile))
     })
 
+    Ace.addCommand(MakeAuthCommand)
+
     Ace.wireUpWithCommander()
     Ace.invoke()
   }
@@ -19,7 +22,7 @@ class ConsoleKernel {
   async loadBaseCommands () {
     return ReadRecursive(
       Path.resolve(__dirname, 'commands'),
-      ['base-command.js']
+      ['base-command.js'] // list of ignored files
     )
   }
 }
