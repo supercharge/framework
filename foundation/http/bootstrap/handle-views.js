@@ -42,7 +42,7 @@ class Views {
         },
         path: this.viewPaths(),
         layoutPath: this.layoutLocations(),
-        layout: 'default',
+        layout: 'app',
         helpersPath: this.helpersLocations(),
         partialsPath: this.partialsLocations(),
         isCached: Config.get('app.isProduction'),
