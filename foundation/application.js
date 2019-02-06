@@ -68,6 +68,12 @@ class Application {
    */
   async startServer () {
     try {
+      if (!Config.get('app.key')) {
+        throw new Error(
+          'No application key available. Make sure to define the APP_KEY value in your .env file (or generate one with "node craft key:generate")'
+        )
+      }
+
       await this.server.start()
     } catch (err) {
       this.server = null
