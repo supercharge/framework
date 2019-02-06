@@ -1,6 +1,7 @@
 'use strict'
 
 const Path = require('path')
+const Chalk = require('chalk')
 const Helper = require('../../../helper')
 const DotenvEdit = require('edit-dotenv')
 const { Command } = require('@adonisjs/ace')
@@ -39,7 +40,7 @@ class BaseCommand extends Command {
    * @param {Object} error
    */
   prettyPrintError (error) {
-    console.log(`\n  ${this.chalk.bold.red('Error:')} ${this.chalk.red(error.message)}\n`)
+    console.log(`\n  ${Chalk.bgRed.whiteBright(' Error ')} ${Chalk.red(error.message)}\n`)
   }
 
   /**
@@ -60,7 +61,7 @@ class BaseCommand extends Command {
     }
 
     if (force) {
-      console.log(this.chalk.red('Found existing app setup. Forcefully overriding it.\n'))
+      console.log(Chalk.red('Found existing app setup. Forcefully overriding it.\n'))
 
       return
     }
