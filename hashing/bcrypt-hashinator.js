@@ -1,7 +1,7 @@
 'use strict'
 
-const Config = require('@root/config')
 const Bcrypt = require('bcryptjs')
+const Config = require('../config')
 
 class BcryptHashinator {
   /**

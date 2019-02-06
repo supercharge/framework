@@ -1,7 +1,7 @@
 'use strict'
 
-const Config = require('@root/config')
 const Argon = require('argon2')
+const Config = require('../config')
 
 class ArgonHashinator {
   /**
