@@ -19,7 +19,7 @@ class ExtendAppFromUserland {
 
   async loadExtendApp () {
     if (await Fs.exists(this.appFile())) {
-      require(this.appFile())
+      return require(this.appFile())
     }
   }
 

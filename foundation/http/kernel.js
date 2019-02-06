@@ -14,10 +14,10 @@ class HttpKernel {
       'bootstrap/load-core-plugins.js',
       'bootstrap/graceful-shutdown.js',
       'bootstrap/handle-views.js',
-      'bootstrap/load-routes.js',
       'bootstrap/serve-assets.js',
       'bootstrap/load-middleware.js',
-      'bootstrap/extend-app-from-userland.js'
+      'bootstrap/extend-app-from-userland.js',
+      'bootstrap/load-routes.js'
     ]
   }
 
@@ -78,6 +78,8 @@ class HttpKernel {
    */
   async warmUpCore () {
     await forEachSeries(this.bootstrappers, async bootstrapper => {
+      console.log(bootstrapper)
+
       await this.resolve(bootstrapper).extends(this.server)
     })
   }
