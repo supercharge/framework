@@ -4,15 +4,30 @@ const Joi = require('joi')
 const User = require('../../../models/user')
 const Config = require('@supercharge/framework/config')
 
-module.exports = {
-  method: ['GET', 'POST'],
+module.exports = [{
+  method: 'GET',
+  path: '/login',
+  options: {
+    handler: async (_, h) => {
+      return h.view('auth/login', null, { layout: 'clean' })
+    },
+    ext: {
+      onPreHandler: {
+        method: async (request, h) => {
+          return request.auth.isAuthenticated
+            ? h.redirect('/home')
+            : h.continue
+        }
+      }
+    }
+  }
+},
+
+{
+  method: 'POST',
   path: '/login',
   options: {
     handler: async (request, h) => {
-      if (request.method === 'get') {
-        return h.view('auth/login', null, { layout: 'clean' })
-      }
-
       const { email, password } = request.payload
       const user = await User.attemptLogin({ email, password })
 
@@ -52,4 +67,4 @@ module.exports = {
       }
     }
   }
-}
+}]

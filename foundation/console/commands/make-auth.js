@@ -3,12 +3,9 @@
 const Path = require('path')
 const Execa = require('execa')
 const Helper = require('../../../helper')
-const { forEachSeries } = require('p-iteration')
 const BaseCommand = require('./base-command')
+const { forEachSeries } = require('p-iteration')
 
-/**
- * Craft command to set the application name.
- */
 class MakeAuth extends BaseCommand {
   constructor () {
     super()
@@ -27,13 +24,14 @@ class MakeAuth extends BaseCommand {
     this.routes = {
       'auth/login.js': 'auth/login.js',
       'auth/signup.js': 'auth/signup.js',
-      'auth/logout.js': 'auth/logout.js'
+      'auth/logout.js': 'auth/logout.js',
+      'auth/forgot-password.js': 'auth/forgot-password.js',
+      'auth/reset-password.js': 'auth/reset-password.js'
     }
   }
+
   /**
-   * Allow users to specify the application
-   * name as a parameter or ask for the
-   * name afterwards.
+   * Returns the command signature.
    */
   static get signature () {
     return `make:auth`
@@ -47,8 +45,7 @@ class MakeAuth extends BaseCommand {
   }
 
   /**
-   * Handle the command and set the aplication name
-   * in the project's .env file.
+   * Handle the command.
    */
   async handle () {
     await this.run(async () => {
