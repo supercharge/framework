@@ -1,0 +1,11 @@
+'use strict'
+
+module.exports = {
+  method: 'GET',
+  path: '/{{path}}',
+  options: {
+    handler: async (request, h) => {
+      //
+    }
+  }
+}
