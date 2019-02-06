@@ -2,9 +2,9 @@
 
 const Path = require('path')
 const Execa = require('execa')
-const Helper = require('../../helper')
+const Helper = require('../../../helper')
 const { forEachSeries } = require('p-iteration')
-const BaseCommand = require('../../foundation/console/commands/base-command')
+const BaseCommand = require('./base-command')
 
 /**
  * Craft command to set the application name.
@@ -12,6 +12,8 @@ const BaseCommand = require('../../foundation/console/commands/base-command')
 class MakeAuth extends BaseCommand {
   constructor () {
     super()
+
+    this.stubsDir = Path.resolve(__dirname, '..', 'stubs', 'make', 'auth')
 
     this.views = {
       'auth/login.hbs': 'auth/login.hbs',
@@ -51,7 +53,6 @@ class MakeAuth extends BaseCommand {
   async handle () {
     await this.run(async () => {
       await this.copyFiles()
-      await this.installDependencies()
 
       this.success(`\n${this.icon('success')} Authentication scaffolding successful. Generated authentication views and routes.`)
     })
@@ -59,14 +60,11 @@ class MakeAuth extends BaseCommand {
 
   async copyFiles () {
     await this.ensureDirectories()
-    // copy views
     await this.copyViews()
     // copy CSS styles?
     // copy email template
 
-    // copy model
-
-    // copy routes
+    await this.copyModels()
     await this.copyRoutes()
 
     // copy event?
@@ -87,10 +85,21 @@ class MakeAuth extends BaseCommand {
       }
 
       await this.copy(
-        Path.resolve(__dirname, 'stubs', 'views', stub),
+        Path.resolve(this.stubsDir, 'views', stub),
         Helper.viewsPath(dest)
       )
+
+      this.completed('created', `views/${dest}`)
     })
+
+    console.log()
+  }
+
+  async copyModels () {
+    // copy user model
+
+    // const dependencies = ['mongoose@5.4.3']
+    // await this.install(dependencies)
   }
 
   async copyRoutes () {
@@ -102,14 +111,20 @@ class MakeAuth extends BaseCommand {
       }
 
       await this.copy(
-        Path.resolve(__dirname, 'stubs', 'routes', stub),
+        Path.resolve(this.stubsDir, 'routes', stub),
         Helper.routesPath(dest)
       )
+
+      this.completed('created', `routes/${dest}`)
     })
   }
 
-  async installDependencies () {
-    await Execa('npm', ['install', 'mongoose'], { cwd: Helper.appRoot() })
+  async install (dependencies) {
+    dependencies = Array.isArray(dependencies) ? dependencies : [dependencies]
+
+    this.info(`Installing model dependencies: [${[...dependencies]}]`)
+
+    await Execa('npm', ['install', ...dependencies], { cwd: Helper.appRoot() })
   }
 }
 
