@@ -25,7 +25,7 @@ module.exports = [
         const { email, password } = request.payload
         const user = await User.createFrom({ email, password })
 
-        request.cookieAuth.set({ id: user.id })
+        request.session.set({ id: user.id })
 
         Event.fire(new UserRegisteredEvent(user))
 
