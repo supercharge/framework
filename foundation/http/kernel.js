@@ -17,6 +17,7 @@ class HttpKernel {
       'bootstrap/serve-assets.js',
       'bootstrap/load-middleware.js',
       'bootstrap/extend-app-from-userland.js',
+      'bootstrap/set-default-auth-strategy.js',
       'bootstrap/load-routes.js'
     ]
   }
