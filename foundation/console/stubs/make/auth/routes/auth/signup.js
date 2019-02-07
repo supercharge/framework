@@ -4,7 +4,7 @@ const Joi = require('joi')
 const User = require('../../../models/user')
 const Event = require('@supercharge/framework/event')
 const Config = require('@supercharge/framework/config')
-const UserRegisteredEvent = require('../../../events/user-registered')
+const UserRegisteredEvent = require('../../../events/auth/user-registered')
 
 module.exports = [
   {
