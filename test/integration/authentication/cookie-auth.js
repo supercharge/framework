@@ -69,7 +69,7 @@ class CookieAuthTest extends BaseTest {
         path,
         method: 'GET',
         handler: request => {
-          request.cookieAuth.set({ name: 'marcus' })
+          request.session.set({ name: 'marcus' })
           return 'marcus'
         }
       }).get(path)
