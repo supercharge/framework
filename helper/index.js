@@ -61,6 +61,17 @@ class Helper {
   }
 
   /**
+   * Absolute path to the models directory.
+   *
+   * @param {String}
+   *
+   * @returns {String}
+   */
+  modelsPath (...path) {
+    return Path.resolve(this.appRoot(), 'app', 'models', ...path)
+  }
+
+  /**
    * Absolute path to the routes directory.
    *
    * @param {String}
@@ -69,6 +80,50 @@ class Helper {
    */
   routesPath (...path) {
     return Path.resolve(this.appRoot(), 'app', 'http', 'routes', ...path)
+  }
+
+  /**
+   * Absolute path to the middlware directory.
+   *
+   * @param {String}
+   *
+   * @returns {String}
+   */
+  middlewarePath (...path) {
+    return Path.resolve(this.appRoot(), 'app', 'http', 'middleware', ...path)
+  }
+
+  /**
+   * Absolute path to the events directory.
+   *
+   * @param {String}
+   *
+   * @returns {String}
+   */
+  eventsPath (...path) {
+    return Path.resolve(this.appRoot(), 'app', 'events', ...path)
+  }
+
+  /**
+   * Absolute path to the event listeners directory.
+   *
+   * @param {String}
+   *
+   * @returns {String}
+   */
+  listenersPath (...path) {
+    return Path.resolve(this.appRoot(), 'app', 'listeners', ...path)
+  }
+
+  /**
+   * Absolute path to the mails directory.
+   *
+   * @param {String}
+   *
+   * @returns {String}
+   */
+  mailsPath (...path) {
+    return Path.resolve(this.appRoot(), 'app', 'mails', ...path)
   }
 }
 
