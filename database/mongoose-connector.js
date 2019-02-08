@@ -1,7 +1,7 @@
 'use strict'
 
+const Logger = require('../logging')
 const Mongoose = require('mongoose')
-const Logger = require('./../logging')
 
 /**
  * This Mongoose connector manages the database
@@ -46,6 +46,15 @@ class MongooseConnector {
    */
   async connect () {
     await Mongoose.connect(this.connectionString(), this.config.options)
+  }
+
+  /**
+   * Returns the Mongoose connection.
+   *
+   * @returns {Object}
+   */
+  connection () {
+    return Mongoose.connection
   }
 
   /**
