@@ -106,7 +106,10 @@ class MakeAuth extends BaseCommand {
     if (content) {
       await this.writeFile(
         welcomeRoute,
-        content.replace(`, null, { layout: 'clean' }`, '')
+        content.replace(
+          `h.view('welcome', null, { layout: 'clean' })`,
+          `h.view('welcome')`
+        )
       )
     }
   }
