@@ -12,7 +12,7 @@ class SetDefaultAuthStrategy {
     const strategies = server.auth._strategies
 
     if (_.isEmpty(strategies)) {
-      throw new Error('No authentication strategies registered. Cannot set default strategy.')
+      return
     }
 
     server.auth.default(Config.get('auth.default'))
