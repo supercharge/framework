@@ -94,7 +94,7 @@ class DatabaseManager {
     const Connector = this.connectors()[name]
 
     if (!Connector) {
-      throw new Error(`No database connector available for "${name}".`)
+      throw new Error(`No database connector available for "${name}". Available connectors: [${Object.keys(this.connectors())}]`)
     }
 
     return new Connector(config)
