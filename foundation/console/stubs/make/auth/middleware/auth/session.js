@@ -26,19 +26,17 @@ async function register (server) {
      * Tba.
      */
     validateFunc: async (request, session) => {
-      const userId = session.id
-
-      if (!userId) {
-        return { credentials: null, valid: false }
+      if (!session.userId) {
+        return { valid: false, credentials: null }
       }
 
-      const user = await User.findById(userId)
+      const user = await User.findById(session.userId)
 
       if (!user) {
-        return { credentials: null, valid: false }
+        return { valid: false, credentials: null }
       }
 
-      return { credentials: user, valid: true }
+      return { valid: true, credentials: user }
     }
   })
 }

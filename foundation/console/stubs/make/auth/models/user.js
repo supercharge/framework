@@ -4,6 +4,7 @@ const Boom = require('boom')
 const Mongoose = require('mongoose')
 const Validator = require('validator')
 const Hash = require('@supercharge/framework/hashing')
+const Database = require('@supercharge/framework/database')
 const Encryption = require('@supercharge/framework/encryption')
 
 const schema = new Mongoose.Schema({
@@ -125,4 +126,4 @@ class User {
 
 schema.loadClass(User)
 
-module.exports = Mongoose.model('User', schema)
+module.exports = Database.connection().connection().model('User', schema)
