@@ -49,15 +49,6 @@ class MongooseConnector {
   }
 
   /**
-   * Returns the Mongoose connection.
-   *
-   * @returns {Object}
-   */
-  connection () {
-    return Mongoose.connection
-  }
-
-  /**
    * Compose the database connection string from
    * the database configuration.
    */
