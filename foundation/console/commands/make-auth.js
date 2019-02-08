@@ -13,6 +13,7 @@ class MakeAuth extends BaseCommand {
     this.stubsDir = Path.resolve(__dirname, '..', 'stubs', 'make', 'auth')
 
     this.views = {
+      'home.hbs': 'home.hbs',
       'auth/login.hbs': 'auth/login.hbs',
       'auth/signup.hbs': 'auth/signup.hbs',
       'auth/forgot-password.hbs': 'auth/forgot-password.hbs',
@@ -22,6 +23,7 @@ class MakeAuth extends BaseCommand {
     }
 
     this.routes = {
+      'home.js': 'home.js',
       'auth/login.js': 'auth/login.js',
       'auth/signup.js': 'auth/signup.js',
       'auth/logout.js': 'auth/logout.js',
@@ -70,10 +72,6 @@ class MakeAuth extends BaseCommand {
   async copyFiles () {
     await this.copyViews()
     await this.useAppLayoutInWelcomeRoute()
-
-    // copy CSS styles?
-    // copy email template
-
     await this.copyModels()
     await this.copyRoutes()
     await this.copyMiddlware()

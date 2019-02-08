@@ -31,7 +31,7 @@ module.exports = [{
       const { email, password } = request.payload
       const user = await User.attemptLogin({ email, password })
 
-      request.session.set({ id: user.id })
+      request.session.set({ userId: user.id })
 
       return h.redirect(Config.get('auth.redirects.login'))
     },
