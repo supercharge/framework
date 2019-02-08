@@ -3,8 +3,8 @@
 const Hapi = require('hapi')
 const Boom = require('boom')
 const Path = require('path')
-const { forEachSeries } = require('p-iteration')
 const Config = require('./../../config')
+const { forEachSeries } = require('p-iteration')
 
 class HttpKernel {
   constructor () {
@@ -13,6 +13,7 @@ class HttpKernel {
     this.bootstrappers = [
       'bootstrap/load-core-plugins.js',
       'bootstrap/graceful-shutdown.js',
+      'bootstrap/connect-database.js',
       'bootstrap/handle-views.js',
       'bootstrap/serve-assets.js',
       'bootstrap/load-middleware.js',
@@ -79,8 +80,6 @@ class HttpKernel {
    */
   async warmUpCore () {
     await forEachSeries(this.bootstrappers, async bootstrapper => {
-      console.log(bootstrapper)
-
       await this.resolve(bootstrapper).extends(this.server)
     })
   }
