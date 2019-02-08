@@ -40,7 +40,7 @@ class Views {
         engines: {
           hbs: this.handlebars()
         },
-        path: this.viewPaths(),
+        path: this.viewsPath(),
         layoutPath: this.layoutLocations(),
         layout: 'app',
         helpersPath: this.helpersLocations(),
@@ -77,18 +77,6 @@ class Views {
   }
 
   /**
-   * Return an array of folders that contain the
-   * Handlebars views.
-   *
-   * @returns {Array}
-   */
-  viewPaths () {
-    const views = this.viewsPath()
-
-    return [ views ]
-  }
-
-  /**
    * Return an array of folders that contain
    * Handlebars layouts.
    *
@@ -109,7 +97,10 @@ class Views {
   helpersLocations () {
     const views = this.viewsPath()
 
-    return [ Path.resolve(views, 'helpers') ]
+    return [
+      Path.resolve(views, 'helpers'),
+      Path.resolve(__dirname, '..', '..', '..', 'view', 'handlebars', 'helpers')
+    ]
   }
 
   /**
