@@ -10,9 +10,9 @@ class MakesHttpRequestsTest extends BaseTest {
   }
 
   async assignsHeadersAsObject (t) {
-    const request = await this.withHeaders({ passion: 'boost' })
+    const request = await this.withHeaders({ passion: 'Supercharge' })
 
-    t.deepEqual(request.headers, { passion: 'boost' })
+    t.deepEqual(request.headers, { passion: 'Supercharge' })
   }
 
   async withoutMiddlewareAsString (t) {

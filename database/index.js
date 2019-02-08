@@ -72,8 +72,8 @@ class DatabaseManager {
 
   /**
    * Create a new connection instance base on
-   * a connector shipped with Boost. Throws
-   * if no connector matches the name.
+   * a connector. Throws if no connector
+   * matches the name.
    *
    * @param {String} name
    *
@@ -101,8 +101,7 @@ class DatabaseManager {
   }
 
   /**
-   * Returns an object of available connectors
-   * shipped with Boost.
+   * Returns an object of available connectors.
    */
   connectors () {
     return {

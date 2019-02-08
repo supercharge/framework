@@ -81,7 +81,7 @@ class BaseCommand extends Command {
     const exists = await this.pathExists(Path.join(process.cwd(), 'craft'))
 
     if (!exists) {
-      throw new Error(`Make sure you are inside a Boost app to run the ${this.constructor.commandName} command`)
+      throw new Error(`Make sure you are inside a Supercharge app to run the ${this.constructor.commandName} command`)
     }
   }
 

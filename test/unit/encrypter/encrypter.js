@@ -6,16 +6,16 @@ const Encrypter = require('@root/encryption')
 class EncrypterTest extends BaseTest {
   async encryptString (t) {
     const encrypter = new Encrypter('a'.repeat(32))
-    const encrypted = encrypter.encrypt('boost')
-    t.not(encrypted, 'boost')
-    t.is(encrypter.decrypt(encrypted), 'boost')
+    const encrypted = encrypter.encrypt('Supercharge')
+    t.not(encrypted, 'Supercharge')
+    t.is(encrypter.decrypt(encrypted), 'Supercharge')
   }
 
   async encryptObject (t) {
     const encrypter = new Encrypter('a'.repeat(32))
-    const encrypted = encrypter.encrypt({ boost: 'is awesome' })
-    t.not(encrypted, 'boost')
-    t.deepEqual(encrypter.decrypt(encrypted), { boost: 'is awesome' })
+    const encrypted = encrypter.encrypt({ Supercharge: 'is awesome' })
+    t.not(encrypted, 'Supercharge')
+    t.deepEqual(encrypter.decrypt(encrypted), { Supercharge: 'is awesome' })
   }
 
   async generateKeyForAES128 (t) {
@@ -56,26 +56,26 @@ class EncrypterTest extends BaseTest {
 
   async hmac (t) {
     const encrypter = new Encrypter('a'.repeat(32))
-    const hmac = encrypter.hmac('boost is awesome')
+    const hmac = encrypter.hmac('Supercharge is awesome')
     t.not(hmac, null)
   }
 
   async base64EncodeString (t) {
     const encrypter = new Encrypter('a'.repeat(32))
-    const encoded = encrypter.base64Encode('boost is awesome')
-    t.deepEqual(encrypter.base64Decode(encoded), 'boost is awesome')
+    const encoded = encrypter.base64Encode('Supercharge is awesome')
+    t.deepEqual(encrypter.base64Decode(encoded), 'Supercharge is awesome')
   }
 
   async base64EncodeBuffer (t) {
     const encrypter = new Encrypter('a'.repeat(32))
-    const encoded = encrypter.base64Encode(Buffer.from('boost is awesome'))
-    t.deepEqual(encrypter.base64Decode(encoded), 'boost is awesome')
+    const encoded = encrypter.base64Encode(Buffer.from('Supercharge is awesome'))
+    t.deepEqual(encrypter.base64Decode(encoded), 'Supercharge is awesome')
   }
 
   async base64DecodeBuffer (t) {
     const encrypter = new Encrypter('a'.repeat(32))
-    const encoded = encrypter.base64Encode(Buffer.from('boost is awesome'))
-    t.deepEqual(encrypter.base64Decode(Buffer.from(encoded, 'base64')), 'boost is awesome')
+    const encoded = encrypter.base64Encode(Buffer.from('Supercharge is awesome'))
+    t.deepEqual(encrypter.base64Decode(Buffer.from(encoded, 'base64')), 'Supercharge is awesome')
   }
 
   async failsWithoutEncryptionKey (t) {

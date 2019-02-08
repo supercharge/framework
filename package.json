@@ -1,6 +1,6 @@
 {
   "name": "@supercharge/framework",
-  "description": "Boost is a framework and app starter kit making it easy to develop your next idea.",
+  "description": "Supercharge is a framework and app starter kit making it easy to develop your next idea.",
   "version": "0.0.0",
   "author": "Future Studio <info@futurestud.io>",
   "contributors": [
@@ -84,18 +84,17 @@
   "engines": {
     "node": ">= 8.9.0"
   },
-  "homepage": "https://boost.futurestud.io",
+  "homepage": "https://superchargejs.com",
   "keywords": [
-    "boost",
+    "supercharge",
+    "superchargejs",
     "bootstrap",
     "hapi",
     "hapi.js",
     "mongodb",
     "mongoose",
     "node",
-    "node.js",
-    "saas",
-    "saas-starter-kit"
+    "node.js"
   ],
   "license": "MIT",
   "private": true,

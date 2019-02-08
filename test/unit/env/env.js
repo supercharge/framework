@@ -26,14 +26,14 @@ class EnvTest extends BaseTest {
 
   async loadsCustomEnvFile (t) {
     Env.load(Path.resolve(__dirname, 'secrets.env'))
-    t.is(Env.get('VALUE'), 'Boost')
+    t.is(Env.get('VALUE'), 'Supercharge')
   }
 
   async setEnvValue (t) {
-    Env.set('BOOST_TEMP', 'temp-value')
-    const value = Env.get('BOOST_TEMP')
+    Env.set('Supercharge_TEMP', 'temp-value')
+    const value = Env.get('Supercharge_TEMP')
     t.is(value, 'temp-value')
-    delete process.env.BOOST_TEMP
+    delete process.env.Supercharge_TEMP
   }
 
   async returnsUndefined (t) {

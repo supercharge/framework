@@ -2,18 +2,17 @@
 
 const Listr = require('listr')
 const Execa = require('execa')
-const BaseCommand = require('./base-command')
 const Fs = require('../../../filesystem')
 const Helper = require('../../../helper')
+const BaseCommand = require('./base-command')
 
 /**
  * This command does the required steps
- * to set up a new Boost application.
+ * to set up a new application.
  */
 class Setup extends BaseCommand {
   /**
-   * Convenience command to quickly set up
-   * a Boost application.
+   * Returns the command signature.
    */
   static get signature () {
     return `
@@ -27,7 +26,7 @@ class Setup extends BaseCommand {
    * Returns the command description.
    */
   static get description () {
-    return 'Automated setup for your new Boost application'
+    return 'Automated setup for your new application'
   }
 
   /**
@@ -92,12 +91,12 @@ class Setup extends BaseCommand {
   /**
    * Print out a final setup note with
    * instructions on how to start
-   * the Boost web server.
+   * the HTTP server.
    *
    * @param {String} appName
    */
   finalNote (appName) {
-    appName = appName || 'Boost'
+    appName = appName || 'Supercharge'
 
     const lines = [
       '',

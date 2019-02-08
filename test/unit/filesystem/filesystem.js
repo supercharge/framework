@@ -67,10 +67,10 @@ class FilesystemTest extends BaseTest {
 
   async readFile (t) {
     const file = await this._ensureTempFile()
-    Fs.writeFileSync(file, 'Hello Boost', 'utf8')
+    Fs.writeFileSync(file, 'Hello Supercharge', 'utf8')
     const content = await Filesystem.readFile(file)
 
-    t.is(content, 'Hello Boost')
+    t.is(content, 'Hello Supercharge')
   }
 
   async readDir (t) {
@@ -78,7 +78,7 @@ class FilesystemTest extends BaseTest {
     Fs.mkdirSync(dirPath)
 
     const filePath = Path.resolve(dirPath, 'test.txt')
-    Fs.writeFileSync(filePath, 'Hello Boost', 'utf8')
+    Fs.writeFileSync(filePath, 'Hello Supercharge', 'utf8')
 
     const dirContent = await Filesystem.readDir(dirPath)
 
@@ -87,11 +87,11 @@ class FilesystemTest extends BaseTest {
 
   async writeFile (t) {
     const file = await this._ensureTempFile()
-    await Filesystem.writeFile(file, 'Hello Boost')
+    await Filesystem.writeFile(file, 'Hello Supercharge')
 
     const content = await Filesystem.readFile(file)
 
-    t.is(content, 'Hello Boost')
+    t.is(content, 'Hello Supercharge')
   }
 
   async remove (t) {
