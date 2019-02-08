@@ -164,4 +164,8 @@ class DatabaseManager {
   }
 }
 
-module.exports = new DatabaseManager()
+const Database = new DatabaseManager()
+
+module.exports = Database
+module.exports.Database = Database
+module.exports.Mongoose = require('mongoose')
