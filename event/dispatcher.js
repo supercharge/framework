@@ -5,7 +5,7 @@ const Path = require('path')
 const Fs = require('./../filesystem')
 const Helper = require('./../helper')
 const EventEmitter = require('events')
-const RequireAll = require('require-all')
+const ReadRecursive = require('recursive-readdir')
 
 /**
  * The event dispatcher registers all events
@@ -220,10 +220,7 @@ class Dispatcher {
     const location = Path.resolve(Helper.appRoot(), folder)
 
     if (await Fs.pathExists(location)) {
-      return RequireAll({
-        dirname: location,
-        filter: /(.*)\.js$/
-      })
+      return ReadRecursive(location)
     }
 
     return {}
@@ -267,7 +264,10 @@ class Dispatcher {
    * @param {String} eventName
    */
   async getListenersFor (eventName) {
-    return _.map(await this.loadListeners(), Listener => {
+    const listenerFiles = await this.loadListeners()
+
+    return _.map(listenerFiles, listenerFile => {
+      const Listener = this.resolve(listenerFile)
       const listener = new Listener()
       this.ensureListener(listener)
 
@@ -281,7 +281,10 @@ class Dispatcher {
    * the type `user`.
    */
   async getSystemEventListeners () {
-    return _.map(await this.loadListeners(), Listener => {
+    const listenerFiles = await this.loadListeners()
+
+    return _.map(listenerFiles, listenerFile => {
+      const Listener = this.resolve(listenerFile)
       const listener = new Listener()
       this.ensureListener(listener)
 
@@ -296,7 +299,10 @@ class Dispatcher {
    * listeners to the event emitter.
    */
   async registerUserEvents () {
-    _.forEach(await this.loadEvents(), async Event => {
+    const eventFiles = await this.loadEvents()
+
+    _.forEach(eventFiles, async eventFile => {
+      const Event = this.resolve(eventFile)
       const event = new Event()
       this.ensureEvent(event)
 
@@ -323,6 +329,17 @@ class Dispatcher {
           : this.addSystemListener(eventName, listener.handle)
       })
     })
+  }
+
+  /**
+   * Resolve the class from given `file` path.
+   *
+   * @param {String} file
+   *
+   * @returns {Function}
+   */
+  resolve (file) {
+    return require(file)
   }
 
   /**
