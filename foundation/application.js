@@ -35,24 +35,28 @@ class Application {
    */
   async httpWithFullSpeed () {
     try {
-      this.exceptionHandler.listenForSystemErrors()
-
-      if (!this.appRoot) {
-        throw new Error('Cannot start HTTP server without app root directory. Ensure to call .appRoot() inside the server.js file.')
-      }
-
-      Helper.setAppRoot(this.appRoot)
-      this.loadEnvironmentVariables()
-      this.loadApplicationConfig()
-
-      await this.initializeEvents()
-
-      await this.bootstrapHttpServer()
+      await this.prepareHttpServer()
       await this.startServer()
     } catch (error) {
       console.log(error)
       throw error
     }
+  }
+
+  async prepareHttpServer () {
+    this.exceptionHandler.listenForSystemErrors()
+
+    if (!this.appRoot) {
+      throw new Error('Cannot start HTTP server without app root directory. Ensure to call .appRoot() inside the server.js file.')
+    }
+
+    Helper.setAppRoot(this.appRoot)
+    this.loadEnvironmentVariables()
+    this.loadApplicationConfig()
+
+    await this.initializeEvents()
+
+    await this.bootstrapHttpServer()
   }
 
   loadEnvironmentVariables () {
