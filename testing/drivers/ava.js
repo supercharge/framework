@@ -2,7 +2,7 @@
 
 const Ava = require('ava')
 const _ = require('lodash')
-const Database = require('@root/database')
+const Database = require('../../database')
 
 class AvaTesting {
   /**
@@ -75,8 +75,6 @@ class AvaTesting {
    */
   assignBeforeHook () {
     Ava.before(`${this.constructor.name}: before`, async t => {
-      await Database.connect()
-
       return this.before(t)
     })
   }
