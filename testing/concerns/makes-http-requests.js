@@ -8,6 +8,10 @@ const PendingRequest = require('./../pending-request')
  * the application's hapi server.
  */
 class MakesHttpRequests {
+  constructor (options) {
+    this.options = options
+  }
+
   /**
    * Send user credentials to authenticate
    * the request.
@@ -98,7 +102,7 @@ class MakesHttpRequests {
    * @returns {PendingRequest}
    */
   request () {
-    return new PendingRequest()
+    return new PendingRequest(this.options)
   }
 
   /**

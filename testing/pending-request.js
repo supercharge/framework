@@ -2,7 +2,7 @@
 
 const _ = require('lodash')
 const Cookie = require('cookie')
-const Launch = require('@root/start')
+const Application = require('../foundation/application')
 
 /**
  * A helper class to create HTTP requests in
@@ -13,7 +13,9 @@ class PendingRequest {
   /**
    * Create a new instance.
    */
-  constructor () {
+  constructor ({ appRoot }) {
+    this.appRoot = appRoot
+
     this.user = null
     this.routes = []
     this.headers = {}
@@ -29,19 +31,14 @@ class PendingRequest {
    * @returns {Object}
    */
   async createServer () {
-    const launch = new Launch()
-
-    await launch.initializeEvents()
-    await launch.warmUpCore({ exclude: ['laabr'] })
-    await launch.loadMiddleware({ exclude: ['verify-csrf-token'].concat(this.excludedMiddleware) })
-    await launch.configureViews()
-    await launch.loadAppPlugins()
+    const app = new Application().fromAppRoot(this.appRoot)
+    await app.prepareHttpServer()
 
     this.routes.forEach(route => {
-      launch.server.route(route)
+      app.server.route(route)
     })
 
-    return launch.server
+    return app.server
   }
 
   /**
