@@ -32,7 +32,7 @@ class HandleViews {
         helpersPath: this.engine.helpersLocations(),
         partialsPath: this.engine.partialsLocations(),
         isCached: Config.get('app.isProduction'),
-        context: function (request) {
+        context: (request) => {
           return {
             request,
             user: request.auth.credentials,
