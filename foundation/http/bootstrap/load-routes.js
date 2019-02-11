@@ -11,7 +11,7 @@ class LoadRoutes {
   }
 
   async extends (server) {
-    if (this.hasRoutes()) {
+    if (await this.hasRoutes()) {
       return this.loadRoutes(server)
     }
 
@@ -19,7 +19,9 @@ class LoadRoutes {
   }
 
   async hasRoutes () {
-    return await this.routeFolderExists() && this.hasRouteFiles()
+    return await this.routeFolderExists()
+      ? this.hasRouteFiles()
+      : false
   }
 
   async routeFolderExists () {

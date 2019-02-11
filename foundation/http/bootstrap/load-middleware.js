@@ -16,15 +16,15 @@ class LoadMiddleware {
   }
 
   async extends (server) {
-    if (this.hasMiddlware()) {
+    if (await this.hasMiddlware()) {
       return this.loadMiddlware(server)
     }
-
-    console.log(`No middleware detected in ${this._routesFolder}`)
   }
 
   async hasMiddlware () {
-    return await this.middlewareFolderExists() && this.hasMiddlewareFiles()
+    return await this.middlewareFolderExists()
+      ? this.hasMiddlewareFiles()
+      : false
   }
 
   async middlewareFolderExists () {
