@@ -45,7 +45,7 @@ class MongooseConnector {
    * Create the MongoDB connection.
    */
   async connect () {
-    await Mongoose.connect(this.connectionString(), this.config.options)
+    await Mongoose.connect(this.connectionString(), Object.assign({ useNewUrlParser: true }, this.config.options))
   }
 
   /**
