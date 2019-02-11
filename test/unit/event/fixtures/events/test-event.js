@@ -1,6 +1,6 @@
 'use strict'
 
-const Event = require('@root/event')
+const Event = require('../../../../../event')
 
 class TestEvent extends Event {
   emit () {

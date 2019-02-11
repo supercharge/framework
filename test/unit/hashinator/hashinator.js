@@ -1,8 +1,8 @@
 'use strict'
 
-const Hash = require('@root/hashing')
-const Config = require('@root/config')
-const BaseTest = require('@root/testing/base-test')
+const Hash = require('../../../hashing')
+const Config = require('../../../config')
+const BaseTest = require('../../../testing/base-test')
 
 class HashinatorTest extends BaseTest {
   async makeHash (t) {

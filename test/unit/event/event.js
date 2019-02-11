@@ -1,8 +1,8 @@
 'use strict'
 
-const Event = require('@root/event')
-const BaseTest = require('@root/testing/base-test')
-const Dispatcher = require('@root/event/dispatcher')
+const Event = require('../../../event')
+const BaseTest = require('../../../testing/base-test')
+const Dispatcher = require('../../../event/dispatcher')
 
 class EventTest extends BaseTest {
   async emitsConstructorNameByDefault (t) {

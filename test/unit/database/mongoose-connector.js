@@ -1,10 +1,24 @@
 'use strict'
 
-const Config = require('@root/config')
-const BaseTest = require('@root/testing/base-test')
-const MongooseConnector = require('@root/database/mongoose-connector')
+const Config = require('../../../config')
+const BaseTest = require('../../../testing/base-test')
+const MongooseConnector = require('../../../database/mongoose-connector')
 
 class MongooseConnectorTest extends BaseTest {
+  before () {
+    Config.set('database.connections', {
+      mongoose: {
+        host: 'localhost',
+        port: 27017,
+        database: 'boost'
+      }
+    })
+  }
+
+  after () {
+    Config.set('database', 'undefined')
+  }
+
   async connectorLifecycle (t) {
     const connector = new MongooseConnector(Config.get('database.connections.mongoose'))
 

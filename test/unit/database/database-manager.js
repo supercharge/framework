@@ -1,7 +1,8 @@
 'use strict'
 
-const Database = require('@root/database')
-const BaseTest = require('@root/testing/base-test')
+const Config = require('../../../config')
+const Database = require('../../../database')
+const BaseTest = require('../../../testing/base-test')
 
 class TestConnector {
   connect () {}
@@ -9,6 +10,15 @@ class TestConnector {
 }
 
 class DatabaseManagerTest extends BaseTest {
+  before () {
+    Config.set('database.default', 'mongoose')
+    Config.set('database.connections', { mongoose: { database: 'boost' } })
+  }
+
+  after () {
+    Config.set('database', 'undefined')
+  }
+
   async serialConnectsDefaultConnection (t) {
     await Database.connect()
     t.is(Object.keys(Database.connections).length, 1)

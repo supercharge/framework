@@ -1,6 +1,6 @@
 'use strict'
 
-const BaseTest = require('@root/testing/base-test')
+const BaseTest = require('../../../../testing/base-test')
 
 class CreatesStubsMocksSpiesTest extends BaseTest {
   async serialMock (t) {

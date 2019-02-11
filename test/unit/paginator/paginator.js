@@ -1,7 +1,7 @@
 'use strict'
 
-const BaseTest = require('@root/testing/base-test')
-const Paginator = require('@root/paginator')
+const Paginator = require('../../../pagintation')
+const BaseTest = require('../../../testing/base-test')
 
 class PaginatorTest extends BaseTest {
   async paginatorCreatesContextInformation (t) {

@@ -1,7 +1,7 @@
 'use strict'
 
-const BaseTest = require('@root/testing/base-test')
-const Hashinator = require('@root/hashing/argon-hashinator')
+const BaseTest = require('../../../testing/base-test')
+const Hashinator = require('../../../hashing/argon-hashinator')
 
 class ArgonHashinatorTest extends BaseTest {
   async makeArgonHash (t) {

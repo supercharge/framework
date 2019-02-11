@@ -1,10 +1,11 @@
 'use strict'
 
-const BaseTest = require('@root/testing/base-test')
+const Encryption = require('../../../../encryption')
+const BaseTest = require('../../../../testing/base-test')
 
 class StackHelperTest extends BaseTest {
   async createContentStack (t) {
-    const name = this.randomKey()
+    const name = Encryption.randomKey()
 
     const output = await this.render(`{{#append name}}appended{{/append}}{{#prepend name}}prepended{{/prepend}}{{#stack name}}content{{/stack}}`, { name })
 
@@ -16,7 +17,7 @@ class StackHelperTest extends BaseTest {
   }
 
   async prependsToExistingStack (t) {
-    const name = this.randomKey()
+    const name = Encryption.randomKey()
 
     const output = await this.render('{{#prepend name}}prepended{{/prepend}}{{#stack name}}content{{/stack}}', { stacks: { name }, name })
 
@@ -24,7 +25,7 @@ class StackHelperTest extends BaseTest {
   }
 
   async prependsToNonExistingStack (t) {
-    const name = this.randomKey()
+    const name = Encryption.randomKey()
 
     const output = await this.render('{{#prepend name}}prepended{{/prepend}}{{#stack name}}content{{/stack}}', { name })
 

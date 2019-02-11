@@ -1,10 +1,14 @@
 'use strict'
 
-const Logger = require('@root/logging')
-const BaseTest = require('@root/testing/base-test')
+const Config = require('../../../config')
+const Logger = require('../../../logging')
+const BaseTest = require('../../../testing/base-test')
 
 class LoggerTest extends BaseTest {
   before () {
+    Config.set('logging.channels.console', { level: 'debug' })
+    Config.set('logging.channels.file', { path: './temp/testing.log' })
+
     Logger.logger.silent = true
   }
 

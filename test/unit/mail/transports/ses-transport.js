@@ -1,8 +1,7 @@
 'use strict'
 
-const BaseTest = require('@root/testing/base-test')
-const { Transports } = require('@root/mail')
-const SesTransporter = Transports['ses']
+const BaseTest = require('../../../../testing/base-test')
+const SesTransporter = require('../../../../mailer/transports/ses')
 
 class SesTransporterTest extends BaseTest {
   async createSesTransporter (t) {

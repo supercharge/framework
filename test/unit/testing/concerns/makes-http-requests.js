@@ -1,8 +1,24 @@
 'use strict'
 
-const BaseTest = require('@root/testing/base-test')
+const Path = require('path')
+const Fs = require('../../../../filesystem')
+const Helper = require('../../../../helper')
+const Encryption = require('../../../../encryption')
+const BaseTest = require('../../../../testing/base-test')
 
 class MakesHttpRequestsTest extends BaseTest {
+  async before () {
+    await Fs.ensureDir('./temp/layouts')
+    await Fs.ensureDir('./temp/helpers')
+    await Fs.ensureDir('./temp/partials')
+
+    this.stub = this.stub(Helper, 'resourcePath').returns(Path.resolve('./temp'))
+  }
+
+  after () {
+    this.stub.restore()
+  }
+
   async assignsKeyValueHeader (t) {
     const request = await this.withHeader('name', 'Marcus')
 
@@ -42,7 +58,7 @@ class MakesHttpRequestsTest extends BaseTest {
   }
 
   async sendsGetRequestAsObject (t) {
-    const path = `/${this.randomKey()}`
+    const path = `/${Encryption.randomKey()}`
 
     const response = await this.addRoute({
       path,
@@ -58,7 +74,7 @@ class MakesHttpRequestsTest extends BaseTest {
   }
 
   async defaultsToGetRequest (t) {
-    const path = `/${this.randomKey()}`
+    const path = `/${Encryption.randomKey()}`
 
     const response = await this.request().addRoute({
       path,
@@ -92,7 +108,7 @@ class MakesHttpRequestsTest extends BaseTest {
   }
 
   async sendsDeleteRequestAsUrl (t) {
-    const path = `/${this.randomKey()}`
+    const path = `/${Encryption.randomKey()}`
 
     const response = await this.addRoute({
       path,
@@ -105,7 +121,7 @@ class MakesHttpRequestsTest extends BaseTest {
   }
 
   async sendsDeleteRequestAsObject (t) {
-    const path = `/${this.randomKey()}`
+    const path = `/${Encryption.randomKey()}`
 
     const response = await this.addRoute({
       path,

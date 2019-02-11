@@ -1,7 +1,12 @@
 'use strict'
 
-const Mailer = require('@root/mailer')
-const BaseTest = require('@root/testing/base-test')
+const Config = require('../../../config')
+Config.set('mail.driver', 'smtp')
+Config.set('mail.transports', { smtp: {} })
+Config.set('mail.from', 'marcus@superchargejs.com')
+
+const Mailer = require('../../../mailer')
+const BaseTest = require('../../../testing/base-test')
 const TestMailable = require('./fixtures/test-mailable')
 
 class MailerTest extends BaseTest {

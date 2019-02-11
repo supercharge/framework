@@ -1,10 +1,14 @@
 'use strict'
 
-const Env = require('@root/env')
+const Env = require('../../../env')
 const Path = require('path')
-const BaseTest = require('@root/testing/base-test')
+const BaseTest = require('../../../testing/base-test')
 
 class EnvTest extends BaseTest {
+  before () {
+    Env.loadEnvironmentVariables()
+  }
+
   async usesEnvPath (t) {
     process.env.ENV_PATH = Path.resolve(__dirname, 'secrets.env')
     const envFile = Env.envFileName()

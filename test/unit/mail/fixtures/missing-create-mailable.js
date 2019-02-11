@@ -1,6 +1,6 @@
 'use strict'
 
-const Mailable = require('@root/mailable')
+const Mailable = require('../../../../mailer/mailable')
 
 class MissingCreateMailable extends Mailable {}
 

@@ -1,32 +1,29 @@
 'use strict'
 
 const Path = require('path')
-const Config = require('@root/config')
-const BaseTest = require('@root/testing/base-test')
+const Config = require('../../../config')
+const BaseTest = require('../../../testing/base-test')
 
 class ConfigTest extends BaseTest {
-  async before () {
-    Config.configPath = Path.resolve(__dirname, 'fixtures')
-    Config.loadConfigFiles()
-  }
-
   async loadsConfigFromTmpFolder (t) {
+    Config.loadConfigFiles(Path.resolve(__dirname, 'fixtures'))
     t.truthy(Config.config)
     t.truthy(Object.keys(Config.config).length, 1)
   }
 
   async getConfigValue (t) {
+    Config.loadConfigFiles(Path.resolve(__dirname, 'fixtures'))
     const value = Config.get('testconfig.key')
     t.is(value, 'value')
   }
 
   async fallbackValue (t) {
-    const value = Config.get('testconfig.unavailable', 'fallback')
+    const value = Config.get('unavailable', 'fallback')
     t.is(value, 'fallback')
   }
 
   async doesNotThrow (t) {
-    const value = Config.get('testconfig.unavailable')
+    const value = Config.get('unavailable')
     t.is(value, undefined)
   }
 }

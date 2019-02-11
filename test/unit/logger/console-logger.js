@@ -1,10 +1,15 @@
 'use strict'
 
 const Winston = require('winston')
-const BaseTest = require('@root/testing/base-test')
-const ConsoleLogger = require('@root/logging/console-logger')
+const Config = require('../../../config')
+const BaseTest = require('../../../testing/base-test')
+const ConsoleLogger = require('../../../logging/console-logger')
 
 class ConsoleLoggerTest extends BaseTest {
+  before () {
+    Config.set('logging.channels.console', { level: 'debug' })
+  }
+
   async colorForLevel (t) {
     const logger = new ConsoleLogger()
     t.truthy(logger.getColorForLevel('info'))

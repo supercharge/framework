@@ -1,11 +1,7 @@
 'use strict'
 
-const Path = require('path')
-const Helper = require('@root/helper')
-const BaseTest = require('@root/testing/base-test')
-const UnhandledRejectionListener = require(
-  Path.resolve(Helper.appRoot(), 'app', 'listeners', 'unhandled-system-errors')
-)
+const BaseTest = require('../../../../testing/base-test')
+const UnhandledRejectionListener = require('../../../../foundation/exceptions/handle-system-exceptions')
 
 class UnhandledSytemErrorsTest extends BaseTest {
   before () {

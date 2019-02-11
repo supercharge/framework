@@ -1,8 +1,7 @@
 'use strict'
 
-const BaseTest = require('@root/testing/base-test')
-const { Transports } = require('@root/mail')
-const SparkpostTransporter = Transports['sparkpost']
+const BaseTest = require('../../../../testing/base-test')
+const SparkpostTransporter = require('../../../../mailer/transports/sparkpost')
 
 class SparkpostTransporterTest extends BaseTest {
   async createSparkpostTransporter (t) {

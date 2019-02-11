@@ -1,8 +1,8 @@
 'use strict'
 
-const Logger = require('@root/logging')
-const BaseTest = require('@root/testing/base-test')
-const ViewCompiler = require('@root/view/compiler')
+const Logger = require('../../../logging')
+const BaseTest = require('../../../testing/base-test')
+const ViewCompiler = require('../../../view/compiler')
 
 class HandlebarsCompilerTest extends BaseTest {
   async failsToRegisterHelper (t) {

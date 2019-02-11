@@ -1,8 +1,8 @@
 'use strict'
 
 const Path = require('path')
-const Mailable = require('@root/mailable')
-const BaseTest = require('@root/testing/base-test')
+const Mailable = require('../../../mailer/mailable')
+const BaseTest = require('../../../testing/base-test')
 const MissingCreateMailable = require('./fixtures/missing-create-mailable')
 
 class MailableTest extends BaseTest {

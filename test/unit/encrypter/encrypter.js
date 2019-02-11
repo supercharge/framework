@@ -1,7 +1,8 @@
 'use strict'
 
-const BaseTest = require('@root/testing/base-test')
-const Encrypter = require('@root/encryption')
+const Config = require('../../../config')
+const Encrypter = require('../../../encryption')
+const BaseTest = require('../../../testing/base-test')
 
 class EncrypterTest extends BaseTest {
   async encryptString (t) {
@@ -48,6 +49,12 @@ class EncrypterTest extends BaseTest {
     t.is(key.length, 16)
   }
 
+  async randomKeyWithDefaultLength (t) {
+    const key = Encrypter.randomKey()
+    t.truthy(key)
+    t.is(key.length, 20)
+  }
+
   async getKey (t) {
     const encrypter = new Encrypter('a'.repeat(32))
     const key = encrypter.getKey()
@@ -83,7 +90,9 @@ class EncrypterTest extends BaseTest {
   }
 
   async usesAppKeyAsEncryptionKey (t) {
+    Config.set('app.key', 'a'.repeat(32))
     t.truthy(new Encrypter())
+    Config.set('app.key', undefined)
   }
 
   async failsWithTooShortEncryptionKey (t) {
