@@ -1,7 +1,7 @@
 'use strict'
 
-const Config = require('@root/config')
-const BaseTest = require('@root/testing/base-test')
+const Config = require('../../../config')
+const BaseTest = require('../../../testing/base-test')
 
 class CookieAuthTest extends BaseTest {
   async beforeEach ({ context }) {

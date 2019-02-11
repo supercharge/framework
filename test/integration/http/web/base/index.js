@@ -2,7 +2,7 @@
 
 const Path = require('path')
 const Fs = require('fs-extra')
-const BaseTest = require('@root/testing/base-test')
+const BaseTest = require('../../../../../testing/base-test')
 
 class BaseRoutesTest extends BaseTest {
   async startpage (t) {
