@@ -2,8 +2,8 @@
 
 const User = model('user')
 const Uuid = require('uuid/v4')
-const Hash = require('@root/hashing')
-const Encrypter = require('@root/encryption')
+const Hash = require('../../hashing')
+const Encrypter = require('../../encryption')
 
 /**
  * This class provides methods to conveniently
