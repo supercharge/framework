@@ -1,5 +1,6 @@
 'use strict'
 
+const Path = require('path')
 const Env = require('./../env')
 const Config = require('./../config')
 const Helper = require('./../helper')
@@ -64,7 +65,7 @@ class Application {
   }
 
   loadApplicationConfig () {
-    Config.loadConfigFiles()
+    Config.loadConfigFiles(Path.resolve(Helper.appRoot(), 'config'))
   }
 
   /**

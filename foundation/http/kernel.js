@@ -26,7 +26,7 @@ class HttpKernel {
   async bootstrap () {
     this.createServer()
 
-    await this.warmUpCore()
+    await this.registerBootstrappers()
     await this.server.initialize()
 
     return this.server
@@ -78,7 +78,7 @@ class HttpKernel {
   /**
    * Register the core dependencies.
    */
-  async warmUpCore () {
+  async registerBootstrappers () {
     await forEachSeries(this.bootstrappers, async bootstrapper => {
       await this.resolve(bootstrapper).extends(this.server)
     })
