@@ -2,34 +2,47 @@
 
 const Fs = require('fs')
 const Path = require('path')
+const Helper = require('./../helper')
 const Logger = require('./../logging')
-const Views = require('@root/start/views')
+const Handlebars = require('handlebars')
+const HandlebarsHelpers = require('handlebars-helpers')
 
 class HandlebarsCompiler {
   constructor () {
-    this.viewManager = new Views.constructor()
-    this.handlebars = this.viewManager.handlebars()
+    this._engine = this.createEngine()
 
     this.loadHelpers()
   }
 
-  async compile (template) {
-    return this.handlebars.compile(template)
+  instance () {
+    return this._engine
   }
 
-  async render (template, data) {
-    const renderFunction = await this.compile(template)
+  compile (template) {
+    return this._engine.compile(template)
+  }
+
+  render (template, data) {
+    const renderFunction = this.compile(template)
 
     return renderFunction(data)
   }
 
+  createEngine () {
+    HandlebarsHelpers({ handlebars: Handlebars })
+
+    return Handlebars
+  }
+
   loadHelpers () {
-    const helpersPaths = [].concat(this.viewManager.helpersLocations())
+    const helpersPaths = [].concat(this.helpersLocations())
 
     helpersPaths.forEach(helpersPath => {
-      Fs.readdirSync(helpersPath).forEach(file => {
-        this.registerHelper(helpersPath, file)
-      })
+      if (Fs.existsSync(helpersPath)) {
+        Fs.readdirSync(helpersPath).forEach(file => {
+          this.registerHelper(helpersPath, file)
+        })
+      }
     })
   }
 
@@ -41,15 +54,64 @@ class HandlebarsCompiler {
       const name = this.filename(helpersPath, file)
 
       if (typeof helper === 'function') {
-        this.handlebars.registerHelper(name, helper)
+        this._engine.registerHelper(name, helper)
       }
     } catch (err) {
-      Logger.warn('WARNING: failed to load helper \'%s\': %s', file, err.message)
+      Logger.warn(`WARNING: failed to load helper ${file}: ${err.message}`)
     }
   }
 
   filename (path, file) {
     return file.slice(path.length + 1, -Path.extname(file).length)
+  }
+
+  /**
+   * Resolve the path to view files. This defaults
+   * to `<project-root>/resources/views`.
+   *
+   * @returns {String}
+   */
+  viewsPath () {
+    return Helper.resourcePath('views')
+  }
+
+  /**
+   * Return an array of folders that contain
+   * Handlebars layouts.
+   *
+   * @returns {Array}
+   */
+  layoutLocations () {
+    const views = this.viewsPath()
+
+    return [ Path.resolve(views, 'layouts') ]
+  }
+
+  /**
+   * Return an array of folders that contain
+   * Handlebars helpers.
+   *
+   * @returns {Array}
+   */
+  helpersLocations () {
+    const views = this.viewsPath()
+
+    return [
+      Path.resolve(views, 'helpers'),
+      Path.resolve(__dirname, 'handlebars', 'helpers')
+    ]
+  }
+
+  /**
+   * Return an array of folders that contain
+   * Handlebars partial views.
+   *
+   * @returns {Array}
+   */
+  partialsLocations () {
+    const views = this.viewsPath()
+
+    return [ Path.resolve(views, 'partials') ]
   }
 }
 
