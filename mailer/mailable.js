@@ -6,7 +6,7 @@ const Util = require('util')
 const Helper = require('./../helper')
 const HtmlToText = require('html-to-text')
 const ReadFile = Util.promisify(Fs.readFile)
-const Handlebars = require('./../start/views').handlebars()
+const ViewCompiler = require('../view/compiler')
 
 class Mailable {
   /**
@@ -14,6 +14,7 @@ class Mailable {
    */
   constructor () {
     this.message = {}
+    this.viewCompiler = new ViewCompiler()
   }
 
   /**
@@ -167,7 +168,7 @@ class Mailable {
    */
   async buildView () {
     const template = this.message.view ? await this.readTemplate() : this.message.html
-    const render = Handlebars.compile(template || '')
+    const render = this.viewCompiler.compile(template || '')
 
     return render(this.message.viewData)
   }
