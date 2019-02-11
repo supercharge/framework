@@ -1,8 +1,6 @@
 'use strict'
 
 const _ = require('lodash')
-const Path = require('path')
-const Helper = require('./../helper')
 const RequireAll = require('require-all')
 
 /**
@@ -16,18 +14,17 @@ class Config {
    * by setting the configuration path and
    * reading all config files.
    */
-  constructor () {
-    this.config = {}
+  constructor (items = {}) {
+    this.config = items
   }
 
   /**
-   * Import all application configurations.
+   * Import all application configuration items
+   * from the given `path`.
    */
-  loadConfigFiles () {
-    const configPath = Path.resolve(Helper.appRoot(), 'config')
-
+  loadConfigFiles (path) {
     this.config = RequireAll({
-      dirname: configPath,
+      dirname: path,
       filter: /(.*)\.js$/
     })
   }
