@@ -10,14 +10,14 @@ class ExtendAppFromUserland {
   }
 
   async extends (server) {
-    const extendApp = await this.loadExtendApp()
+    const extendApp = await this.resolveAppFile()
 
     if (extendApp) {
       await extendApp(server)
     }
   }
 
-  async loadExtendApp () {
+  async resolveAppFile () {
     if (await Fs.exists(this.appFile())) {
       return require(this.appFile())
     }
