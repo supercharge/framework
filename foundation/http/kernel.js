@@ -7,7 +7,8 @@ const Config = require('./../../config')
 const { forEachSeries } = require('p-iteration')
 
 class HttpKernel {
-  constructor () {
+  constructor (app) {
+    this.app = app
     this.server = null
 
     this.bootstrappers = [
@@ -84,10 +85,19 @@ class HttpKernel {
     })
   }
 
+  /**
+   * Resolve the bootstrapper, instantiate
+   * a bootstrapper class and pass the
+   * app argument to it.
+   *
+   * @param {String} bootstrapper
+   *
+   * @returns {Class}
+   */
   resolve (bootstrapper) {
     const Bootstrapper = require(Path.resolve(__dirname, bootstrapper))
 
-    return new Bootstrapper()
+    return new Bootstrapper(this.app)
   }
 }
 

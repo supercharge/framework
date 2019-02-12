@@ -31,22 +31,17 @@ class Application {
   }
 
   /**
-   * Initialize the hapi server to run
+   * Initialize the HTTP server to run
    * your application.
    */
   async httpWithFullSpeed () {
-    try {
-      await this.prepareHttpServer()
-      await this.startServer()
-    } catch (error) {
-      console.log(error)
-      throw error
-    }
+    this.exceptionHandler.listenForSystemErrors()
+
+    await this.prepareHttpServer()
+    await this.startServer()
   }
 
   async prepareHttpServer () {
-    this.exceptionHandler.listenForSystemErrors()
-
     if (!this.appRoot) {
       throw new Error('Cannot start HTTP server without app root directory. Ensure to call .appRoot() inside the server.js file.')
     }
@@ -56,7 +51,6 @@ class Application {
     this.loadApplicationConfig()
 
     await this.initializeEvents()
-
     await this.bootstrapHttpServer()
   }
 
@@ -69,15 +63,11 @@ class Application {
   }
 
   /**
-   * Start the hapi server.
+   * Start the HTTP server.
    */
   async startServer () {
     try {
-      if (!Config.get('app.key')) {
-        throw new Error(
-          'No application key available. Make sure to define the APP_KEY value in your .env file (or generate one with "node craft key:generate")'
-        )
-      }
+      this.ensureAppKey()
 
       await this.server.start()
     } catch (err) {
@@ -87,13 +77,21 @@ class Application {
     }
   }
 
+  ensureAppKey () {
+    if (!Config.get('app.key')) {
+      throw new Error(
+        'No application key available. Make sure to define the APP_KEY value in your .env file (or generate one with "node craft key:generate")'
+      )
+    }
+  }
+
   /**
-   * Initialize the hapi server instance and
+   * Initialize the HTTP server instance and
    * register core plugins, middleware, app
    * plugins and configure views.
    */
   async bootstrapHttpServer () {
-    const kernel = new HttpKernel()
+    const kernel = new HttpKernel(this)
     this.server = await kernel.bootstrap()
   }
 
@@ -122,6 +120,10 @@ class Application {
   async bootstrapConsole () {
     const kernel = new ConsoleKernel()
     await kernel.bootstrap()
+  }
+
+  isRunningTests () {
+    return Env.get('NODE_ENV') === 'testing'
   }
 }
 

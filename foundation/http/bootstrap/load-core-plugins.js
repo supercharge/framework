@@ -1,8 +1,10 @@
 'use strict'
 
-const Config = require('../../../config')
-
 class LoadCore {
+  constructor (app) {
+    this.app = app
+  }
+
   async extends (server) {
     await server.register([
       { plugin: require('inert') },
@@ -12,8 +14,7 @@ class LoadCore {
       { plugin: require('hapi-response-utilities') }
     ])
 
-    // TODO: find a better way to exclude plugins during testing
-    if (Config.get('app.env') !== 'testing') {
+    if (!this.app.isRunningTests()) {
       await server.register({
         plugin: require('laabr'),
         options: {

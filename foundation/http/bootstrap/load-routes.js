@@ -6,7 +6,8 @@ const Helper = require('./../../../helper')
 const ReadRecursive = require('recursive-readdir')
 
 class LoadRoutes {
-  constructor () {
+  constructor (app) {
+    this.app = app
     this._routesFolder = 'app/http/routes'
   }
 
@@ -15,7 +16,9 @@ class LoadRoutes {
       return this.loadRoutes(server)
     }
 
-    console.log(`No routes detected in ${this._routesFolder}`)
+    if (!this.app.isRunningTests()) {
+      console.log(`No routes detected in ${this._routesFolder}`)
+    }
   }
 
   async hasRoutes () {
