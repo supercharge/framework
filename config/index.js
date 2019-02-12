@@ -1,6 +1,7 @@
 'use strict'
 
 const _ = require('lodash')
+const Fs = require('../filesystem')
 const RequireAll = require('require-all')
 
 /**
@@ -22,11 +23,13 @@ class Config {
    * Import all application configuration items
    * from the given `path`.
    */
-  loadConfigFiles (path) {
-    this.config = RequireAll({
-      dirname: path,
-      filter: /(.*)\.js$/
-    })
+  async loadConfigFiles (path) {
+    if (await Fs.exists(path)) {
+      this.config = RequireAll({
+        dirname: path,
+        filter: /(.*)\.js$/
+      })
+    }
   }
 
   /**
