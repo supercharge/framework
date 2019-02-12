@@ -6,13 +6,13 @@ const BaseTest = require('../../../testing/base-test')
 
 class ConfigTest extends BaseTest {
   async loadsConfigFromTmpFolder (t) {
-    Config.loadConfigFiles(Path.resolve(__dirname, 'fixtures'))
+    await Config.loadConfigFiles(Path.resolve(__dirname, 'fixtures'))
     t.truthy(Config.config)
     t.truthy(Object.keys(Config.config).length, 1)
   }
 
   async getConfigValue (t) {
-    Config.loadConfigFiles(Path.resolve(__dirname, 'fixtures'))
+    await Config.loadConfigFiles(Path.resolve(__dirname, 'fixtures'))
     const value = Config.get('testconfig.key')
     t.is(value, 'value')
   }
