@@ -11,6 +11,13 @@ class ConfigTest extends BaseTest {
     t.truthy(Object.keys(Config.config).length, 1)
   }
 
+  async emptyConfigFromNonExistentFolder (t) {
+    const NewConfig = new Config.constructor()
+    await NewConfig.loadConfigFiles(Path.resolve(__dirname, 'non-existent'))
+
+    t.deepEqual(NewConfig.config, {})
+  }
+
   async getConfigValue (t) {
     await Config.loadConfigFiles(Path.resolve(__dirname, 'fixtures'))
     const value = Config.get('testconfig.key')
