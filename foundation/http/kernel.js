@@ -25,7 +25,7 @@ class HttpKernel {
   }
 
   async bootstrap () {
-    this.createServer()
+    this.server = this.createServer()
 
     await this.registerBootstrappers()
     await this.server.initialize()
@@ -37,7 +37,7 @@ class HttpKernel {
    * Create a new hapi server instance.
    */
   createServer () {
-    this.server = new Hapi.Server({
+    return new Hapi.Server({
       host: 'localhost',
       port: Config.get('app.port'),
       routes: {
