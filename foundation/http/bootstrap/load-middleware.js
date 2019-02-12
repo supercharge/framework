@@ -16,12 +16,12 @@ class LoadMiddleware {
   }
 
   async extends (server) {
-    if (await this.hasMiddlware()) {
+    if (await this.hasMiddleware()) {
       return this.loadMiddlware(server)
     }
   }
 
-  async hasMiddlware () {
+  async hasMiddleware () {
     return await this.middlewareFolderExists()
       ? this.hasMiddlewareFiles()
       : false
