@@ -26,21 +26,23 @@ class HandleViews {
         engines: {
           hbs: this.engine.instance()
         },
+        layout: 'app',
         path: this.engine.viewsPath(),
         layoutPath: this.engine.layoutLocations(),
-        layout: 'app',
         helpersPath: this.engine.helpersLocations(),
         partialsPath: this.engine.partialsLocations(),
         isCached: Config.get('app.isProduction'),
-        context: (request) => {
-          return {
-            request,
-            user: request.auth.credentials,
-            title: Config.get('app.name'),
-            description: Config.get('app.description')
-          }
-        }
+        context: this.viewContext
       })
+  }
+
+  viewContext (request) {
+    return {
+      request,
+      user: request.auth.credentials,
+      title: Config.get('app.name'),
+      description: Config.get('app.description')
+    }
   }
 }
 
