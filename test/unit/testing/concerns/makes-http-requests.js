@@ -18,8 +18,10 @@ class MakesHttpRequestsTest extends BaseTest {
     this.stub = this.stub(Helper, 'resourcePath').returns(Path.resolve('./temp'))
   }
 
-  after () {
+  async after () {
     this.stub.restore()
+
+    await Fs.remove('./temp')
   }
 
   async assignsKeyValueHeader (t) {
@@ -60,6 +62,18 @@ class MakesHttpRequestsTest extends BaseTest {
     t.is(response.statusCode, 404)
   }
 
+  async canActAs (t) {
+    const request = await this.actAs({ name: 'Marcus' })
+
+    t.deepEqual(request.user, { name: 'Marcus' })
+  }
+
+  async usesPayload (t) {
+    const request = await this.withPayload({ name: 'Marcus' })
+
+    t.deepEqual(request.payload, { name: 'Marcus' })
+  }
+
   async sendsGetRequestAsObject (t) {
     const path = `/${Encryption.randomKey()}`
 
@@ -76,6 +90,12 @@ class MakesHttpRequestsTest extends BaseTest {
     t.is(response.payload, 'Marcus')
   }
 
+  async sendsGetRequest (t) {
+    const response = await this.get('/get')
+
+    t.is(response.statusCode, 404)
+  }
+
   async defaultsToGetRequest (t) {
     const path = `/${Encryption.randomKey()}`
 
@@ -90,6 +110,12 @@ class MakesHttpRequestsTest extends BaseTest {
 
     t.is(response.statusCode, 200)
     t.is(response.payload, 'Marcus')
+  }
+
+  async sendsPostRequestWithoutRoute (t) {
+    const response = await this.post({ uri: '/post' })
+
+    t.is(response.statusCode, 404)
   }
 
   async sendsPutRequestWithoutRoute (t) {
