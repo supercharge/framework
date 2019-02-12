@@ -128,7 +128,7 @@ class AvaTesting {
   }
 
   /**
-   * Returns all methods from the test class
+   * Returns all methods from the test class.
    */
   classMethods () {
     return Object.getOwnPropertyNames(Object.getPrototypeOf(this))
