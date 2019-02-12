@@ -24,8 +24,12 @@ class UnhandledSytemErrorsTest extends BaseTest {
 
   async serialHandlesUnhandledSytemErrors (t) {
     const listener = new UnhandledRejectionListener()
-    const error = new Error('unhandled system error')
-    await listener.handle(error)
+    listener.listenForSystemErrors()
+
+    const hadListeners = process.emit('unhandledRejection', 'Supererror')
+    t.true(hadListeners)
+
+    await new Promise(resolve => setTimeout(resolve, 100))
 
     this.sinon().assert.called(process.exit)
     this.sinon().assert.called(console.log)
