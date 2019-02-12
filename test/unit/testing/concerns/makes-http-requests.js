@@ -2,12 +2,15 @@
 
 const Path = require('path')
 const Fs = require('../../../../filesystem')
+const Config = require('../../../../config')
 const Helper = require('../../../../helper')
 const Encryption = require('../../../../encryption')
 const BaseTest = require('../../../../testing/base-test')
 
 class MakesHttpRequestsTest extends BaseTest {
   async before () {
+    Config.set('app.key', 'a'.repeat(32))
+
     await Fs.ensureDir('./temp/layouts')
     await Fs.ensureDir('./temp/helpers')
     await Fs.ensureDir('./temp/partials')
