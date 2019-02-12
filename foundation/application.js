@@ -73,14 +73,6 @@ class Application {
     }
   }
 
-  ensureAppKey () {
-    if (!Config.get('app.key')) {
-      throw new Error(
-        'No application key available. Make sure to define the APP_KEY value in your .env file (or generate one with "node craft key:generate")'
-      )
-    }
-  }
-
   /**
    * Initialize the HTTP server instance and
    * register core plugins, middleware, app
@@ -91,6 +83,14 @@ class Application {
 
     const kernel = new HttpKernel(this)
     this.server = await kernel.bootstrap()
+  }
+
+  ensureAppKey () {
+    if (!Config.get('app.key')) {
+      throw new Error(
+        'No application key available. Make sure to define the APP_KEY value in your .env file (or generate one with "node craft key:generate")'
+      )
+    }
   }
 
   /**
