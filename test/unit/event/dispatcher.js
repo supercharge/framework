@@ -5,7 +5,7 @@ const BaseTest = require('../../../testing/base-test')
 const Dispatcher = require('../../../event/dispatcher')
 const TestEvent = require('./fixtures/events/test-event')
 
-class EventTest extends BaseTest {
+class EventDispatcherTest extends BaseTest {
   before () {
     Dispatcher.removeAllListeners()
   }
@@ -71,6 +71,13 @@ class EventTest extends BaseTest {
     t.is(Dispatcher.getMaxListeners(), 25)
   }
 
+  async increasesMaxListeners (t) {
+    Dispatcher.on('increase.listeners', () => { })
+    Dispatcher.setMaxListeners(1)
+    Dispatcher.on('increase.listeners', () => { })
+    t.is(Dispatcher.getMaxListeners(), 11)
+  }
+
   async emitOnce (t) {
     const spy = this.spy()
     Dispatcher.once('once.event', spy)
@@ -97,6 +104,14 @@ class EventTest extends BaseTest {
     t.true(once.calledOnce)
     t.true(alltime.calledTwice)
   }
+
+  async serialHandleSystemEventsListeners (t) {
+    Dispatcher.listenersFolder = Path.resolve(__dirname, 'fixtures', 'system-listeners')
+
+    await Dispatcher.init()
+
+    t.true(process.eventNames().includes('system.test.event'))
+  }
 }
 
-module.exports = new EventTest()
+module.exports = new EventDispatcherTest()

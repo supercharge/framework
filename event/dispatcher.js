@@ -223,7 +223,7 @@ class Dispatcher {
       return ReadRecursive(location)
     }
 
-    return {}
+    return []
   }
 
   /**
@@ -253,7 +253,7 @@ class Dispatcher {
   async registerSystemEventListeners () {
     const listeners = await this.getSystemEventListeners()
 
-    _.forEach(listeners, listener => {
+    listeners.forEach(listener => {
       this.registerListeners(listener.on(), listener)
     })
   }
@@ -266,13 +266,15 @@ class Dispatcher {
   async getListenersFor (eventName) {
     const listenerFiles = await this.loadListeners()
 
-    return _.map(listenerFiles, listenerFile => {
-      const Listener = this.resolve(listenerFile)
-      const listener = new Listener()
-      this.ensureListener(listener)
+    return listenerFiles
+      .map(listenerFile => {
+        const Listener = this.resolve(listenerFile)
+        const listener = new Listener()
+        this.ensureListener(listener)
 
-      return listener.on().includes(eventName) ? listener : null
-    }).filter(listener => !!listener)
+        return listener.on().includes(eventName) ? listener : null
+      })
+      .filter(listener => !!listener)
   }
 
   /**
@@ -283,15 +285,17 @@ class Dispatcher {
   async getSystemEventListeners () {
     const listenerFiles = await this.loadListeners()
 
-    return _.map(listenerFiles, listenerFile => {
-      const Listener = this.resolve(listenerFile)
-      const listener = new Listener()
-      this.ensureListener(listener)
+    return listenerFiles
+      .map(listenerFile => {
+        const Listener = this.resolve(listenerFile)
+        const listener = new Listener()
+        this.ensureListener(listener)
 
-      return listener
-    }).filter(listener => {
-      return listener.type() === 'system'
-    })
+        return listener
+      })
+      .filter(listener => {
+        return listener.type() === 'system'
+      })
   }
 
   /**
