@@ -11,7 +11,6 @@ const ExceptionHandler = require('./exceptions/handle-system-exceptions')
 
 class Application {
   constructor () {
-    this.craft = null
     this.server = null
     this.appRoot = null
     this.exceptionHandler = new ExceptionHandler()
@@ -48,8 +47,7 @@ class Application {
 
     Helper.setAppRoot(this.appRoot)
     this.loadEnvironmentVariables()
-    this.loadApplicationConfig()
-
+    await this.loadApplicationConfig()
     await this.initializeEvents()
     await this.bootstrapHttpServer()
   }
@@ -58,8 +56,8 @@ class Application {
     Env.loadEnvironmentVariables()
   }
 
-  loadApplicationConfig () {
-    Config.loadConfigFiles(Path.resolve(Helper.appRoot(), 'config'))
+  async loadApplicationConfig () {
+    await Config.loadConfigFiles(Path.resolve(Helper.appRoot(), 'config'))
   }
 
   /**
@@ -67,8 +65,6 @@ class Application {
    */
   async startServer () {
     try {
-      this.ensureAppKey()
-
       await this.server.start()
     } catch (err) {
       this.server = null
@@ -91,6 +87,8 @@ class Application {
    * plugins and configure views.
    */
   async bootstrapHttpServer () {
+    this.ensureAppKey()
+
     const kernel = new HttpKernel(this)
     this.server = await kernel.bootstrap()
   }
@@ -112,8 +110,7 @@ class Application {
 
     Helper.setAppRoot(this.appRoot)
     this.loadEnvironmentVariables()
-    this.loadApplicationConfig()
-
+    await this.loadApplicationConfig()
     await this.bootstrapConsole()
   }
 
