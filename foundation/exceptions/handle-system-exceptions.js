@@ -16,7 +16,8 @@ class UnhandledSystemErrorsHandler {
 
   listenForSystemErrors () {
     this.on().forEach(error => {
-      process.on(error, async error => this.handle(error))
+      process.removeAllListeners(error)
+      process.on(error, async err => this.handle(err))
     })
   }
 }
