@@ -3,6 +3,7 @@
 const _ = require('lodash')
 const Cookie = require('cookie')
 const Helper = require('../helper')
+const HttpKernel = require('../foundation/http/kernel')
 const Application = require('../foundation/application')
 
 /**
@@ -32,14 +33,14 @@ class PendingRequest {
    * @returns {Object}
    */
   async createServer () {
-    const app = new Application().fromAppRoot(this.appRoot)
-    await app.prepareHttpServer()
+    const server = new HttpKernel(new Application())
+    await server.bootstrap()
 
     this.routes.forEach(route => {
-      app.server.route(route)
+      server.server.route(route)
     })
 
-    return app.server
+    return server.server
   }
 
   /**
