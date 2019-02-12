@@ -99,7 +99,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "coverage": "cross-env NODE_ENV=testing nyc ava",
+    "coverage": "cross-env NODE_ENV=testing nyc --reporter=text --reporter=html ava",
     "lint": "eslint ** --fix",
     "test": "cross-env NODE_ENV=testing ava",
     "test-single": "cross-env NODE_ENV=testing ava --match"
