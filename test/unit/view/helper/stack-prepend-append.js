@@ -32,6 +32,14 @@ class StackHelperTest extends BaseTest {
     t.is(output, 'prepended\ncontent')
   }
 
+  async fallbackToAnEmptyStackObject (t) {
+    const name = Encryption.randomKey()
+
+    const output = await this.render('{{#stack name}}content{{/stack}}', { name })
+
+    t.is(output, 'content')
+  }
+
   async throwsWhenPrependingWithoutName (t) {
     await t.throwsAsync(this.render('{{#prepend}}content{{/prepend}}'))
   }

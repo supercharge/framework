@@ -29,6 +29,19 @@ class HandlebarsCompilerTest extends BaseTest {
 
     spy.restore()
   }
+
+  async willNotRegisterViewHelperAndNotFail (t) {
+    const spy = this.spy(Logger, 'warn')
+    const helpersPath = Path.resolve(__dirname, 'fixtures')
+
+    const compiler = new ViewCompiler()
+    compiler.registerHelper(helpersPath, 'no-function-test-helper.js')
+
+    t.false(compiler.hasHelper('no-function-test-helper'))
+    t.true(spy.notCalled)
+
+    spy.restore()
+  }
 }
 
 module.exports = new HandlebarsCompilerTest()
