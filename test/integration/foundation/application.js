@@ -35,7 +35,7 @@ class BaseRoutesTest extends BaseTest {
     )
   }
 
-  async serialThrowsWithoutAppRoot (t) {
+  async serialThrowsWithoutAppRootForHttp (t) {
     const app = new Application()
     await t.throwsAsync(app.httpWithFullSpeed())
   }
@@ -46,13 +46,30 @@ class BaseRoutesTest extends BaseTest {
     await t.throwsAsync(app.httpWithFullSpeed())
   }
 
-  async serialStartsApplication (t) {
+  async serialStartsHttpApplication (t) {
     const app = new Application().fromAppRoot(this.appRoot)
     await app.httpWithFullSpeed()
 
     t.truthy(app.getServer().info.started)
 
     await app.getServer().stop()
+  }
+
+  async serialStartsConsoleApplication (t) {
+    this.muteConsole()
+    process.argv = ['node']
+
+    const app = new Application().fromAppRoot(this.appRoot)
+    await app.consoleForLife()
+
+    const { stdout, stderr } = this.consoleOutput()
+    t.true(stdout.includes('Available Commands'))
+    t.falsy(stderr)
+  }
+
+  async serialThrowsWithoutAppRootForConsole (t) {
+    const app = new Application()
+    await t.throwsAsync(app.consoleForLife())
   }
 }
 
