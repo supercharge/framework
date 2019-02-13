@@ -2,14 +2,12 @@
 
 const Joi = require('joi')
 const Path = require('path')
-const Fs = require('../../../filesystem')
-const Config = require('../../../config')
-const Helper = require('../../../helper')
-const BaseTest = require('../../../testing/base-test')
-const HttpKernel = require('../../../foundation/http/kernel')
-const Application = require('../../../foundation/application')
+const Fs = require('../../../../filesystem')
+const Config = require('../../../../config')
+const Helper = require('../../../../helper')
+const BaseTest = require('../../../../testing/base-test')
 
-class BaseRoutesTest extends BaseTest {
+class HttpKernelTest extends BaseTest {
   constructor () {
     super()
     this.appRoot = Path.resolve(__dirname, 'fixtures')
@@ -40,22 +38,22 @@ class BaseRoutesTest extends BaseTest {
       method: 'GET',
       path: '/kernel-test-failAction',
       options: {
-        handler: () => { return 'validation error' },
-        validate: { query: { name: Joi.required() } }
-        // ext: {
-        //   onPreResponse: {
-        //     method: async (request, h) => {
-        //       return request.response.data
-        //     }
-        //   }
-        // }
+        handler: () => { return 'not called' },
+        validate: { query: { name: Joi.required() } },
+        ext: {
+          onPreResponse: {
+            method: async (request, h) => {
+              t.true(Object.keys(request.response.data).includes('name'))
+
+              return h.continue
+            }
+          }
+        }
       }
     }).get('/kernel-test-failAction')
 
     t.is(response.statusCode, 400)
-
-    console.log(response.result)
   }
 }
 
-module.exports = new BaseRoutesTest()
+module.exports = new HttpKernelTest()
