@@ -113,6 +113,19 @@ class HandlebarsCompiler {
 
     return [ Path.resolve(views, 'partials') ]
   }
+
+  /**
+   * Returns a boolean whether the view engine
+   * has a registered helper with the given
+   * `name`.
+   *
+   * @param {String} name
+   *
+   * @returns {Boolean}
+   */
+  hasHelper (name) {
+    return !!this._engine.helpers[name]
+  }
 }
 
 module.exports = HandlebarsCompiler
