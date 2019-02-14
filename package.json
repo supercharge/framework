@@ -33,7 +33,7 @@
     "execa": "~1.0.0",
     "extends-classes": "~1.0.5",
     "fs-extra": "~7.0.1",
-    "handlebars": "~4.0.12",
+    "handlebars": "~4.1.0",
     "handlebars-helper-repeat": "~2.0.0",
     "handlebars-helpers": "~0.10.0",
     "hapi": "~17.8.1",
@@ -78,7 +78,8 @@
     "listr": "~0.14.3",
     "mock-stdio": "~1.0.3",
     "mongoose": "~5.4.3",
-    "nyc": "~13.1.0",
+    "nyc": "~13.3.0",
+    "proxyquire": "~2.1.0",
     "sinon": "~7.2.0"
   },
   "engines": {
