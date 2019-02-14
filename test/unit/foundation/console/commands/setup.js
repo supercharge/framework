@@ -1,8 +1,6 @@
 'use strict'
 
-const Path = require('path')
 const Proxyquire = require('proxyquire')
-const Fs = require('../../../../../filesystem')
 const BaseTest = require('../../../../../testing/base-test')
 
 const ExecaStub = () => {}
