@@ -5,7 +5,7 @@ const Fs = require('../../../../../filesystem')
 const BaseTest = require('../../../../../testing/base-test')
 const BaseCommand = require('../../../../../foundation/console/commands/base-command')
 
-class AppNameCommandTest extends BaseTest {
+class BaseCommandTest extends BaseTest {
   async serialRunFailsWhenCallbackThrows (t) {
     const command = new BaseCommand()
 
@@ -137,4 +137,4 @@ class AppNameCommandTest extends BaseTest {
   }
 }
 
-module.exports = new AppNameCommandTest()
+module.exports = new BaseCommandTest()
