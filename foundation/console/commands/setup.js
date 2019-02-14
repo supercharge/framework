@@ -2,7 +2,6 @@
 
 const Listr = require('listr')
 const Execa = require('execa')
-const Fs = require('../../../filesystem')
 const Helper = require('../../../helper')
 const BaseCommand = require('./base-command')
 
@@ -69,7 +68,7 @@ class Setup extends BaseCommand {
     const source = await this.getEnvPath('.env.example')
     const destination = await this.getEnvPath()
 
-    return Fs.copy(source, destination)
+    return this.copy(source, destination)
   }
 
   /**
