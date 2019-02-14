@@ -40,7 +40,7 @@ class BaseCommand extends Command {
    * @param {Object} error
    */
   prettyPrintError (error) {
-    console.log(`\n  ${Chalk.bgRed.whiteBright(' Error ')} ${Chalk.red(error.message)}\n`)
+    console.error(`\n  ${Chalk.bgRedBright.whiteBright(' Error ')} ${Chalk.redBright(error.message)}\n`)
   }
 
   /**
