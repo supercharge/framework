@@ -129,9 +129,6 @@ class MakeAuth extends BaseCommand {
     })
 
     console.log()
-
-    // const dependencies = ['mongoose@5.4.3']
-    // await this.install(dependencies)
   }
 
   async copyRoutes () {
