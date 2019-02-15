@@ -1,7 +1,6 @@
 'use strict'
 
 const Path = require('path')
-const Execa = require('execa')
 const Helper = require('../../../helper')
 const BaseCommand = require('./base-command')
 const { forEachSeries } = require('p-iteration')
@@ -74,7 +73,7 @@ class MakeAuth extends BaseCommand {
     await this.useAppLayoutInWelcomeRoute()
     await this.copyModels()
     await this.copyRoutes()
-    await this.copyMiddlware()
+    await this.copyMiddleware()
     await this.copyEvents()
   }
 
@@ -150,15 +149,7 @@ class MakeAuth extends BaseCommand {
     console.log()
   }
 
-  async install (dependencies) {
-    dependencies = Array.isArray(dependencies) ? dependencies : [dependencies]
-
-    this.info(`Installing model dependencies: [${[...dependencies]}]`)
-
-    await Execa('npm', ['install', ...dependencies], { cwd: Helper.appRoot() })
-  }
-
-  async copyMiddlware () {
+  async copyMiddleware () {
     await forEachSeries(Object.entries(this.middleware), async ([stub, dest]) => {
       if (await this.pathExists(Helper.middlewarePath(dest))) {
         if (!await this.confirm(`The middleware [${dest}] exists already. Replace it?`)) {
