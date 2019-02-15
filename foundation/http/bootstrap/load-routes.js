@@ -1,5 +1,6 @@
 'use strict'
 
+const _ = require('lodash')
 const Path = require('path')
 const Fs = require('./../../../filesystem')
 const Helper = require('./../../../helper')
@@ -32,11 +33,11 @@ class LoadRoutes {
   }
 
   async hasRouteFiles () {
-    return Object.keys(await this.loadRouteFiles()).length > 0
+    return Object.keys(await this.routeFiles()).length > 0
   }
 
   async loadRoutes (server) {
-    const files = await this.loadRouteFiles()
+    const files = await this.routeFiles()
 
     files.forEach(routeFile => {
       server.route(this.resolve(routeFile))
@@ -47,12 +48,16 @@ class LoadRoutes {
     return Path.resolve(Helper.appRoot(), this._routesFolder)
   }
 
-  async loadRouteFiles () {
-    return ReadRecursive(this.routesFolder())
+  async routeFiles () {
+    return ReadRecursive(this.routesFolder(), [ this.ignore ])
   }
 
   resolve (file) {
     return require(Path.resolve(this.routesFolder(), file))
+  }
+
+  ignore (file) {
+    return _.startsWith(Path.basename(file), '_')
   }
 }
 
