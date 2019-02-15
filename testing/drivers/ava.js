@@ -239,7 +239,7 @@ class AvaTesting {
    * @param {String} name
    */
   skip (name) {
-    Ava.skip(name)
+    Ava.skip(name, async t => this[name](t))
   }
 
   /**
