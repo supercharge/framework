@@ -1,10 +1,11 @@
 'use strict'
 
-const Proxyquire = require('proxyquire')
+const Proxyquire = require('proxyquire').noCallThru()
 const BaseTest = require('../../../../../testing/base-test')
-
-const ExecaStub = () => {}
-const SetupCommand = Proxyquire('../../../../../foundation/console/commands/setup', { 'execa': ExecaStub })
+const SetupCommand = Proxyquire('../../../../../foundation/console/commands/setup', {
+  'execa': async () => ''
+}
+)
 
 class SetupCommandTest extends BaseTest {
   async signature (t) {
@@ -18,7 +19,7 @@ class SetupCommandTest extends BaseTest {
   async serialSetup (t) {
     const command = new SetupCommand()
 
-    const copyStub = this.stub(command, 'copy').returns(() => {})
+    const copyStub = this.stub(command, 'copy').returns()
     const getEnvPathStub = this.stub(command, 'getEnvPath').returns()
     const notInstalledStub = this.stub(command, 'ensureNotInstalled').returns()
     const ensureInProjectRootStub = this.stub(command, 'ensureInProjectRoot').returns()
