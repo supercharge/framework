@@ -20,6 +20,7 @@ class HttpKernel {
       'bootstrap/serve-assets.js',
       'bootstrap/load-middleware.js',
       'bootstrap/csrf-protection.js',
+      'bootstrap/load-auth-strategies.js',
       'bootstrap/set-default-auth-strategy.js',
       'bootstrap/load-routes.js'
     ]
