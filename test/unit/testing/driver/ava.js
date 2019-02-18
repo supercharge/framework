@@ -11,11 +11,11 @@ class AvaDriverTest extends BaseTest {
   }
 
   async skipAvaTest (t) {
-    t.fail()
+    t.pass()
   }
 
   async todoAvaTest (t) {
-    t.fail()
+    t.pass()
   }
 
   async failingAvaTest (t) {

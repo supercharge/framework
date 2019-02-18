@@ -239,6 +239,7 @@ class AvaTesting {
    * @param {String} name
    */
   skip (name) {
+    /* istanbul ignore next */
     Ava.skip(name, async t => this[name](t))
   }
 
@@ -268,6 +269,7 @@ class AvaTesting {
    * @param {String} name
    */
   failing (name) {
+    /* istanbul ignore next */
     Ava.failing(name, async t => this[name](t))
   }
 }
