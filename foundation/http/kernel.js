@@ -13,12 +13,13 @@ class HttpKernel {
 
     this.bootstrappers = [
       'bootstrap/load-core-plugins.js',
+      'bootstrap/load-user-plugins.js',
       'bootstrap/graceful-shutdown.js',
       'bootstrap/connect-database.js',
       'bootstrap/handle-views.js',
       'bootstrap/serve-assets.js',
       'bootstrap/load-middleware.js',
-      'bootstrap/extend-app-from-userland.js',
+      'bootstrap/csrf-protection.js',
       'bootstrap/set-default-auth-strategy.js',
       'bootstrap/load-routes.js'
     ]
