@@ -31,7 +31,7 @@ class MakeAuth extends BaseCommand {
     }
 
     this.strategies = {
-      'strategies/session.js': 'auth/strategies/session.js'
+      'strategies/session.js': 'session.js'
     }
 
     this.models = {
@@ -162,7 +162,7 @@ class MakeAuth extends BaseCommand {
         Helper.strategiesPath(dest)
       )
 
-      this.completed('created', dest)
+      this.completed('created', `auth/strategies/${dest}`)
     })
   }
 
