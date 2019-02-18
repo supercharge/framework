@@ -6,11 +6,10 @@ const Config = require('@supercharge/framework/config')
 /**
  * Tba.
  */
-async function register (server) {
-  /**
-   * Tba.
-   */
-  server.auth.strategy('session', 'cookie', {
+module.exports = {
+  name: 'session',
+  scheme: 'cookie',
+  options: {
     /**
      * Tba.
      */
@@ -38,11 +37,5 @@ async function register (server) {
 
       return { valid: true, credentials: user }
     }
-  })
-}
-
-exports.plugin = {
-  name: 'session-authentication',
-  once: true,
-  register
+  }
 }

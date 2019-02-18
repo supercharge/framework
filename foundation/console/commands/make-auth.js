@@ -30,8 +30,8 @@ class MakeAuth extends BaseCommand {
       'auth/reset-password.js': 'auth/reset-password.js'
     }
 
-    this.middleware = {
-      'auth/session.js': 'auth/session.js'
+    this.strategies = {
+      'strategies/session.js': 'auth/strategies/session.js'
     }
 
     this.models = {
@@ -73,7 +73,7 @@ class MakeAuth extends BaseCommand {
     await this.useAppLayoutInWelcomeRoute()
     await this.copyModels()
     await this.copyRoutes()
-    await this.copyMiddleware()
+    await this.copyStrategies()
     await this.copyEvents()
   }
 
@@ -149,20 +149,20 @@ class MakeAuth extends BaseCommand {
     console.log()
   }
 
-  async copyMiddleware () {
-    await forEachSeries(Object.entries(this.middleware), async ([stub, dest]) => {
-      if (await this.pathExists(Helper.middlewarePath(dest))) {
-        if (!await this.confirm(`The middleware [${dest}] exists already. Replace it?`)) {
+  async copyStrategies () {
+    await forEachSeries(Object.entries(this.strategies), async ([stub, dest]) => {
+      if (await this.pathExists(Helper.strategiesPath(dest))) {
+        if (!await this.confirm(`The authentication strategy [${dest}] exists already. Replace it?`)) {
           return
         }
       }
 
       await this.copy(
-        Path.resolve(this.stubsDir, 'middleware', stub),
-        Helper.middlewarePath(dest)
+        Path.resolve(this.stubsDir, stub),
+        Helper.strategiesPath(dest)
       )
 
-      this.completed('created', `middleware/${dest}`)
+      this.completed('created', dest)
     })
   }
 

@@ -72,14 +72,25 @@ class Helper {
   }
 
   /**
-   * Absolute path to the routes directory.
+   * Absolute path to the authentication strategies directory.
    *
    * @param {String}
    *
    * @returns {String}
    */
-  routesPath (...path) {
-    return Path.resolve(this.appRoot(), 'app', 'http', 'routes', ...path)
+  strategiesPath (...path) {
+    return Path.resolve(this.appRoot(), 'app', 'auth', 'strategies', ...path)
+  }
+
+  /**
+   * Absolute path to the middlware directory.
+   *
+   * @param {String}
+   *
+   * @returns {String}
+   */
+  middlewarePath (...path) {
+    return Path.resolve(this.appRoot(), 'app', 'http', 'middleware', ...path)
   }
 
   /**
