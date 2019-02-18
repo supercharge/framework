@@ -2,7 +2,7 @@
 
 const Joi = require('joi')
 const Boom = require('boom')
-const User = require('../../../models/user')
+const User = require('../../models/user')
 const Mailer = require('@supercharge/framework/mailer') /* eslint-disable-line */
 
 module.exports = [{

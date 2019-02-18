@@ -1,7 +1,7 @@
 'use strict'
 
 const Joi = require('joi')
-const User = require('../../../models/user')
+const User = require('../../models/user')
 const Config = require('@supercharge/framework/config')
 
 module.exports = [{
