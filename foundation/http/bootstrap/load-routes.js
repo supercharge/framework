@@ -9,7 +9,7 @@ const ReadRecursive = require('recursive-readdir')
 class LoadRoutes {
   constructor (app) {
     this.app = app
-    this._routesFolder = 'app/http/routes'
+    this._routesFolder = 'app/routes'
   }
 
   async extends (server) {

@@ -3,7 +3,6 @@
 const Path = require('path')
 const Fs = require('../../../filesystem')
 const Helper = require('../../../helper')
-const { forEachSeries } = require('p-iteration')
 const ReadRecursive = require('recursive-readdir')
 
 /**
@@ -12,12 +11,12 @@ const ReadRecursive = require('recursive-readdir')
  */
 class LoadMiddleware {
   constructor () {
-    this._middlewareFolder = 'app/http/middleware'
+    this._middlewareFolder = 'app/middleware'
   }
 
   async extends (server) {
     if (await this.hasMiddleware()) {
-      return this.loadMiddlware(server)
+      return this.loadMiddleware(server)
     }
   }
 
@@ -35,11 +34,12 @@ class LoadMiddleware {
     return Object.keys(await this.loadMiddlewareFiles()).length > 0
   }
 
-  async loadMiddlware (server) {
+  async loadMiddleware (server) {
     const files = await this.loadMiddlewareFiles()
 
-    await forEachSeries(files, async file => {
-      await server.register(this.resolve(file))
+    files.forEach(file => {
+      const { type, method, options } = this.resolve(file)
+      server.ext({ type, method, options })
     })
   }
 
