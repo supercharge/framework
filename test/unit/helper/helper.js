@@ -31,11 +31,15 @@ class HelperTest extends BaseTest {
   }
 
   routesPath (t) {
-    t.deepEqual(t.context.helper.routesPath(), Path.resolve(__dirname, 'app/http/routes'))
+    t.deepEqual(t.context.helper.routesPath(), Path.resolve(__dirname, 'app/routes'))
   }
 
   middlewarePath (t) {
-    t.deepEqual(t.context.helper.middlewarePath(), Path.resolve(__dirname, 'app/http/middleware'))
+    t.deepEqual(t.context.helper.middlewarePath(), Path.resolve(__dirname, 'app/middleware'))
+  }
+
+  strategiesPath (t) {
+    t.deepEqual(t.context.helper.strategiesPath(), Path.resolve(__dirname, 'app/auth/strategies'))
   }
 
   eventsPath (t) {

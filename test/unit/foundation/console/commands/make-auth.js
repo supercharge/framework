@@ -32,7 +32,7 @@ class MakeAuthCommandTest extends BaseTest {
     const copyModelsStub = this.stub(command, 'copyModels').returns()
     const copyRoutesStub = this.stub(command, 'copyRoutes').returns()
     const copyEventsStub = this.stub(command, 'copyEvents').returns()
-    const copyMiddlewareStub = this.stub(command, 'copyMiddleware').returns()
+    const copyStrategiesStub = this.stub(command, 'copyStrategies').returns()
     const ensureInProjectRootStub = this.stub(command, 'ensureInProjectRoot').returns()
     const useAppLayoutInWelcomeRouteStub = this.stub(command, 'useAppLayoutInWelcomeRoute').returns()
 
@@ -46,7 +46,7 @@ class MakeAuthCommandTest extends BaseTest {
     copyModelsStub.restore()
     copyRoutesStub.restore()
     copyEventsStub.restore()
-    copyMiddlewareStub.restore()
+    copyStrategiesStub.restore()
     ensureInProjectRootStub.restore()
     useAppLayoutInWelcomeRouteStub.restore()
   }
@@ -262,31 +262,31 @@ class MakeAuthCommandTest extends BaseTest {
     pathExistsStub.restore()
   }
 
-  async serialCopyMiddleware (t) {
-    const tempFile = Path.resolve(__dirname, 'fixtures/middleware/make-auth-mw.js')
+  async serialCopyStrategies (t) {
+    const tempFile = Path.resolve(__dirname, 'fixtures/auth/strategies/make-auth-strategy.js')
 
-    const helperStub = this.stub(Helper, 'middlewarePath').returns(tempFile)
+    const helperStub = this.stub(Helper, 'strategiesPath').returns(tempFile)
     const pathExistsStub = this.stub(this.command, 'pathExists').returns(false)
 
     this.muteConsole()
-    await this.command.copyMiddleware()
+    await this.command.copyStrategies()
     const { stdout } = this.consoleOutput()
 
-    t.true(stdout.includes('middleware/auth/session.js'))
+    t.true(stdout.includes('auth/strategies/session.js'))
 
     helperStub.restore()
     pathExistsStub.restore()
   }
 
-  async serialDontReplaceExistingMiddleware (t) {
-    const tempFile = Path.resolve(__dirname, 'fixtures/middleware/make-auth-mw.js')
+  async serialDontReplaceExistingAuthStrategy (t) {
+    const tempFile = Path.resolve(__dirname, 'fixtures/auth/strategies/make-auth-strategy.js')
 
     const confirmStub = this.stub(this.command, 'confirm').returns(false)
-    const helperStub = this.stub(Helper, 'middlewarePath').returns(tempFile)
+    const helperStub = this.stub(Helper, 'strategiesPath').returns(tempFile)
     const pathExistsStub = this.stub(this.command, 'pathExists').returns(true)
 
     this.muteConsole()
-    await this.command.copyMiddleware()
+    await this.command.copyStrategies()
     const { stdout } = this.consoleOutput()
 
     t.is(stdout, '')
@@ -296,18 +296,18 @@ class MakeAuthCommandTest extends BaseTest {
     pathExistsStub.restore()
   }
 
-  async serialReplaceExistingMiddleware (t) {
-    const tempFile = Path.resolve(__dirname, 'fixtures/middleware/make-auth-mw.js')
+  async serialReplaceExistingAuthStrategy (t) {
+    const tempFile = Path.resolve(__dirname, 'fixtures/auth/strategies/make-auth-strategy.js')
 
     const confirmStub = this.stub(this.command, 'confirm').returns(true)
-    const helperStub = this.stub(Helper, 'middlewarePath').returns(tempFile)
+    const helperStub = this.stub(Helper, 'strategiesPath').returns(tempFile)
     const pathExistsStub = this.stub(this.command, 'pathExists').returns(true)
 
     this.muteConsole()
-    await this.command.copyMiddleware()
+    await this.command.copyStrategies()
     const { stdout } = this.consoleOutput()
 
-    t.true(stdout.includes('middleware/auth/session.js'))
+    t.true(stdout.includes('auth/strategies/session.js'))
 
     helperStub.restore()
     confirmStub.restore()

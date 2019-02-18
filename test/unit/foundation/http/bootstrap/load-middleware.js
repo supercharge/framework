@@ -10,8 +10,8 @@ class LoadMiddlewareTest extends BaseTest {
     Helper.setAppRoot(Path.resolve(__dirname, 'fixtures'))
 
     const server = {
-      register: async ({ plugin }) => {
-        await plugin.register(server)
+      ext: async (options) => {
+        server.extensions = options
       }
     }
 
@@ -20,7 +20,10 @@ class LoadMiddlewareTest extends BaseTest {
 
     await handler.extends(server)
 
-    t.deepEqual(server.testing, 'Supercharge')
+    t.truthy(server.extensions)
+    t.is(server.extensions.type, 'onPreHandler')
+    t.truthy(server.extensions.method)
+    t.is(server.extensions.options, undefined)
   }
 }
 
