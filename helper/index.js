@@ -83,25 +83,25 @@ class Helper {
   }
 
   /**
-   * Absolute path to the middlware directory.
+   * Absolute path to the middleware directory.
    *
    * @param {String}
    *
    * @returns {String}
    */
   middlewarePath (...path) {
-    return Path.resolve(this.appRoot(), 'app', 'http', 'middleware', ...path)
+    return Path.resolve(this.appRoot(), 'app', 'middleware', ...path)
   }
 
   /**
-   * Absolute path to the middlware directory.
+   * Absolute path to the routes directory.
    *
    * @param {String}
    *
    * @returns {String}
    */
-  middlewarePath (...path) {
-    return Path.resolve(this.appRoot(), 'app', 'http', 'middleware', ...path)
+  routesPath (...path) {
+    return Path.resolve(this.appRoot(), 'app', 'routes', ...path)
   }
 
   /**
