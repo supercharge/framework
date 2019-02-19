@@ -3,6 +3,7 @@
 const Path = require('path')
 const Fs = require('./../../../filesystem')
 const Helper = require('./../../../helper')
+const Database = require('./../../../database')
 
 class GracefulShutdown {
   constructor () {
@@ -10,13 +11,13 @@ class GracefulShutdown {
   }
 
   async extends (server) {
-    const { preServerStop, postServerStop, preShutdown } = await this.lifecycleMethods()
+    const { preServerStop, preShutdown } = await this.lifecycleMethods()
 
     server.register({
       plugin: require('hapi-pulse'),
       options: {
         preServerStop,
-        postServerStop,
+        postServerStop: this.postServerStop,
         preShutdown
       }
     })
@@ -31,6 +32,15 @@ class GracefulShutdown {
   lifecycleFile () {
     return Path.resolve(Helper.appRoot(), this._lifecycleFile)
   }
+
+  async postServerStop () {
+    const { postServerStop = this.noop } = await this.lifecycleMethods()
+
+    await postServerStop()
+    await Database.close()
+  }
+
+  async noop () {}
 }
 
 module.exports = GracefulShutdown
