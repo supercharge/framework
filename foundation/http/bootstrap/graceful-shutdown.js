@@ -17,7 +17,7 @@ class GracefulShutdown {
       plugin: require('hapi-pulse'),
       options: {
         preServerStop,
-        postServerStop: this.postServerStop,
+        postServerStop: async () => this.postServerStop,
         preShutdown
       }
     })
