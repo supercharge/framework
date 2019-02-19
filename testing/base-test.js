@@ -3,8 +3,8 @@
 const Many = require('extends-classes')
 const Http = require('./concerns/makes-http-requests')
 const RenderViews = require('./concerns/render-views')
-// const FakeData = require('./concerns/creates-fake-data')
 const MocksConsole = require('./concerns/mocks-console')
+const TestHelpers = require('./concerns/provides-test-helpers')
 const MocksStubsSpies = require('./concerns/creates-stubs-mocks-spies')
 const TestRunner = require(`./drivers/ava`)
 
@@ -13,7 +13,7 @@ const TestRunner = require(`./drivers/ava`)
  * implement. It provides reusable utilities
  * to quickly create powerful test cases.
  */
-class BaseTest extends Many(Http, MocksStubsSpies, MocksConsole, RenderViews, TestRunner) {
+class BaseTest extends Many(Http, MocksStubsSpies, MocksConsole, RenderViews, TestRunner, TestHelpers) {
   /**
    * Create a new test case instance.
    */
