@@ -15,8 +15,18 @@ class HashinatorTest extends BaseTest {
     t.true(await Hash.check('Supercharge', hash))
   }
 
-  async md5 (t) {
-    const hash = await Hash.md5('Supercharge')
+  md5 (t) {
+    const hash = Hash.md5('Supercharge')
+    t.truthy(hash)
+  }
+
+  sha256 (t) {
+    const hash = Hash.sha256('boost')
+    t.truthy(hash)
+  }
+
+  sha512 (t) {
+    const hash = Hash.sha512('boost')
     t.truthy(hash)
   }
 
