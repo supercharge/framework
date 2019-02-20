@@ -1,6 +1,7 @@
 'use strict'
 
 const MD5 = require('md5')
+const Crypto = require('crypto')
 const Config = require('./../config')
 const ArgonHashinator = require('./argon-hashinator')
 const BcryptHashinator = require('./bcrypt-hashinator')
@@ -54,6 +55,30 @@ class Hashinator {
    */
   md5 (value) {
     return MD5(value)
+  }
+
+  /**
+   * Creates a SHA256 hash of the given `value`.
+   *
+   * @param {String} value
+   * @param {String} encoding
+   *
+   * @returns {String}
+   */
+  sha256 (value, encoding = 'hex') {
+    return Crypto.createHash('sha256').update(value).digest(encoding)
+  }
+
+  /**
+   * Creates a SHA512 hash of the given `value`.
+   *
+   * @param {String} value
+   * @param {String} encoding
+   *
+   * @returns {String}
+   */
+  sha512 (value, encoding = 'hex') {
+    return Crypto.createHash('sha512').update(value).digest(encoding)
   }
 }
 
