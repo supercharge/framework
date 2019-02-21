@@ -1,7 +1,7 @@
 'use strict'
 
-const BaseTest = require('../../../../testing/base-test')
-const MailgunTransporter = require('../../../../mailer/transports/mailgun')
+const BaseTest = require('../../../../base-test')
+const MailgunTransporter = require('../../../../src/mailer/transports/mailgun')
 
 class MailgunTransporterTest extends BaseTest {
   async createMailgunTransporter (t) {

@@ -4,8 +4,8 @@ const Path = require('path')
 const Config = require('../../../../../config')
 const Helper = require('../../../../../helper')
 const Database = require('../../../../../database')
-const BaseTest = require('../../../../../testing/base-test')
-const ConnectDatabase = require('../../../../../foundation/http/bootstrap/connect-database')
+const BaseTest = require('../../../../../base-test')
+const ConnectDatabase = require('../../../../../src/foundation/http/bootstrap/connect-database')
 
 class ConnectDatabaseTest extends BaseTest {
   async serialConnectToDatabaseWithMongooseDefault (t) {

@@ -1,21 +1,25 @@
 'use strict'
 
 const Config = require('../../../config')
-Config.set('mail.driver', 'smtp')
-Config.set('mail.transports', { smtp: {} })
-Config.set('mail.from', 'marcus@superchargejs.com')
-
 const Mailer = require('../../../mailer')
-const BaseTest = require('../../../testing/base-test')
+const BaseTest = require('../../../base-test')
 const TestMailable = require('./fixtures/test-mailable')
 
 class MailerTest extends BaseTest {
+  before () {
+    Config.set('mail.driver', 'null')
+    Config.set('mail.transports', { null: {} })
+    Config.set('mail.from', 'marcus@superchargejs.com')
+  }
+
   async hasDefaultFrom (t) {
-    t.truthy(Mailer.fromAddress)
+    const mailer = new Mailer.constructor()
+    t.truthy(mailer.fromAddress)
   }
 
   async hasDefaultReplyTo (t) {
-    t.truthy(Mailer.replyToAddress)
+    const mailer = new Mailer.constructor()
+    t.truthy(mailer.replyToAddress)
   }
 
   async hasTransporter (t) {
@@ -110,7 +114,9 @@ class MailerTest extends BaseTest {
   async serialThrowsWhenSendMailFails (t) {
     const stub = this.stub(Mailer.transporter, 'sendMail').throws(new Error('fake sendMail error'))
 
+    this.muteConsole()
     const error = await t.throwsAsync(Mailer.send(new TestMailable()))
+    this.consoleOutput()
 
     this.sinon().assert.called(stub)
     stub.restore()
@@ -133,7 +139,9 @@ class MailerTest extends BaseTest {
     const error = new Error('fake error')
     const stub = this.stub(Mailer.transporter, 'sendMail').throws(error)
 
+    this.muteConsole()
     await Mailer.fireAndForget(new TestMailable())
+    this.consoleOutput()
 
     this.sinon().assert.called(stub)
     stub.restore()
@@ -145,7 +153,9 @@ class MailerTest extends BaseTest {
     const error = new URIError('fake uri error')
     const stub = this.stub(Mailer.transporter, 'sendMail').throws(error)
 
+    this.muteConsole()
     await t.throwsAsync(Mailer.fireAndForget(new TestMailable()))
+    this.consoleOutput()
 
     this.sinon().assert.called(stub)
     stub.restore()

@@ -2,7 +2,7 @@
 
 const Config = require('../../../config')
 const Database = require('../../../database')
-const BaseTest = require('../../../testing/base-test')
+const BaseTest = require('../../../base-test')
 
 class TestConnector {
   connect () {}

@@ -5,7 +5,7 @@ const Path = require('path')
 const Fs = require('../../../../filesystem')
 const Config = require('../../../../config')
 const Helper = require('../../../../helper')
-const BaseTest = require('../../../../testing/base-test')
+const BaseTest = require('../../../../base-test')
 
 class HttpKernelTest extends BaseTest {
   constructor () {

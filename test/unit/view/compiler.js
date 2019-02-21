@@ -2,8 +2,8 @@
 
 const Path = require('path')
 const Logger = require('../../../logging')
-const BaseTest = require('../../../testing/base-test')
-const ViewCompiler = require('../../../view/compiler')
+const BaseTest = require('../../../base-test')
+const ViewCompiler = require('../../../view')
 
 class HandlebarsCompilerTest extends BaseTest {
   async failsToRegisterHelper (t) {

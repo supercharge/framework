@@ -4,8 +4,8 @@ const Path = require('path')
 const Config = require('../../../../../config')
 const Helper = require('../../../../../helper')
 const Database = require('../../../../../database')
-const BaseTest = require('../../../../../testing/base-test')
-const GracefulShutdown = require('../../../../../foundation/http/bootstrap/graceful-shutdown')
+const BaseTest = require('../../../../../base-test')
+const GracefulShutdown = require('../../../../../src/foundation/http/bootstrap/graceful-shutdown')
 
 class GracefulShutdownTest extends BaseTest {
   before () {

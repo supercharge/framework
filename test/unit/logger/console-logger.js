@@ -2,8 +2,8 @@
 
 const Winston = require('winston')
 const Config = require('../../../config')
-const BaseTest = require('../../../testing/base-test')
-const ConsoleLogger = require('../../../logging/console-logger')
+const BaseTest = require('../../../base-test')
+const ConsoleLogger = require('../../../src/logging/console-logger')
 
 class ConsoleLoggerTest extends BaseTest {
   before () {

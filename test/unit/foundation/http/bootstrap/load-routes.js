@@ -2,10 +2,10 @@
 
 const Path = require('path')
 const Helper = require('../../../../../helper')
-const BaseTest = require('../../../../../testing/base-test')
-const HttpKernel = require('../../../../../foundation/http/kernel')
-const Application = require('../../../../../foundation/application')
-const LoadRoutes = require('../../../../../foundation/http/bootstrap/load-routes')
+const BaseTest = require('../../../../../base-test')
+const HttpKernel = require('../../../../../src/foundation/http/kernel')
+const Application = require('../../../../../src/foundation/application')
+const LoadRoutes = require('../../../../../src/foundation/http/bootstrap/load-routes')
 
 class LoadRoutesTest extends BaseTest {
   async serialLoadRoutes (t) {

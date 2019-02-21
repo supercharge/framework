@@ -2,7 +2,7 @@
 
 const Env = require('../../../env')
 const Path = require('path')
-const BaseTest = require('../../../testing/base-test')
+const BaseTest = require('../../../base-test')
 
 class EnvTest extends BaseTest {
   before () {

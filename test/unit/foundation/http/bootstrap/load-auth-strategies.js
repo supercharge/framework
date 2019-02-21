@@ -2,10 +2,10 @@
 
 const Path = require('path')
 const Helper = require('../../../../../helper')
-const BaseTest = require('../../../../../testing/base-test')
-const HttpKernel = require('../../../../../foundation/http/kernel')
-const Application = require('../../../../../foundation/application')
-const LoadAuthStrategies = require('../../../../../foundation/http/bootstrap/load-auth-strategies')
+const BaseTest = require('../../../../../base-test')
+const HttpKernel = require('../../../../../src/foundation/http/kernel')
+const Application = require('../../../../../src/foundation/application')
+const LoadAuthStrategies = require('../../../../../src/foundation/http/bootstrap/load-auth-strategies')
 
 class LoadAuthStrategiesTest extends BaseTest {
   before () {

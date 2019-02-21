@@ -4,8 +4,8 @@ const Path = require('path')
 const Fs = require('../../../filesystem')
 const Config = require('../../../config')
 const Helper = require('../../../helper')
-const BaseTest = require('../../../testing/base-test')
-const Application = require('../../../foundation/application')
+const BaseTest = require('../../../base-test')
+const Application = require('../../../src/foundation/application')
 
 class BaseRoutesTest extends BaseTest {
   constructor () {

@@ -2,8 +2,8 @@
 
 const Path = require('path')
 const Helper = require('../../../../../helper')
-const BaseTest = require('../../../../../testing/base-test')
-const LoadMiddleware = require('../../../../../foundation/http/bootstrap/load-middleware')
+const BaseTest = require('../../../../../base-test')
+const LoadMiddleware = require('../../../../../src/foundation/http/bootstrap/load-middleware')
 
 class LoadMiddlewareTest extends BaseTest {
   async loadMiddleware (t) {

@@ -1,9 +1,9 @@
 'use strict'
 
-const BaseTest = require('../../../../../testing/base-test')
-const HttpKernel = require('../../../../../foundation/http/kernel')
-const Application = require('../../../../../foundation/application')
-const LoadCore = require('../../../../../foundation/http/bootstrap/load-core-plugins')
+const BaseTest = require('../../../../../base-test')
+const HttpKernel = require('../../../../../src/foundation/http/kernel')
+const Application = require('../../../../../src/foundation/application')
+const LoadCore = require('../../../../../src/foundation/http/bootstrap/load-core-plugins')
 
 class LoadRoutesTest extends BaseTest {
   async corePluginsWithoutLaabr (t) {

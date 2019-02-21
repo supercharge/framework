@@ -1,8 +1,8 @@
 'use strict'
 
 const Proxyquire = require('proxyquire').noCallThru()
-const BaseTest = require('../../../../../testing/base-test')
-const SetupCommand = Proxyquire('../../../../../foundation/console/commands/setup', {
+const BaseTest = require('../../../../../base-test')
+const SetupCommand = Proxyquire('../../../../../src/foundation/console/commands/setup', {
   'execa': async () => ''
 }
 )

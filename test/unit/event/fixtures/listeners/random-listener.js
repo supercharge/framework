@@ -1,6 +1,6 @@
 'use strict'
 
-const Listener = require('../../../../../event/listener')
+const Listener = require('../../../../../listener')
 
 class Random extends Listener {
   on () {

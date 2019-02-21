@@ -1,8 +1,8 @@
 'use strict'
 
 const Config = require('../../../../../config')
-const BaseTest = require('../../../../../testing/base-test')
-const HandleViews = require('../../../../../foundation/http/bootstrap/handle-views')
+const BaseTest = require('../../../../../base-test')
+const HandleViews = require('../../../../../src/foundation/http/bootstrap/handle-views')
 
 class HandleViewsTest extends BaseTest {
   viewContextObject (t) {

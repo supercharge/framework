@@ -1,7 +1,7 @@
 'use strict'
 
-const BaseTest = require('../../../../../testing/base-test')
-const AppNameCommand = require('../../../../../foundation/console/commands/app-name')
+const BaseTest = require('../../../../../base-test')
+const AppNameCommand = require('../../../../../src/foundation/console/commands/app-name')
 
 class AppNameCommandTest extends BaseTest {
   async signature (t) {

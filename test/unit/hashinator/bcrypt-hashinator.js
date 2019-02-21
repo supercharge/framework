@@ -1,7 +1,7 @@
 'use strict'
 
-const BaseTest = require('../../../testing/base-test')
-const Hashinator = require('../../../hashing/bcrypt-hashinator')
+const BaseTest = require('../../../base-test')
+const Hashinator = require('../../../src/hashing/bcrypt-hashinator')
 
 class BcryptHashinatorTest extends BaseTest {
   async makeBcryptHash (t) {

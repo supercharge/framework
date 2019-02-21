@@ -1,7 +1,7 @@
 'use strict'
 
-const Listener = require('../../../event/listener')
-const BaseTest = require('../../../testing/base-test')
+const Listener = require('../../../listener')
+const BaseTest = require('../../../base-test')
 
 class ListenerTest extends BaseTest {
   async createsListener (t) {

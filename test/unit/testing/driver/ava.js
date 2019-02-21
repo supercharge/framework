@@ -1,6 +1,6 @@
 'use strict'
 
-const BaseTest = require('../../../../testing/base-test')
+const BaseTest = require('../../../../base-test')
 
 class AvaDriverTest extends BaseTest {
   _testMethod () {

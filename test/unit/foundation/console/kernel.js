@@ -1,12 +1,7 @@
 'use strict'
 
-const Joi = require('joi')
-const Path = require('path')
-const Fs = require('../../../../filesystem')
-const Config = require('../../../../config')
-const Helper = require('../../../../helper')
-const BaseTest = require('../../../../testing/base-test')
-const ConsoleKernel = require('../../../../foundation/console/kernel')
+const BaseTest = require('../../../../base-test')
+const ConsoleKernel = require('../../../../src/foundation/console/kernel')
 
 class ConsoleKernelTest extends BaseTest {
   async bootstrapsConsole (t) {

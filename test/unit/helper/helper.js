@@ -2,7 +2,7 @@
 
 const Path = require('path')
 const Helper = require('../../../helper')
-const BaseTest = require('../../../testing/base-test')
+const BaseTest = require('../../../base-test')
 
 class HelperTest extends BaseTest {
   beforeEach ({ context }) {

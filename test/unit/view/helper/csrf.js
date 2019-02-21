@@ -1,7 +1,7 @@
 'use strict'
 
 const Config = require('../../../../config')
-const BaseTest = require('../../../../testing/base-test')
+const BaseTest = require('../../../../base-test')
 
 class CsrfHelperTest extends BaseTest {
   async createsHtmlInputForCsrf (t) {

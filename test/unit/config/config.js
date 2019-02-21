@@ -2,7 +2,7 @@
 
 const Path = require('path')
 const Config = require('../../../config')
-const BaseTest = require('../../../testing/base-test')
+const BaseTest = require('../../../base-test')
 
 class ConfigTest extends BaseTest {
   async loadsConfigFromTmpFolder (t) {

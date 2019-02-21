@@ -2,10 +2,10 @@
 
 const Path = require('path')
 const Helper = require('../../../../../helper')
-const BaseTest = require('../../../../../testing/base-test')
-const HttpKernel = require('../../../../../foundation/http/kernel')
-const Application = require('../../../../../foundation/application')
-const LoadUserPlugins = require('../../../../../foundation/http/bootstrap/load-user-plugins')
+const BaseTest = require('../../../../../base-test')
+const HttpKernel = require('../../../../../src/foundation/http/kernel')
+const Application = require('../../../../../src/foundation/application')
+const LoadUserPlugins = require('../../../../../src/foundation/http/bootstrap/load-user-plugins')
 
 class LoadUserPluginsTest extends BaseTest {
   async serialLoadUserPlugins (t) {

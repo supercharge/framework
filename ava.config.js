@@ -1,7 +1,7 @@
 export default {
-  require: [ './test/setup.js' ],
+  require: [ './test/pretest-setup.js' ],
   files: [
     'test/**/*.js',
-    '!test/setup.js'
+    '!test/pretest-setup.js'
   ]
 }

@@ -2,7 +2,7 @@
 
 const Hash = require('../../../hashing')
 const Config = require('../../../config')
-const BaseTest = require('../../../testing/base-test')
+const BaseTest = require('../../../base-test')
 
 class HashinatorTest extends BaseTest {
   async makeHash (t) {

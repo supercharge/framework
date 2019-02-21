@@ -1,6 +1,6 @@
 'use strict'
 
-const BaseTest = require('../../../../testing/base-test')
+const BaseTest = require('../../../../base-test')
 
 class MockConsoleTest extends BaseTest {
   async serialMocksConsole (t) {

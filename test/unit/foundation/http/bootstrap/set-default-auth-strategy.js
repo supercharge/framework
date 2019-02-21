@@ -1,8 +1,8 @@
 'use strict'
 
 const Config = require('../../../../../config')
-const BaseTest = require('../../../../../testing/base-test')
-const DefaultAuth = require('../../../../../foundation/http/bootstrap/set-default-auth-strategy')
+const BaseTest = require('../../../../../base-test')
+const DefaultAuth = require('../../../../../src/foundation/http/bootstrap/set-default-auth-strategy')
 
 class DefaultAuthTest extends BaseTest {
   async noAuthWithoutDefault (t) {

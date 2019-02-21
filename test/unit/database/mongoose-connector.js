@@ -1,8 +1,8 @@
 'use strict'
 
 const Config = require('../../../config')
-const BaseTest = require('../../../testing/base-test')
-const MongooseConnector = require('../../../database/mongoose-connector')
+const BaseTest = require('../../../base-test')
+const MongooseConnector = require('../../../src/database/mongoose-connector')
 
 class MongooseConnectorTest extends BaseTest {
   before () {

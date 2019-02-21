@@ -1,8 +1,8 @@
 'use strict'
 
 const Path = require('path')
-const BaseTest = require('../../../testing/base-test')
-const Dispatcher = require('../../../event/dispatcher')
+const BaseTest = require('../../../base-test')
+const Dispatcher = require('../../../src/event/dispatcher')
 const TestEvent = require('./fixtures/events/test-event')
 
 class EventDispatcherTest extends BaseTest {

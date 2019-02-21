@@ -1,9 +1,9 @@
 'use strict'
 
-const BaseTest = require('../../../../../testing/base-test')
-const HttpKernel = require('../../../../../foundation/http/kernel')
-const Application = require('../../../../../foundation/application')
-const CsrfProtection = require('../../../../../foundation/http/bootstrap/csrf-protection')
+const BaseTest = require('../../../../../base-test')
+const HttpKernel = require('../../../../../src/foundation/http/kernel')
+const Application = require('../../../../../src/foundation/application')
+const CsrfProtection = require('../../../../../src/foundation/http/bootstrap/csrf-protection')
 
 class LoadRoutesTest extends BaseTest {
   async doesNotRegisterCsrfProtection (t) {

@@ -3,8 +3,8 @@
 const Path = require('path')
 const Fs = require('../../../../../filesystem')
 const Helper = require('../../../../../helper')
-const BaseTest = require('../../../../../testing/base-test')
-const MakeRouteCommand = require('../../../../../foundation/console/commands/make-route')
+const BaseTest = require('../../../../../base-test')
+const MakeRouteCommand = require('../../../../../src/foundation/console/commands/make-route')
 
 class MakeRouteCommandTest extends BaseTest {
   async signature (t) {

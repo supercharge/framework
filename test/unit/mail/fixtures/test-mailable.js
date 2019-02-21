@@ -1,6 +1,6 @@
 'use strict'
 
-const Mailable = require('../../../../mailer/mailable')
+const Mailable = require('../../../../mailable')
 
 class TestMailable extends Mailable {
   create () {}

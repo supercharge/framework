@@ -5,7 +5,7 @@ const Fs = require('../../../../filesystem')
 const Config = require('../../../../config')
 const Helper = require('../../../../helper')
 const Encryption = require('../../../../encryption')
-const BaseTest = require('../../../../testing/base-test')
+const BaseTest = require('../../../../base-test')
 
 class MakesHttpRequestsTest extends BaseTest {
   async before () {

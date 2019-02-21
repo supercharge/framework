@@ -3,7 +3,7 @@
 const Fs = require('fs')
 const Path = require('path')
 const Uuid = require('uuid/v4')
-const BaseTest = require('../../../testing/base-test')
+const BaseTest = require('../../../base-test')
 const Filesystem = require('../../../filesystem')
 
 class FilesystemTest extends BaseTest {

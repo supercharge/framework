@@ -2,7 +2,7 @@
 
 const Config = require('../../../config')
 const Encrypter = require('../../../encryption')
-const BaseTest = require('../../../testing/base-test')
+const BaseTest = require('../../../base-test')
 
 class EncrypterTest extends BaseTest {
   async encryptString (t) {

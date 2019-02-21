@@ -3,8 +3,8 @@
 const Path = require('path')
 const Fs = require('../../../../../filesystem')
 const Helper = require('../../../../../helper')
-const BaseTest = require('../../../../../testing/base-test')
-const MakeAuthCommand = require('../../../../../foundation/console/commands/make-auth')
+const BaseTest = require('../../../../../base-test')
+const MakeAuthCommand = require('../../../../../src/foundation/console/commands/make-auth')
 
 class MakeAuthCommandTest extends BaseTest {
   beforeEach () {
