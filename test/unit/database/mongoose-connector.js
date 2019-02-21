@@ -1,5 +1,6 @@
 'use strict'
 
+const Logger = require('../../../logging')
 const Config = require('../../../config')
 const BaseTest = require('../../../base-test')
 const MongooseConnector = require('../../../src/database/mongoose-connector')
@@ -30,6 +31,8 @@ class MongooseConnectorTest extends BaseTest {
   }
 
   async mongooseFailsToConnectWithBadConnectionString (t) {
+    const stub = this.stub(Logger, 'error').returns()
+
     const connector = new MongooseConnector({
       host: 'wrong',
       port: 27017,
@@ -42,6 +45,8 @@ class MongooseConnectorTest extends BaseTest {
     await connector.connect()
 
     t.false(await connector.isConnected())
+
+    stub.restore()
   }
 
   async throwsWithoutConfig (t) {

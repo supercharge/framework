@@ -6,41 +6,41 @@ const BaseTest = require('../../../base-test')
 const ViewCompiler = require('../../../view')
 
 class HandlebarsCompilerTest extends BaseTest {
-  async failsToRegisterHelper (t) {
-    const spy = this.spy(Logger, 'warn')
+  async serialFailsToRegisterHelper (t) {
+    const stub = this.stub(Logger, 'warn').returns()
 
     const compiler = new ViewCompiler()
     compiler.registerHelper(__dirname, 'not-existent-helper.js')
 
-    t.true(spy.called)
+    t.true(stub.called)
 
-    spy.restore()
+    stub.restore()
   }
 
-  async registersViewHelper (t) {
-    const spy = this.spy(Logger, 'warn')
+  async serialRegistersViewHelper (t) {
+    const stub = this.stub(Logger, 'warn').returns()
     const helpersPath = Path.resolve(__dirname, 'fixtures')
 
     const compiler = new ViewCompiler()
     compiler.registerHelper(helpersPath, 'test-helper.js')
 
     t.true(compiler.hasHelper('test-helper'))
-    t.true(spy.notCalled)
+    t.true(stub.notCalled)
 
-    spy.restore()
+    stub.restore()
   }
 
-  async willNotRegisterViewHelperAndNotFail (t) {
-    const spy = this.spy(Logger, 'warn')
+  async serialWillNotRegisterViewHelperAndNotFail (t) {
+    const stub = this.stub(Logger, 'warn').returns()
     const helpersPath = Path.resolve(__dirname, 'fixtures')
 
     const compiler = new ViewCompiler()
     compiler.registerHelper(helpersPath, 'no-function-test-helper.js')
 
     t.false(compiler.hasHelper('no-function-test-helper'))
-    t.true(spy.notCalled)
+    t.true(stub.notCalled)
 
-    spy.restore()
+    stub.restore()
   }
 }
 
