@@ -2,21 +2,7 @@
   "name": "@supercharge/framework",
   "description": "Supercharge is a framework and app starter kit making it easy to develop your next idea.",
   "version": "0.0.0",
-  "author": "Future Studio <info@futurestud.io>",
-  "contributors": [
-    {
-      "name": "Marcus Poehls",
-      "email": "marcus@futurestud.io"
-    },
-    {
-      "name": "Norman Peitek",
-      "email": "norman@futurestud.io"
-    },
-    {
-      "name": "Christian Fellner",
-      "email": "christian@futurestud.io"
-    }
-  ],
+  "author": "Marcus Poehls <marcus@futurestud.io>",
   "dependencies": {
     "@adonisjs/ace": "~5.0.8",
     "argon2": "~0.19.3",
