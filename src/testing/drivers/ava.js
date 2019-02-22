@@ -5,6 +5,10 @@ const _ = require('lodash')
 const Database = require('../../database')
 
 class AvaTesting {
+  constructor (test) {
+    this.test = test
+  }
+
   /**
    * Maps the class methods to test methods. Each method
    * is checked for being a private class method, a
@@ -13,51 +17,10 @@ class AvaTesting {
   registerTests () {
     this.assignHooks()
 
-    this.classMethods()
-      .filter(method => this.include(method))
+    this.test.classMethods()
+      .filter(method => this.test.includes(method))
       .forEach(methodName => this.createTest(methodName))
   }
-
-  /**
-   * Run actions before all test cases
-   * in the test class. This method
-   * runs before `beforeEach`.
-   */
-  async before () {}
-
-  /**
-   * Run actions before each test case
-   * in the test class.
-   */
-  async beforeEach () {}
-
-  /**
-   * Run actions after all test cases
-   * in the test class. This method
-   * runs after `afterEach`.
-   */
-  async after () {}
-
-  /**
-   * Run actions after each test case
-   * in the test class.
-   */
-  async afterEach () {}
-
-  /**
-   * This methods always runs after
-   * the test cases, even if the
-   * tests fail.
-   */
-  async alwaysAfter () {}
-
-  /**
-   * This methods always runs after
-   * each of the test cases, even
-   * if the tests fail.
-   */
-  async alwaysAfterEach () {}
-
   /**
    * Register hooks to the test runner.
    */
@@ -75,7 +38,7 @@ class AvaTesting {
    */
   assignBeforeHook () {
     Ava.before(`${this.constructor.name}: before`, async t => {
-      return this.before(t)
+      return this.test.before(t)
     })
   }
 
@@ -84,7 +47,7 @@ class AvaTesting {
    */
   assignBeforeEachHook () {
     Ava.beforeEach(`${this.constructor.name}: beforeEach`, async t => {
-      return this.beforeEach(t)
+      return this.test.beforeEach(t)
     })
   }
 
@@ -93,7 +56,7 @@ class AvaTesting {
    */
   assignAfterHook () {
     Ava.after(`${this.constructor.name}: after`, async t => {
-      return this.after(t)
+      return this.test.after(t)
     })
   }
 
@@ -102,7 +65,7 @@ class AvaTesting {
    */
   assignAfterEachHook () {
     Ava.afterEach(`${this.constructor.name}: afterEach`, async t => {
-      return this.afterEach(t)
+      return this.test.afterEach(t)
     })
   }
 
@@ -111,7 +74,7 @@ class AvaTesting {
    */
   assignAlwaysAfterHook () {
     Ava.after.always(`${this.constructor.name}: after.always`, async t => {
-      await this.alwaysAfter(t)
+      await this.test.alwaysAfter(t)
 
       // closing the database connection must be the last action
       await Database.close()
@@ -123,41 +86,8 @@ class AvaTesting {
    */
   assignAlwaysAfterEachHook () {
     Ava.afterEach.always(`${this.constructor.name}: afterEach.always`, async t => {
-      return this.alwaysAfterEach(t)
+      return this.test.alwaysAfterEach(t)
     })
-  }
-
-  /**
-   * Returns all methods from the test class.
-   */
-  classMethods () {
-    return Object.getOwnPropertyNames(Object.getPrototypeOf(this))
-  }
-
-  /**
-   * Determine whether the given method should
-   * be excluded as a test case.
-   *
-   * @param {String} methodName
-   */
-  include (methodName) {
-    return !this.methodsToSkip().includes(methodName)
-  }
-
-  /**
-   * A list of methods that should not be
-   * assigned as test cases.
-   */
-  methodsToSkip () {
-    return [
-      'constructor',
-      'before',
-      'beforeEach',
-      'after',
-      'afterEach',
-      'alwaysAfter',
-      'alwaysAfterEach'
-    ]
   }
 
   /**
@@ -221,7 +151,7 @@ class AvaTesting {
    * @param {String} name
    */
   addTest (name) {
-    Ava(name, async t => this[name](t))
+    Ava(name, async t => this.test[name](t))
   }
 
   /**
@@ -240,7 +170,7 @@ class AvaTesting {
    */
   skip (name) {
     /* istanbul ignore next */
-    Ava.skip(name, async t => this[name](t))
+    Ava.skip(name, async t => this.test[name](t))
   }
 
   /**
@@ -251,7 +181,7 @@ class AvaTesting {
    * @param {String} name
    */
   only (name) {
-    Ava.only(name, async t => this[name](t))
+    Ava.only(name, async t => this.test[name](t))
   }
 
   /**
@@ -260,7 +190,7 @@ class AvaTesting {
    * @param {String} name
    */
   serial (name) {
-    Ava.serial(name, async t => this[name](t))
+    Ava.serial(name, async t => this.test[name](t))
   }
 
   /**
@@ -270,7 +200,7 @@ class AvaTesting {
    */
   failing (name) {
     /* istanbul ignore next */
-    Ava.failing(name, async t => this[name](t))
+    Ava.failing(name, async t => this.test[name](t))
   }
 }
 
