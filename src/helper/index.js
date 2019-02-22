@@ -24,7 +24,7 @@ class Helper {
    * @returns {String}
    */
   appRoot () {
-    return this._appRoot
+    return this._appRoot || process.cwd()
   }
 
   /**
