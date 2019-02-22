@@ -17,8 +17,8 @@ class BaseTest extends Many(Http, MocksStubsSpies, MocksConsole, RenderViews, Te
   /**
    * Create a new test case instance.
    */
-  constructor (options) {
-    super(options)
+  constructor () {
+    super()
 
     const AvaRunner = require('./drivers/ava')
     const runner = new AvaRunner(this)

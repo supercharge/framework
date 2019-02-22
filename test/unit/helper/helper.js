@@ -6,12 +6,19 @@ const BaseTest = require('../../../base-test')
 
 class HelperTest extends BaseTest {
   beforeEach ({ context }) {
-    Helper.setAppRoot(Path.resolve(__dirname))
+    this.appRoot = Path.resolve(__dirname)
+    Helper.setAppRoot(this.appRoot)
     context.helper = Helper
   }
 
   rootPath (t) {
     t.deepEqual(t.context.helper.appRoot(), Path.resolve(__dirname))
+  }
+
+  rootPathFromCwd (t) {
+    Helper.setAppRoot(undefined)
+    t.deepEqual(Helper.appRoot(), process.cwd())
+    Helper.setAppRoot(this.appRoot)
   }
 
   resourcePath (t) {

@@ -2,7 +2,6 @@
 
 const _ = require('lodash')
 const Cookie = require('cookie')
-const Helper = require('../helper')
 const HttpKernel = require('../foundation/http/kernel')
 const Application = require('../foundation/application')
 
@@ -15,9 +14,7 @@ class PendingRequest {
   /**
    * Create a new instance.
    */
-  constructor ({ appRoot } = {}) {
-    this.appRoot = appRoot || Helper.appRoot()
-
+  constructor () {
     this.user = null
     this.routes = []
     this.headers = {}
