@@ -1,9 +1,9 @@
 'use strict'
 
 const Path = require('path')
-const Env = require('./../env')
-const Config = require('./../config')
-const Helper = require('./../helper')
+const Env = require('../env')
+const Config = require('../config')
+const Helper = require('../helper')
 const HttpKernel = require('./http/kernel')
 const ConsoleKernel = require('./console/kernel')
 const Dispatcher = require('../event/dispatcher')
