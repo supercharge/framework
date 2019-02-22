@@ -24,9 +24,3 @@ Supercharge builds on top of the hapi.js web framework and adds dozens utilities
 
 ## Learning
 Supercharge has an extensive [documentation](https://superchargejs.com/docs) that gives you all the information to get started with the framework.
-
----
-
-We (Marcus, Norman, and Christian from Future Studio) appreciate your support and love seeing you build your next app with Supercharge.
-
-We wish you a great developer experience. Enjoy coding and make it rock! 😘
