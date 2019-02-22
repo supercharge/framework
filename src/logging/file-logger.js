@@ -25,14 +25,14 @@ class FileLogger {
         timestamp(),
         printf(info => {
           const time = new Date(info.timestamp).getTime()
+
           return JSON.stringify(Object.assign(info, { time }))
         })
       )
     })
   }
-
   /**
-   * Returns the console logger instance.
+   * Returns the file logger instance.
    *
    * @returns {Object}
    */
