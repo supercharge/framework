@@ -1,6 +1,6 @@
 {
   "name": "@supercharge/framework",
-  "description": "Supercharge is a framework and app starter kit making it easy to develop your next idea.",
+  "description": "Supercharge Node.js framework",
   "version": "0.0.0",
   "author": "Marcus Poehls <marcus@futurestud.io>",
   "dependencies": {
@@ -72,11 +72,9 @@
   },
   "homepage": "https://superchargejs.com",
   "keywords": [
-    "bootstrap",
+    "framework",
     "hapi",
     "hapi.js",
-    "mongodb",
-    "mongoose",
     "node",
     "node.js",
     "supercharge",
