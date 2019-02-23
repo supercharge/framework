@@ -24,10 +24,32 @@
 ---
 
 
-## About Supercharge
-Supercharge is a Node.js framework that makes it a lot more convenient to build your next app than using a common Node.js web framework.
+## Quick Start
+Use the official Supercharge installer to quickly create a new application. Installing is as simple as this:
 
-Supercharge builds on top of the hapi.js web framework and adds dozens utilities, like configuration and database management, mailing, logging, encryptiong, hashing, pagination, and more. It also integrates a powerful ORM for intuitive database interactions.
+```
+npm install -g @supercharge/installer
+```
+
+You can create a new application once you installed the Supercharge installer on your computer. Use the `supercharge new <app-name>` command:
+
+```
+$ supercharge new my-app-name
+Crafting a new Supercharge application
+
+  ✔ Ensure installation directory is empty
+  ✔ Crafting your application
+  ✔ Install application dependencies
+  ✔ Initialize application setup
+```
+
+That’s it! Change into the app directory and start the server with `node server` 🚀
+
+
+## About Supercharge
+Supercharge is Node.js framework — not just a web-framework.
+
+Supercharge builds on top of the hapi.js web framework and adds dozens utilities, like configuration and database management, mailing, logging, encryptiong, hashing, pagination, and more. It also integrates Mongoose as a powerful ORM for intuitive database interactions.
 
 
 ## Learning
@@ -35,7 +57,6 @@ Supercharge has an extensive [documentation](https://superchargejs.com/docs) tha
 
 
 ## License
-
 Supercharge is [MIT licensed](https://github.com/superchargejs/framework/blob/master/LICENSE).
 
 ---
