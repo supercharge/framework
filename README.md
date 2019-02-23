@@ -5,7 +5,7 @@
   <br/>
   <br/>
   <p>
-    Supercharge gives you a Node.js starter kit to build your next JavaScript fullstack app.
+    Supercharge is an open-source Node.js framework making your server-side development enjoyable.
   </p>
   <br/>
   <p>
