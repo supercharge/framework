@@ -23,6 +23,7 @@
 
 ---
 
+
 ## About Supercharge
 Supercharge is a Node.js framework that makes it a lot more convenient to build your next app than using a common Node.js web framework.
 
@@ -31,3 +32,14 @@ Supercharge builds on top of the hapi.js web framework and adds dozens utilities
 
 ## Learning
 Supercharge has an extensive [documentation](https://superchargejs.com/docs) that gives you all the information to get started with the framework.
+
+
+## License
+
+Supercharge is [MIT licensed](https://github.com/superchargejs/framework/blob/master/LICENSE).
+
+---
+
+> [superchargejs.com](https://superchargejs.com) &nbsp;&middot;&nbsp;
+> GitHub [@superchargejs](https://github.com/superchargejs/) &nbsp;&middot;&nbsp;
+> Twitter [@superchargejs](https://twitter.com/superchargejs)
