@@ -34,7 +34,9 @@ Use the official Supercharge installer to quickly create a new application. Inst
 npm install -g @supercharge/installer
 ```
 
-You can create a new application once you installed the Supercharge installer on your computer. Use the `supercharge new <app-name>` command:
+You can create a new application once you installed the Supercharge installer on your computer.
+
+Use the `supercharge new <app-name>` command:
 
 ```
 $ supercharge new my-app-name
