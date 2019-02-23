@@ -81,6 +81,9 @@
     "superchargejs"
   ],
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "coverage": "cross-env NODE_ENV=testing nyc --reporter=text --reporter=html ava",
     "lint": "eslint ** --fix",
