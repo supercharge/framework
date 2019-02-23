@@ -6,11 +6,13 @@
   "dependencies": {
     "@adonisjs/ace": "~5.0.8",
     "argon2": "~0.19.3",
+    "ava": "~1.2.1",
     "aws-sdk": "~2.404.0",
     "bcryptjs": "~2.4.3",
     "boom": "~7.3.0",
     "bounce": "~1.2.3",
     "chalk": "~2.4.2",
+    "cookie": "~0.3.1",
     "crumb": "~7.2.3",
     "dotenv": "~6.2.0",
     "dotenv-expand": "~4.2.0",
@@ -31,9 +33,11 @@
     "inert": "~5.1.2",
     "joi": "~14.3.1",
     "laabr": "~4.0.3",
+    "listr": "~0.14.3",
     "lockfile": "~1.0.4",
     "lodash": "~4.17.11",
     "md5": "~2.2.1",
+    "mock-stdio": "~1.0.3",
     "mongoose": "~5.4.13",
     "nodemailer": "~5.1.1",
     "nodemailer-mailgun-transport": "~1.4.0",
@@ -43,6 +47,7 @@
     "recursive-readdir": "~2.2.2",
     "require-all": "~3.0.0",
     "simple-encryptor": "~2.0.0",
+    "sinon": "~7.2.0",
     "tempy": "~0.2.1",
     "uuid": "~3.3.2",
     "validator": "~10.11.0",
@@ -52,8 +57,6 @@
     "youch-terminal": "~1.0.0"
   },
   "devDependencies": {
-    "ava": "~1.2.1",
-    "cookie": "~0.3.1",
     "cross-env": "~5.2.0",
     "eslint": "~5.14.0",
     "eslint-config-standard": "~12.0.0",
@@ -61,11 +64,8 @@
     "eslint-plugin-node": "~8.0.1",
     "eslint-plugin-promise": "~4.0.1",
     "eslint-plugin-standard": "~4.0.0",
-    "listr": "~0.14.3",
-    "mock-stdio": "~1.0.3",
     "nyc": "~13.3.0",
-    "proxyquire": "~2.1.0",
-    "sinon": "~7.2.0"
+    "proxyquire": "~2.1.0"
   },
   "engines": {
     "node": ">= 8.9.0"
