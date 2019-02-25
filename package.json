@@ -3,6 +3,9 @@
   "description": "Supercharge Node.js framework",
   "version": "1.0.0-beta0.1",
   "author": "Marcus Poehls <marcus@futurestud.io>",
+  "bugs": {
+    "url": "https://github.com/superchargejs/framework/issues"
+  },
   "dependencies": {
     "@adonisjs/ace": "~5.0.8",
     "argon2": "~0.19.3",
@@ -83,6 +86,10 @@
   "license": "MIT",
   "publishConfig": {
     "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/superchargejs/framework.git"
   },
   "scripts": {
     "coverage": "cross-env NODE_ENV=testing nyc --reporter=text --reporter=html ava",
