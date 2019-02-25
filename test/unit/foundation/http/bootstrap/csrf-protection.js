@@ -12,7 +12,7 @@ class LoadRoutesTest extends BaseTest {
     const handler = new CsrfProtection(new Application())
     await handler.extends(server)
 
-    t.is(server._core.extensions.server.onPreStart.nodes, null)
+    t.falsy(server.registrations['crumb'])
   }
 
   async registersCsrfProtection (t) {
@@ -28,7 +28,7 @@ class LoadRoutesTest extends BaseTest {
 
     stub.restore()
 
-    t.is(server._core.extensions.server.onPreStart.nodes.length, 1)
+    t.truthy(server.registrations['crumb'])
   }
 }
 
