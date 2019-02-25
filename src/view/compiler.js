@@ -5,7 +5,6 @@ const Path = require('path')
 const Helper = require('./../helper')
 const Logger = require('./../logging')
 const Handlebars = require('handlebars')
-const HandlebarsHelpers = require('handlebars-helpers')
 
 class HandlebarsCompiler {
   constructor () {
@@ -29,8 +28,6 @@ class HandlebarsCompiler {
   }
 
   createEngine () {
-    HandlebarsHelpers({ handlebars: Handlebars })
-
     return Handlebars
   }
 

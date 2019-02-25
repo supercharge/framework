@@ -26,7 +26,6 @@
     "fs-extra": "~7.0.1",
     "handlebars": "~4.1.0",
     "handlebars-helper-repeat": "~2.0.0",
-    "handlebars-helpers": "~0.10.0",
     "hapi": "~17.8.4",
     "hapi-auth-cookie": "~9.1.0",
     "hapi-pulse": "~2.2.0",
