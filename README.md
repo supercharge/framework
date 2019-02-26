@@ -26,6 +26,8 @@
 
 ---
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/superchargejs/framework.svg)](https://greenkeeper.io/)
+
 
 > **Notice:** This repository contains the code of the Supercharge framework. When building a Supercharge application, head over to the main [Supercharge repository](https://github.com/superchargejs/supercharge).
 
