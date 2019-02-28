@@ -8,10 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - tbd.
 
-## [1.0.0-beta0.1] - 2019-02-23
+## [1.0.0-beta0.1](https://github.com/superchargejs/framework/compare/v1.0.0-beta0...v1.0.0-beta0.1) - 2019-02-23
 ### Changed
-- Register csrf protection as last plugin 
+- move required packages from `devDependencies` to `dependencies` (`package.json`)
+- set publish config in `package.json` to public (required for scoped packages)
 
-## [1.0.0-beta0] - 2019-02-23
+## 1.0.0-beta0 - 2019-02-23
 
 First beta release :rocket: :tada:
