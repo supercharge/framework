@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- set `stripTrailingSlash: true` on hapi’s `server.options.router`
+
 ### Changed
 - update `hapi-request-utilities` dependency: `from 1.2.1 to 1.3.0`
   - adding [`request.has()`](https://superchargejs.com/docs/master/request-utilities#-code-request-has-keys-code-) and [`request.filled()`](https://superchargejs.com/docs/master/request-utilities#-code-request-filled-keys-code-) methods
