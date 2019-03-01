@@ -42,6 +42,9 @@ class HttpKernel {
     return new Hapi.Server({
       host: 'localhost',
       port: Config.get('app.port'),
+      router: {
+        stripTrailingSlash: true
+      },
       routes: {
         validate: {
           options: {
