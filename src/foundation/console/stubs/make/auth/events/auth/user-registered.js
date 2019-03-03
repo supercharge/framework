@@ -20,7 +20,7 @@ class UserRegistered extends Event {
   }
 
   /**
-   * The return value identifies this event. Every
+   * Returns the emitted event identifier. Every
    * listener for this event must return the
    * same value in there `on()` method.
    */
