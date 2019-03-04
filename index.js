@@ -16,6 +16,6 @@ module.exports = {
   Logging: require('./src/logging'),
   Mailable: require('./src/mailer/mailable'),
   Mailer: require('./src/mailer'),
-  Pagination: require('./src/pagintation'),
+  Pagination: require('./src/pagination'),
   View: require('./src/view/compiler')
 }
