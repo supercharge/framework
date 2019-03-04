@@ -9,6 +9,7 @@ const ReadRecursive = require('recursive-readdir')
 class LoadRoutes {
   constructor (app) {
     this.app = app
+    this.files = {}
     this._routesFolder = 'app/routes'
   }
 
@@ -33,13 +34,12 @@ class LoadRoutes {
   }
 
   async hasRouteFiles () {
-    return Object.keys(await this.routeFiles()).length > 0
+    this.files = await this.routeFiles()
+    return Object.keys(this.files).length > 0
   }
 
   async loadRoutes (server) {
-    const files = await this.routeFiles()
-
-    files.forEach(routeFile => {
+    this.files.forEach(routeFile => {
       server.route(this.resolve(routeFile))
     })
   }
