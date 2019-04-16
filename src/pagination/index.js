@@ -20,11 +20,11 @@ class Paginator {
    */
   constructor ({ request, totalCount, perPage = 8 }) {
     if (!request) {
-      throw new Boom('Request object required as first parameter in paginator')
+      throw new Boom('Request object is a required parameter')
     }
 
     if (!totalCount) {
-      throw new Boom('Total count required as second parameter in paginator')
+      throw new Boom('Total count is a required parameter')
     }
 
     this.request = request
