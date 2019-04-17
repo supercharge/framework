@@ -2,13 +2,14 @@
 
 const _ = require('lodash')
 const Path = require('path')
-const Fs = require('./../../../filesystem')
-const Helper = require('./../../../helper')
+const Fs = require('../../../../filesystem')
+const Helper = require('../../../../helper')
 const ReadRecursive = require('recursive-readdir')
 
 class LoadRoutes {
   constructor (app) {
     this.app = app
+    this.files = null
     this._routesFolder = 'app/routes'
   }
 
@@ -49,7 +50,10 @@ class LoadRoutes {
   }
 
   async routeFiles () {
-    return ReadRecursive(this.routesFolder(), [ this.ignore ])
+    if (!this.files) {
+      this.files = await ReadRecursive(this.routesFolder(), [ this.ignore ])
+    }
+    return this.files
   }
 
   resolve (file) {

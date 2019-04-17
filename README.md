@@ -20,7 +20,7 @@
     <a href="https://www.npmjs.com/package/@supercharge/framework"><img src="https://img.shields.io/npm/v/@supercharge/framework.svg" alt="hapi-rate-limitor Version" data-canonical-src="https://img.shields.io/npm/v/@supercharge/framework.svg.svg" style="max-width:100%;"></a>
   </p>
   <p>
-    <em>Follow <a href="http://twitter.com/marcuspoehls">@marcuspoehls</a> for updates!</em>
+    <em>Follow <a href="http://twitter.com/marcuspoehls">@marcuspoehls</a> and <a href="http://twitter.com/superchargejs">@superchargejs</a> for updates!</em>
   </p>
 </div>
 
