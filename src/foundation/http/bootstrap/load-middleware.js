@@ -1,5 +1,6 @@
 'use strict'
 
+const _ = require('lodash')
 const Path = require('path')
 const Fs = require('../../../filesystem')
 const Helper = require('../../../helper')
@@ -11,7 +12,12 @@ const ReadRecursive = require('recursive-readdir')
  */
 class LoadMiddleware {
   constructor () {
+    this._files = null
     this._middlewareFolder = 'app/middleware'
+    this._allowedMethods = [
+      'onRequest', 'onPreAuth', 'onCredentials', 'onPostAuth', 'onPreHandler', 'onPostHandler',
+      'onPreResponse', 'onPreStart', 'onPreStop', 'onPreStop', 'onPostStop'
+    ]
   }
 
   async extends (server) {
@@ -38,8 +44,11 @@ class LoadMiddleware {
     const files = await this.loadMiddlewareFiles()
 
     files.forEach(file => {
-      const { type, method, options } = this.resolve(file)
-      server.ext({ type, method, options })
+      const middleware = this.resolve(file)
+
+      typeof middleware === 'object'
+        ? this.loadFromObject(server, middleware)
+        : this.loadFromClass(server, middleware)
     })
   }
 
@@ -48,11 +57,50 @@ class LoadMiddleware {
   }
 
   async loadMiddlewareFiles () {
-    return ReadRecursive(this.middlewareFolder())
+    if (!this._files) {
+      this._files = await ReadRecursive(this.middlewareFolder())
+    }
+
+    return this._files
   }
 
   resolve (file) {
-    return require(Path.resolve(this.middlewareFolder(), file))
+    return require(file)
+  }
+
+  loadFromObject (server, middleware) {
+    const { type, method, options } = middleware
+    server.ext({ type, method, options })
+  }
+
+  loadFromClass (server, Middleware) {
+    const middleware = new Middleware(server)
+
+    if (!this.isMiddleware(middleware)) {
+      throw new Error(`Your middleware ${middleware.constructor.name} does not include a required method.
+        Implement at least one of the following methods:
+        -> ${this._allowedMethods}.
+      `)
+    }
+
+    this.implementedMiddlewareMethods(middleware).forEach(method => {
+      server.ext(method, middleware[method])
+    })
+  }
+
+  isMiddleware (middleware) {
+    return !_.isEmpty(this.implementedMiddlewareMethods(middleware))
+  }
+
+  implementedMiddlewareMethods (middleware) {
+    return _.intersection(
+      this._allowedMethods,
+      this.classMethods(middleware)
+    )
+  }
+
+  classMethods (middleware) {
+    return Object.getOwnPropertyNames(Object.getPrototypeOf(middleware))
   }
 }
 
