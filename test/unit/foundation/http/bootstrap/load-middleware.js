@@ -6,24 +6,52 @@ const BaseTest = require('../../../../../base-test')
 const LoadMiddleware = require('../../../../../src/foundation/http/bootstrap/load-middleware')
 
 class LoadMiddlewareTest extends BaseTest {
-  async loadMiddleware (t) {
-    Helper.setAppRoot(Path.resolve(__dirname, 'fixtures'))
-
+  _provideServer () {
     const server = {
-      ext: async (options) => {
-        server.extensions = options
+      extensions: [],
+      ext: async (extensionPoint, method) => {
+        if (!method) {
+          const { type, method } = extensionPoint
+          server.extensions.push({ [type]: method })
+
+          return
+        }
+
+        server.extensions.push({ [extensionPoint]: method })
       }
     }
 
-    const handler = new LoadMiddleware()
-    handler._middlewareFolder = 'middleware'
+    return server
+  }
 
+  async loadMiddleware (t) {
+    Helper.setAppRoot(Path.resolve(__dirname, 'fixtures'))
+
+    const handler = new LoadMiddleware()
+    handler._middlewareFolder = 'middleware/works-fine'
+
+    const server = this._provideServer()
     await handler.extends(server)
 
-    t.truthy(server.extensions)
-    t.is(server.extensions.type, 'onPreHandler')
-    t.truthy(server.extensions.method)
+    const extensionPoints = server.extensions.map(ext => {
+      return Object.keys(ext).shift()
+    })
+
+    t.is(server.extensions.length, 2)
+    t.true(extensionPoints.includes('onPreHandler'))
+    t.true(extensionPoints.includes('onPreResponse'))
+
     t.is(server.extensions.options, undefined)
+  }
+
+  async throwsForInvalidMiddleware (t) {
+    Helper.setAppRoot(Path.resolve(__dirname, 'fixtures'))
+
+    const server = this._provideServer()
+    const handler = new LoadMiddleware()
+    handler._middlewareFolder = 'middleware/with-errors'
+
+    await t.throwsAsync(handler.extends(server))
   }
 }
 
