@@ -37,7 +37,7 @@ class HandlebarsCompiler {
     helpersPaths.forEach(helpersPath => {
       if (Fs.existsSync(helpersPath)) {
         Fs.readdirSync(helpersPath).forEach(file => {
-          if (!file.startsWith('.git')) {
+          if (!file.startsWith('.')) {
             this.registerHelper(helpersPath, file)
           }
         })
@@ -54,7 +54,7 @@ class HandlebarsCompiler {
 
       if (typeof helper === 'function') {
         this._engine.registerHelper(name, helper)
-        Logger.info('Registered helper function:  ' + Path.basename(file))
+        Logger.debug('Registered helper function:  ' + Path.basename(file))
       }
       else {
 	      Logger.warn(`Helper file '${Path.basename(file)}' is not a function, it's a ${typeof helper}`)
