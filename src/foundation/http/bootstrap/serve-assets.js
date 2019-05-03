@@ -6,6 +6,7 @@ const Helper = require('../../../helper')
 class LoadRoutes {
   constructor () {
     this._assetsFolder = 'public'
+    this.expiresIn = 30 * 24 * 60 * 60 * 1000 // 30 days
   }
 
   async extends (server) {
@@ -17,17 +18,35 @@ class LoadRoutes {
       {
         method: 'GET',
         path: '/js/{path*}',
-        handler: { directory: { path: this.resolveAsset('js') } }
+        config: {
+          handler: { directory: { path: this.resolveAsset('js') } },
+          cache: {
+            expiresIn: this.expiresIn,
+            privacy: 'private'
+          }
+        }
       },
       {
         method: 'GET',
         path: '/css/{path*}',
-        handler: { directory: { path: this.resolveAsset('css') } }
+        config: {
+          handler: { directory: { path: this.resolveAsset('css') } },
+          cache: {
+            expiresIn: this.expiresIn,
+            privacy: 'private'
+          }
+        }
       },
       {
         method: 'GET',
         path: '/images/{path*}',
-        handler: { directory: { path: this.resolveAsset('images') } }
+        config: {
+          handler: { directory: { path: this.resolveAsset('images') } },
+          cache: {
+            expiresIn: this.expiresIn,
+            privacy: 'private'
+          }
+        }
       },
       {
         method: 'GET',
