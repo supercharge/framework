@@ -16,9 +16,49 @@ class Filesystem {
    * to check whether the `file` exists instead of `stat`.
    *
    * @param {String} file
+   *
+   * @returns {Stats}
    */
   async stat (file) {
     return Fs.stat(file)
+  }
+
+  /**
+   * Retrieve the time when `file` was last modified.
+   *
+   * @param {String} file
+   *
+   * @returns {Date}
+   */
+  async lastModified (file) {
+    const { mtime } = await this.stat(file)
+
+    return mtime
+  }
+
+  /**
+   * Retrieve the time when `file` was last accessed.
+   *
+   * @param {String} file
+   *
+   * @returns {Date}
+   */
+  async lastAccessed (file) {
+    const { atime } = await this.stat(file)
+
+    return atime
+  }
+
+  /**
+   * Change the times for last accessed and
+   * last modified of `path`.
+   *
+   * @param {String} path
+   * @param {Number} atime
+   * @param {Number} mtime
+   */
+  async updateTimestamps (path, atime, mtime) {
+    return Fs.utimes(path, atime, mtime)
   }
 
   /**
@@ -28,8 +68,11 @@ class Filesystem {
    *
    * @param {String} path  - file or directory path
    * @param {Integer} mode - defaults to `fs.constants.F_OK`
+   *
+   * @returns {Boolean}
+   * @throws
    */
-  async access (path, mode) {
+  async canAccess (path, mode) {
     return Fs.access(path, mode)
   }
 
@@ -74,6 +117,8 @@ class Filesystem {
    *
    * @param {String} file
    * @param {String|Object} encoding
+   *
+   * @returns {String}
    */
   async readFile (file, encoding = 'utf8') {
     return Fs.readFile(file, encoding)
