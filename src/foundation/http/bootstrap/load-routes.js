@@ -4,6 +4,7 @@ const _ = require('lodash')
 const Path = require('path')
 const Fs = require('../../../../filesystem')
 const Helper = require('../../../../helper')
+const Logger = require('../../../../logging')
 const ReadRecursive = require('recursive-readdir')
 
 class LoadRoutes {
@@ -18,9 +19,11 @@ class LoadRoutes {
       return this.loadRoutes(server)
     }
 
-    if (!this.app.isRunningTests()) {
-      console.log(`No routes detected in ${this._routesFolder}`)
+    if (this.app.isRunningTests()) {
+      return
     }
+
+    Logger.debug(`No routes detected in ${this._routesFolder}`)
   }
 
   async hasRoutes () {
