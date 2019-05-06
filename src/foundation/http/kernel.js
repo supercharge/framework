@@ -6,10 +6,13 @@ const Path = require('path')
 const Many = require('extends-classes')
 const Config = require('./../../config')
 const { forEachSeries } = require('p-iteration')
+const RegistersRoutes = require('./traits/registers-routes')
 const GracefulShutdowns = require('./traits/graceful-shutdowns')
 const RegistersMiddleware = require('./traits/registers-middleware')
+const RegistersAppPlugins = require('./traits/registers-app-plugins')
+const RegistersCorePlugins = require('./traits/registers-core-plugins')
 
-class HttpKernel extends Many(RegistersMiddleware, GracefulShutdowns) {
+class HttpKernel extends Many(RegistersRoutes, RegistersCorePlugins, RegistersAppPlugins, RegistersMiddleware, GracefulShutdowns) {
   constructor (app) {
     super()
 
@@ -17,32 +20,29 @@ class HttpKernel extends Many(RegistersMiddleware, GracefulShutdowns) {
     this.server = null
 
     this.bootstrappers = [
-      'bootstrap/load-core-plugins.js',
-      'bootstrap/load-user-plugins.js',
-      'bootstrap/graceful-shutdown.js',
-      'bootstrap/connect-database.js',
-      'bootstrap/handle-views.js',
-      'bootstrap/serve-assets.js',
-      'bootstrap/load-middleware.js',
-      'bootstrap/load-auth-strategies.js',
-      'bootstrap/set-default-auth-strategy.js',
-      'bootstrap/load-routes.js'
+      '../../auth/bootstrapper.js',
+      '../../database/bootstrapper.js',
+      '../../view/bootstrapper.js'
     ]
   }
 
   async bootstrap () {
-    this.server = this.createServer()
-    await this._registerShutdownHandler
-
+    await this.createServer()
     await this.registerBootstrappers()
+
+    await this._loadAppPlugins()
+    await this._loadAppRoutes()
+    await this._loadAppMiddleware()
+    await this._registerShutdownHandler()
+
     await this.server.initialize()
   }
 
   /**
    * Create a new hapi server instance.
    */
-  createServer () {
-    return new Hapi.Server({
+  async createServer () {
+    this.server = new Hapi.Server({
       host: 'localhost',
       port: Config.get('app.port'),
       router: {
@@ -58,6 +58,8 @@ class HttpKernel extends Many(RegistersMiddleware, GracefulShutdowns) {
         }
       }
     })
+
+    await this._loadCorePlugins()
   }
 
   /**
@@ -89,7 +91,7 @@ class HttpKernel extends Many(RegistersMiddleware, GracefulShutdowns) {
    */
   async registerBootstrappers () {
     await forEachSeries(this.bootstrappers, async bootstrapper => {
-      await this.resolve(bootstrapper).extends(this.server)
+      await this.resolveBootstrapper(bootstrapper).boot()
     })
   }
 
@@ -102,7 +104,7 @@ class HttpKernel extends Many(RegistersMiddleware, GracefulShutdowns) {
    *
    * @returns {Class}
    */
-  resolve (bootstrapper) {
+  resolveBootstrapper (bootstrapper) {
     const Bootstrapper = require(Path.resolve(__dirname, bootstrapper))
 
     return new Bootstrapper(this.app)
@@ -123,7 +125,7 @@ class HttpKernel extends Many(RegistersMiddleware, GracefulShutdowns) {
   }
 
   registerMiddleware (middleware) {
-    this._registerMiddleware(this.server, middleware)
+    this._registerMiddleware(middleware)
   }
 }
 

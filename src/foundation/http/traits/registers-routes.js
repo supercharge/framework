@@ -2,21 +2,20 @@
 
 const _ = require('lodash')
 const Path = require('path')
-const Fs = require('../../../../filesystem')
-const Helper = require('../../../../helper')
-const Logger = require('../../../../logging')
+const Fs = require('../../../filesystem')
+const Helper = require('../../../helper')
+const Logger = require('../../../logging')
 const ReadRecursive = require('recursive-readdir')
 
-class LoadRoutes {
-  constructor (app) {
-    this.app = app
-    this.files = null
+class RegistersRoutes {
+  constructor () {
+    this._routeFiles = null
     this._routesFolder = 'app/routes'
   }
 
-  async extends (server) {
+  async _loadAppRoutes () {
     if (await this.hasRoutes()) {
-      return this.loadRoutes(server)
+      return this.loadRoutes()
     }
 
     if (this.app.isRunningTests()) {
@@ -44,7 +43,7 @@ class LoadRoutes {
     const files = await this.routeFiles()
 
     files.forEach(routeFile => {
-      server.route(this.resolve(routeFile))
+      this.server.route(this.resolveRoute(routeFile))
     })
   }
 
@@ -53,19 +52,20 @@ class LoadRoutes {
   }
 
   async routeFiles () {
-    if (!this.files) {
-      this.files = await ReadRecursive(this.routesFolder(), [ this.ignore ])
+    if (!this._routeFiles) {
+      this._routeFiles = await ReadRecursive(this.routesFolder(), [ this.shouldIgnore ])
     }
-    return this.files
+
+    return this._routeFiles
   }
 
-  resolve (file) {
+  resolveRoute (file) {
     return require(Path.resolve(this.routesFolder(), file))
   }
 
-  ignore (file) {
+  shouldIgnore (file) {
     return _.startsWith(Path.basename(file), '_')
   }
 }
 
-module.exports = LoadRoutes
+module.exports = RegistersRoutes

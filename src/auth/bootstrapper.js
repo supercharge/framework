@@ -1,18 +1,17 @@
 'use strict'
 
 const Path = require('path')
-const Fs = require('../src/filesystem')
-const Config = require('../src/config')
-const Helper = require('../src/helper')
+const Fs = require('../filesystem')
+const Config = require('../config')
+const Helper = require('../helper')
 const ReadRecursive = require('recursive-readdir')
 
 class AuthBoostrapper {
   constructor (app) {
-    this.app = app
-    this.schemes = null
+    this._app = app
     this._schemeFiles = null
     this._strategyFiles = null
-    this.config = Config.get('auth')
+    this._config = Config.get('auth')
     this._schemesFolder = 'app/auth/schemes'
     this._strategiesFolder = 'app/auth/strategies'
   }
@@ -44,11 +43,11 @@ class AuthBoostrapper {
       return
     }
 
-    this.app.getServer().auth.default(this.defaultStrategy())
+    this._app.getServer().auth.default(this.defaultStrategy())
   }
 
   defaultStrategy () {
-    return this.config.default
+    return this._config.default
   }
 
   async hasStrategies () {
@@ -78,7 +77,7 @@ class AuthBoostrapper {
 
     files.forEach(strategyFile => {
       const { name, scheme, options } = this.resolveStrategy(strategyFile)
-      this.app.getServer().auth.strategy(name, scheme, options)
+      this._app.getServer().auth.strategy(name, scheme, options)
     })
   }
 
@@ -93,10 +92,10 @@ class AuthBoostrapper {
   }
 
   async hasSchemeFiles () {
-    return Object.keys(await this.schemesFiles()).length > 0
+    return Object.keys(await this.schemeFiles()).length > 0
   }
 
-  async schemesFiles () {
+  async schemeFiles () {
     if (!this._schemeFiles) {
       this._schemeFiles = await ReadRecursive(this.schemesFolder())
     }
@@ -105,11 +104,11 @@ class AuthBoostrapper {
   }
 
   async loadSchemes () {
-    const files = await this.schemesFiles()
+    const files = await this.schemeFiles()
 
     files.forEach(schemeFile => {
       const { name, scheme } = this.resolveScheme(schemeFile)
-      this.app.getServer().auth.scheme(name, scheme)
+      this._app.getServer().auth.scheme(name, scheme)
     })
   }
 

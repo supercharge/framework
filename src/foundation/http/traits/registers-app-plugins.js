@@ -6,14 +6,14 @@ const Helper = require('../../../helper')
 const { forEachSeries } = require('p-iteration')
 const ReadRecursive = require('recursive-readdir')
 
-class LoadUserPlugins {
+class RegistersAppPlugins {
   constructor () {
     this._pluginsFolder = 'app/plugins'
   }
 
-  async extends (server) {
+  async _loadAppPlugins () {
     if (await this.hasPlugins()) {
-      return this.registerPluginsTo(server)
+      return this.registerPluginsTo()
     }
   }
 
@@ -31,11 +31,11 @@ class LoadUserPlugins {
     return Object.keys(await this.pluginFiles()).length > 0
   }
 
-  async registerPluginsTo (server) {
+  async registerPluginsTo () {
     const files = await this.pluginFiles()
 
     await forEachSeries(files, async plugin => {
-      await server.register(this.resolve(plugin))
+      await this.server.register(this.resolveAppPlugin(plugin))
     })
   }
 
@@ -47,9 +47,9 @@ class LoadUserPlugins {
     return ReadRecursive(this.pluginsFolder())
   }
 
-  resolve (file) {
+  resolveAppPlugin (file) {
     return require(Path.resolve(this.pluginsFolder(), file))
   }
 }
 
-module.exports = LoadUserPlugins
+module.exports = RegistersAppPlugins

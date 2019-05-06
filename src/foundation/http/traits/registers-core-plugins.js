@@ -1,12 +1,12 @@
 'use strict'
 
-class LoadCore {
-  constructor (app) {
-    this.app = app
+class RegistersCorePlugins {
+  constructor () {
+    this._pluginsFolder = 'app/plugins'
   }
 
-  async extends (server) {
-    await server.register([
+  async _loadCorePlugins () {
+    await this.server.register([
       { plugin: require('inert') },
       { plugin: require('vision') },
       { plugin: require('hapi-auth-cookie') },
@@ -15,7 +15,7 @@ class LoadCore {
     ])
 
     if (!this.app.isRunningTests()) {
-      await server.register({
+      await this.server.register({
         plugin: require('laabr'),
         options: {
           formats: { log: 'log.tiny' },
@@ -27,4 +27,4 @@ class LoadCore {
   }
 }
 
-module.exports = LoadCore
+module.exports = RegistersCorePlugins

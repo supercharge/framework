@@ -1,16 +1,19 @@
 'use strict'
 
-const Fs = require('fs')
 const Path = require('path')
+const Fs = require('./../filesystem')
 const Helper = require('./../helper')
 const Logger = require('./../logging')
 const Handlebars = require('handlebars')
+const { forEach } = require('p-iteration')
 
 class HandlebarsCompiler {
   constructor () {
     this._engine = this.createEngine()
+  }
 
-    this.loadHelpers()
+  async initialize () {
+    await this.loadHelpers()
   }
 
   instance () {
@@ -31,12 +34,14 @@ class HandlebarsCompiler {
     return Handlebars
   }
 
-  loadHelpers () {
+  async loadHelpers () {
     const helpersPaths = [].concat(this.helpersLocations())
 
-    helpersPaths.forEach(helpersPath => {
-      if (Fs.existsSync(helpersPath)) {
-        Fs.readdirSync(helpersPath).forEach(file => {
+    await forEach(helpersPaths, async helpersPath => {
+      if (await Fs.exists(helpersPath)) {
+        const files = await Fs.readDir(helpersPath)
+
+        files.forEach(file => {
           this.registerHelper(helpersPath, file)
         })
       }
