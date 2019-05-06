@@ -9,7 +9,7 @@ class LoadMiddlewareTest extends BaseTest {
   _provideServer () {
     const server = {
       extensions: [],
-      ext: async (extensionPoint, method) => {
+      registerMiddleware: async (extensionPoint, method) => {
         if (!method) {
           const { type, method } = extensionPoint
           server.extensions.push({ [type]: method })

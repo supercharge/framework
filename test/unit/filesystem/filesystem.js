@@ -35,9 +35,23 @@ class FilesystemTest extends BaseTest {
     t.deepEqual(stat, statSync)
   }
 
-  async access (t) {
+  async lastModified (t) {
     const file = await this._ensureTempFile()
-    const access = await Filesystem.access(file, Fs.constants.W_OK)
+    const lastModified = await Filesystem.lastModified(file)
+
+    t.truthy(lastModified)
+  }
+
+  async lastModifiedNonExistentFile (t) {
+    const file = await this._ensureTempFile()
+    // const lastModified = await Filesystem.lastModified(`${file}.unavailable`)
+
+    await t.throwsAsync(Filesystem.lastModified(`${file}.unavailable`))
+  }
+
+  async canAccess (t) {
+    const file = await this._ensureTempFile()
+    const access = await Filesystem.canAccess(file, Fs.constants.W_OK)
     const accessSync = await Fs.accessSync(file, Fs.constants.W_OK)
 
     t.deepEqual(access, accessSync)
@@ -169,11 +183,11 @@ class FilesystemTest extends BaseTest {
     const file1 = await this._ensureTempFile()
     await Filesystem.chmod(file1, '400') // read-only
 
-    t.throwsAsync(Filesystem.access(file1, Fs.constants.W_OK))
+    t.throwsAsync(Filesystem.canAccess(file1, Fs.constants.W_OK))
 
     const file2 = await this._ensureTempFile()
     await Filesystem.chmod(file2, '600') // read-write
-    await Filesystem.access(file2, Fs.constants.W_OK)
+    await Filesystem.canAccess(file2, Fs.constants.W_OK)
 
     t.pass()
   }
@@ -182,11 +196,11 @@ class FilesystemTest extends BaseTest {
     const file1 = await this._ensureTempFile()
     await Filesystem.chmod(file1, 400) // read-only
 
-    t.throwsAsync(Filesystem.access(file1, Fs.constants.W_OK))
+    t.throwsAsync(Filesystem.canAccess(file1, Fs.constants.W_OK))
 
     const file2 = await this._ensureTempFile()
     await Filesystem.chmod(file2, 600) // read-write
-    await Filesystem.access(file2, Fs.constants.W_OK)
+    await Filesystem.canAccess(file2, Fs.constants.W_OK)
 
     t.pass()
   }

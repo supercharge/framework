@@ -3,11 +3,16 @@
 const Hapi = require('hapi')
 const Boom = require('boom')
 const Path = require('path')
+const Many = require('extends-classes')
 const Config = require('./../../config')
 const { forEachSeries } = require('p-iteration')
+const GracefulShutdowns = require('./traits/graceful-shutdowns')
+const RegistersMiddleware = require('./traits/registers-middleware')
 
-class HttpKernel {
+class HttpKernel extends Many(RegistersMiddleware, GracefulShutdowns) {
   constructor (app) {
+    super()
+
     this.app = app
     this.server = null
 
@@ -27,11 +32,10 @@ class HttpKernel {
 
   async bootstrap () {
     this.server = this.createServer()
+    await this._registerShutdownHandler
 
     await this.registerBootstrappers()
     await this.server.initialize()
-
-    return this.server
   }
 
   /**
@@ -102,6 +106,24 @@ class HttpKernel {
     const Bootstrapper = require(Path.resolve(__dirname, bootstrapper))
 
     return new Bootstrapper(this.app)
+  }
+
+  getServer () {
+    return this.server
+  }
+
+  async start () {
+    try {
+      await this.server.start()
+    } catch (err) {
+      this.server = null
+      console.error(err)
+      process.exit(1)
+    }
+  }
+
+  registerMiddleware (middleware) {
+    this._registerMiddleware(this.server, middleware)
   }
 }
 

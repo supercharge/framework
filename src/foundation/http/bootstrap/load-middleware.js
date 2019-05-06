@@ -1,6 +1,5 @@
 'use strict'
 
-const _ = require('lodash')
 const Path = require('path')
 const Fs = require('../../../filesystem')
 const Helper = require('../../../helper')
@@ -14,15 +13,11 @@ class LoadMiddleware {
   constructor () {
     this._files = null
     this._middlewareFolder = 'app/middleware'
-    this._allowedMethods = [
-      'onRequest', 'onPreAuth', 'onCredentials', 'onPostAuth', 'onPreHandler', 'onPostHandler',
-      'onPreResponse', 'onPreStart', 'onPreStop', 'onPreStop', 'onPostStop'
-    ]
   }
 
-  async extends (server) {
+  async extends (httpKernel) {
     if (await this.hasMiddleware()) {
-      return this.loadMiddleware(server)
+      return this.loadMiddleware(httpKernel)
     }
   }
 
@@ -36,24 +31,12 @@ class LoadMiddleware {
     return Fs.exists(this.middlewareFolder())
   }
 
-  async hasMiddlewareFiles () {
-    return Object.keys(await this.loadMiddlewareFiles()).length > 0
-  }
-
-  async loadMiddleware (server) {
-    const files = await this.loadMiddlewareFiles()
-
-    files.forEach(file => {
-      const middleware = this.resolve(file)
-
-      typeof middleware === 'object'
-        ? this.loadFromObject(server, middleware)
-        : this.loadFromClass(server, middleware)
-    })
-  }
-
   middlewareFolder () {
     return Path.resolve(Helper.appRoot(), this._middlewareFolder)
+  }
+
+  async hasMiddlewareFiles () {
+    return Object.keys(await this.loadMiddlewareFiles()).length > 0
   }
 
   async loadMiddlewareFiles () {
@@ -64,43 +47,16 @@ class LoadMiddleware {
     return this._files
   }
 
-  resolve (file) {
-    return require(file)
-  }
+  async loadMiddleware (httpKernel) {
+    const files = await this.loadMiddlewareFiles()
 
-  loadFromObject (server, middleware) {
-    const { type, method, options } = middleware
-    server.ext({ type, method, options })
-  }
-
-  loadFromClass (server, Middleware) {
-    const middleware = new Middleware(server)
-
-    if (!this.isMiddleware(middleware)) {
-      throw new Error(`Your middleware ${middleware.constructor.name} does not include a required method.
-        Implement at least one of the following methods:
-        -> ${this._allowedMethods}.
-      `)
-    }
-
-    this.implementedMiddlewareMethods(middleware).forEach(method => {
-      server.ext(method, middleware[method])
+    files.forEach(file => {
+      httpKernel.registerMiddleware(this.resolve(file))
     })
   }
 
-  isMiddleware (middleware) {
-    return !_.isEmpty(this.implementedMiddlewareMethods(middleware))
-  }
-
-  implementedMiddlewareMethods (middleware) {
-    return _.intersection(
-      this._allowedMethods,
-      this.classMethods(middleware)
-    )
-  }
-
-  classMethods (middleware) {
-    return Object.getOwnPropertyNames(Object.getPrototypeOf(middleware))
+  resolve (file) {
+    return require(file)
   }
 }
 

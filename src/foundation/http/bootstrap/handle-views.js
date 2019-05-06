@@ -39,7 +39,7 @@ class HandleViews {
   viewContext (request) {
     return {
       request,
-      user: request.auth.credentials,
+      user: request.user,
       title: Config.get('app.name'),
       description: Config.get('app.description')
     }
