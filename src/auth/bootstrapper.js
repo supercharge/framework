@@ -16,24 +16,38 @@ class AuthBoostrapper {
     this._strategiesFolder = 'app/auth/strategies'
   }
 
+  /**
+   * Bootstrap authentication by loading the schemes,
+   * strategies and applying the default app's
+   * authentication strategy.
+   */
   async boot () {
     await this.loadAuthSchemes()
     await this.loadAuthStrategies()
     await this.setDefaultAuthStrategy()
   }
 
+  /**
+   * Load the authentication schemes.
+   */
   async loadAuthSchemes () {
     if (await this.hasSchemes()) {
       return this.loadSchemes()
     }
   }
 
+  /**
+   * Load the authentication strategies.
+   */
   async loadAuthStrategies () {
     if (await this.hasStrategies()) {
       return this.loadStrategies()
     }
   }
 
+  /**
+   * Set the default authentication strategy.
+   */
   async setDefaultAuthStrategy () {
     if (!this.defaultStrategy()) {
       return
@@ -46,24 +60,51 @@ class AuthBoostrapper {
     this._app.getServer().auth.default(this.defaultStrategy())
   }
 
+  /**
+   * Returns the default authentication configuration.
+   *
+   * @returns {Object|String}
+   */
   defaultStrategy () {
     return this._config.default
   }
 
+  /**
+   * Determines whether auth strategies exist.
+   *
+   * @returns {Boolean}
+   */
   async hasStrategies () {
     return await this.strategiesFolderExists()
       ? this.hasStrategyFiles()
       : false
   }
 
+  /**
+   * Determines whether an "app/auth/strategies"
+   * directory exists.
+   *
+   * @returns {Boolean}
+   */
   async strategiesFolderExists () {
     return Fs.exists(this.strategiesFolder())
   }
 
+  /**
+   * Determines whether the application has
+   * authentication strategy files.
+   *
+   * @returns {Boolean}
+   */
   async hasStrategyFiles () {
     return Object.keys(await this.strategyFiles()).length > 0
   }
 
+  /**
+   * Load the authentication strategy files.
+   *
+   * @returns {Array}
+   */
   async strategyFiles () {
     if (!this._strategyFiles) {
       this._strategyFiles = await ReadRecursive(this.strategiesFolder())
@@ -72,6 +113,10 @@ class AuthBoostrapper {
     return this._strategyFiles
   }
 
+  /**
+   * Register the authentication strategies
+   * into the HTTP server.
+   */
   async loadStrategies () {
     const files = await this.strategyFiles()
 
@@ -81,6 +126,11 @@ class AuthBoostrapper {
     })
   }
 
+  /**
+   * Determines whether auth schemes exist.
+   *
+   * @returns {Boolean}
+   */
   async hasSchemes () {
     return await this.schemesFolderExists()
       ? this.hasSchemeFiles()
@@ -91,10 +141,21 @@ class AuthBoostrapper {
     return Fs.exists(this.schemesFolder())
   }
 
+  /**
+   * Determines whether the application has
+   * authentication schemes files.
+   *
+   * @returns {Boolean}
+   */
   async hasSchemeFiles () {
     return Object.keys(await this.schemeFiles()).length > 0
   }
 
+  /**
+   * Load the authentication scheme files.
+   *
+   * @returns {Array}
+   */
   async schemeFiles () {
     if (!this._schemeFiles) {
       this._schemeFiles = await ReadRecursive(this.schemesFolder())
@@ -103,6 +164,10 @@ class AuthBoostrapper {
     return this._schemeFiles
   }
 
+  /**
+   * Register the authentication schemes
+   * into the HTTP server.
+   */
   async loadSchemes () {
     const files = await this.schemeFiles()
 
@@ -112,18 +177,44 @@ class AuthBoostrapper {
     })
   }
 
+  /**
+   * Resolves the authentication scheme.
+   *
+   * @param {String} file
+   *
+   * @returns {Object}
+   */
   resolveScheme (file) {
-    return require(Path.resolve(this.strategiesFolder(), file))
+    return require(Path.resolve(this.schemesFolder(), file))
   }
 
+  /**
+   * Resolves the authentication strategy.
+   *
+   * @param {String} file
+   *
+   * @returns {Object}
+   */
   resolveStrategy (file) {
     return require(Path.resolve(this.strategiesFolder(), file))
   }
 
+  /**
+   * Returns an absolute path to the authentication
+   * schemes directory.
+   *
+   * @returns {String}
+   */
   schemesFolder () {
     return Path.resolve(Helper.appRoot(), this._schemesFolder)
   }
 
+  /**
+   * Returns an absolute path to the authentication
+   * strategies directory.
+   *
+   * @returns {String}
+   */
   strategiesFolder () {
     return Path.resolve(Helper.appRoot(), this._strategiesFolder)
   }
