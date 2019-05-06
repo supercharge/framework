@@ -15,7 +15,7 @@ module.exports = [{
       onPreHandler: {
         method: async (request, h) => {
           return request.auth.isAuthenticated
-            ? h.redirect('/home')
+            ? h.redirect('/home').takeover()
             : h.continue
         }
       }
@@ -39,7 +39,7 @@ module.exports = [{
       onPreHandler: {
         method: async (request, h) => {
           return request.auth.isAuthenticated
-            ? h.redirect('/home')
+            ? h.redirect('/home').takeover()
             : h.continue
         }
       },
