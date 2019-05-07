@@ -50,6 +50,17 @@ class LoadRoutes {
       },
       {
         method: 'GET',
+        path: '/fonts/{path*}',
+        config: {
+          handler: { directory: { path: this.resolveAsset('fonts') } },
+          cache: {
+            expiresIn: this.expiresIn,
+            privacy: 'private'
+          }
+        }
+      },
+      {
+        method: 'GET',
         path: '/favicon.ico',
         handler: { file: { path: this.resolveAsset('favicon.ico') } }
       }
