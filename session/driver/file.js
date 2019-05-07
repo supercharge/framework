@@ -68,7 +68,7 @@ class FileDriver {
    * @param {Object} values
    */
   async touch (key, values) {
-    const time = Date.now()
+    const time = new Date()
     const file = this._sessionFile(key)
 
     if (await Fs.exists(file)) {
