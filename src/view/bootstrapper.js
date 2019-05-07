@@ -4,10 +4,10 @@ const Config = require('../config')
 const Compiler = require('./compiler')
 
 class ViewBoostrapper {
-  constructor (app) {
-    this._app = app
+  constructor (server) {
+    this._server = server
     this._engine = new Compiler()
-    this._config = Config.get('app')
+    this._config = Config.get('app', {})
   }
 
   async boot () {
@@ -17,7 +17,7 @@ class ViewBoostrapper {
   }
 
   async serveViews () {
-    this._app.getServer().views(
+    this._server.views(
       {
         engines: {
           hbs: this._engine.instance()

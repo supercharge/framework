@@ -5,21 +5,18 @@ const Helper = require('../../../../../helper')
 const BaseTest = require('../../../../../base-test')
 const HttpKernel = require('../../../../../src/foundation/http/kernel')
 const Application = require('../../../../../src/foundation/application')
-const LoadUserPlugins = require('../../../../../src/foundation/http/bootstrap/load-user-plugins')
 
 class LoadUserPluginsTest extends BaseTest {
   async serialLoadUserPlugins (t) {
     Helper.setAppRoot(Path.resolve(__dirname, 'fixtures'))
 
-    const server = new HttpKernel(new Application()).createServer()
-    await server.initialize()
+    const kernel = new HttpKernel(new Application())
+    await kernel._createServer()
 
-    const handler = new LoadUserPlugins()
-    handler._pluginsFolder = 'plugins'
+    kernel._pluginsFolder = 'plugins'
+    await kernel._loadAppPlugins()
 
-    await handler.extends(server)
-
-    t.truthy(server.registrations['test-plugin'])
+    t.truthy(kernel.getServer().registrations['test-plugin'])
   }
 
   async serialNoUserPluginsAvailable (t) {
@@ -28,17 +25,15 @@ class LoadUserPluginsTest extends BaseTest {
     const app = new Application()
     const stub = this.stub(app, 'isRunningTests').returns(false)
 
-    const server = new HttpKernel().createServer()
-    await server.initialize()
+    const kernel = new HttpKernel(new Application())
+    await kernel._createServer()
 
-    const handler = new LoadUserPlugins(app)
-    handler._routesFolder = 'routes'
-
-    await handler.extends(server)
+    kernel._pluginsFolder = 'plugins'
+    await kernel._loadAppPlugins()
 
     stub.restore()
 
-    t.deepEqual(server.registrations, {})
+    t.deepEqual(kernel.getServer().registrations, {})
   }
 }
 

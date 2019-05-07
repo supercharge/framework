@@ -95,10 +95,6 @@ class Application {
     await Dispatcher.init()
   }
 
-  async registerMiddleware (middleware) {
-    await this.httpKernel.registerMiddleware(middleware)
-  }
-
   async consoleForLife () {
     this.exceptionHandler.listenForSystemErrors()
 

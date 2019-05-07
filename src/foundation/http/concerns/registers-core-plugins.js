@@ -1,10 +1,6 @@
 'use strict'
 
 class RegistersCorePlugins {
-  constructor () {
-    this._pluginsFolder = 'app/plugins'
-  }
-
   async _loadCorePlugins () {
     await this.server.register([
       { plugin: require('inert') },

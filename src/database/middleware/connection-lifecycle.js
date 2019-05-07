@@ -8,7 +8,7 @@ const ReadRecursive = require('recursive-readdir')
 class DatabaseConnectionLifecycle {
   constructor () {
     this._modelFiles = null
-    this._config = Config.get('database')
+    this._config = Config.get('database', {})
   }
 
   /**

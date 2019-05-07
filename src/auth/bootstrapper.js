@@ -7,11 +7,11 @@ const Helper = require('../helper')
 const ReadRecursive = require('recursive-readdir')
 
 class AuthBoostrapper {
-  constructor (app) {
-    this._app = app
+  constructor (httpKernel) {
+    this._server = httpKernel.getServer()
     this._schemeFiles = null
     this._strategyFiles = null
-    this._config = Config.get('auth')
+    this._config = Config.get('auth', {})
     this._schemesFolder = 'app/auth/schemes'
     this._strategiesFolder = 'app/auth/strategies'
   }
@@ -57,7 +57,7 @@ class AuthBoostrapper {
       return
     }
 
-    this._app.getServer().auth.default(this.defaultStrategy())
+    this._server.auth.default(this.defaultStrategy())
   }
 
   /**
@@ -122,7 +122,7 @@ class AuthBoostrapper {
 
     files.forEach(strategyFile => {
       const { name, scheme, options } = this.resolveStrategy(strategyFile)
-      this._app.getServer().auth.strategy(name, scheme, options)
+      this._server.auth.strategy(name, scheme, options)
     })
   }
 
@@ -173,7 +173,7 @@ class AuthBoostrapper {
 
     files.forEach(schemeFile => {
       const { name, scheme } = this.resolveScheme(schemeFile)
-      this._app.getServer().auth.scheme(name, scheme)
+      this._server.auth.scheme(name, scheme)
     })
   }
 

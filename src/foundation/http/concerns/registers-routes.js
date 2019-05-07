@@ -39,7 +39,7 @@ class RegistersRoutes {
     return Object.keys(await this.routeFiles()).length > 0
   }
 
-  async loadRoutes (server) {
+  async loadRoutes () {
     const files = await this.routeFiles()
 
     files.forEach(routeFile => {

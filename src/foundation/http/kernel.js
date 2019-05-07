@@ -6,11 +6,11 @@ const Path = require('path')
 const Many = require('extends-classes')
 const Config = require('./../../config')
 const { forEachSeries } = require('p-iteration')
-const RegistersRoutes = require('./traits/registers-routes')
-const GracefulShutdowns = require('./traits/graceful-shutdowns')
-const RegistersMiddleware = require('./traits/registers-middleware')
-const RegistersAppPlugins = require('./traits/registers-app-plugins')
-const RegistersCorePlugins = require('./traits/registers-core-plugins')
+const RegistersRoutes = require('./concerns/registers-routes')
+const GracefulShutdowns = require('./concerns/graceful-shutdowns')
+const RegistersMiddleware = require('./concerns/registers-middleware')
+const RegistersAppPlugins = require('./concerns/registers-app-plugins')
+const RegistersCorePlugins = require('./concerns/registers-core-plugins')
 
 class HttpKernel extends Many(RegistersRoutes, RegistersCorePlugins, RegistersAppPlugins, RegistersMiddleware, GracefulShutdowns) {
   constructor (app) {
@@ -27,8 +27,9 @@ class HttpKernel extends Many(RegistersRoutes, RegistersCorePlugins, RegistersAp
   }
 
   async bootstrap () {
-    await this.createServer()
-    await this.registerBootstrappers()
+    await this._createServer()
+    await this._loadCorePlugins()
+    await this._registerBootstrappers()
 
     await this._loadAppPlugins()
     await this._loadAppRoutes()
@@ -41,7 +42,7 @@ class HttpKernel extends Many(RegistersRoutes, RegistersCorePlugins, RegistersAp
   /**
    * Create a new hapi server instance.
    */
-  async createServer () {
+  async _createServer () {
     this.server = new Hapi.Server({
       host: 'localhost',
       port: Config.get('app.port'),
@@ -54,12 +55,10 @@ class HttpKernel extends Many(RegistersRoutes, RegistersCorePlugins, RegistersAp
             stripUnknown: true,
             abortEarly: false
           },
-          failAction: this.failAction
+          failAction: this._failAction
         }
       }
     })
-
-    await this._loadCorePlugins()
   }
 
   /**
@@ -73,7 +72,7 @@ class HttpKernel extends Many(RegistersRoutes, RegistersCorePlugins, RegistersAp
    *
    * @throws
    */
-  failAction (_, __, error) {
+  _failAction (_, __, error) {
     const errors = error.details.reduce((collector, { path, message }) => {
       const field = path[path.length - 1]
 
@@ -89,9 +88,9 @@ class HttpKernel extends Many(RegistersRoutes, RegistersCorePlugins, RegistersAp
   /**
    * Register the core dependencies.
    */
-  async registerBootstrappers () {
+  async _registerBootstrappers () {
     await forEachSeries(this.bootstrappers, async bootstrapper => {
-      await this.resolveBootstrapper(bootstrapper).boot()
+      await this._resolveBootstrapper(bootstrapper).boot()
     })
   }
 
@@ -104,10 +103,10 @@ class HttpKernel extends Many(RegistersRoutes, RegistersCorePlugins, RegistersAp
    *
    * @returns {Class}
    */
-  resolveBootstrapper (bootstrapper) {
+  _resolveBootstrapper (bootstrapper) {
     const Bootstrapper = require(Path.resolve(__dirname, bootstrapper))
 
-    return new Bootstrapper(this.app)
+    return new Bootstrapper(this)
   }
 
   getServer () {
@@ -126,6 +125,19 @@ class HttpKernel extends Many(RegistersRoutes, RegistersCorePlugins, RegistersAp
 
   registerMiddleware (middleware) {
     this._registerMiddleware(middleware)
+  }
+
+  /**
+   * Pass through any calls to unavailable method on this
+   * HTTP kernel class to the underlying hapi server.
+   * This method is available due to "extends Many()".
+   *
+   * @param {String} method
+   *
+   * @returns {Mixed}
+   */
+  __call (method) {
+    return this.server[method]
   }
 }
 
