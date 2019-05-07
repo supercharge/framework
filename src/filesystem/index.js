@@ -50,14 +50,25 @@ class Filesystem {
   }
 
   /**
-   * Change the times for last accessed and
-   * last modified of `path`.
+   * Change the file system timestamps of the
+   * referenced `path`. Updates the last
+   * accessed and last modified properties.
    *
    * @param {String} path
    * @param {Number} atime
    * @param {Number} mtime
+   *
+   * @throws
    */
   async updateTimestamps (path, atime, mtime) {
+    if (!(atime instanceof Date)) {
+      throw new Error(`Updating the last accessed timestamp for ${path} requires an instance of "Date".`)
+    }
+
+    if (!(mtime instanceof Date)) {
+      throw new Error(`Updating the last modified timestamp for ${path} requires an instance of "Date".`)
+    }
+
     return Fs.utimes(path, atime, mtime)
   }
 
