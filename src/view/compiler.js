@@ -49,6 +49,10 @@ class HandlebarsCompiler {
   }
 
   registerHelper (helpersPath, file) {
+    if (this.isDotFile(file)) {
+      return
+    }
+
     file = Path.join(helpersPath, file)
 
     try {
@@ -57,10 +61,24 @@ class HandlebarsCompiler {
 
       if (typeof helper === 'function') {
         this._engine.registerHelper(name, helper)
+        Logger.debug(`Registered view helper:  ${Path.basename(file)}`)
+      } else {
+        Logger.warn(`View helper "${Path.basename(file)}" is not a function, it's a ${typeof helper}`)
       }
     } catch (err) {
       Logger.warn(`WARNING: failed to load helper ${file}: ${err.message}`)
     }
+  }
+
+  /**
+   * Determine whether the file is a dotfile.
+   *
+   * @param {String} file
+   *
+   * @returns {Boolean}
+   */
+  isDotFile (file) {
+    return file.startsWith('.')
   }
 
   filename (path, file) {
