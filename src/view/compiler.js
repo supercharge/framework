@@ -37,7 +37,9 @@ class HandlebarsCompiler {
     helpersPaths.forEach(helpersPath => {
       if (Fs.existsSync(helpersPath)) {
         Fs.readdirSync(helpersPath).forEach(file => {
-          this.registerHelper(helpersPath, file)
+          if (!file.startsWith('.')) {
+            this.registerHelper(helpersPath, file)
+          }
         })
       }
     })
@@ -52,6 +54,10 @@ class HandlebarsCompiler {
 
       if (typeof helper === 'function') {
         this._engine.registerHelper(name, helper)
+        Logger.debug('Registered helper function:  ' + Path.basename(file))
+      }
+      else {
+	      Logger.warn(`Helper file '${Path.basename(file)}' is not a function, it's a ${typeof helper}`)
       }
     } catch (err) {
       Logger.warn(`WARNING: failed to load helper ${file}: ${err.message}`)
