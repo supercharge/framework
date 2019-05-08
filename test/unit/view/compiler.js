@@ -38,7 +38,7 @@ class HandlebarsCompilerTest extends BaseTest {
     compiler.registerHelper(helpersPath, 'no-function-test-helper.js')
 
     t.false(compiler.hasHelper('no-function-test-helper'))
-    t.true(stub.notCalled)
+    t.true(stub.calledOnce)
 
     stub.restore()
   }
