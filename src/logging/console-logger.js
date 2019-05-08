@@ -20,7 +20,7 @@ class ConsoleLogger {
     this.colors = this.logColors()
 
     this.transport = new Winston.transports.Console({
-      level: this.config.level || 'debug',
+      level: this.config.level,
       format: combine(
         timestamp(),
         printf(info => this.format(info))
