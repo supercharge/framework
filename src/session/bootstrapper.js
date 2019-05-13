@@ -13,31 +13,31 @@ class SessionProvider {
   }
 
   async boot () {
-    if (!this.sessionConfigured()) {
+    if (!this._sessionConfigured()) {
       return
     }
 
-    this.driver = await this.bootSessionDriver()
+    this.driver = await this._bootSessionDriver()
 
-    this.prepareCookie()
-    this.decorateRequest()
+    this._prepareSessionCookie()
+    this._decorateRequest()
 
     await this.app.registerMiddleware(StartSession)
   }
 
-  sessionConfigured () {
-    return !!this.manager.sessionConfigured()
+  _sessionConfigured () {
+    return !!this.manager._sessionConfigured()
   }
 
-  async bootSessionDriver () {
+  async _bootSessionDriver () {
     return this.manager.driver()
   }
 
-  server () {
+  _server () {
     return this.app.getServer()
   }
 
-  prepareCookie () {
+  _prepareSessionCookie () {
     const defaultOptions = {
       encoding: 'iron',
       password: Config.get('app.key')
@@ -46,16 +46,16 @@ class SessionProvider {
     const config = this.manager.config()
     const { name, options } = config.cookie
 
-    this.server().state(name, Object.assign({}, defaultOptions, options))
+    this._server().state(name, Object.assign({}, defaultOptions, options))
   }
 
-  decorateRequest () {
-    this.server().decorate('request', 'session', (request) => this.sessionDecoration(request), {
-      apply: true // ensures that this.sessionDecoration will be invoked
+  _decorateRequest () {
+    this._server().decorate('request', 'session', (request) => this._sessionDecoration(request), {
+      apply: true // ensure the "request.session" decoration for each request
     })
   }
 
-  sessionDecoration (request) {
+  _sessionDecoration (request) {
     return new Session({
       request,
       driver: this.driver,
