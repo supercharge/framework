@@ -2,6 +2,7 @@
 
 const Helper = require('../../helper')
 const Config = require('../../config')
+const Fs = require('../../filesystem')
 const Database = require('../index')
 const ReadRecursive = require('recursive-readdir')
 
@@ -80,16 +81,29 @@ class DatabaseConnectionLifecycle {
   }
 
   /**
-   * Load the model files.
+   * Returns the model files.
    *
    * @returns {Array}
    */
   async modelFiles () {
     if (!this._modelFiles) {
-      this._modelFiles = await ReadRecursive(Helper.modelsPath())
+      this._modelFiles = await this.loadModelFiles()
     }
 
     return this._modelFiles
+  }
+
+  /**
+   * Load the application’s model files from disk.
+   *
+   * @returns {Array}
+   */
+  async loadModelFiles () {
+    if (await Fs.exists(Helper.modelsPath())) {
+      return ReadRecursive(Helper.modelsPath())
+    }
+
+    return []
   }
 }
 
