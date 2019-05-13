@@ -17,6 +17,6 @@ module.exports = {
   Mailable: require('./src/mailer/mailable'),
   Mailer: require('./src/mailer'),
   Pagination: require('./src/pagination'),
-  Session: require('./session/manager'),
+  Session: require('./src/session/manager'),
   View: require('./src/view/compiler')
 }
