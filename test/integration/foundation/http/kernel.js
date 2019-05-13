@@ -34,7 +34,7 @@ class HttpKernelTest extends BaseTest {
   }
 
   async serialThrowsWithCustomFailAction (t) {
-    const response = await this.addRoute({
+    const request = this.addRoute({
       method: 'GET',
       path: '/kernel-test-failAction',
       options: {
@@ -50,7 +50,9 @@ class HttpKernelTest extends BaseTest {
           }
         }
       }
-    }).get('/kernel-test-failAction')
+    })
+
+    const response = await request.get('/kernel-test-failAction')
 
     t.is(response.statusCode, 400)
   }

@@ -11,8 +11,17 @@ module.exports = [
     method: 'GET',
     path: '/signup',
     options: {
-      handler: async (request, h) => {
+      handler: async (_, h) => {
         return h.view('auth/signup', null, { layout: 'clean' })
+      }
+    },
+    ext: {
+      onPreHandler: {
+        method: async (request, h) => {
+          return request.auth.isAuthenticated
+            ? h.redirect('/home').takeover()
+            : h.continue
+        }
       }
     }
   },
@@ -35,7 +44,7 @@ module.exports = [
         onPreHandler: {
           method: async (request, h) => {
             return request.auth.isAuthenticated
-              ? h.redirect('/home')
+              ? h.redirect('/home').takeover()
               : h.continue
           }
         },

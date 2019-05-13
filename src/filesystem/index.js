@@ -16,9 +16,60 @@ class Filesystem {
    * to check whether the `file` exists instead of `stat`.
    *
    * @param {String} file
+   *
+   * @returns {Stats}
    */
   async stat (file) {
     return Fs.stat(file)
+  }
+
+  /**
+   * Retrieve the time when `file` was last modified.
+   *
+   * @param {String} file
+   *
+   * @returns {Date}
+   */
+  async lastModified (file) {
+    const { mtime } = await this.stat(file)
+
+    return mtime
+  }
+
+  /**
+   * Retrieve the time when `file` was last accessed.
+   *
+   * @param {String} file
+   *
+   * @returns {Date}
+   */
+  async lastAccessed (file) {
+    const { atime } = await this.stat(file)
+
+    return atime
+  }
+
+  /**
+   * Change the file system timestamps of the
+   * referenced `path`. Updates the last
+   * accessed and last modified properties.
+   *
+   * @param {String} path
+   * @param {Number} atime
+   * @param {Number} mtime
+   *
+   * @throws
+   */
+  async updateTimestamps (path, atime, mtime) {
+    if (!(atime instanceof Date)) {
+      throw new Error(`Updating the last accessed timestamp for ${path} requires an instance of "Date".`)
+    }
+
+    if (!(mtime instanceof Date)) {
+      throw new Error(`Updating the last modified timestamp for ${path} requires an instance of "Date".`)
+    }
+
+    return Fs.utimes(path, atime, mtime)
   }
 
   /**
@@ -28,8 +79,11 @@ class Filesystem {
    *
    * @param {String} path  - file or directory path
    * @param {Integer} mode - defaults to `fs.constants.F_OK`
+   *
+   * @returns {Boolean}
+   * @throws
    */
-  async access (path, mode) {
+  async canAccess (path, mode) {
     return Fs.access(path, mode)
   }
 
@@ -74,6 +128,8 @@ class Filesystem {
    *
    * @param {String} file
    * @param {String|Object} encoding
+   *
+   * @returns {String}
    */
   async readFile (file, encoding = 'utf8') {
     return Fs.readFile(file, encoding)

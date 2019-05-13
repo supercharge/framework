@@ -11,8 +11,8 @@ const ExceptionHandler = require('./exceptions/handle-system-exceptions')
 
 class Application {
   constructor () {
-    this.server = null
     this.appRoot = null
+    this.httpKernel = null
     this.exceptionHandler = new ExceptionHandler()
   }
 
@@ -20,7 +20,7 @@ class Application {
    * Returns the HTTP server instance.
    */
   getServer () {
-    return this.server
+    return this.httpKernel.getServer()
   }
 
   fromAppRoot (appRoot) {
@@ -49,7 +49,7 @@ class Application {
     this.loadEnvironmentVariables()
     await this.loadApplicationConfig()
     await this.initializeEvents()
-    await this.bootstrapHttpServer()
+    await this.bootstrapHttpKernel()
   }
 
   loadEnvironmentVariables () {
@@ -64,13 +64,7 @@ class Application {
    * Start the HTTP server.
    */
   async startServer () {
-    try {
-      await this.server.start()
-    } catch (err) {
-      this.server = null
-      console.error(err)
-      process.exit(1)
-    }
+    await this.httpKernel.start()
   }
 
   /**
@@ -78,11 +72,11 @@ class Application {
    * register core plugins, middleware, app
    * plugins and configure views.
    */
-  async bootstrapHttpServer () {
+  async bootstrapHttpKernel () {
     this.ensureAppKey()
 
-    const kernel = new HttpKernel(this)
-    this.server = await kernel.bootstrap()
+    this.httpKernel = new HttpKernel(this)
+    await this.httpKernel.bootstrap()
   }
 
   ensureAppKey () {
