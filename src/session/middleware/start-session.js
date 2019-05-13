@@ -1,12 +1,6 @@
 'use strict'
 
-const Config = require('../../config')
-
 class StartSession {
-  constructor () {
-    this.config = Config.get('session')
-  }
-
   /**
    * Initialize a new session for the request
    * or load previously stored data from
@@ -21,25 +15,17 @@ class StartSession {
     return h.continue
   }
 
+  /**
+   * Persist the requests’s session data
+   * in the defined data store.
+   *
+   * @param {Request} request
+   * @param {Toolkit} h
+   */
   async onPreResponse (request, h) {
-    if (!request.session.isDirty) {
-      return h.continue
-    }
-
-    const response = request.response
-
-    this.addCookieToResponse(response)
-    this.saveSession(request.session)
+    await request.session.persist(h)
 
     return h.continue
-  }
-
-  addCookieToResponse (request) {
-    //
-  }
-
-  saveSession (request) {
-    //
   }
 }
 
