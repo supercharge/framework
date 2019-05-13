@@ -30,6 +30,18 @@ class HandlebarsCompilerTest extends BaseTest {
     stub.restore()
   }
 
+  async ignoresDotfiles (t) {
+    const stub = this.stub(Logger, 'debug').returns()
+
+    const compiler = new ViewCompiler()
+    compiler.registerHelper('helpers-path', '.git')
+
+    t.false(compiler.hasHelper('.git'))
+    t.true(stub.notCalled)
+
+    stub.restore()
+  }
+
   async serialWillNotRegisterViewHelperAndNotFail (t) {
     const stub = this.stub(Logger, 'warn').returns()
     const helpersPath = Path.resolve(__dirname, 'fixtures')
@@ -38,7 +50,7 @@ class HandlebarsCompilerTest extends BaseTest {
     compiler.registerHelper(helpersPath, 'no-function-test-helper.js')
 
     t.false(compiler.hasHelper('no-function-test-helper'))
-    t.true(stub.notCalled)
+    t.true(stub.calledOnce)
 
     stub.restore()
   }

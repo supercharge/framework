@@ -34,7 +34,7 @@ class BaseRoutesTest extends BaseTest {
 
   async serialStartsAndStopsDefaultServer (t) {
     const app = new App().fromAppRoot(this.appRoot)
-    await app.bootstrapHttpServer()
+    await app.bootstrapHttpKernel()
     await app.startServer()
 
     const server = app.getServer()
@@ -48,7 +48,7 @@ class BaseRoutesTest extends BaseTest {
 
   async serialFailsToStartServer (t) {
     const app = new App().fromAppRoot(this.appRoot)
-    await app.bootstrapHttpServer()
+    await app.bootstrapHttpKernel()
     await app.startServer()
 
     const server = app.getServer()
@@ -65,7 +65,7 @@ class BaseRoutesTest extends BaseTest {
 
   async serialRunsShutdownFunctions (t) {
     const app = new App().fromAppRoot(this.appRoot)
-    await app.bootstrapHttpServer()
+    await app.bootstrapHttpKernel()
 
     const server = app.getServer()
     const stub = this.stub(server, 'start').throws(new Error())

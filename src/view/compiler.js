@@ -1,16 +1,19 @@
 'use strict'
 
-const Fs = require('fs')
 const Path = require('path')
+const Fs = require('./../filesystem')
 const Helper = require('./../helper')
 const Logger = require('./../logging')
 const Handlebars = require('handlebars')
+const { forEach } = require('p-iteration')
 
 class HandlebarsCompiler {
   constructor () {
     this._engine = this.createEngine()
+  }
 
-    this.loadHelpers()
+  async initialize () {
+    await this.loadHelpers()
   }
 
   instance () {
@@ -31,21 +34,25 @@ class HandlebarsCompiler {
     return Handlebars
   }
 
-  loadHelpers () {
+  async loadHelpers () {
     const helpersPaths = [].concat(this.helpersLocations())
 
-    helpersPaths.forEach(helpersPath => {
-      if (Fs.existsSync(helpersPath)) {
-        Fs.readdirSync(helpersPath).forEach(file => {
-          if (!file.startsWith('.')) {
-            this.registerHelper(helpersPath, file)
-          }
+    await forEach(helpersPaths, async helpersPath => {
+      if (await Fs.exists(helpersPath)) {
+        const files = await Fs.readDir(helpersPath)
+
+        files.forEach(file => {
+          this.registerHelper(helpersPath, file)
         })
       }
     })
   }
 
   registerHelper (helpersPath, file) {
+    if (this.isDotFile(file)) {
+      return
+    }
+
     file = Path.join(helpersPath, file)
 
     try {
@@ -54,14 +61,24 @@ class HandlebarsCompiler {
 
       if (typeof helper === 'function') {
         this._engine.registerHelper(name, helper)
-        Logger.debug('Registered helper function:  ' + Path.basename(file))
-      }
-      else {
-	      Logger.warn(`Helper file '${Path.basename(file)}' is not a function, it's a ${typeof helper}`)
+        Logger.debug(`Registered view helper:  ${Path.basename(file)}`)
+      } else {
+        Logger.warn(`View helper "${Path.basename(file)}" is not a function, it's a ${typeof helper}`)
       }
     } catch (err) {
       Logger.warn(`WARNING: failed to load helper ${file}: ${err.message}`)
     }
+  }
+
+  /**
+   * Determine whether the file is a dotfile.
+   *
+   * @param {String} file
+   *
+   * @returns {Boolean}
+   */
+  isDotFile (file) {
+    return file.startsWith('.')
   }
 
   filename (path, file) {
