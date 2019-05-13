@@ -17,7 +17,7 @@ class SessionManager {
     return Config.get('session')
   }
 
-  sessionConfigured () {
+  _sessionConfigured () {
     return !!this._defaultDriver()
   }
 
