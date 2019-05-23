@@ -40,7 +40,7 @@ class HttpKernel {
    */
   createServer () {
     return new Hapi.Server({
-      host: 'localhost',
+      host: Config.get('app.host'),
       port: Config.get('app.port'),
       router: {
         stripTrailingSlash: true
