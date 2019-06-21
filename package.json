@@ -7,7 +7,7 @@
     "url": "https://github.com/superchargejs/framework/issues"
   },
   "dependencies": {
-    "@adonisjs/ace": "~5.0.8",
+    "@adonisjs/ace": "~6.0.0",
     "argon2": "~0.19.3",
     "ava": "~1.2.1",
     "aws-sdk": "~2.404.0",
