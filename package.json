@@ -56,7 +56,8 @@
     "vision": "~5.4.4",
     "winston": "~3.2.1",
     "youch": "~2.0.10",
-    "youch-terminal": "~1.0.0"
+    "youch-terminal": "~1.0.0",
+    "snyk": "^1.189.0"
   },
   "devDependencies": {
     "cross-env": "~5.2.0",
@@ -94,6 +95,9 @@
     "coverage": "cross-env NODE_ENV=testing nyc --reporter=text --reporter=html ava",
     "lint": "eslint ** --fix",
     "test": "cross-env NODE_ENV=testing ava",
-    "test-single": "cross-env NODE_ENV=testing ava --match"
-  }
+    "test-single": "cross-env NODE_ENV=testing ava --match",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
+  },
+  "snyk": true
 }
