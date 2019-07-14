@@ -7,7 +7,8 @@ class RegistersCorePlugins {
       { plugin: require('vision') },
       { plugin: require('hapi-auth-cookie') },
       { plugin: require('hapi-request-utilities') },
-      { plugin: require('hapi-response-utilities') }
+      { plugin: require('hapi-response-utilities') },
+      { plugin: require('hapi-class-extension-points') }
     ])
 
     if (!this.app.isRunningTests()) {
