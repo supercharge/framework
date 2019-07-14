@@ -6,8 +6,8 @@ const SessionManager = require('./manager')
 const StartSession = require('./middleware/start-session')
 
 class SessionProvider {
-  constructor (app) {
-    this.app = app
+  constructor (server) {
+    this.server = server
     this.driver = null
     this.manager = SessionManager
   }
@@ -22,7 +22,7 @@ class SessionProvider {
     this._prepareSessionCookie()
     this._decorateRequest()
 
-    await this.app.registerMiddleware(StartSession)
+    await this.server.extClass(StartSession)
   }
 
   _sessionConfigured () {
@@ -34,7 +34,7 @@ class SessionProvider {
   }
 
   _server () {
-    return this.app.getServer()
+    return this.server.getServer()
   }
 
   _prepareSessionCookie () {
