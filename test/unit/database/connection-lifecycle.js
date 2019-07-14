@@ -11,7 +11,9 @@ class DatabaseConnectionLifecycleTest extends BaseTest {
   async serialStartConnection (t) {
     Config.set('database.default', 'mongoose')
     Config.set('database.connections', { mongoose: { database: 'boost' } })
-    this.modelsPathStub = this.stub(Helper, 'modelsPath').returns(Path.resolve(__dirname, 'fixtures/models'))
+    this.modelsPathStub = this.stub(Helper, 'modelsPath').returns(
+      Path.resolve(__dirname, 'fixtures/models')
+    )
 
     const lifecycle = new ConnectionLifecycle()
     await lifecycle.onPreStart()
@@ -27,7 +29,9 @@ class DatabaseConnectionLifecycleTest extends BaseTest {
 
   async serialNotConnectingWithoutDefaultDriver (t) {
     Config.set('database.default', false)
-    this.modelsPathStub = this.stub(Helper, 'modelsPath').returns(Path.resolve(__dirname, 'fixtures/models'))
+    this.modelsPathStub = this.stub(Helper, 'modelsPath').returns(
+      Path.resolve(__dirname, 'fixtures/models')
+    )
 
     const lifecycle = new ConnectionLifecycle()
     await lifecycle.onPreStart()
@@ -41,14 +45,13 @@ class DatabaseConnectionLifecycleTest extends BaseTest {
 
   async serialNotConnectingWithoutModels (t) {
     Config.set('database.default', 'mongoose')
-    this.modelsPathStub = this.stub(Helper, 'modelsPath').returns(Path.resolve(__dirname, 'fixtures/no-models'))
+    this.modelsPathStub = this.stub(Helper, 'modelsPath').returns(
+      Path.resolve(__dirname, 'fixtures/no-models')
+    )
 
     const lifecycle = new ConnectionLifecycle()
     await lifecycle.onPreStart()
-
-    const connection = Database.connection('mongoose')
-    t.false(await connection.isConnected())
-    t.false(await lifecycle.hasModels())
+    t.throws(() => Database.connection('mongoose'))
 
     this.modelsPathStub.restore()
   }

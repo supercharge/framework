@@ -1,5 +1,6 @@
 'use strict'
 
+const Path = require('path')
 const Helper = require('../../helper')
 const Config = require('../../config')
 const Database = require('../index')
@@ -86,10 +87,21 @@ class DatabaseConnectionLifecycle {
    */
   async modelFiles () {
     if (!this._modelFiles) {
-      this._modelFiles = await ReadRecursive(Helper.modelsPath())
+      this._modelFiles = await ReadRecursive(Helper.modelsPath(), [ file => this.isDotFile(file) ])
     }
 
     return this._modelFiles
+  }
+
+  /**
+   * Determine whether the file’s name starts with a `.`.
+   *
+   * @param {String} file
+   *
+   * @returns {Boolean}
+   */
+  isDotFile (file) {
+    return Path.basename(file).startsWith('.')
   }
 }
 

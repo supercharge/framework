@@ -4,8 +4,7 @@ const DatabaseConnectionLifecycle = require('./middleware/connection-lifecycle')
 
 class DatabaseBoostrapper {
   constructor (server) {
-    this._server = server
-    this._modelFiles = null
+    this.server = server
   }
 
   /**
@@ -14,7 +13,7 @@ class DatabaseBoostrapper {
    * database when starting and stopping the server.
    */
   async boot () {
-    await this._server.registerMiddleware(DatabaseConnectionLifecycle)
+    await this.server.extClass(DatabaseConnectionLifecycle)
   }
 }
 
