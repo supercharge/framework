@@ -5,7 +5,7 @@ const Fs = require('./../filesystem')
 const Helper = require('./../helper')
 const Logger = require('./../logging')
 const Handlebars = require('handlebars')
-const { forEach } = require('p-iteration')
+const Collect = require('@supercharge/collections')
 
 class HandlebarsCompiler {
   constructor () {
@@ -37,7 +37,7 @@ class HandlebarsCompiler {
   async loadHelpers () {
     const helpersPaths = [].concat(this.helpersLocations())
 
-    await forEach(helpersPaths, async helpersPath => {
+    await Collect(helpersPaths).forEach(async helpersPath => {
       if (await Fs.exists(helpersPath)) {
         const files = await Fs.readDir(helpersPath)
 
