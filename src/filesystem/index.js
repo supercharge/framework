@@ -329,7 +329,7 @@ class Filesystem {
    *
    * @param {Object} options
    */
-  async tempFile ({ extension, name } = {}) {
+  async tempFile ({ extension = '', name } = {}) {
     return Tempy.file({ extension, name })
   }
 

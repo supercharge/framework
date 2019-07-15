@@ -9,7 +9,7 @@ class ArgonHashinator {
    */
   constructor () {
     const config = Config.get('hashing.argon')
-    this.config = Object.assign({}, config, { type: Argon[Config.get('hashing.argon.type')] })
+    this.config = Object.assign({}, config, { type: Argon[Config.get('hashing.argon.type', 'argon2i')] })
   }
 
   /**
