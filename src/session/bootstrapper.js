@@ -39,10 +39,10 @@ class SessionProvider {
       password: Config.get('app.key')
     }
 
-    const config = this.manager.config()
-    const { name, options } = config.cookie
+    const { cookie } = this.manager.config()
+    const { name, options } = cookie
 
-    this.server.state(name, Object.assign({}, defaultOptions, options))
+    this.server.state(name, { ...defaultOptions, ...options })
   }
 
   _decorateRequest () {
