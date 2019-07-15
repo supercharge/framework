@@ -7,8 +7,8 @@ const Helper = require('../helper')
 const ReadRecursive = require('recursive-readdir')
 
 class AuthBoostrapper {
-  constructor (httpKernel) {
-    this._server = httpKernel.getServer()
+  constructor (server) {
+    this._server = server
     this._schemeFiles = null
     this._strategyFiles = null
     this._config = Config.get('auth', {})

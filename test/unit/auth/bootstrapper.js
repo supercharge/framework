@@ -6,6 +6,7 @@ const Helper = require('../../../helper')
 const BaseTest = require('../../../base-test')
 const HttpKernel = require('../../../src/foundation/http/kernel')
 const Application = require('../../../src/foundation/application')
+const AuthBootstrapper = require('../../../src/auth/bootstrapper')
 
 class AuthBootstrapperTest extends BaseTest {
   async serialLoadSchemesAndStrategies (t) {
@@ -13,7 +14,9 @@ class AuthBootstrapperTest extends BaseTest {
 
     const kernel = new HttpKernel(new Application())
     await kernel._createServer()
-    await kernel._registerBootstrappers()
+
+    const bootstrapper = new AuthBootstrapper(kernel.getServer())
+    await bootstrapper.boot()
 
     t.deepEqual(Object.keys(kernel.getServer().auth._schemes), ['test-scheme'])
     t.deepEqual(Object.keys(kernel.getServer().auth._strategies), ['test-auth'])
@@ -25,7 +28,9 @@ class AuthBootstrapperTest extends BaseTest {
 
     const kernel = new HttpKernel(new Application())
     await kernel._createServer()
-    await kernel._registerBootstrappers()
+
+    const bootstrapper = new AuthBootstrapper(kernel.getServer())
+    await bootstrapper.boot()
 
     t.deepEqual(Object.keys(kernel.getServer().auth._schemes), [])
     t.deepEqual(Object.keys(kernel.getServer().auth._strategies), [])
@@ -37,7 +42,9 @@ class AuthBootstrapperTest extends BaseTest {
 
     const kernel = new HttpKernel(new Application())
     await kernel._createServer()
-    await kernel._registerBootstrappers()
+
+    const bootstrapper = new AuthBootstrapper(kernel.getServer())
+    await bootstrapper.boot()
 
     t.deepEqual(Object.keys(kernel.getServer().auth._schemes), ['test-scheme'])
     t.deepEqual(Object.keys(kernel.getServer().auth._strategies), ['test-auth'])

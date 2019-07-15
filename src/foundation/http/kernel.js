@@ -18,7 +18,6 @@ class HttpKernel extends Many(RegistersRoutes, RegistersCorePlugins, RegistersAp
 
     this.app = app
     this.server = null
-
     this.bootstrappers = [
       '../../auth/bootstrapper.js',
       '../../database/bootstrapper.js',
@@ -106,7 +105,7 @@ class HttpKernel extends Many(RegistersRoutes, RegistersCorePlugins, RegistersAp
   _resolveBootstrapper (bootstrapper) {
     const Bootstrapper = require(Path.resolve(__dirname, bootstrapper))
 
-    return new Bootstrapper(this)
+    return new Bootstrapper(this.server)
   }
 
   getServer () {

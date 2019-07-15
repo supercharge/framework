@@ -23,7 +23,7 @@
     "dotenv-expand": "~5.1.0",
     "edit-dotenv": "~1.0.4",
     "events": "~3.0.0",
-    "execa": "~1.0.0",
+    "execa": "~2.0.3",
     "extends-classes": "~1.0.5",
     "fs-extra": "~8.1.0",
     "handlebars": "~4.1.2",
@@ -74,7 +74,7 @@
     "proxyquire": "~2.1.1"
   },
   "engines": {
-    "node": ">= 8.9.4"
+    "node": ">= 8.12.0"
   },
   "homepage": "https://superchargejs.com",
   "keywords": [
