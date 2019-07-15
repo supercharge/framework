@@ -3,10 +3,10 @@
 const Path = require('path')
 const Fs = require('../../../filesystem')
 const Config = require('../../../config')
-const App = require('../../../src/foundation/application')
 const BaseTest = require('../../../base-test')
+const App = require('../../../src/foundation/application')
 
-class BaseRoutesTest extends BaseTest {
+class AppLifecycleTest extends BaseTest {
   constructor () {
     super()
     this.appRoot = Path.resolve(__dirname, '..', '..', '..')
@@ -80,4 +80,4 @@ class BaseRoutesTest extends BaseTest {
   }
 }
 
-module.exports = new BaseRoutesTest()
+module.exports = new AppLifecycleTest()
