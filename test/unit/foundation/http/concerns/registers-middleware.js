@@ -12,6 +12,7 @@ class LoadMiddlewareTest extends BaseTest {
 
     const kernel = new HttpKernel(new Application())
     await kernel._createServer()
+    await kernel._loadCorePlugins()
 
     kernel._middlewareFolder = 'middleware/works-fine'
     await kernel._loadAppMiddleware()
@@ -39,6 +40,7 @@ class LoadMiddlewareTest extends BaseTest {
 
     const kernel = new HttpKernel(new Application())
     await kernel._createServer()
+    await kernel._loadCorePlugins()
 
     kernel._middlewareFolder = 'middleware/invalid-extension-point'
     await t.throwsAsync(kernel._loadAppMiddleware())
@@ -49,6 +51,7 @@ class LoadMiddlewareTest extends BaseTest {
 
     const kernel = new HttpKernel(new Application())
     await kernel._createServer()
+    await kernel._loadCorePlugins()
 
     kernel._middlewareFolder = 'middleware/invalid-format'
     await t.throwsAsync(kernel._loadAppMiddleware())
@@ -59,6 +62,7 @@ class LoadMiddlewareTest extends BaseTest {
 
     const kernel = new HttpKernel(new Application())
     await kernel._createServer()
+    await kernel._loadCorePlugins()
 
     await t.notThrowsAsync(kernel._loadAppMiddleware())
   }

@@ -3,5 +3,9 @@ export default {
   files: [
     'test/**/*.js',
     '!test/pretest-setup.js'
+  ],
+  'helpers': [
+    '**/helpers/**/*',
+    '**/fixtures/**/*'
   ]
 }

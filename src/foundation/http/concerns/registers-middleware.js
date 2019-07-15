@@ -5,25 +5,12 @@ const Path = require('path')
 const Fs = require('../../../filesystem')
 const Helper = require('../../../helper')
 const ReadRecursive = require('recursive-readdir')
+const Collect = require('@supercharge/collections')
 
 class RegistersMiddleware {
   constructor () {
     this._middlewareFiles = null
     this._middlewareFolder = 'app/middleware'
-
-    this._allowedMethods = [
-      'onPreStart',
-      'onPreStop',
-      'onRequest',
-      'onPreAuth',
-      'onCredentials',
-      'onPostAuth',
-      'onPreHandler',
-      'onPostHandler',
-      'onPreResponse',
-      'onPreStop',
-      'onPostStop'
-    ]
   }
 
   async _loadAppMiddleware () {
@@ -63,10 +50,10 @@ class RegistersMiddleware {
   }
 
   async loadMiddleware () {
-    const files = await this.loadMiddlewareFiles()
-
-    files.forEach(file => {
-      this.registerMiddleware(this.resolveMiddleware(file))
+    await Collect(
+      await this.loadMiddlewareFiles()
+    ).forEach(file => {
+      this._registerMiddleware(this.resolveMiddleware(file))
     })
   }
 
@@ -92,33 +79,7 @@ class RegistersMiddleware {
   }
 
   _loadFromClass (Middleware) {
-    const middleware = new Middleware(this.app)
-
-    if (!this._isMiddleware(middleware)) {
-      throw new Error(`Your middleware ${middleware.constructor.name} does not include a required method.
-        Implement at least one of the following methods:
-        -> ${this._allowedMethods}.
-      `)
-    }
-
-    this._implementedMiddlewareMethods(middleware).forEach(method => {
-      this.server.ext(method, async (request, h) => middleware[method](request, h))
-    })
-  }
-
-  _isMiddleware (middleware) {
-    return !_.isEmpty(this._implementedMiddlewareMethods(middleware))
-  }
-
-  _implementedMiddlewareMethods (middleware) {
-    return _.intersection(
-      this._allowedMethods,
-      this._classMethods(middleware)
-    )
-  }
-
-  _classMethods (middleware) {
-    return Object.getOwnPropertyNames(Object.getPrototypeOf(middleware))
+    this.server.extClass(Middleware)
   }
 }
 
