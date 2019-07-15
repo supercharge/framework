@@ -45,7 +45,9 @@ class MongooseConnector {
    * Create the MongoDB connection.
    */
   async connect () {
-    await Mongoose.connect(this.connectionString(), Object.assign({ useNewUrlParser: true }, this.config.options))
+    if (this.isNotConnected()) {
+      await Mongoose.connect(this.connectionString(), Object.assign({ useNewUrlParser: true }, this.config.options))
+    }
   }
 
   /**
@@ -68,9 +70,21 @@ class MongooseConnector {
   /**
    * Returns whether Mongoose has connected to
    * the MongoDB database instance.
+   *
+   * @returns {Boolean}
    */
   async isConnected () {
     return Mongoose.connection.readyState === 1
+  }
+
+  /**
+   * Determines whether Mongoose is not connected to
+   * the MongoDB database instance.
+   *
+   * @returns {Boolean}
+   */
+  async isNotConnected () {
+    return !this.isConnected()
   }
 }
 

@@ -25,7 +25,9 @@ class DatabaseManager {
    * @param {String} name
    */
   async connect (name) {
-    await this.connection(name).connect()
+    if (!this.hasConnection(name)) {
+      await this.connection(name).connect()
+    }
   }
 
   /**
