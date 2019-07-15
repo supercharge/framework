@@ -61,13 +61,24 @@ class DatabaseManager {
    * @returns {Object}
    */
   connection (name = this.defaultConnection()) {
-    if (this.connections[name]) {
+    if (this.hasConnection(name)) {
       return this.connections[name]
     }
 
     this.createNewConnection(name)
 
     return this.connections[name]
+  }
+
+  /**
+   * Determines whether a connection for `name` exists.
+   *
+   * @param {String} name
+   *
+   * @returns {Boolean}
+   */
+  hasConnection (name) {
+    return !!this.connections[name]
   }
 
   /**
