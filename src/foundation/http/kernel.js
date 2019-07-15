@@ -5,7 +5,7 @@ const Boom = require('boom')
 const Path = require('path')
 const Many = require('extends-classes')
 const Config = require('./../../config')
-const { forEachSeries } = require('p-iteration')
+const Collect = require('@supercharge/collections')
 const RegistersRoutes = require('./concerns/registers-routes')
 const GracefulShutdowns = require('./concerns/graceful-shutdowns')
 const RegistersMiddleware = require('./concerns/registers-middleware')
@@ -88,7 +88,7 @@ class HttpKernel extends Many(RegistersRoutes, RegistersCorePlugins, RegistersAp
    * Register the core dependencies.
    */
   async _registerBootstrappers () {
-    await forEachSeries(this.bootstrappers, async bootstrapper => {
+    await Collect(this.bootstrappers).forEachSeries(async bootstrapper => {
       await this._resolveBootstrapper(bootstrapper).boot()
     })
   }

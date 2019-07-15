@@ -3,8 +3,8 @@
 const Path = require('path')
 const Fs = require('../../../filesystem')
 const Helper = require('../../../helper')
-const { forEachSeries } = require('p-iteration')
 const ReadRecursive = require('recursive-readdir')
+const Collect = require('@supercharge/collections')
 
 class RegistersAppPlugins {
   constructor () {
@@ -13,7 +13,7 @@ class RegistersAppPlugins {
 
   async _loadAppPlugins () {
     if (await this.hasPlugins()) {
-      return this.registerPluginsTo()
+      return this.registerPluginsToServer()
     }
   }
 
@@ -28,13 +28,15 @@ class RegistersAppPlugins {
   }
 
   async hasPluginFiles () {
-    return Object.keys(await this.pluginFiles()).length > 0
+    return Collect(
+      await this.pluginFiles()
+    ).isNotEmpty()
   }
 
-  async registerPluginsTo () {
-    const files = await this.pluginFiles()
-
-    await forEachSeries(files, async plugin => {
+  async registerPluginsToServer () {
+    await Collect(
+      await this.pluginFiles()
+    ).forEachSeries(async plugin => {
       await this.server.register(this.resolveAppPlugin(plugin))
     })
   }

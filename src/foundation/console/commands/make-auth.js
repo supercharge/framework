@@ -3,7 +3,7 @@
 const Path = require('path')
 const Helper = require('../../../helper')
 const BaseCommand = require('./base-command')
-const { forEachSeries } = require('p-iteration')
+const Collect = require('@supercharge/collections')
 
 class MakeAuth extends BaseCommand {
   constructor () {
@@ -78,7 +78,7 @@ class MakeAuth extends BaseCommand {
   }
 
   async copyViews () {
-    await forEachSeries(Object.entries(this.views), async ([stub, dest]) => {
+    await Collect(Object.entries(this.views)).forEachSeries(async ([stub, dest]) => {
       if (await this.pathExists(Helper.viewsPath(dest))) {
         if (!await this.confirm(`The view [${dest}] exists already. Replace it?`)) {
           return
@@ -112,7 +112,7 @@ class MakeAuth extends BaseCommand {
   }
 
   async copyModels () {
-    await forEachSeries(Object.entries(this.models), async ([stub, dest]) => {
+    await Collect(Object.entries(this.models)).forEachSeries(async ([stub, dest]) => {
       if (await this.pathExists(Helper.modelsPath(dest))) {
         if (!await this.confirm(`The model [${dest}] exists already. Replace it?`)) {
           return
@@ -131,7 +131,7 @@ class MakeAuth extends BaseCommand {
   }
 
   async copyRoutes () {
-    await forEachSeries(Object.entries(this.routes), async ([stub, dest]) => {
+    await Collect(Object.entries(this.routes)).forEachSeries(async ([stub, dest]) => {
       if (await this.pathExists(Helper.routesPath(dest))) {
         if (!await this.confirm(`The route [${dest}] exists already. Replace it?`)) {
           return
@@ -150,7 +150,7 @@ class MakeAuth extends BaseCommand {
   }
 
   async copyStrategies () {
-    await forEachSeries(Object.entries(this.strategies), async ([stub, dest]) => {
+    await Collect(Object.entries(this.strategies)).forEachSeries(async ([stub, dest]) => {
       if (await this.pathExists(Helper.strategiesPath(dest))) {
         if (!await this.confirm(`The authentication strategy [${dest}] exists already. Replace it?`)) {
           return
@@ -167,7 +167,7 @@ class MakeAuth extends BaseCommand {
   }
 
   async copyEvents () {
-    await forEachSeries(Object.entries(this.events), async ([stub, dest]) => {
+    await Collect(Object.entries(this.events)).forEachSeries(async ([stub, dest]) => {
       if (await this.pathExists(Helper.eventsPath(dest))) {
         if (!await this.confirm(`The event [${dest}] exists already. Replace it?`)) {
           return
