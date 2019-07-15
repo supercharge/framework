@@ -8,7 +8,7 @@ class ConfigTest extends BaseTest {
   async loadsConfigFromTmpFolder (t) {
     await Config.loadConfigFiles(Path.resolve(__dirname, 'fixtures'))
     t.truthy(Config.config)
-    t.truthy(Object.keys(Config.config).length, 1)
+    t.is(Object.keys(Config.config).length, 1)
   }
 
   async emptyConfigFromNonExistentFolder (t) {

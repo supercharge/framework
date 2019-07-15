@@ -20,17 +20,17 @@ class MongooseConnectorTest extends BaseTest {
     Config.set('database', 'undefined')
   }
 
-  async connectorLifecycle (t) {
+  async serialConnectorLifecycle (t) {
     const connector = new MongooseConnector(Config.get('database.connections.mongoose'))
 
     await connector.connect()
-    t.true(await connector.isConnected())
+    t.true(connector.isConnected())
 
     await connector.close()
-    t.false(await connector.isConnected())
+    t.false(connector.isConnected())
   }
 
-  async mongooseFailsToConnectWithBadConnectionString (t) {
+  async serialMongooseFailsToConnectWithBadConnectionString (t) {
     const stub = this.stub(Logger, 'error').returns()
 
     const connector = new MongooseConnector({
@@ -42,9 +42,10 @@ class MongooseConnectorTest extends BaseTest {
       }
     })
 
-    await connector.connect()
+    await connector.close()
 
-    t.false(await connector.isConnected())
+    await t.throwsAsync(async () => connector.connect())
+    t.false(connector.isConnected())
 
     stub.restore()
   }

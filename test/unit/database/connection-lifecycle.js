@@ -19,10 +19,10 @@ class DatabaseConnectionLifecycleTest extends BaseTest {
     await lifecycle.onPreStart()
 
     const connection = Database.connection('mongoose')
-    t.true(await connection.isConnected())
+    t.true(connection.isConnected())
 
     await lifecycle.onPostStop()
-    t.false(await connection.isConnected())
+    t.false(connection.isConnected())
 
     this.modelsPathStub.restore()
   }
@@ -37,7 +37,7 @@ class DatabaseConnectionLifecycleTest extends BaseTest {
     await lifecycle.onPreStart()
 
     const connection = Database.connection('mongoose')
-    t.false(await connection.isConnected())
+    t.false(connection.isConnected())
     t.true(await lifecycle.hasModels())
 
     this.modelsPathStub.restore()

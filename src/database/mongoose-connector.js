@@ -73,7 +73,7 @@ class MongooseConnector {
    *
    * @returns {Boolean}
    */
-  async isConnected () {
+  isConnected () {
     return Mongoose.connection.readyState === 1
   }
 
@@ -83,7 +83,7 @@ class MongooseConnector {
    *
    * @returns {Boolean}
    */
-  async isNotConnected () {
+  isNotConnected () {
     return !this.isConnected()
   }
 }
