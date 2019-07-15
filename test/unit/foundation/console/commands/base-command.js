@@ -122,7 +122,7 @@ class BaseCommandTest extends BaseTest {
     t.true(content.includes('Supercharge'))
   }
 
-  async updateEnvContents (t) {
+  async serialUpdateEnvContents (t) {
     const file = Path.resolve(__dirname, 'fixtures/test.env')
     await Fs.ensureFile(file)
     await Fs.writeFile(file, 'NAME=')
@@ -130,8 +130,7 @@ class BaseCommandTest extends BaseTest {
     const command = new BaseCommand()
     await command.updateEnvContents(file, { NAME: 'Supercharge' })
 
-    const content = await Fs.readFile(file)
-    t.is(content, 'NAME=Supercharge')
+    t.is(await Fs.readFile(file), 'NAME=Supercharge')
 
     await Fs.remove(file)
   }
