@@ -1,8 +1,9 @@
 language: node_js
 node_js:
+  - $(jq -r '.engines.node' package.json)
   - 8
   - 10
-  - 11
+  - 12
   - node
 
 
