@@ -121,23 +121,6 @@ class HttpKernel extends Many(RegistersRoutes, RegistersCorePlugins, RegistersAp
       process.exit(1)
     }
   }
-
-  registerMiddleware (middleware) {
-    this._registerMiddleware(middleware)
-  }
-
-  /**
-   * Pass through any calls to unavailable method on this
-   * HTTP kernel class to the underlying hapi server.
-   * This method is available due to "extends Many()".
-   *
-   * @param {String} method
-   *
-   * @returns {Mixed}
-   */
-  __call (method) {
-    return this.server[method]
-  }
 }
 
 module.exports = HttpKernel
