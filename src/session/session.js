@@ -23,7 +23,7 @@ class Session {
    * Create a new session on first
    * visit or restore an existing session.
    */
-  async initialize () {
+  async _initialize () {
     if (this._isFirstVisit()) {
       return this._createNewSession()
     }
@@ -39,7 +39,7 @@ class Session {
    *
    * @param {Toolkit} h
    */
-  async persist (h) {
+  async _persist (h) {
     await this._addCookieToResponse(h)
     await this._saveSession(h)
   }
@@ -128,12 +128,12 @@ class Session {
   }
 
   /**
-   * Put a key-value-pair in the session.
+   * Remember a key-value-pair in the session.
    *
    * @param {String} key
    * @param {Mixed} value
    */
-  put (key, value) {
+  remember (key, value) {
     this.store[key] = value
     this.isDirty = true
   }

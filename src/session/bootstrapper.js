@@ -26,7 +26,7 @@ class SessionProvider {
   }
 
   _sessionConfigured () {
-    return !!this.manager._sessionConfigured()
+    return this.manager._sessionConfigured()
   }
 
   async _bootSessionDriver () {

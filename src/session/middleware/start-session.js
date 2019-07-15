@@ -10,7 +10,7 @@ class StartSession {
    * @param {Toolkit} h
    */
   async onPreAuth (request, h) {
-    await request.session.initialize()
+    await request.session._initialize()
 
     return h.continue
   }
@@ -23,7 +23,7 @@ class StartSession {
    * @param {Toolkit} h
    */
   async onPreResponse (request, h) {
-    await request.session.persist(h)
+    await request.session._persist(h)
 
     return h.continue
   }

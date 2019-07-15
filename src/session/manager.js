@@ -34,10 +34,6 @@ class SessionManager {
   }
 
   _hasDriver (name) {
-    if (!name) {
-      throw new Error('Missing “name” on Session.hasDriver(name)')
-    }
-
     return this.drivers.has(name)
   }
 
