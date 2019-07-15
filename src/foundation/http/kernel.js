@@ -44,7 +44,7 @@ class HttpKernel extends Many(RegistersRoutes, RegistersCorePlugins, RegistersAp
    */
   async _createServer () {
     this.server = new Hapi.Server({
-      host: 'localhost',
+      host: Config.get('app.host'),
       port: Config.get('app.port'),
       router: {
         stripTrailingSlash: true
