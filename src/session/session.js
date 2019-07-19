@@ -10,7 +10,7 @@ class Session {
     this.config = config
 
     this.id = null
-    this.store = null
+    this.store = {}
     this.isDirty = false
 
     const { name, options } = this.config.cookie
