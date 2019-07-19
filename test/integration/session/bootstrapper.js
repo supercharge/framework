@@ -1,6 +1,9 @@
 'use strict'
 
+const Path = require('path')
 const Config = require('../../../config')
+const Helper = require('../../../helper')
+const Fs = require('../../../filesystem')
 const BaseTest = require('../../../base-test')
 const Session = require('../../../src/session/manager')
 const HttpKernel = require('../../../src/foundation/http/kernel')
@@ -89,6 +92,8 @@ class SessionBootstrapperTest extends BaseTest {
 
   async serialUsesBootBuiltInDriver (t) {
     Config.set('session.driver', 'file')
+    const sessionsDir = Path.resolve(__dirname, 'fixtures/sessions')
+    Helper.setAppRoot(sessionsDir)
 
     const kernel = new HttpKernel(new Application())
     await kernel._loadCorePlugins()
@@ -113,48 +118,12 @@ class SessionBootstrapperTest extends BaseTest {
 
     const response = await server.inject(request)
     t.is(response.statusCode, 200)
+
+    const files = await Fs.readDir(`${Helper.storagePath('framework/sessions')}`)
+    t.is(files.length, 1)
+
+    await Fs.remove(sessionsDir)
   }
-
-  //   async serialUsesBootBuiltInDriver (t) {
-  //     Config.set('session.driver', 'file')
-
-  //     const sessionsDir = Path.resolve(__dirname, 'fixtures')
-  //     Helper.setAppRoot(sessionsDir)
-
-  //     const kernel = new HttpKernel(new Application())
-  //     kernel.bootstrappers.push(
-  //       Path.resolve(__dirname, '../../../src/session/bootstrapper')
-  //     )
-
-  //     await kernel.bootstrap()
-  //     const server = kernel.getServer()
-
-  //     server.route({
-  //       method: 'GET',
-  //       path: '/',
-  //       handler: request => {
-  //         t.truthy(request.session)
-
-  //         return 'ok'
-  //       }
-  //     })
-
-  //     const request = {
-  //       method: 'GET',
-  //       url: '/'
-  //     }
-
-  //     const response = await server.inject(request)
-  //     t.is(response.statusCode, 200)
-
-  //     const file = await Fs.readDir(`${Helper.storagePath('framework/sessions')}`)
-  //     console.log(file)
-  //     console.log(file)
-  //     console.log(file)
-  //     console.log(file)
-
-  // await Fs.remove(sessionsDir)
-//   }
 }
 
 module.exports = new SessionBootstrapperTest()
