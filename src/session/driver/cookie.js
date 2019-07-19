@@ -2,8 +2,7 @@
 
 class CookieDriver {
   constructor (config) {
-    this.config = config
-    this.cookieName = this.config.cookie.name
+    this.cookieName = config.cookie.name
   }
 
   /**
@@ -38,12 +37,12 @@ class CookieDriver {
   /**
    * Store session data in a cookie.
    *
-   * @param {String} key
+   * @param {String} sessionId
    * @param {Object} values
    * @param {Toolkit} h
    */
-  async write (key, values, h) {
-    h.cookie(this.cookieName, Object.assign({ id: key }, values))
+  async write (_, values, h) {
+    h.cookie(this.cookieName, values)
   }
 
   /**
@@ -51,13 +50,13 @@ class CookieDriver {
    * Extending the cookie lifetime is
    * possible by re-storing it.
    *
-   * @param {String} key
+   * @param {String} sessionId
    * @param {Object} values
    * @param {Toolkit} h
    */
 
-  async touch (key, value, h) {
-    this.write(key, value, h)
+  async touch (_, value, h) {
+    this.write(_, value, h)
   }
 }
 
