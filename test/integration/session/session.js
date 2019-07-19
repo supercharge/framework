@@ -1,14 +1,15 @@
 'use strict'
 
-const Path = require('path')
 const Config = require('../../../config')
 const BaseTest = require('../../../base-test')
 const Session = require('../../../src/session/manager')
+const SessionManager = require('../../../src/session/manager')
 const HttpKernel = require('../../../src/foundation/http/kernel')
 const Application = require('../../../src/foundation/application')
 const FakeSessionDriver = require('./fixtures/fake-session-driver')
+const SessionBootstrapper = require('../../../src/session/bootstrapper')
 
-class SessionBootstrapperTest extends BaseTest {
+class SessionTest extends BaseTest {
   before () {
     Config.set('app.key', 'a'.repeat(32))
     Config.set('session.cookie', { name: 'supercharge-test-cookie', options: {} })
@@ -16,14 +17,15 @@ class SessionBootstrapperTest extends BaseTest {
 
   async serialRestoresSessionOnSecondVisit (t) {
     Config.set('session.driver', 'fake-null')
-    Session.extends('fake-null', FakeSessionDriver)
+    Session.extend('fake-null', FakeSessionDriver)
 
     const kernel = new HttpKernel(new Application())
-    kernel.bootstrappers.push(
-      Path.resolve(__dirname, '../../../src/session/bootstrapper')
-    )
+    await kernel._loadCorePlugins()
+    await kernel._registerBootstrapper(SessionBootstrapper)
 
-    await kernel.bootstrap()
+    const driver = SessionManager.driver('fake-null')
+    t.truthy(driver)
+
     const server = kernel.getServer()
 
     let sessionId
@@ -67,4 +69,4 @@ class SessionBootstrapperTest extends BaseTest {
   }
 }
 
-module.exports = new SessionBootstrapperTest()
+module.exports = new SessionTest()
