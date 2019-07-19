@@ -5,13 +5,19 @@ const Session = require('./session')
 const SessionManager = require('./manager')
 const StartSession = require('./middleware/start-session')
 
-class SessionProvider {
+class SessionBootstrapper {
   constructor (server) {
     this.server = server
     this.driver = null
     this.manager = SessionManager
   }
 
+  /**
+   * Add session support to the HTTP server for a configured session driver.
+   * Starts the driver instance, prepares the session cookie and decorates
+   * the request with `request.session`. Extends the request lifecycle
+   * with a session extension point.
+   */
   async boot () {
     if (!this._sessionConfigured()) {
       return
@@ -25,14 +31,25 @@ class SessionProvider {
     await this.server.extClass(StartSession)
   }
 
+  /**
+   * Determines whether a session driver is configured.
+   *
+   * @returns {Boolean}
+   */
   _sessionConfigured () {
     return this.manager._sessionConfigured()
   }
 
+  /**
+   * Creates and boots the session driver.
+   */
   async _bootSessionDriver () {
     return this.manager.driver()
   }
 
+  /**
+   * Initializes the session cookie on the HTTP server.
+   */
   _prepareSessionCookie () {
     const defaultOptions = {
       encoding: 'iron',
@@ -45,12 +62,23 @@ class SessionProvider {
     this.server.state(name, { ...defaultOptions, ...options })
   }
 
+  /**
+   * Decorates the HTTP request object with a `request.session` property.
+   * This session member contains the session details for each request.
+   */
   _decorateRequest () {
     this.server.decorate('request', 'session', (request) => this._sessionDecoration(request), {
       apply: true // ensure the "request.session" decoration for each request
     })
   }
 
+  /**
+   * Create a new session instance for the current request.
+   *
+   * @param {Object} request
+   *
+   * @returns {Session}
+   */
   _sessionDecoration (request) {
     return new Session({
       request,
@@ -60,4 +88,4 @@ class SessionProvider {
   }
 }
 
-module.exports = SessionProvider
+module.exports = SessionBootstrapper
