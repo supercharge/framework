@@ -76,6 +76,24 @@ class SessionManager {
   }
 
   /**
+   * Add a session driver instance to the internal cache.
+   *
+   * @param {String} name
+   * @param {Object} driver
+   */
+  _addDriver (name, driver) {
+    this.drivers.set(name, driver)
+  }
+
+  /**
+   * Remove a session driver instance from the cache.
+   * @param {String} name
+   */
+  _deleteDriver (name) {
+    this.drivers.delete(name)
+  }
+
+  /**
    * Instantiates a session driver identified by `name`.
    *
    * @param {name} name
@@ -95,6 +113,29 @@ class SessionManager {
   }
 
   /**
+   * Start the session striver.
+   *
+   * @param {String} name
+   */
+  async _startDriver (name) {
+    const driver = await this.driver(name)
+    await driver.start()
+  }
+
+  /**
+   * Stop the session driver.
+   *
+   * @param {String} name
+   */
+  async _stopDriver (name = this._defaultDriver()) {
+    if (this._hasDriver(name)) {
+      const driver = await this.driver(name)
+      await driver.stop()
+      this._deleteDriver(name)
+    }
+  }
+
+  /**
    * Create and boot a session driver added
    * by the `.extend()` method.
    *
@@ -103,7 +144,7 @@ class SessionManager {
    * @returns {Object}
    */
   async _createCustomDriver (name) {
-    await this._createAndBoot(name, this.customCreators.get(name))
+    await this._create(name, this.customCreators.get(name))
   }
 
   /**
@@ -115,7 +156,7 @@ class SessionManager {
    * @returns {Object}
    */
   async _createBuiltInDriver (name) {
-    await this._createAndBoot(name, Drivers[name])
+    await this._create(name, Drivers[name])
   }
 
   /**
@@ -124,11 +165,10 @@ class SessionManager {
    * @param {String} name
    * @param {Class} Driver
    */
-  async _createAndBoot (name, Driver) {
+  async _create (name, Driver) {
     const driver = new Driver(this.config())
-    await driver.start()
 
-    this.drivers.set(name, driver)
+    this._addDriver(name, driver)
   }
 }
 

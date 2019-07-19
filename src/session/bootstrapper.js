@@ -4,6 +4,7 @@ const Config = require('../config')
 const Session = require('./session')
 const SessionManager = require('./manager')
 const StartSession = require('./middleware/start-session')
+const StartSessionDriver = require('./middleware/start-driver')
 
 class SessionBootstrapper {
   constructor (server) {
@@ -23,12 +24,12 @@ class SessionBootstrapper {
       return
     }
 
-    this.driver = await this._bootSessionDriver()
+    this.driver = await this._sessionDriver()
 
     this._prepareSessionCookie()
     this._decorateRequest()
 
-    await this.server.extClass(StartSession)
+    await this.server.extClass(StartSessionDriver, StartSession)
   }
 
   /**
@@ -43,7 +44,7 @@ class SessionBootstrapper {
   /**
    * Creates and boots the session driver.
    */
-  async _bootSessionDriver () {
+  async _sessionDriver () {
     return this.manager.driver()
   }
 

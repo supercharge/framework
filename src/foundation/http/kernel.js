@@ -88,14 +88,14 @@ class HttpKernel extends Many(RegistersRoutes, RegistersCorePlugins, RegistersAp
    */
   async _registerBootstrappers () {
     await Collect(this.bootstrappers).forEachSeries(async bootstrapper => {
-      return this._registerBootstrapper(bootstrapper)
+      return this._startBootstrapper(bootstrapper)
     })
   }
 
   /**
    * Register a single bootstrapper.
    */
-  async _registerBootstrapper (bootstrapper) {
+  async _startBootstrapper (bootstrapper) {
     let Bootstrapper = bootstrapper
 
     if (typeof bootstrapper === 'string') {

@@ -21,7 +21,7 @@ class SessionTest extends BaseTest {
 
     const kernel = new HttpKernel(new Application())
     await kernel._loadCorePlugins()
-    await kernel._registerBootstrapper(SessionBootstrapper)
+    await kernel._startBootstrapper(SessionBootstrapper)
 
     const driver = SessionManager.driver('fake-null')
     t.truthy(driver)

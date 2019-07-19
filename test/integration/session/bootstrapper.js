@@ -22,7 +22,7 @@ class SessionBootstrapperTest extends BaseTest {
 
     const kernel = new HttpKernel(new Application())
     await kernel._loadCorePlugins()
-    await kernel._registerBootstrapper(SessionBootstrapper)
+    await kernel._startBootstrapper(SessionBootstrapper)
 
     const server = kernel.getServer()
 
@@ -47,13 +47,38 @@ class SessionBootstrapperTest extends BaseTest {
     t.is(response.headers['set-cookie'], undefined)
   }
 
+  async serialStartAndStopTheSessionDriver (t) {
+    Config.set('session.driver', 'fake-null')
+    Session.extend('fake-null', FakeSessionDriver)
+
+    const kernel = new HttpKernel(new Application())
+    await kernel._loadCorePlugins()
+    await kernel._startBootstrapper(SessionBootstrapper)
+
+    const server = kernel.getServer()
+    await server.start()
+    t.true(await Session._hasDriver('fake-null'))
+    await server.stop()
+  }
+
+  async serialIgnoresUnknownSessionDriver (t) {
+    Config.set('session.driver', 'fake-null')
+    Session.extend('fake-null', FakeSessionDriver)
+
+    const kernel = new HttpKernel(new Application())
+    await kernel._loadCorePlugins()
+    await kernel._startBootstrapper(SessionBootstrapper)
+
+    await t.notThrowsAsync(async () => Session._stopDriver('not-existing'))
+  }
+
   async serialAppendsResponseSessionCookie (t) {
     Config.set('session.driver', 'fake-null')
     Session.extend('fake-null', FakeSessionDriver)
 
     const kernel = new HttpKernel(new Application())
     await kernel._loadCorePlugins()
-    await kernel._registerBootstrapper(SessionBootstrapper)
+    await kernel._startBootstrapper(SessionBootstrapper)
 
     const server = kernel.getServer()
 
@@ -87,7 +112,7 @@ class SessionBootstrapperTest extends BaseTest {
     const kernel = new HttpKernel(new Application())
     await kernel._loadCorePlugins()
 
-    await t.throwsAsync(async () => kernel._registerBootstrapper(SessionBootstrapper))
+    await t.throwsAsync(async () => kernel._startBootstrapper(SessionBootstrapper))
   }
 
   async serialUsesBootBuiltInDriver (t) {
@@ -97,7 +122,7 @@ class SessionBootstrapperTest extends BaseTest {
 
     const kernel = new HttpKernel(new Application())
     await kernel._loadCorePlugins()
-    await kernel._registerBootstrapper(SessionBootstrapper)
+    await kernel._startBootstrapper(SessionBootstrapper)
 
     const server = kernel.getServer()
 
