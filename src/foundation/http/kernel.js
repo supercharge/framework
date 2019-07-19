@@ -17,7 +17,7 @@ class HttpKernel extends Many(RegistersRoutes, RegistersCorePlugins, RegistersAp
     super()
 
     this.app = app
-    this.server = null
+    this.server = this._createServer()
     this.bootstrappers = [
       '../../auth/bootstrapper.js',
       '../../database/bootstrapper.js',
@@ -26,11 +26,10 @@ class HttpKernel extends Many(RegistersRoutes, RegistersCorePlugins, RegistersAp
   }
 
   async bootstrap () {
-    await this._createServer()
     await this._loadCorePlugins()
     await this._registerBootstrappers()
-
     await this._loadAppPlugins()
+
     await this._loadAppRoutes()
     await this._loadAppMiddleware()
     await this._registerShutdownHandler()
@@ -41,8 +40,8 @@ class HttpKernel extends Many(RegistersRoutes, RegistersCorePlugins, RegistersAp
   /**
    * Create a new hapi server instance.
    */
-  async _createServer () {
-    this.server = new Hapi.Server({
+  _createServer () {
+    return new Hapi.Server({
       host: Config.get('app.host'),
       port: Config.get('app.port'),
       router: {
@@ -89,8 +88,21 @@ class HttpKernel extends Many(RegistersRoutes, RegistersCorePlugins, RegistersAp
    */
   async _registerBootstrappers () {
     await Collect(this.bootstrappers).forEachSeries(async bootstrapper => {
-      await this._resolveBootstrapper(bootstrapper).boot()
+      return this._registerBootstrapper(bootstrapper)
     })
+  }
+
+  /**
+   * Register a single bootstrapper.
+   */
+  async _registerBootstrapper (bootstrapper) {
+    let Bootstrapper = bootstrapper
+
+    if (typeof bootstrapper === 'string') {
+      Bootstrapper = this._resolveBootstrapperFromPath(bootstrapper)
+    }
+
+    return new Bootstrapper(this.server).boot()
   }
 
   /**
@@ -98,14 +110,14 @@ class HttpKernel extends Many(RegistersRoutes, RegistersCorePlugins, RegistersAp
    * a bootstrapper class and pass the
    * app argument to it.
    *
-   * @param {String} bootstrapper
+   * @param {String} path
    *
    * @returns {Class}
    */
-  _resolveBootstrapper (bootstrapper) {
-    const Bootstrapper = require(Path.resolve(__dirname, bootstrapper))
-
-    return new Bootstrapper(this.server)
+  _resolveBootstrapperFromPath (path) {
+    return require(
+      Path.resolve(__dirname, path)
+    )
   }
 
   getServer () {
