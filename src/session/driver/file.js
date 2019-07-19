@@ -2,7 +2,6 @@
 
 const Path = require('path')
 const Moment = require('moment')
-const Bourne = require('@hapi/bourne')
 const Fs = require('../../filesystem')
 const Helper = require('../../helper')
 
@@ -32,61 +31,88 @@ class FileDriver {
   /**
    * Read the session data.
    *
-   * @param {String} key
+   * @param {String} sessionId
    *
    * @returns {Object}
    */
-  async read (key) {
-    const file = this._sessionFile(key)
+  async read (sessionId) {
+    const file = this._sessionFilePath(sessionId)
 
-    if (await Fs.exists(file)) {
-      if (await Fs.lastModified(file) >= Moment().subtract(this.lifetime, 'minutes').toDate()) {
-        return Bourne.parse(
-          await Fs.readFile(this._sessionFile(key))
-        )
-      }
+    if (await this.isMissing(file)) {
+      return {}
     }
 
-    return {}
+    if (await this.isExpired(file)) {
+      return {}
+    }
+
+    return JSON.parse(
+      await Fs.readFile(file)
+    )
+  }
+
+  /**
+   * Determines whether the session file is not existing.
+   *
+   * @param {String} file
+   *
+   * @returns {Boolean}
+   */
+  async isMissing (file) {
+    return !await Fs.exists(file)
+  }
+
+  /**
+   * Determines whether the session file is older
+   * than the allowed session lifetime.
+   *
+   * @param {String} file
+   *
+   * @returns {Boolean}
+   */
+  async isExpired (file) {
+    const lastModified = await Fs.lastModified(file)
+
+    return lastModified < Moment().subtract(this.lifetime, 'minutes').toDate()
   }
 
   /**
    * Store session data in a file.
    *
-   * @param {String} key
+   * @param {String} sessionId
    * @param {Object} values
    */
-  async write (key, values) {
-    await Fs.writeFile(this._sessionFile(key), JSON.stringify(values))
+  async write (sessionId, values) {
+    await Fs.writeFile(this._sessionFilePath(sessionId), JSON.stringify(values))
   }
 
   /**
    * Keep session data alive by updating
    * the last modified time.
    *
-   * @param {String} key
+   * @param {String} sessionId
    * @param {Object} values
    */
-  async touch (key, values) {
+  async touch (sessionId, values) {
     const time = new Date()
-    const file = this._sessionFile(key)
+    const file = this._sessionFilePath(sessionId)
 
     if (await Fs.exists(file)) {
       return Fs.updateTimestamps(file, time, time)
     }
 
-    await this.write(key, values)
+    await this.write(sessionId, values)
   }
 
   /**
    * Returns the session file path.
    *
-   * @param {String} key
+   * @param {String} sessionId
    *
    * @returns {String}
    */
-  _sessionFile (key) {
-    return Path.resolve(this.location, `${key}.json`)
+  _sessionFilePath (sessionId) {
+    return Path.resolve(this.location, `${sessionId}.json`)
   }
 }
 
