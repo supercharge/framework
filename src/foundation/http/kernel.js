@@ -1,8 +1,8 @@
 'use strict'
 
-const Hapi = require('hapi')
-const Boom = require('boom')
 const Path = require('path')
+const Hapi = require('@hapi/hapi')
+const Boom = require('@hapi/boom')
 const Many = require('extends-classes')
 const Config = require('./../../config')
 const Collect = require('@supercharge/collections')

@@ -221,7 +221,10 @@ class PendingRequest {
       method,
       headers: this.headers,
       payload: this.payload,
-      credentials: this.user
+      auth: {
+        strategy: 'default',
+        credentials: this.user || {}
+      }
     })
 
     // clean up all listeners

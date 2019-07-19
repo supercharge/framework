@@ -1,6 +1,6 @@
 'use strict'
 
-const Hapi = require('hapi')
+const Hapi = require('@hapi/hapi')
 const BaseTest = require('../../../base-test')
 const CookieDriver = require('../../../src/session/driver/cookie')
 
