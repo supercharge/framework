@@ -5,7 +5,7 @@ class RegistersCorePlugins {
     await this.server.register([
       { plugin: require('inert') },
       { plugin: require('vision') },
-      { plugin: require('hapi-auth-cookie') },
+      { plugin: require('@hapi/cookie') },
       { plugin: require('hapi-request-utilities') },
       { plugin: require('hapi-response-utilities') },
       { plugin: require('hapi-class-extension-points') }
