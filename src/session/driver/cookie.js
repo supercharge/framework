@@ -28,7 +28,9 @@ class CookieDriver {
    */
   async read (_, request) {
     if (request.hasCookie(this.cookieName)) {
-      return request.cookie(this.cookieName)
+      const { values } = request.cookie(this.cookieName)
+
+      return values
     }
 
     return {}
@@ -41,8 +43,8 @@ class CookieDriver {
    * @param {Object} values
    * @param {Toolkit} h
    */
-  async write (_, values, h) {
-    h.cookie(this.cookieName, values)
+  async write (sessionId, values, h) {
+    h.cookie(this.cookieName, { id: sessionId, values })
   }
 
   /**
