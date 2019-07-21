@@ -14,6 +14,19 @@ class SessionBootstrapper {
   }
 
   /**
+   * Returns the default cookie options.
+   *
+   * @returns {Object}
+   */
+  defaultCookieOptions () {
+    return {
+      encoding: 'iron',
+      clearInvalid: true,
+      password: Config.get('app.key')
+    }
+  }
+
+  /**
    * Add session support to the HTTP server for a configured session driver.
    * Starts the driver instance, prepares the session cookie and decorates
    * the request with `request.session`. Extends the request lifecycle
@@ -52,15 +65,10 @@ class SessionBootstrapper {
    * Initializes the session cookie on the HTTP server.
    */
   _prepareSessionCookie () {
-    const defaultOptions = {
-      encoding: 'iron',
-      password: Config.get('app.key')
-    }
-
     const { cookie } = this.manager.config()
     const { name, options } = cookie
 
-    this.server.state(name, { ...defaultOptions, ...options })
+    this.server.state(name, { ...this.defaultCookieOptions(), ...options })
   }
 
   /**
