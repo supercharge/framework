@@ -1,11 +1,12 @@
 'use strict'
 
 const Path = require('path')
+const Database = require('../index')
 const Helper = require('../../helper')
 const Config = require('../../config')
 const Fs = require('../../filesystem')
-const Database = require('../index')
 const ReadRecursive = require('recursive-readdir')
+const Collect = require('@supercharge/collections')
 
 class DatabaseConnectionLifecycle {
   constructor () {
@@ -78,7 +79,7 @@ class DatabaseConnectionLifecycle {
    * @returns {Boolean}
    */
   async hasModels () {
-    return Object.keys(await this.modelFiles()).length > 0
+    return Collect(await this.modelFiles()).isNotEmpty()
   }
 
   /**

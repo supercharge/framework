@@ -56,6 +56,20 @@ class DatabaseConnectionLifecycleTest extends BaseTest {
 
     this.modelsPathStub.restore()
   }
+
+  async serialNotConnectingWhenModelsPathNotExistent (t) {
+    Config.set('database.default', 'mongoose')
+    this.modelsPathStub = this.stub(Helper, 'modelsPath').returns(
+      Path.resolve(__dirname, 'fixtures/not-existing-models-folder')
+    )
+
+    await Database.close()
+    await new ConnectionLifecycle().onPreStart()
+
+    t.false(Database.hasConnection('mongoose'))
+
+    this.modelsPathStub.restore()
+  }
 }
 
 module.exports = new DatabaseConnectionLifecycleTest()

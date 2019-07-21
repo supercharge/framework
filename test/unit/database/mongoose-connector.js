@@ -30,6 +30,17 @@ class MongooseConnectorTest extends BaseTest {
     t.false(connector.isConnected())
   }
 
+  async serialEnsuresConnectingOnce (t) {
+    const connector = new MongooseConnector(Config.get('database.connections.mongoose'))
+
+    await connector.connect()
+    await connector.connect()
+    t.true(connector.isConnected())
+
+    await connector.close()
+    t.true(connector.isNotConnected())
+  }
+
   async serialMongooseFailsToConnectWithBadConnectionString (t) {
     const stub = this.stub(Logger, 'error').returns()
 
