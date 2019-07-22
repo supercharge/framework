@@ -9,9 +9,7 @@ class SessionCookieDriverTest extends BaseTest {
     return {
       cookie: {
         name: 'supercharge',
-        options: {
-          encoding: 'base64json'
-        }
+        encoding: 'base64json'
       }
     }
   }
@@ -23,8 +21,8 @@ class SessionCookieDriverTest extends BaseTest {
       require('hapi-response-utilities')
     ])
 
-    const { cookie } = this._options()
-    server.state(cookie.name, cookie.options)
+    const { name, ...options } = this._options().cookie
+    server.state(name, options)
 
     return server
   }

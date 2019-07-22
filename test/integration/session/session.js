@@ -12,7 +12,7 @@ const SessionBootstrapper = require('../../../src/session/bootstrapper')
 class SessionTest extends BaseTest {
   before () {
     Config.set('app.key', 'a'.repeat(32))
-    Config.set('session.cookie', { name: 'supercharge-test-cookie', options: {} })
+    Config.set('session.cookie', { name: 'supercharge-test-cookie' })
   }
 
   async serialRestoresSessionOnSecondVisit (t) {
