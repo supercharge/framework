@@ -78,6 +78,18 @@ class Env {
   set (key, value) {
     _.set(process.env, key, value)
   }
+
+  /**
+   * Determines whether the `NODE_ENV` environment
+   * variable is set to `production`.
+   *
+   * @returns {Boolean}
+   */
+  isProduction () {
+    const env = this.get('NODE_ENV', 'development').toLowerCase()
+
+    return env === 'production'
+  }
 }
 
 module.exports = new Env()

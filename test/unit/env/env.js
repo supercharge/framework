@@ -49,6 +49,13 @@ class EnvTest extends BaseTest {
     const value = Env.get('NOT_AVAILABLE', 'tmp')
     t.is(value, 'tmp')
   }
+
+  async isProduction (t) {
+    t.false(Env.isProduction())
+
+    process.env.NODE_ENV = 'production'
+    t.true(Env.isProduction())
+  }
 }
 
 module.exports = new EnvTest()
