@@ -13,9 +13,8 @@ class Session {
     this.store = {}
     this.isDirty = false
 
-    const { name, options } = this.config.cookie
+    const { name } = this.config.cookie
     this.cookieName = name
-    this.cookieOptions = options
   }
 
   /**

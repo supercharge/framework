@@ -21,7 +21,6 @@ class SessionBootstrapper {
   defaultCookieOptions () {
     return {
       encoding: 'iron',
-      clearInvalid: true,
       password: Config.get('app.key')
     }
   }
@@ -66,7 +65,7 @@ class SessionBootstrapper {
    */
   _prepareSessionCookie () {
     const { cookie } = this.manager.config()
-    const { name, options } = cookie
+    const { name, ...options } = cookie
 
     this.server.state(name, { ...this.defaultCookieOptions(), ...options })
   }
