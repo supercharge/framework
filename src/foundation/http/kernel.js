@@ -3,8 +3,8 @@
 const Path = require('path')
 const Hapi = require('@hapi/hapi')
 const Boom = require('@hapi/boom')
+const Config = require('../../config')
 const Many = require('extends-classes')
-const Config = require('./../../config')
 const Collect = require('@supercharge/collections')
 const RegistersRoutes = require('./concerns/registers-routes')
 const GracefulShutdowns = require('./concerns/graceful-shutdowns')
@@ -87,15 +87,19 @@ class HttpKernel extends Many(RegistersRoutes, RegistersCorePlugins, RegistersAp
    * Register the core dependencies.
    */
   async _registerBootstrappers () {
-    await Collect(this.bootstrappers).forEachSeries(async bootstrapper => {
-      return this._startBootstrapper(bootstrapper)
+    await Collect(
+      this.bootstrappers.concat(
+        await this._loadUserlandBootstrappers()
+      )
+    ).forEachSeries(async bootstrapper => {
+      return this._registerBootstrapper(bootstrapper)
     })
   }
 
   /**
    * Register a single bootstrapper.
    */
-  async _startBootstrapper (bootstrapper) {
+  async _registerBootstrapper (bootstrapper) {
     let Bootstrapper = bootstrapper
 
     if (typeof bootstrapper === 'string') {
