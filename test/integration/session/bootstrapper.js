@@ -22,7 +22,7 @@ class SessionBootstrapperTest extends BaseTest {
 
     const kernel = new HttpKernel(new Application())
     await kernel._loadCorePlugins()
-    await kernel._startBootstrapper(SessionBootstrapper)
+    await kernel._registerBootstrapper(SessionBootstrapper)
 
     const server = kernel.getServer()
 
@@ -53,7 +53,7 @@ class SessionBootstrapperTest extends BaseTest {
 
     const kernel = new HttpKernel(new Application())
     await kernel._loadCorePlugins()
-    await kernel._startBootstrapper(SessionBootstrapper)
+    await kernel._registerBootstrapper(SessionBootstrapper)
 
     const server = kernel.getServer()
     await server.start()
@@ -67,7 +67,7 @@ class SessionBootstrapperTest extends BaseTest {
 
     const kernel = new HttpKernel(new Application())
     await kernel._loadCorePlugins()
-    await kernel._startBootstrapper(SessionBootstrapper)
+    await kernel._registerBootstrapper(SessionBootstrapper)
 
     await t.notThrowsAsync(async () => Session._stopDriver('not-existing'))
   }
@@ -78,7 +78,7 @@ class SessionBootstrapperTest extends BaseTest {
 
     const kernel = new HttpKernel(new Application())
     await kernel._loadCorePlugins()
-    await kernel._startBootstrapper(SessionBootstrapper)
+    await kernel._registerBootstrapper(SessionBootstrapper)
 
     const server = kernel.getServer()
 
@@ -112,7 +112,7 @@ class SessionBootstrapperTest extends BaseTest {
     const kernel = new HttpKernel(new Application())
     await kernel._loadCorePlugins()
 
-    await t.throwsAsync(async () => kernel._startBootstrapper(SessionBootstrapper))
+    await t.throwsAsync(async () => kernel._registerBootstrapper(SessionBootstrapper))
   }
 
   async serialUsesBootBuiltInDriver (t) {
@@ -122,7 +122,7 @@ class SessionBootstrapperTest extends BaseTest {
 
     const kernel = new HttpKernel(new Application())
     await kernel._loadCorePlugins()
-    await kernel._startBootstrapper(SessionBootstrapper)
+    await kernel._registerBootstrapper(SessionBootstrapper)
 
     const server = kernel.getServer()
 

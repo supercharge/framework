@@ -5,9 +5,12 @@ const Fs = require('../../../filesystem')
 const Helper = require('../../../helper')
 const ReadRecursive = require('recursive-readdir')
 const Collect = require('@supercharge/collections')
+const RegistersRoutes = require('./04-registers-routes')
 
-class RegistersAppPlugins {
+class RegistersAppPlugins extends RegistersRoutes {
   constructor () {
+    super()
+
     this._pluginsFolder = 'app/plugins'
   }
 

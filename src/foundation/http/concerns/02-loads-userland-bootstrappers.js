@@ -3,9 +3,12 @@
 const Path = require('path')
 const Fs = require('../../../filesystem')
 const Helper = require('../../../helper')
+const RegistersAppPlugins = require('./03-registers-app-plugins')
 
-class LoadUserlandBootstrapper {
+class LoadUserlandBootstrapper extends RegistersAppPlugins {
   constructor () {
+    super()
+
     this.bootstrapFile = 'bootstrap/app.js'
   }
 

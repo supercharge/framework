@@ -6,9 +6,12 @@ const Fs = require('../../../filesystem')
 const Helper = require('../../../helper')
 const Logger = require('../../../logging')
 const ReadRecursive = require('recursive-readdir')
+const RegistersMiddleware = require('./05-registers-middleware')
 
-class RegistersRoutes {
+class RegistersRoutes extends RegistersMiddleware {
   constructor () {
+    super()
+
     this._routeFiles = null
     this._routesFolder = 'app/routes'
   }
@@ -53,7 +56,7 @@ class RegistersRoutes {
 
   async routeFiles () {
     if (!this._routeFiles) {
-      this._routeFiles = await ReadRecursive(this.routesFolder(), [ this.shouldIgnore ])
+      this._routeFiles = await ReadRecursive(this.routesFolder(), [this.shouldIgnore])
     }
 
     return this._routeFiles

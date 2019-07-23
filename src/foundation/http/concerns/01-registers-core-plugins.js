@@ -1,6 +1,8 @@
 'use strict'
 
-class RegistersCorePlugins {
+const LoadBootstrappers = require('./02-loads-userland-bootstrappers')
+
+class RegistersCorePlugins extends LoadBootstrappers {
   async _loadCorePlugins () {
     await this.server.register([
       { plugin: require('inert') },

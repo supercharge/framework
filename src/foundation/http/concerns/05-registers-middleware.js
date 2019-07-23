@@ -6,9 +6,12 @@ const Fs = require('../../../filesystem')
 const Helper = require('../../../helper')
 const ReadRecursive = require('recursive-readdir')
 const Collect = require('@supercharge/collections')
+const GracefulShutdowns = require('./06-graceful-shutdowns')
 
-class RegistersMiddleware {
+class RegistersMiddleware extends GracefulShutdowns {
   constructor () {
+    super()
+
     this._middlewareFiles = null
     this._middlewareFolder = 'app/middleware'
   }
@@ -39,7 +42,7 @@ class RegistersMiddleware {
 
   async loadMiddlewareFiles () {
     if (!this._middlewareFiles) {
-      this._middlewareFiles = await ReadRecursive(this.middlewareFolder(), [ this.shouldIgnore ])
+      this._middlewareFiles = await ReadRecursive(this.middlewareFolder(), [this.shouldIgnore])
     }
 
     return this._middlewareFiles
