@@ -102,11 +102,14 @@ class DatabaseConnectionLifecycle {
    */
   async loadModelFiles () {
     if (await Fs.exists(Helper.modelsPath())) {
-      return ReadRecursive(Helper.modelsPath(), [ file => this.isDotFile(file) ])
+      return ReadRecursive(Helper.modelsPath(), [
+        file => this.isDotFile(file)
+      ])
     }
 
     return []
   }
+
   /**
    * Determine whether the file’s name starts with a `.`.
    *
