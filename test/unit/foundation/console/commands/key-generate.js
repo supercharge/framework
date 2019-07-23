@@ -14,7 +14,7 @@ class KeyGenerateCommandTest extends BaseTest {
     t.true(KeyGenerateCommand.description.includes('application key'))
   }
 
-  async echoAppKey (t) {
+  async serialEchoAppKey (t) {
     const command = new KeyGenerateCommand()
 
     this.muteConsole()

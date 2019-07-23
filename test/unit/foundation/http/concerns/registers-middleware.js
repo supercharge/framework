@@ -66,6 +66,34 @@ class LoadMiddlewareTest extends BaseTest {
 
     await t.notThrowsAsync(kernel._loadAppMiddleware())
   }
+
+  async ignoresFilesStartingWithUnderscore (t) {
+    Helper.setAppRoot(Path.resolve(__dirname, 'fixtures'))
+
+    const kernel = new HttpKernel(new Application())
+    await kernel._createServer()
+    await kernel._loadCorePlugins()
+
+    kernel._middlewareFolder = 'middleware/starts-with-underscore'
+    await kernel._loadAppMiddleware()
+
+    const server = kernel.getServer()
+
+    server.route({
+      method: 'GET',
+      path: '/',
+      handler: () => 'response'
+    })
+
+    const request = {
+      url: '/',
+      method: 'GET'
+    }
+
+    const response = await server.inject(request)
+    t.true(response.result.includes('supercharge middleware'))
+    t.false(response.result.includes('not loaded'))
+  }
 }
 
 module.exports = new LoadMiddlewareTest()

@@ -6,7 +6,7 @@ const Logger = require('../../../../../logging')
 const BaseTest = require('../../../../../base-test')
 const HttpKernel = require('../../../../../src/foundation/http/kernel')
 const Application = require('../../../../../src/foundation/application')
-const RegistersRoutes = require('../../../../../src/foundation/http/concerns/registers-routes')
+const RegistersRoutes = require('../../../../../src/foundation/http/concerns/04-registers-routes')
 
 class LoadRoutesTest extends BaseTest {
   async serialLoadRoutes (t) {

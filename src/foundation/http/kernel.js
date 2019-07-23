@@ -3,16 +3,11 @@
 const Path = require('path')
 const Hapi = require('@hapi/hapi')
 const Boom = require('@hapi/boom')
-const Many = require('extends-classes')
-const Config = require('./../../config')
+const Config = require('../../config')
+const HttpConcerns = require('./concerns')
 const Collect = require('@supercharge/collections')
-const RegistersRoutes = require('./concerns/registers-routes')
-const GracefulShutdowns = require('./concerns/graceful-shutdowns')
-const RegistersMiddleware = require('./concerns/registers-middleware')
-const RegistersAppPlugins = require('./concerns/registers-app-plugins')
-const RegistersCorePlugins = require('./concerns/registers-core-plugins')
 
-class HttpKernel extends Many(RegistersRoutes, RegistersCorePlugins, RegistersAppPlugins, RegistersMiddleware, GracefulShutdowns) {
+class HttpKernel extends HttpConcerns {
   constructor (app) {
     super()
 
@@ -87,15 +82,19 @@ class HttpKernel extends Many(RegistersRoutes, RegistersCorePlugins, RegistersAp
    * Register the core dependencies.
    */
   async _registerBootstrappers () {
-    await Collect(this.bootstrappers).forEachSeries(async bootstrapper => {
-      return this._startBootstrapper(bootstrapper)
-    })
+    await Collect(this.bootstrappers)
+      .concat(
+        await this._loadUserlandBootstrappers()
+      )
+      .forEachSeries(async bootstrapper => {
+        return this._registerBootstrapper(bootstrapper)
+      })
   }
 
   /**
    * Register a single bootstrapper.
    */
-  async _startBootstrapper (bootstrapper) {
+  async _registerBootstrapper (bootstrapper) {
     let Bootstrapper = bootstrapper
 
     if (typeof bootstrapper === 'string') {
