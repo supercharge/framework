@@ -1,6 +1,5 @@
 'use strict'
 
-const _ = require('lodash')
 const Path = require('path')
 const Fs = require('../../../filesystem')
 const Helper = require('../../../helper')
@@ -42,14 +41,16 @@ class RegistersMiddleware extends GracefulShutdowns {
 
   async loadMiddlewareFiles () {
     if (!this._middlewareFiles) {
-      this._middlewareFiles = await ReadRecursive(this.middlewareFolder(), [this.shouldIgnore])
+      this._middlewareFiles = await ReadRecursive(this.middlewareFolder(), [
+        file => this.shouldIgnore(file)
+      ])
     }
 
     return this._middlewareFiles
   }
 
   shouldIgnore (file) {
-    return _.startsWith(Path.basename(file), '_')
+    return Path.basename(file).startsWith('_')
   }
 
   async loadMiddleware () {
