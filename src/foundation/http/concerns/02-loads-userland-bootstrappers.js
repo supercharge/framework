@@ -14,9 +14,9 @@ class LoadUserlandBootstrapper extends RegistersAppPlugins {
 
   async _loadUserlandBootstrappers () {
     if (await Fs.exists(this._bootstrapFile())) {
-      const { boostrappers = [] } = require(this._bootstrapFile())
+      const { bootstrappers = [] } = require(this._bootstrapFile())
 
-      return boostrappers
+      return bootstrappers
     }
 
     return []
