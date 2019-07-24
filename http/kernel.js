@@ -25,7 +25,7 @@ class HttpKernel extends HttpConcerns {
     await this._registerBootstrappers()
     await this._loadAppPlugins()
 
-    await this._loadAppRoutes()
+    await this._loadAndRegisterRoutes()
     await this._loadAppMiddleware()
     await this._registerShutdownHandler()
 

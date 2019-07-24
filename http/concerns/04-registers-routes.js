@@ -1,11 +1,11 @@
 'use strict'
 
-const _ = require('lodash')
 const Path = require('path')
 const Fs = require('../../filesystem')
 const Helper = require('../../helper')
 const Logger = require('../../logging')
 const ReadRecursive = require('recursive-readdir')
+const Collect = require('@supercharge/collections')
 const RegistersMiddleware = require('./05-registers-middleware')
 
 class RegistersRoutes extends RegistersMiddleware {
@@ -14,6 +14,21 @@ class RegistersRoutes extends RegistersMiddleware {
 
     this._routeFiles = null
     this._routesFolder = 'app/routes'
+  }
+
+  async _loadAndRegisterRoutes () {
+    await this._loadBaseRoutes()
+    await this._loadAppRoutes()
+  }
+
+  async _loadBaseRoutes () {
+    this._loadAssetRoutes()
+  }
+
+  async _loadAssetRoutes () {
+    this.server.route(
+      require('../routes/serve-assets')
+    )
   }
 
   async _loadAppRoutes () {
@@ -25,7 +40,7 @@ class RegistersRoutes extends RegistersMiddleware {
       return
     }
 
-    Logger.debug(`No routes detected in ${this._routesFolder}`)
+    Logger.debug(`No route files detected in ${this._routesFolder}`)
   }
 
   async hasRoutes () {
@@ -39,13 +54,15 @@ class RegistersRoutes extends RegistersMiddleware {
   }
 
   async hasRouteFiles () {
-    return Object.keys(await this.routeFiles()).length > 0
+    return Collect(
+      await this.routeFiles()
+    ).isNotEmpty()
   }
 
   async loadRoutes () {
-    const files = await this.routeFiles()
-
-    files.forEach(routeFile => {
+    await Collect(
+      await this.routeFiles()
+    ).forEachSeries(routeFile => {
       this.server.route(this.resolveRoute(routeFile))
     })
   }
@@ -67,7 +84,7 @@ class RegistersRoutes extends RegistersMiddleware {
   }
 
   shouldIgnore (file) {
-    return _.startsWith(Path.basename(file), '_')
+    return Path.basename(file).startsWith('_')
   }
 }
 
