@@ -1,4 +1,3 @@
 'use strict'
 
-const { BaseTest } = require('./')
-module.exports = BaseTest
+module.exports = require('./testing/base-test')

@@ -5,7 +5,7 @@ const Config = require('../../../config')
 const Helper = require('../../../helper')
 const Database = require('../../../database')
 const BaseTest = require('../../../base-test')
-const ConnectionLifecycle = require('../../../src/database/middleware/connection-lifecycle')
+const ConnectionLifecycle = require('../../../database/middleware/connection-lifecycle')
 
 class DatabaseConnectionLifecycleTest extends BaseTest {
   async serialStartConnection (t) {

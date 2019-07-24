@@ -1,8 +1,8 @@
 'use strict'
 
 const BaseTest = require('../../../../../base-test')
-const HttpKernel = require('../../../../../src/foundation/http/kernel')
-const Application = require('../../../../../src/foundation/application')
+const HttpKernel = require('../../../../../http/kernel')
+const Application = require('../../../../../foundation/application')
 
 class RegistersCorePluginsTest extends BaseTest {
   async corePluginsWithoutLaabr (t) {

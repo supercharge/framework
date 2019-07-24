@@ -1,7 +1,7 @@
 'use strict'
 
 const BaseTest = require('../../../../base-test')
-const PostmarkTransporter = require('../../../../src/mailer/transports/postmark')
+const PostmarkTransporter = require('../../../../mailer/transports/postmark')
 
 class PostmarkTransporterTest extends BaseTest {
   async createPostmarkTransporter (t) {

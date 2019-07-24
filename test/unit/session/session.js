@@ -1,7 +1,7 @@
 'use strict'
 
 const BaseTest = require('../../../base-test')
-const Session = require('../../../src/session/session')
+const Session = require('../../../session/session')
 
 class SessionTest extends BaseTest {
   _options () {

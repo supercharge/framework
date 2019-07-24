@@ -1,4 +1,3 @@
 'use strict'
 
-const { Application } = require('./')
-module.exports = Application
+module.exports = require('./foundation/application')

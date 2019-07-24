@@ -4,8 +4,8 @@ const Path = require('path')
 const Helper = require('../../../../../helper')
 const Logger = require('../../../../../logging')
 const BaseTest = require('../../../../../base-test')
-const HttpKernel = require('../../../../../src/foundation/http/kernel')
-const Application = require('../../../../../src/foundation/application')
+const HttpKernel = require('../../../../../http/kernel')
+const Application = require('../../../../../foundation/application')
 
 class LoadBootstrappers extends BaseTest {
   async loadBootstrappers (t) {

@@ -1,7 +1,7 @@
 'use strict'
 
 const BaseTest = require('../../../../base-test')
-const SparkpostTransporter = require('../../../../src/mailer/transports/sparkpost')
+const SparkpostTransporter = require('../../../../mailer/transports/sparkpost')
 
 class SparkpostTransporterTest extends BaseTest {
   async createSparkpostTransporter (t) {

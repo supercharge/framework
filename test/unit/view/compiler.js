@@ -3,7 +3,7 @@
 const Path = require('path')
 const Logger = require('../../../logging')
 const BaseTest = require('../../../base-test')
-const ViewCompiler = require('../../../view')
+const ViewCompiler = require('../../../view/compiler')
 
 class HandlebarsCompilerTest extends BaseTest {
   async serialFailsToRegisterHelper (t) {

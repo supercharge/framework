@@ -4,9 +4,9 @@ const Path = require('path')
 const Config = require('../../../config')
 const Helper = require('../../../helper')
 const BaseTest = require('../../../base-test')
-const HttpKernel = require('../../../src/foundation/http/kernel')
-const Application = require('../../../src/foundation/application')
-const AuthBootstrapper = require('../../../src/auth/bootstrapper')
+const AuthBootstrapper = require('../../../auth/bootstrapper')
+const HttpKernel = require('../../../http/kernel')
+const Application = require('../../../foundation/application')
 
 class AuthBootstrapperTest extends BaseTest {
   async serialLoadSchemesAndStrategies (t) {

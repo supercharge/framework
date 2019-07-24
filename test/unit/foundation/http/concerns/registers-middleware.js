@@ -3,8 +3,8 @@
 const Path = require('path')
 const Helper = require('../../../../../helper')
 const BaseTest = require('../../../../../base-test')
-const Application = require('../../../../../src/foundation/application')
-const HttpKernel = require('../../../../../src/foundation/http/kernel')
+const HttpKernel = require('../../../../../http/kernel')
+const Application = require('../../../../../foundation/application')
 
 class LoadMiddlewareTest extends BaseTest {
   async loadMiddleware (t) {

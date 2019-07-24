@@ -1,7 +1,7 @@
 'use strict'
 
 const BaseTest = require('../../../../base-test')
-const UnhandledRejectionListener = require('../../../../src/foundation/exceptions/handle-system-exceptions')
+const UnhandledRejectionListener = require('../../../../foundation/exceptions/handle-system-exceptions')
 
 class UnhandledSytemErrorsTest extends BaseTest {
   before () {

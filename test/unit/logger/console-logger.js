@@ -3,7 +3,7 @@
 const Winston = require('winston')
 const Config = require('../../../config')
 const BaseTest = require('../../../base-test')
-const ConsoleLogger = require('../../../src/logging/console-logger')
+const ConsoleLogger = require('../../../logging/console-logger')
 
 class ConsoleLoggerTest extends BaseTest {
   before () {

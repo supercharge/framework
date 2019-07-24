@@ -3,7 +3,7 @@
 const Path = require('path')
 const Fs = require('../../../../../filesystem')
 const BaseTest = require('../../../../../base-test')
-const KeyGenerateCommand = require('../../../../../src/foundation/console/commands/key-generate')
+const KeyGenerateCommand = require('../../../../../console/commands/key-generate')
 
 class KeyGenerateCommandTest extends BaseTest {
   async signature (t) {

@@ -4,12 +4,12 @@ const Path = require('path')
 const Config = require('../../../config')
 const Helper = require('../../../helper')
 const Fs = require('../../../filesystem')
+const Session = require('../../../session')
 const BaseTest = require('../../../base-test')
-const Session = require('../../../src/session/manager')
-const HttpKernel = require('../../../src/foundation/http/kernel')
-const Application = require('../../../src/foundation/application')
+const HttpKernel = require('../../../http/kernel')
+const Application = require('../../../foundation/application')
 const FakeSessionDriver = require('./fixtures/fake-session-driver')
-const SessionBootstrapper = require('../../../src/session/bootstrapper')
+const SessionBootstrapper = require('../../../session/bootstrapper')
 
 class SessionBootstrapperTest extends BaseTest {
   before () {

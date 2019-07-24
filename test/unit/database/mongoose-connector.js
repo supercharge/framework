@@ -3,7 +3,7 @@
 const Logger = require('../../../logging')
 const Config = require('../../../config')
 const BaseTest = require('../../../base-test')
-const MongooseConnector = require('../../../src/database/mongoose-connector')
+const MongooseConnector = require('../../../database/mongoose-connector')
 
 class MongooseConnectorTest extends BaseTest {
   before () {

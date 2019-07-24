@@ -1,13 +1,12 @@
 'use strict'
 
 const Config = require('../../../config')
+const Session = require('../../../session')
 const BaseTest = require('../../../base-test')
-const Session = require('../../../src/session/manager')
-const SessionManager = require('../../../src/session/manager')
-const HttpKernel = require('../../../src/foundation/http/kernel')
-const Application = require('../../../src/foundation/application')
+const HttpKernel = require('../../../http/kernel')
+const Application = require('../../../foundation/application')
 const FakeSessionDriver = require('./fixtures/fake-session-driver')
-const SessionBootstrapper = require('../../../src/session/bootstrapper')
+const SessionBootstrapper = require('../../../session/bootstrapper')
 
 class SessionTest extends BaseTest {
   before () {
@@ -23,7 +22,7 @@ class SessionTest extends BaseTest {
     await kernel._loadCorePlugins()
     await kernel._registerBootstrapper(SessionBootstrapper)
 
-    const driver = SessionManager.driver('fake-null')
+    const driver = Session.driver('fake-null')
     t.truthy(driver)
 
     const server = kernel.getServer()

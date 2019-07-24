@@ -2,8 +2,8 @@
 
 const Proxyquire = require('proxyquire').noCallThru()
 const BaseTest = require('../../../../../base-test')
-const SetupCommand = Proxyquire('../../../../../src/foundation/console/commands/setup', {
-  'execa': async () => ''
+const SetupCommand = Proxyquire('../../../../../console/commands/setup', {
+  execa: async () => ''
 }
 )
 

@@ -2,7 +2,7 @@
 
 const Hapi = require('@hapi/hapi')
 const BaseTest = require('../../../base-test')
-const CookieDriver = require('../../../src/session/driver/cookie')
+const CookieDriver = require('../../../session/driver/cookie')
 
 class SessionCookieDriverTest extends BaseTest {
   _options () {

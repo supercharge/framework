@@ -3,7 +3,7 @@
 const Path = require('path')
 const Fs = require('../../../filesystem')
 const BaseTest = require('../../../base-test')
-const FileDriver = require('../../../src/session/driver/file')
+const FileDriver = require('../../../session/driver/file')
 
 class SessionFileDriverTest extends BaseTest {
   _files () {
@@ -12,7 +12,7 @@ class SessionFileDriverTest extends BaseTest {
 
   _options () {
     return {
-      lifetime: 120,
+      lifetime: '2h',
       files: this._files()
     }
   }

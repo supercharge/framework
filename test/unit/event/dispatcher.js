@@ -2,7 +2,7 @@
 
 const Path = require('path')
 const BaseTest = require('../../../base-test')
-const Dispatcher = require('../../../src/event/dispatcher')
+const Dispatcher = require('../../../event/dispatcher')
 const TestEvent = require('./fixtures/events/test-event')
 
 class EventDispatcherTest extends BaseTest {

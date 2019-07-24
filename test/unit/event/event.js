@@ -2,7 +2,7 @@
 
 const Event = require('../../../event')
 const BaseTest = require('../../../base-test')
-const Dispatcher = require('../../../dispatcher')
+const Dispatcher = require('../../../event/dispatcher')
 
 class EventTest extends BaseTest {
   async emitsConstructorNameByDefault (t) {

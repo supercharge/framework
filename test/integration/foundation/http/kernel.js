@@ -1,6 +1,6 @@
 'use strict'
 
-const Joi = require('joi')
+const Joi = require('@hapi/joi')
 const Path = require('path')
 const Fs = require('../../../../filesystem')
 const Config = require('../../../../config')

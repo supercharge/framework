@@ -1,8 +1,8 @@
 'use strict'
 
 const Path = require('path')
-const Mailable = require('../../../mailable')
 const BaseTest = require('../../../base-test')
+const Mailable = require('../../../mailer/mailable')
 const MissingCreateMailable = require('./fixtures/missing-create-mailable')
 
 class MailableTest extends BaseTest {
@@ -35,7 +35,7 @@ class MailableTest extends BaseTest {
   async setAddressWithAddress (t) {
     const mailable = new Mailable()
     mailable.setAddress('cc', 'marcus@futurestud.io')
-    t.deepEqual(mailable.message.cc, [ 'marcus@futurestud.io' ])
+    t.deepEqual(mailable.message.cc, ['marcus@futurestud.io'])
   }
 
   async withSubject (t) {

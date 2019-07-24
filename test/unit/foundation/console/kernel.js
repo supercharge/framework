@@ -1,7 +1,7 @@
 'use strict'
 
 const BaseTest = require('../../../../base-test')
-const ConsoleKernel = require('../../../../src/foundation/console/kernel')
+const ConsoleKernel = require('../../../../console/kernel')
 
 class ConsoleKernelTest extends BaseTest {
   async bootstrapsConsole (t) {

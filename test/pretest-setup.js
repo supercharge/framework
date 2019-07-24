@@ -1,7 +1,8 @@
 'use strict'
 
 const Path = require('path')
-const { Helper, Config } = require('..')
+const Config = require('../config')
+const Helper = require('../helper')
 
 Helper.setAppRoot(
   Path.resolve(__dirname, '..')

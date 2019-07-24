@@ -1,7 +1,7 @@
 'use strict'
 
 const BaseTest = require('../../../../base-test')
-const NullTransporter = require('../../../../src/mailer/transports/null')
+const NullTransporter = require('../../../../mailer/transports/null')
 
 class NullTransporterTest extends BaseTest {
   async createNullTransporter (t) {

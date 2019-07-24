@@ -4,7 +4,7 @@ const Path = require('path')
 const Fs = require('../../../filesystem')
 const Config = require('../../../config')
 const BaseTest = require('../../../base-test')
-const App = require('../../../src/foundation/application')
+const App = require('../../../foundation/application')
 
 class AppLifecycleTest extends BaseTest {
   constructor () {
