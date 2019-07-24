@@ -11,36 +11,30 @@ class MakeAuth extends BaseCommand {
 
     this.stubsDir = Path.resolve(__dirname, '..', 'stubs', 'make', 'auth')
 
-    this.views = {
-      'home.hbs': 'home.hbs',
-      'auth/login.hbs': 'auth/login.hbs',
-      'auth/signup.hbs': 'auth/signup.hbs',
-      'auth/forgot-password.hbs': 'auth/forgot-password.hbs',
-      'auth/forgot-password-email-sent.hbs': 'auth/forgot-password-email-sent.hbs',
-      'auth/reset-password.hbs': 'auth/reset-password.hbs',
-      'auth/reset-password-success.hbs': 'auth/reset-password-success.hbs'
-    }
+    this.views = [
+      'home.hbs',
+      'auth/login.hbs',
+      'auth/signup.hbs',
+      'auth/forgot-password.hbs',
+      'auth/forgot-password-email-sent.hbs',
+      'auth/reset-password.hbs',
+      'auth/reset-password-success.hbs'
+    ]
 
-    this.routes = {
-      'home.js': 'home.js',
-      'auth/login.js': 'auth/login.js',
-      'auth/signup.js': 'auth/signup.js',
-      'auth/logout.js': 'auth/logout.js',
-      'auth/forgot-password.js': 'auth/forgot-password.js',
-      'auth/reset-password.js': 'auth/reset-password.js'
-    }
+    this.routes = [
+      'home.js',
+      'auth/login.js',
+      'auth/signup.js',
+      'auth/logout.js',
+      'auth/forgot-password.js',
+      'auth/reset-password.js'
+    ]
 
-    this.strategies = {
-      'strategies/session.js': 'session.js'
-    }
+    this.strategies = ['strategies/session.js']
 
-    this.models = {
-      'user.js': 'user.js'
-    }
+    this.models = ['user.js']
 
-    this.events = {
-      'auth/user-registered.js': 'auth/user-registered.js'
-    }
+    this.events = ['auth/user-registered.js']
   }
 
   /**
@@ -78,19 +72,19 @@ class MakeAuth extends BaseCommand {
   }
 
   async copyViews () {
-    await Collect(Object.entries(this.views)).forEachSeries(async ([stub, dest]) => {
-      if (await this.pathExists(Helper.viewsPath(dest))) {
-        if (!await this.confirm(`The view [${dest}] exists already. Replace it?`)) {
+    await Collect(this.views).forEachSeries(async view => {
+      if (await this.pathExists(Helper.viewsPath(view))) {
+        if (!await this.confirm(`The view [${view}] exists already. Replace it?`)) {
           return
         }
       }
 
       await this.copy(
-        Path.resolve(this.stubsDir, 'views', stub),
-        Helper.viewsPath(dest)
+        Path.resolve(this.stubsDir, 'views', view),
+        Helper.viewsPath(view)
       )
 
-      this.completed('created', `views/${dest}`)
+      this.completed('created', `views/${view}`)
     })
 
     console.log()
@@ -112,74 +106,74 @@ class MakeAuth extends BaseCommand {
   }
 
   async copyModels () {
-    await Collect(Object.entries(this.models)).forEachSeries(async ([stub, dest]) => {
-      if (await this.pathExists(Helper.modelsPath(dest))) {
-        if (!await this.confirm(`The model [${dest}] exists already. Replace it?`)) {
+    await Collect(this.models).forEachSeries(async (model) => {
+      if (await this.pathExists(Helper.modelsPath(model))) {
+        if (!await this.confirm(`The model [${model}] exists already. Replace it?`)) {
           return
         }
       }
 
       await this.copy(
-        Path.resolve(this.stubsDir, 'models', stub),
-        Helper.modelsPath(dest)
+        Path.resolve(this.stubsDir, 'models', model),
+        Helper.modelsPath(model)
       )
 
-      this.completed('created', `models/${dest}`)
+      this.completed('created', `models/${model}`)
     })
 
     console.log()
   }
 
   async copyRoutes () {
-    await Collect(Object.entries(this.routes)).forEachSeries(async ([stub, dest]) => {
-      if (await this.pathExists(Helper.routesPath(dest))) {
-        if (!await this.confirm(`The route [${dest}] exists already. Replace it?`)) {
+    await Collect(this.routes).forEachSeries(async (route) => {
+      if (await this.pathExists(Helper.routesPath(route))) {
+        if (!await this.confirm(`The route [${route}] exists already. Replace it?`)) {
           return
         }
       }
 
       await this.copy(
-        Path.resolve(this.stubsDir, 'routes', stub),
-        Helper.routesPath(dest)
+        Path.resolve(this.stubsDir, 'routes', route),
+        Helper.routesPath(route)
       )
 
-      this.completed('created', `routes/${dest}`)
+      this.completed('created', `routes/${route}`)
     })
 
     console.log()
   }
 
   async copyStrategies () {
-    await Collect(Object.entries(this.strategies)).forEachSeries(async ([stub, dest]) => {
-      if (await this.pathExists(Helper.strategiesPath(dest))) {
-        if (!await this.confirm(`The authentication strategy [${dest}] exists already. Replace it?`)) {
+    await Collect(this.strategies).forEachSeries(async (strategy) => {
+      if (await this.pathExists(Helper.strategiesPath(strategy))) {
+        if (!await this.confirm(`The authentication strategy [${strategy}] exists already. Replace it?`)) {
           return
         }
       }
 
       await this.copy(
-        Path.resolve(this.stubsDir, stub),
-        Helper.strategiesPath(dest)
+        Path.resolve(this.stubsDir, strategy),
+        Helper.strategiesPath(strategy)
       )
 
-      this.completed('created', `auth/strategies/${dest}`)
+      this.completed('created', `auth/${strategy}`)
     })
   }
 
   async copyEvents () {
-    await Collect(Object.entries(this.events)).forEachSeries(async ([stub, dest]) => {
-      if (await this.pathExists(Helper.eventsPath(dest))) {
-        if (!await this.confirm(`The event [${dest}] exists already. Replace it?`)) {
+    await Collect(this.events).forEachSeries(async (event) => {
+      if (await this.pathExists(Helper.eventsPath(event))) {
+        if (!await this.confirm(`The event [${event}] exists already. Replace it?`)) {
           return
         }
       }
 
       await this.copy(
-        Path.resolve(this.stubsDir, 'events', stub),
-        Helper.eventsPath(dest)
+        Path.resolve(this.stubsDir, 'events', event),
+        Helper.eventsPath(event)
       )
 
-      this.completed('created', `events/${dest}`)
+      this.completed('created', `events/${event}`)
     })
   }
 }
