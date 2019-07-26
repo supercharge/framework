@@ -49,7 +49,6 @@ module.exports = [{
       user.password = request.payload.password
 
       await user.hashPassword()
-      await user.save()
 
       request.session.set({ userId: user.id })
 

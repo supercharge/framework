@@ -1,46 +1,17 @@
 'use strict'
 
 const Boom = require('@hapi/boom')
-const Validator = require('validator')
 const Hash = require('@supercharge/framework/hashing')
 const Encryption = require('@supercharge/framework/encryption')
 const { Mongoose } = require('@supercharge/framework/database')
 
-const schema = new Mongoose.Schema({
-  email: {
-    type: String,
-    unique: true,
-    trim: true,
-    required: true,
-    validate: {
-      isAsync: true,
-      validator: Validator.isEmail,
-      message: 'Invalid email address'
-    }
-  },
-  password: String,
-  name: String,
-  passwordResetToken: {
-    type: String,
-    trim: true,
-    unique: true,
-    sparse: true // this makes sure the unique index applies to not null values only (= unique if not null)
-  },
-  passwordResetDeadline: Date,
-  scope: { type: [String], default: ['user'] }
-},
-{
-  toJSON: {
-    transform: function (_, ret) {
-      delete ret._id
-      delete ret.password
-
-      return ret
-    }
-  }
-})
-
 class User {
+  get gravatar () {
+    const hash = Hash.md5(this.email)
+
+    return `https://gravatar.com/avatar/${hash}?s=200`
+  }
+
   static async findByEmail (email) {
     return this.findOne({ email })
   }
@@ -53,9 +24,8 @@ class User {
 
   static async attemptLogin ({ email, password }) {
     const user = await this.findByEmailOrFail(email)
-    await user.comparePassword(password)
 
-    return user
+    return user.comparePassword(password)
   }
 
   static async createFrom ({ email, password }) {
@@ -65,9 +35,8 @@ class User {
     }
 
     const user = new this({ email, password })
-    await user.hashPassword()
 
-    return user.save()
+    return user.hashPassword()
   }
 
   async comparePassword (candidatePassword) {
@@ -82,10 +51,9 @@ class User {
   }
 
   async hashPassword () {
-    const hash = await Hash.make(this.password)
-    this.password = hash
+    this.password = await Hash.make(this.password)
 
-    return this
+    return this.save()
   }
 
   async resetPassword () {
@@ -115,13 +83,36 @@ class User {
 
     throw Boom.badRequest(message, { resetToken: message })
   }
-
-  get gravatar () {
-    const hash = Hash.md5(this.email)
-
-    return `https://gravatar.com/avatar/${hash}?s=200`
-  }
 }
+
+const schema = new Mongoose.Schema({
+  email: {
+    type: String,
+    unique: true,
+    trim: true,
+    required: true
+  },
+  password: String,
+  name: String,
+  passwordResetToken: {
+    type: String,
+    trim: true,
+    unique: true,
+    sparse: true // this ensures the unique index applies to "not null" values only
+  },
+  passwordResetDeadline: Date,
+  scope: { type: [String], default: ['user'] }
+},
+{
+  toJSON: {
+    transform: function (_, ret) {
+      delete ret._id
+      delete ret.password
+
+      return ret
+    }
+  }
+})
 
 schema.loadClass(User)
 
