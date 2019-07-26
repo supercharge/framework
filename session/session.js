@@ -132,7 +132,7 @@ class Session {
    * @param {String} key
    * @param {Mixed} value
    */
-  remember (key, value) {
+  set (key, value) {
     this.store[key] = value
     this.isDirty = true
   }

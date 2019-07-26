@@ -15,7 +15,7 @@ class SessionTest extends BaseTest {
   sessionManagement (t) {
     const session = new Session(this._options())
 
-    session.remember('name', 'Marcus')
+    session.set('name', 'Marcus')
     t.true(session.isDirty)
     t.deepEqual(session.store, { name: 'Marcus' })
 
@@ -25,14 +25,14 @@ class SessionTest extends BaseTest {
     t.deepEqual(session.get('name'), 'Marcus')
     t.deepEqual(session.get('unknown-key', 'default'), 'default')
 
-    session.remember('likesNode', true)
+    session.set('likesNode', true)
     t.deepEqual(session.all(), { name: 'Marcus', likesNode: true })
 
     const likesNode = session.pull('likesNode')
     t.true(likesNode)
     t.deepEqual(session.all(), { name: 'Marcus' })
 
-    session.remember('feels', 'supercharged')
+    session.set('feels', 'supercharged')
     session.forget('unknown')
     t.deepEqual(session.all(), { name: 'Marcus', feels: 'supercharged' })
     session.forget('feels')
