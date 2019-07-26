@@ -21,7 +21,7 @@ class HttpKernel extends HttpConcerns {
   }
 
   async bootstrap () {
-    await this._loadCorePlugins()
+    await this._loadAndRegisterPlugins()
     await this._registerBootstrappers()
     await this._loadAppPlugins()
 

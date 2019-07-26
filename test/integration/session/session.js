@@ -19,7 +19,7 @@ class SessionTest extends BaseTest {
     Session.extend('fake-null', FakeSessionDriver)
 
     const kernel = new HttpKernel(new Application())
-    await kernel._loadCorePlugins()
+    await kernel._loadAndRegisterPlugins()
     await kernel._registerBootstrapper(SessionBootstrapper)
 
     const driver = Session.driver('fake-null')

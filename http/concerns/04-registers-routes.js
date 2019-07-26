@@ -17,21 +17,6 @@ class RegistersRoutes extends RegistersMiddleware {
   }
 
   async _loadAndRegisterRoutes () {
-    await this._loadBaseRoutes()
-    await this._loadAppRoutes()
-  }
-
-  async _loadBaseRoutes () {
-    this._loadAssetRoutes()
-  }
-
-  async _loadAssetRoutes () {
-    this.server.route(
-      require('../routes/serve-assets')
-    )
-  }
-
-  async _loadAppRoutes () {
     if (await this.hasRoutes()) {
       return this.loadRoutes()
     }
@@ -62,7 +47,7 @@ class RegistersRoutes extends RegistersMiddleware {
   async loadRoutes () {
     await Collect(
       await this.routeFiles()
-    ).forEachSeries(routeFile => {
+    ).forEach(routeFile => {
       this.server.route(this.resolveRoute(routeFile))
     })
   }

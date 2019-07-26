@@ -21,7 +21,7 @@ class SessionBootstrapperTest extends BaseTest {
     Config.set('session.driver', null)
 
     const kernel = new HttpKernel(new Application())
-    await kernel._loadCorePlugins()
+    await kernel._loadAndRegisterPlugins()
     await kernel._registerBootstrapper(SessionBootstrapper)
 
     const server = kernel.getServer()
@@ -52,7 +52,7 @@ class SessionBootstrapperTest extends BaseTest {
     Session.extend('fake-null', FakeSessionDriver)
 
     const kernel = new HttpKernel(new Application())
-    await kernel._loadCorePlugins()
+    await kernel._loadAndRegisterPlugins()
     await kernel._registerBootstrapper(SessionBootstrapper)
 
     const server = kernel.getServer()
@@ -66,7 +66,7 @@ class SessionBootstrapperTest extends BaseTest {
     Session.extend('fake-null', FakeSessionDriver)
 
     const kernel = new HttpKernel(new Application())
-    await kernel._loadCorePlugins()
+    await kernel._loadAndRegisterPlugins()
     await kernel._registerBootstrapper(SessionBootstrapper)
 
     await t.notThrowsAsync(async () => Session._stopDriver('not-existing'))
@@ -77,7 +77,7 @@ class SessionBootstrapperTest extends BaseTest {
     Session.extend('fake-null', FakeSessionDriver)
 
     const kernel = new HttpKernel(new Application())
-    await kernel._loadCorePlugins()
+    await kernel._loadAndRegisterPlugins()
     await kernel._registerBootstrapper(SessionBootstrapper)
 
     const server = kernel.getServer()
@@ -110,7 +110,7 @@ class SessionBootstrapperTest extends BaseTest {
     Config.set('session.driver', 'unknown-driver')
 
     const kernel = new HttpKernel(new Application())
-    await kernel._loadCorePlugins()
+    await kernel._loadAndRegisterPlugins()
 
     await t.throwsAsync(async () => kernel._registerBootstrapper(SessionBootstrapper))
   }
@@ -121,7 +121,7 @@ class SessionBootstrapperTest extends BaseTest {
     Helper.setAppRoot(sessionsDir)
 
     const kernel = new HttpKernel(new Application())
-    await kernel._loadCorePlugins()
+    await kernel._loadAndRegisterPlugins()
     await kernel._registerBootstrapper(SessionBootstrapper)
 
     const server = kernel.getServer()

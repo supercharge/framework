@@ -3,9 +3,12 @@
 const LoadBootstrappers = require('./02-loads-userland-bootstrappers')
 
 class RegistersCorePlugins extends LoadBootstrappers {
-  async _loadCorePlugins () {
+  async _loadAndRegisterPlugins () {
+    await this._registerCorePlugins()
+  }
+
+  async _registerCorePlugins () {
     await this.server.register([
-      { plugin: require('@hapi/inert') },
       { plugin: require('@hapi/vision') },
       { plugin: require('@hapi/cookie') },
       { plugin: require('hapi-request-utilities') },
