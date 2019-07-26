@@ -16,7 +16,7 @@ class LoadRoutesTest extends BaseTest {
     await kernel._createServer()
 
     kernel._routesFolder = 'routes'
-    await kernel._loadAppRoutes()
+    await kernel._loadAndRegisterRoutes()
 
     const request = {
       method: 'GET',
@@ -38,7 +38,7 @@ class LoadRoutesTest extends BaseTest {
     await kernel._createServer()
 
     kernel._routesFolder = 'routes'
-    await kernel._loadAppRoutes()
+    await kernel._loadAndRegisterRoutes()
 
     this.sinon().assert.called(Logger.debug)
     stub.restore()
@@ -57,7 +57,7 @@ class LoadRoutesTest extends BaseTest {
     await kernel._createServer()
 
     kernel._routesFolder = 'routes'
-    await kernel._loadAppRoutes()
+    await kernel._loadAndRegisterRoutes()
 
     t.true(spy.called)
   }
