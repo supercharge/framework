@@ -5,6 +5,7 @@ const Fs = require('../filesystem')
 const Config = require('../config')
 const Helper = require('../helper')
 const ReadRecursive = require('recursive-readdir')
+const Collect = require('@supercharge/collections')
 
 class AuthBoostrapper {
   constructor (server) {
@@ -97,7 +98,9 @@ class AuthBoostrapper {
    * @returns {Boolean}
    */
   async hasStrategyFiles () {
-    return Object.keys(await this.strategyFiles()).length > 0
+    return Collect(
+      await this.strategyFiles()
+    ).isNotEmpty()
   }
 
   /**
@@ -121,8 +124,9 @@ class AuthBoostrapper {
     const files = await this.strategyFiles()
 
     files.forEach(strategyFile => {
-      const { name, scheme, options } = this.resolveStrategy(strategyFile)
-      this._server.auth.strategy(name, scheme, options)
+      const Strategy = this.resolveStrategy(strategyFile)
+
+      this._server.auth.strategy(Strategy.name, Strategy.scheme, new Strategy())
     })
   }
 
@@ -148,7 +152,9 @@ class AuthBoostrapper {
    * @returns {Boolean}
    */
   async hasSchemeFiles () {
-    return Object.keys(await this.schemeFiles()).length > 0
+    return Collect(
+      await this.schemeFiles()
+    ).isNotEmpty()
   }
 
   /**
@@ -172,8 +178,11 @@ class AuthBoostrapper {
     const files = await this.schemeFiles()
 
     files.forEach(schemeFile => {
-      const { name, scheme } = this.resolveScheme(schemeFile)
-      this._server.auth.scheme(name, scheme)
+      const Scheme = this.resolveScheme(schemeFile)
+
+      this._server.auth.scheme(Scheme.name, (server, strategy) => {
+        return new Scheme(server, strategy)
+      })
     })
   }
 

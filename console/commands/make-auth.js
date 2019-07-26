@@ -30,7 +30,7 @@ class MakeAuth extends BaseCommand {
       'auth/reset-password.js'
     ]
 
-    this.strategies = ['strategies/session.js']
+    this.strategies = ['strategies/web.js']
 
     this.models = ['user.js']
 
