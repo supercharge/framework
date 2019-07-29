@@ -1,16 +1,10 @@
 'use strict'
 
 const Boom = require('@hapi/boom')
-const Session = require('../../session')
 
-class SessionAuthenticationScheme {
-  constructor (server, strategy) {
-    this.server = server
+class SessionScheme {
+  constructor (_, strategy) {
     this.strategy = strategy
-
-    this.config = Session.config()
-    const { name } = this.config.cookie
-    this.cookieName = name
   }
 
   static get name () {
@@ -18,16 +12,14 @@ class SessionAuthenticationScheme {
   }
 
   async authenticate (request, h) {
-    try {
-      const { credentials, artifacts } = await this.strategy.validate(request)
+    const { credentials, artifacts } = await this.strategy.validate(request, h)
 
+    if (credentials) {
       return h.authenticated({ credentials, artifacts })
-    } catch (error) {
-      return h.unauthenticated(
-        Boom.unauthorized(null, SessionAuthenticationScheme.name)
-      )
     }
+
+    return h.unauthenticated(Boom.unauthorized(null, SessionScheme.name))
   }
 }
 
-module.exports = SessionAuthenticationScheme
+module.exports = SessionScheme

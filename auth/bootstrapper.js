@@ -32,9 +32,19 @@ class AuthBoostrapper {
    * Load the authentication schemes.
    */
   async loadAuthSchemes () {
+    await this.loadDefaultAuthSchemes()
+
     if (await this.hasSchemes()) {
       return this.loadSchemes()
     }
+  }
+
+  async loadDefaultAuthSchemes () {
+    [
+      require('./schemes/session')
+    ].forEach(scheme => {
+      this.loadScheme(scheme)
+    })
   }
 
   /**
