@@ -133,7 +133,10 @@ class Session {
    * @param {Mixed} value
    */
   set (key, value) {
-    this.store[key] = value
+    typeof key === 'object'
+      ? Object.assign(this.store, key)
+      : this.store[key] = value
+
     this.isDirty = true
   }
 

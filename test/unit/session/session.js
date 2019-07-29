@@ -19,6 +19,10 @@ class SessionTest extends BaseTest {
     t.true(session.isDirty)
     t.deepEqual(session.store, { name: 'Marcus' })
 
+    session.set({ isCool: 'Supercharge' })
+    t.deepEqual(session.all(), { name: 'Marcus', isCool: 'Supercharge' })
+    session.forget('isCool')
+
     t.true(session.has('name'))
     t.false(session.has('unknown-key'))
 
