@@ -4,9 +4,9 @@ module.exports = {
   method: 'GET',
   path: '/logout',
   options: {
-    auth: 'session',
+    auth: 'web',
     handler: (request, h) => {
-      request.session.clear()
+      request.session.forget('userId')
 
       return h.redirect('/')
     }

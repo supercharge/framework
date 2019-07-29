@@ -13,14 +13,14 @@ module.exports = [
     options: {
       handler: async (_, h) => {
         return h.view('auth/signup', null, { layout: 'clean' })
-      }
-    },
-    ext: {
-      onPreHandler: {
-        method: async (request, h) => {
-          return request.auth.isAuthenticated
-            ? h.redirect('/home').takeover()
-            : h.continue
+      },
+      ext: {
+        onPreHandler: {
+          method: async (request, h) => {
+            return request.auth.isAuthenticated
+              ? h.redirect('/home').takeover()
+              : h.continue
+          }
         }
       }
     }
@@ -67,7 +67,7 @@ module.exports = [
       },
       validate: {
         payload: {
-          email: Joi.string().label('Email address').email({ minDomainAtoms: 2 }).trim().required(),
+          email: Joi.string().label('Email address').email({ minDomainSegments: 2 }).trim().required(),
           password: Joi.string().label('Password').min(6).required()
         }
       }

@@ -28,7 +28,7 @@ module.exports = [{
     },
     validate: {
       params: {
-        email: Joi.string().email({ minDomainAtoms: 2 }).label('Email address').trim().required(),
+        email: Joi.string().email({ minDomainSegments: 2 }).label('Email address').trim().required(),
         resetToken: Joi.string().label('Password reset token').trim().required()
       }
     }
@@ -71,7 +71,7 @@ module.exports = [{
     },
     validate: {
       params: {
-        email: Joi.string().label('Email address').email({ minDomainAtoms: 2 }).trim().required(),
+        email: Joi.string().label('Email address').email({ minDomainSegments: 2 }).trim().required(),
         resetToken: Joi.string().label('Password reset token').trim().required()
       },
       payload: {

@@ -62,7 +62,7 @@ module.exports = [{
     },
     validate: {
       payload: {
-        email: Joi.string().label('Email address').email({ minDomainAtoms: 2 }).trim().required(),
+        email: Joi.string().label('Email address').email({ minDomainSegments: 2 }).trim().required(),
         password: Joi.string().label('Password').min(6).required()
       }
     }

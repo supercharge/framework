@@ -4,7 +4,7 @@ module.exports = {
   method: 'GET',
   path: '/home',
   options: {
-    auth: 'session',
+    auth: 'web',
     handler: (_, h) => h.view('home')
   }
 }
