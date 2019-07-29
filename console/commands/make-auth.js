@@ -156,7 +156,7 @@ class MakeAuth extends BaseCommand {
         Helper.strategiesPath(strategy)
       )
 
-      this.completed('created', `auth/${strategy}`)
+      this.completed('created', `auth/strategies/${strategy}`)
     })
   }
 
