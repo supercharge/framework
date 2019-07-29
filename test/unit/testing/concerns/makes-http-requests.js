@@ -97,7 +97,8 @@ class MakesHttpRequestsTest extends BaseTest {
   }
 
   async defaultsToGetRequest (t) {
-    const path = `/${Encryption.randomKey()}`
+    const url = `/${Encryption.randomKey()}`
+    const path = url.slice(0, -1)
 
     const response = await this.request().addRoute({
       path,

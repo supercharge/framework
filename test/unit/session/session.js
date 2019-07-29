@@ -15,7 +15,7 @@ class SessionTest extends BaseTest {
   sessionManagement (t) {
     const session = new Session(this._options())
 
-    session.set('name', 'Marcus')
+    session.remember('name', 'Marcus')
     t.true(session.isDirty)
     t.deepEqual(session.store, { name: 'Marcus' })
 
@@ -52,6 +52,19 @@ class SessionTest extends BaseTest {
 
     session.touch()
     t.true(session.isDirty)
+  }
+
+  token (t) {
+    const session = new Session(this._options())
+
+    t.false(Object.keys(session.all()).includes('_csrfToken'))
+
+    session.regenerateToken()
+    t.true(Object.keys(session.all()).includes('_csrfToken'))
+
+    const token = session.token()
+    session.regenerateToken()
+    t.notDeepEqual(token, session.token())
   }
 }
 

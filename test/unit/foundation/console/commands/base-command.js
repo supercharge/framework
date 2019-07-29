@@ -50,7 +50,7 @@ class BaseCommandTest extends BaseTest {
     t.true(error.message.includes('Make sure you are inside a Supercharge app'))
   }
 
-  async ensureInProjectRoot (t) {
+  async serialEnsureInProjectRoot (t) {
     const command = new BaseCommand()
     const stub = this.stub(command, 'pathExists').returns(true)
     await command.ensureInProjectRoot()
@@ -68,7 +68,7 @@ class BaseCommandTest extends BaseTest {
     stub.restore()
   }
 
-  async ensureNotInstalled (t) {
+  async serialEnsureNotInstalled (t) {
     const command = new BaseCommand()
     const stub = this.stub(command, 'pathExists').returns(false)
     await command.ensureNotInstalled()
@@ -76,7 +76,7 @@ class BaseCommandTest extends BaseTest {
     t.pass()
   }
 
-  async ensureNotInstalledWithForce (t) {
+  async serialEnsureNotInstalledWithForce (t) {
     const command = new BaseCommand()
     const stub = this.stub(command, 'pathExists').returns(true)
 
@@ -88,7 +88,7 @@ class BaseCommandTest extends BaseTest {
     stub.restore()
   }
 
-  async getEnvPathWithFileName (t) {
+  async serialGetEnvPathWithFileName (t) {
     const command = new BaseCommand()
     const stub = this.stub(command, 'ensureFile').returns()
     const path = await command.getEnvPath('env.file')
@@ -96,7 +96,7 @@ class BaseCommandTest extends BaseTest {
     stub.restore()
   }
 
-  async getEnvPathWithFileFallback (t) {
+  async serialGetEnvPathWithFileFallback (t) {
     const command = new BaseCommand()
     const stub = this.stub(command, 'ensureFile').returns()
     const path = await command.getEnvPath()
@@ -104,7 +104,7 @@ class BaseCommandTest extends BaseTest {
     stub.restore()
   }
 
-  async getEnvPathFromAbsoluteFilePath (t) {
+  async serialGetEnvPathFromAbsoluteFilePath (t) {
     const command = new BaseCommand()
     const stub = this.stub(command, 'ensureFile').returns()
 
@@ -116,7 +116,7 @@ class BaseCommandTest extends BaseTest {
     stub.restore()
   }
 
-  async getFileContent (t) {
+  async serialGetFileContent (t) {
     const command = new BaseCommand()
     const content = await command.getFileContent(Path.resolve(__dirname, 'fixtures/testfile.txt'))
     t.true(content.includes('Supercharge'))
