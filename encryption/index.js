@@ -29,6 +29,7 @@ class Encryption {
    */
   static generateKey (cipher = Config.get('app.cipher')) {
     const bytes = cipher === 'AES-128-CBC' ? 16 : 32
+
     return Encryption.randomKey(bytes)
   }
 
@@ -40,8 +41,9 @@ class Encryption {
    * @returns {String}
    */
   static randomKey (bytes = 20) {
-    return Crypto.randomBytes(Math.ceil(bytes / 2))
-      .toString('hex')
+    return Crypto
+      .randomBytes(Math.ceil(bytes * 0.75))
+      .toString('base64')
       .slice(0, bytes)
   }
 
@@ -107,6 +109,7 @@ class Encryption {
    */
   base64Decode (value) {
     const buffer = Buffer.isBuffer(value) ? value : Buffer.from(value, 'base64')
+
     return buffer.toString('utf8')
   }
 }
