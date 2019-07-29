@@ -30,7 +30,7 @@ class MakeAuth extends BaseCommand {
       'auth/reset-password.js'
     ]
 
-    this.strategies = ['strategies/web.js']
+    this.strategies = ['web.js']
 
     this.models = ['user.js']
 
@@ -152,7 +152,7 @@ class MakeAuth extends BaseCommand {
       }
 
       await this.copy(
-        Path.resolve(this.stubsDir, strategy),
+        Path.resolve(this.stubsDir, 'strategies', strategy),
         Helper.strategiesPath(strategy)
       )
 
