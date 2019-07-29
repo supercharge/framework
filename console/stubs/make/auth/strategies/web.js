@@ -14,11 +14,13 @@ class SessionAuth {
   async validate (request) {
     const { session } = request
 
-    if (!session.userId) {
-      return { credentials: null }
-    }
+    return this.credentialsFor(session.get('userId'))
+  }
 
-    return { credentials: await User.findById(session.userId) }
+  async credentialsFor (userId) {
+    return {
+      credentials: await User.findById(userId)
+    }
   }
 }
 
