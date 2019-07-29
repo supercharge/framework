@@ -14,7 +14,7 @@ function csrf (context) {
   const token = _.get(context, `data.root.${tokenName}`)
 
   if (token) {
-    return new Handlebars.SafeString(`<input type="hidden" name="${tokenName}" value="${token}">`)
+    return new Handlebars.SafeString(`<input type="hidden" name="_csrfToken" value="${token}">`)
   }
 
   return ''
