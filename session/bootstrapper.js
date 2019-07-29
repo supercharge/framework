@@ -19,11 +19,22 @@ class SessionBootstrapper {
    *
    * @returns {Object}
    */
-  defaultCookieOptions () {
+  _defaultCookieOptions () {
     return {
       encoding: 'iron',
       password: Config.get('app.key')
     }
+  }
+
+  /**
+   * Returns the cookie options.
+   *
+   * @returns {Object}
+   */
+  cookieOptions () {
+    const { cookie } = this.manager.config()
+
+    return cookie
   }
 
   /**
@@ -40,6 +51,7 @@ class SessionBootstrapper {
     this.driver = await this._sessionDriver()
 
     this._prepareSessionCookie()
+    this._prepareCsrfCookie()
     this._decorateRequest()
 
     await this.server.extClass(StartSessionDriver, StartSession)
@@ -62,15 +74,33 @@ class SessionBootstrapper {
   }
 
   /**
-   * Initializes the session cookie on the HTTP server.
+   * Initializes the session cookie.
    */
   _prepareSessionCookie () {
+    const { name } = this.cookieOptions()
+
+    this._prepareCookieOnServer(name)
+  }
+
+  /**
+   * Initializes the CSRF response cookie.
+   */
+  _prepareCsrfCookie () {
+    this._prepareCookieOnServer('XSRF-TOKEN')
+  }
+
+  /**
+   * Initializes and configures a cookie on the server.
+   *
+   * @param {String} cookieName
+   */
+  _prepareCookieOnServer (cookieName) {
     const { cookie, lifetime } = this.manager.config()
     const { name, ...options } = cookie
 
-    this.server.state(name, {
+    this.server.state(cookieName, {
       ttl: lifetime ? ms(lifetime) : null,
-      ...this.defaultCookieOptions(),
+      ...this._defaultCookieOptions(),
       ...options
     })
   }

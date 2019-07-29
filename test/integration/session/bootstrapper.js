@@ -88,7 +88,10 @@ class SessionBootstrapperTest extends BaseTest {
       handler: request => {
         t.truthy(request.session)
         t.truthy(request.session.id)
-        t.deepEqual(request.session.store, {})
+
+        const token = request.session.pull('_csrfToken')
+        t.truthy(token)
+        t.deepEqual(request.session.all(), {})
 
         return 'ok'
       }
@@ -148,6 +151,19 @@ class SessionBootstrapperTest extends BaseTest {
     t.is(files.length, 1)
 
     await Fs.remove(sessionsDir)
+  }
+
+  async serialPreparesCookiesWithLifetime (t) {
+    Config.set('session.driver', 'file')
+    Config.set('session.lifetime', '1m')
+
+    const kernel = new HttpKernel(new Application())
+    await kernel._loadAndRegisterPlugins()
+    await kernel._registerBootstrapper(SessionBootstrapper)
+
+    const server = kernel.getServer()
+
+    t.true(Object.keys(server.states.cookies).includes('supercharge-test-cookie', 'XSRF-TOKEN'))
   }
 }
 

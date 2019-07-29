@@ -2,6 +2,7 @@
 
 const _ = require('lodash')
 const Uuid = require('uuid/v4')
+const Encryption = require('../encryption')
 
 class Session {
   constructor ({ driver, request, config }) {
@@ -83,6 +84,7 @@ class Session {
     this.id = this._generateSessionId()
     this.store = {}
     this.isDirty = true
+    this.regenerateToken()
   }
 
   /**
@@ -130,7 +132,7 @@ class Session {
    * Remember a key-value-pair in the session.
    *
    * @param {String} key
-   * @param {Mixed} value
+   * @param {*} value
    */
   set (key, value) {
     typeof key === 'object'
@@ -141,12 +143,22 @@ class Session {
   }
 
   /**
+   * Remember a key-value pair in the session.
+   *
+   * @param {String} key
+   * @param {*} value
+   */
+  remember (key, value) {
+    return this.set(key, value)
+  }
+
+  /**
    * Return the session’s value for `key`.
    *
    * @param {String} key
-   * @param {Mixed} defaultValue
+   * @param {*} defaultValue
    *
-   * @returns {Mixed}
+   * @returns {*}
    */
   get (key, defaultValue) {
     return this.store[key] || defaultValue
@@ -158,9 +170,9 @@ class Session {
    * the key from the session.
    *
    * @param {String} key
-   * @param {Mixed} defaultValue
+   * @param {*} defaultValue
    *
-   * @returns {Mixed}
+   * @returns {*}
    */
   pull (key, defaultValue) {
     const value = this.get(key, defaultValue)
@@ -216,6 +228,22 @@ class Session {
    */
   has (key) {
     return !!this.store[key]
+  }
+
+  /**
+   * Retrieves the CSRF token.
+   *
+   * @returns {String}
+   */
+  token () {
+    return this.get('_csrfToken')
+  }
+
+  /**
+   * Rotates the CSRF token.
+   */
+  regenerateToken () {
+    this.set('_csrfToken', Encryption.randomKey(40))
   }
 }
 
