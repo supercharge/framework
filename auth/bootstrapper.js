@@ -5,6 +5,7 @@ const Fs = require('../filesystem')
 const Config = require('../config')
 const Helper = require('../helper')
 const ReadRecursive = require('recursive-readdir')
+const Collect = require('@supercharge/collections')
 
 class AuthBoostrapper {
   constructor (server) {
@@ -31,9 +32,19 @@ class AuthBoostrapper {
    * Load the authentication schemes.
    */
   async loadAuthSchemes () {
+    await this.loadDefaultAuthSchemes()
+
     if (await this.hasSchemes()) {
       return this.loadSchemes()
     }
+  }
+
+  async loadDefaultAuthSchemes () {
+    [
+      require('./schemes/session')
+    ].forEach(scheme => {
+      this.loadScheme(scheme)
+    })
   }
 
   /**
@@ -97,7 +108,9 @@ class AuthBoostrapper {
    * @returns {Boolean}
    */
   async hasStrategyFiles () {
-    return Object.keys(await this.strategyFiles()).length > 0
+    return Collect(
+      await this.strategyFiles()
+    ).isNotEmpty()
   }
 
   /**
@@ -114,16 +127,49 @@ class AuthBoostrapper {
   }
 
   /**
-   * Register the authentication strategies
-   * into the HTTP server.
+   * Register the authentication strategies into the HTTP server.
    */
   async loadStrategies () {
-    const files = await this.strategyFiles()
-
-    files.forEach(strategyFile => {
-      const { name, scheme, options } = this.resolveStrategy(strategyFile)
-      this._server.auth.strategy(name, scheme, options)
+    await Collect(
+      await this.strategyFiles()
+    ).forEach(strategyFile => {
+      return this.loadStrategy(this.resolve(strategyFile))
     })
+  }
+
+  /**
+   * Register a single authentication strategy to the HTTP server.
+   *
+   * @param {*} strategy
+   */
+  async loadStrategy (strategy) {
+    if (typeof strategy === 'object') {
+      return this.loadStrategyFromObject(strategy)
+    }
+
+    return this.loadStrategyFromClass(strategy)
+  }
+
+  /**
+   * Register an authentication strategy to the HTTP server
+   * using an object.
+   *
+   * @param {Object} strategy
+   */
+  async loadStrategyFromObject (strategy) {
+    const { name, scheme, options } = strategy
+
+    return this._server.auth.strategy(name, scheme, options)
+  }
+
+  /**
+   * Register an authentication strategy to the HTTP server
+   * using a class.
+   *
+   * @param {Class} strategy
+   */
+  async loadStrategyFromClass (Strategy) {
+    return this._server.auth.strategy(Strategy.name, Strategy.scheme, new Strategy())
   }
 
   /**
@@ -148,7 +194,9 @@ class AuthBoostrapper {
    * @returns {Boolean}
    */
   async hasSchemeFiles () {
-    return Object.keys(await this.schemeFiles()).length > 0
+    return Collect(
+      await this.schemeFiles()
+    ).isNotEmpty()
   }
 
   /**
@@ -169,34 +217,57 @@ class AuthBoostrapper {
    * into the HTTP server.
    */
   async loadSchemes () {
-    const files = await this.schemeFiles()
-
-    files.forEach(schemeFile => {
-      const { name, scheme } = this.resolveScheme(schemeFile)
-      this._server.auth.scheme(name, scheme)
+    await Collect(
+      await this.schemeFiles()
+    ).forEach(schemeFile => {
+      return this.loadScheme(this.resolve(schemeFile))
     })
   }
 
   /**
-   * Resolves the authentication scheme.
+   * Register a single authentication scheme to the HTTP server.
    *
-   * @param {String} file
-   *
-   * @returns {Object}
+   * @param {*} strategy
    */
-  resolveScheme (file) {
-    return require(Path.resolve(this.schemesFolder(), file))
+  async loadScheme (scheme) {
+    if (typeof scheme === 'object') {
+      return this.loadSchemeFromObject(scheme)
+    }
+
+    return this.loadSchemeFromClass(scheme)
   }
 
   /**
-   * Resolves the authentication strategy.
+   * Register an authentication scheme to the HTTP server
+   * using an object.
+   *
+   * @param {Object} scheme
+   */
+  async loadSchemeFromObject ({ name, scheme }) {
+    return this._server.auth.scheme(name, scheme)
+  }
+
+  /**
+   * Register an authentication scheme to the HTTP server
+   * using a class.
+   *
+   * @param {Class} Scheme
+   */
+  async loadSchemeFromClass (Scheme) {
+    this._server.auth.scheme(Scheme.name, (server, strategy) => {
+      return new Scheme(server, strategy)
+    })
+  }
+
+  /**
+   * Requires the given `file`.
    *
    * @param {String} file
    *
-   * @returns {Object}
+   * @returns {*}
    */
-  resolveStrategy (file) {
-    return require(Path.resolve(this.strategiesFolder(), file))
+  resolve (file) {
+    return require(file)
   }
 
   /**

@@ -272,7 +272,7 @@ class MakeAuthCommandTest extends BaseTest {
     await this.command.copyStrategies()
     const { stdout } = this.consoleOutput()
 
-    t.true(stdout.includes('auth/strategies/session.js'))
+    t.true(stdout.includes('auth/strategies/web.js'))
 
     helperStub.restore()
     pathExistsStub.restore()
@@ -307,7 +307,7 @@ class MakeAuthCommandTest extends BaseTest {
     await this.command.copyStrategies()
     const { stdout } = this.consoleOutput()
 
-    t.true(stdout.includes('auth/strategies/session.js'))
+    t.true(stdout.includes('auth/strategies/web.js'))
 
     helperStub.restore()
     confirmStub.restore()
