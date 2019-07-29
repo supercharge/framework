@@ -9,8 +9,8 @@ const StartSessionDriver = require('./middleware/start-driver')
 
 class SessionBootstrapper {
   constructor (server) {
-    this.server = server
     this.driver = null
+    this.server = server
     this.manager = SessionManager
   }
 
