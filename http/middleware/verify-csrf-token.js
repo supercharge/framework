@@ -61,7 +61,7 @@ class VerifyCsrfToken {
    * @returns {Boolean}
    */
   isReading (request) {
-    return ['GET', 'HEAD', 'OPTIONS'].includes(request.method.toLocaleUpperCase())
+    return ['GET', 'HEAD', 'OPTIONS'].includes(request.method.toUpperCase())
   }
 
   /**
