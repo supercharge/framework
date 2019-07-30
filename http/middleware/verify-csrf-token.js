@@ -1,5 +1,6 @@
 'use strict'
 
+const Env = require('../../env')
 const Boom = require('@hapi/boom')
 const Logger = require('../../logging')
 
@@ -68,7 +69,7 @@ class VerifyCsrfToken {
    * @returns {Boolean}
    */
   isTesting () {
-    return this.server.app.isRunningTests()
+    return Env.isTesting()
   }
 
   /**
