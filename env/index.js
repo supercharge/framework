@@ -90,6 +90,18 @@ class Env {
 
     return env === 'production'
   }
+
+  /**
+   * Determines whether the `NODE_ENV` environment
+   * variable is set to `testing`.
+   *
+   * @returns {Boolean}
+   */
+  isTesting () {
+    const env = this.get('NODE_ENV', 'development').toLowerCase()
+
+    return env === 'testing'
+  }
 }
 
 module.exports = new Env()
