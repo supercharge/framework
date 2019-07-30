@@ -1,5 +1,6 @@
 'use strict'
 
+const Env = require('../env')
 const Config = require('../config')
 const Compiler = require('./compiler')
 
@@ -23,11 +24,11 @@ class ViewBoostrapper {
           hbs: this._engine.instance()
         },
         layout: 'app',
+        isCached: Env.isProduction(),
         path: this._engine.viewsPath(),
         layoutPath: this._engine.layoutLocations(),
         helpersPath: this._engine.helpersLocations(),
         partialsPath: this._engine.partialsLocations(),
-        isCached: this._config.isProduction,
         context: (request) => this.viewContext(request)
       })
   }
