@@ -57,9 +57,21 @@ class Encryption {
   }
 
   /**
+   * Encrypt the given value using the
+   * app key as encryption key.
+   *
+   * @param {String} value
+   *
+   * @returns {*}
+   */
+  static encrypt (value) {
+    return new Encryption().encrypt(value)
+  }
+
+  /**
    * Encrypt the given value.
    *
-   * @param {Mixed} value
+   * @param {*} value
    *
    * @returns {String}
    */
@@ -68,14 +80,37 @@ class Encryption {
   }
 
   /**
+   * Decrypt the given value using the
+   * app key as decryption key.
+   *
+   * @param {String} value
+   *
+   * @returns {*}
+   */
+  static decrypt (value) {
+    return new Encryption().decrypt(value)
+  }
+
+  /**
    * Decrypt the given value.
    *
    * @param {String} value
    *
-   * @returns {Mixed}
+   * @returns {*}
    */
   decrypt (value) {
     return this.encryptor.decrypt(value)
+  }
+
+  /**
+   * Calculate the HMAC of the given string.
+   *
+   * @param {String} string
+   *
+   * @returns {String}
+   */
+  static hmac (string) {
+    return new Encryption().hmac(string)
   }
 
   /**
@@ -92,22 +127,22 @@ class Encryption {
   /**
    * Base64 encode the given value.
    *
-   * @param {Mixed} value
+   * @param {*} value
    *
    * @returns {String}
    */
-  base64Encode (value) {
+  static base64Encode (value) {
     return Buffer.from(value).toString('base64')
   }
 
   /**
    * Decode a base64 encoded string.
    *
-   * @param {Mixed} value
+   * @param {*} value
    *
    * @returns {String}
    */
-  base64Decode (value) {
+  static base64Decode (value) {
     const buffer = Buffer.isBuffer(value) ? value : Buffer.from(value, 'base64')
 
     return buffer.toString('utf8')

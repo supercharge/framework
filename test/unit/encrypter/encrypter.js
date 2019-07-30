@@ -19,6 +19,12 @@ class EncrypterTest extends BaseTest {
     t.deepEqual(encrypter.decrypt(encrypted), { Supercharge: 'is awesome' })
   }
 
+  async encryptDecryptStatic (t) {
+    Config.set('app.key', 'a'.repeat(32))
+    const value = 'supercharge'
+    t.deepEqual(value, Encrypter.decrypt(Encrypter.encrypt(value)))
+  }
+
   async generateKeyForAES128 (t) {
     const key = Encrypter.generateKey('AES-128-CBC')
     t.truthy(key)
@@ -62,27 +68,28 @@ class EncrypterTest extends BaseTest {
   }
 
   async hmac (t) {
+    const value = 'Supercharge is awesome'
+
     const encrypter = new Encrypter('a'.repeat(32))
-    const hmac = encrypter.hmac('Supercharge is awesome')
-    t.not(hmac, null)
+    const hmac = encrypter.hmac(value)
+
+    Config.set('app.key', 'a'.repeat(32))
+    t.deepEqual(hmac, Encrypter.hmac(value))
   }
 
   async base64EncodeString (t) {
-    const encrypter = new Encrypter('a'.repeat(32))
-    const encoded = encrypter.base64Encode('Supercharge is awesome')
-    t.deepEqual(encrypter.base64Decode(encoded), 'Supercharge is awesome')
+    const encoded = Encrypter.base64Encode('Supercharge is awesome')
+    t.deepEqual(Encrypter.base64Decode(encoded), 'Supercharge is awesome')
   }
 
   async base64EncodeBuffer (t) {
-    const encrypter = new Encrypter('a'.repeat(32))
-    const encoded = encrypter.base64Encode(Buffer.from('Supercharge is awesome'))
-    t.deepEqual(encrypter.base64Decode(encoded), 'Supercharge is awesome')
+    const encoded = Encrypter.base64Encode(Buffer.from('Supercharge is awesome'))
+    t.deepEqual(Encrypter.base64Decode(encoded), 'Supercharge is awesome')
   }
 
   async base64DecodeBuffer (t) {
-    const encrypter = new Encrypter('a'.repeat(32))
-    const encoded = encrypter.base64Encode(Buffer.from('Supercharge is awesome'))
-    t.deepEqual(encrypter.base64Decode(Buffer.from(encoded, 'base64')), 'Supercharge is awesome')
+    const encoded = Encrypter.base64Encode(Buffer.from('Supercharge is awesome'))
+    t.deepEqual(Encrypter.base64Decode(Buffer.from(encoded, 'base64')), 'Supercharge is awesome')
   }
 
   async failsWithoutEncryptionKey (t) {
