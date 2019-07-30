@@ -84,7 +84,7 @@ class Session {
     this.id = this._generateSessionId()
     this.store = {}
     this.isDirty = true
-    this.regenerateToken()
+    this.rotateToken()
   }
 
   /**
@@ -240,9 +240,10 @@ class Session {
   }
 
   /**
-   * Rotates the CSRF token.
+   * Rotates the CSRF token and saves
+   * the new token in the session.
    */
-  regenerateToken () {
+  rotateToken () {
     this.set('_csrfToken', Encryption.randomKey(40))
   }
 }
