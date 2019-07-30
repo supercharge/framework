@@ -14,7 +14,7 @@ class CsrfMiddlewareTest extends BaseTest {
     Config.set('session.driver', 'cookie')
     Config.set('session.cookie', {
       name: 'supercharge-test-cookie',
-      encoding: 'form'
+      encoding: 'base64json'
     })
   }
 
@@ -101,7 +101,10 @@ class CsrfMiddlewareTest extends BaseTest {
     const post = {
       url: '/',
       method: 'POST',
-      payload: getResponse.result
+      payload: getResponse.result,
+      headers: {
+        cookie: getResponse.headers['set-cookie'][0].split(';')[0]
+      }
     }
 
     const postResponse = await this.server.inject(post)
