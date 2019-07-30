@@ -22,8 +22,6 @@ class VerifyCsrfToken {
       return h.continue
     }
 
-    console.log('cannot proceed!')
-
     return this.forbidden()
   }
 
