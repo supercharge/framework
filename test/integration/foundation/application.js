@@ -7,7 +7,7 @@ const Helper = require('../../../helper')
 const BaseTest = require('../../../base-test')
 const Application = require('../../../foundation/application')
 
-class BaseRoutesTest extends BaseTest {
+class ApplicationTest extends BaseTest {
   constructor () {
     super()
     this.appRoot = Path.resolve(__dirname, 'fixtures')
@@ -73,4 +73,4 @@ class BaseRoutesTest extends BaseTest {
   }
 }
 
-module.exports = new BaseRoutesTest()
+module.exports = new ApplicationTest()
