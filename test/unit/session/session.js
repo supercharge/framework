@@ -59,11 +59,11 @@ class SessionTest extends BaseTest {
 
     t.false(Object.keys(session.all()).includes('_csrfToken'))
 
-    session.regenerateToken()
+    session.rotateToken()
     t.true(Object.keys(session.all()).includes('_csrfToken'))
 
     const token = session.token()
-    session.regenerateToken()
+    session.rotateToken()
     t.notDeepEqual(token, session.token())
   }
 }
