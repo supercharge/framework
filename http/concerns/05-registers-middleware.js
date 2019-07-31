@@ -49,10 +49,6 @@ class RegistersMiddleware extends GracefulShutdowns {
     return this._middlewareFiles
   }
 
-  shouldIgnore (file) {
-    return Path.basename(file).startsWith('_')
-  }
-
   async loadMiddleware () {
     await Collect(
       await this.loadMiddlewareFiles()
