@@ -79,7 +79,9 @@ class DatabaseConnectionLifecycle {
    * @returns {Boolean}
    */
   async hasModels () {
-    return Collect(await this.modelFiles()).isNotEmpty()
+    return Collect(
+      await this.modelFiles()
+    ).isNotEmpty()
   }
 
   /**
@@ -103,7 +105,7 @@ class DatabaseConnectionLifecycle {
   async loadModelFiles () {
     if (await Fs.exists(Helper.modelsPath())) {
       return ReadRecursive(Helper.modelsPath(), [
-        file => this.isDotFile(file)
+        file => this.shouldIgnore(file)
       ])
     }
 
@@ -117,7 +119,7 @@ class DatabaseConnectionLifecycle {
    *
    * @returns {Boolean}
    */
-  isDotFile (file) {
+  shouldIgnore (file) {
     return Path.basename(file).startsWith('.')
   }
 }
