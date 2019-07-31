@@ -138,7 +138,7 @@ class MakesHttpRequestsTest extends BaseTest {
   }
 
   async sendsDeleteRequestAsUrl (t) {
-    const path = `/${Encryption.randomKey()}`
+    const path = `/${Encryption.randomKey().replace('/', '')}`
 
     const response = await this.addRoute({
       path,
@@ -151,7 +151,7 @@ class MakesHttpRequestsTest extends BaseTest {
   }
 
   async sendsDeleteRequestAsObject (t) {
-    const path = `/${Encryption.randomKey()}`
+    const path = `/${Encryption.randomKey().replace('/', '')}`
 
     const response = await this.addRoute({
       path,
