@@ -131,7 +131,6 @@ class VerifyCsrfToken {
     }
 
     if (this.isView(response)) {
-      response.source = response.source || {}
       response.source.context = response.source.context || {}
       response.source.context._csrfToken = request.session.token()
     }
