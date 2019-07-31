@@ -98,7 +98,7 @@ class CsrfMiddlewareTest extends BaseTest {
     const getResponse = await this.server.inject(get)
     t.deepEqual(getResponse.statusCode, 200)
 
-    const post = {
+    const tokenInPayload = {
       url: '/',
       method: 'POST',
       payload: getResponse.result,
@@ -107,10 +107,67 @@ class CsrfMiddlewareTest extends BaseTest {
       }
     }
 
-    const postResponse = await this.server.inject(post)
-    t.deepEqual(postResponse.statusCode, 200)
+    const inPayloadResponse = await this.server.inject(tokenInPayload)
+    t.deepEqual(inPayloadResponse.statusCode, 200)
+
+    const tokenInHeader = {
+      url: '/',
+      method: 'POST',
+      headers: {
+        'X-CSRF-TOKEN': getResponse.result._csrfToken,
+        cookie: getResponse.headers['set-cookie'][0].split(';')[0]
+      }
+    }
+
+    const inHeaderResponse = await this.server.inject(tokenInHeader)
+    t.deepEqual(inHeaderResponse.statusCode, 200)
 
     Env.set('NODE_ENV', 'testing')
+  }
+
+  async serialForbidden (t) {
+    Env.set('NODE_ENV', 'development')
+
+    this.server.route({
+      path: '/',
+      method: 'POST',
+      handler: () => 'ok'
+    })
+
+    const request = {
+      url: '/',
+      method: 'POST'
+    }
+
+    const response = await this.server.inject(request)
+
+    t.deepEqual(response.statusCode, 403)
+
+    Env.set('NODE_ENV', 'testing')
+  }
+
+  async serialAddToViewContext (t) {
+    this.server.route({
+      path: '/',
+      method: 'POST',
+      handler: request => {
+        return request.generateResponse({}, {
+          variety: 'view',
+          marshal: (response) => {
+            return response.source.context._csrfToken
+          }
+        })
+      }
+    })
+
+    const request = {
+      url: '/',
+      method: 'POST'
+    }
+
+    const response = await this.server.inject(request)
+    t.deepEqual(response.statusCode, 200)
+    t.truthy(response.payload)
   }
 }
 
