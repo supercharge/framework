@@ -16,7 +16,7 @@ class ConsoleLogger {
    * logs a colored message.
    */
   constructor () {
-    this.config = Config.get('logging.channels.console') || {}
+    this.config = Config.get('logging.channels.console')
     this.colors = this.logColors()
 
     this.transport = new Winston.transports.Console({

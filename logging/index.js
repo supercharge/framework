@@ -17,7 +17,7 @@ class Logger {
    * based on the application config.
    */
   constructor () {
-    this.driver = Config.get('logging.driver') || 'console'
+    this.driver = Config.get('logging.driver')
     this.logger = Winston.createLogger()
 
     this.loadDrivers()
