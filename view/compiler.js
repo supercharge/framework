@@ -9,7 +9,7 @@ const Collect = require('@supercharge/collections')
 
 class HandlebarsCompiler {
   constructor () {
-    this._engine = this.createEngine()
+    this.engine = this.createEngine()
   }
 
   async initialize () {
@@ -17,11 +17,11 @@ class HandlebarsCompiler {
   }
 
   instance () {
-    return this._engine
+    return this.engine
   }
 
   compile (template) {
-    return this._engine.compile(template)
+    return this.engine.compile(template)
   }
 
   render (template, data) {
@@ -60,7 +60,7 @@ class HandlebarsCompiler {
       const name = this.filename(helpersPath, file)
 
       if (typeof helper === 'function') {
-        this._engine.registerHelper(name, helper)
+        this.engine.registerHelper(name, helper)
         Logger.debug(`Registered view helper:  ${Path.basename(file)}`)
       } else {
         Logger.warn(`View helper "${Path.basename(file)}" is not a function, it's a ${typeof helper}`)
@@ -144,7 +144,7 @@ class HandlebarsCompiler {
    * @returns {Boolean}
    */
   hasHelper (name) {
-    return !!this._engine.helpers[name]
+    return !!this.engine.helpers[name]
   }
 }
 
