@@ -11,12 +11,16 @@ class DatabaseConnectionLifecycleTest extends BaseTest {
   async serialStartConnection (t) {
     Config.set('database.default', 'mongoose')
     Config.set('database.connections', { mongoose: { database: 'boost' } })
+
     this.modelsPathStub = this.stub(Helper, 'modelsPath').returns(
       Path.resolve(__dirname, 'fixtures/models')
     )
 
     const lifecycle = new ConnectionLifecycle()
     await lifecycle.onPreStart()
+
+    const files = await lifecycle.modelFiles()
+    t.is(files.length, 1)
 
     const connection = Database.connection('mongoose')
     t.true(connection.isConnected())
