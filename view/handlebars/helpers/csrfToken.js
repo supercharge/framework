@@ -1,7 +1,6 @@
 'use strict'
 
 const _ = require('lodash')
-const Config = require('../../../config')
 
 /**
  * Returns the CSRF token.
@@ -9,8 +8,7 @@ const Config = require('../../../config')
  * @returns {String} HTML
  */
 function csrfToken (context) {
-  const tokenName = Config.get('session.token')
-  const token = _.get(context, `data.root.${tokenName}`)
+  const token = _.get(context, 'data.root._csrfToken')
 
   return token || ''
 }

@@ -1,7 +1,7 @@
 'use strict'
 
-const Encryption = require('../../../../encryption')
 const BaseTest = require('../../../../base-test')
+const Encryption = require('../../../../encryption')
 
 class StackHelperTest extends BaseTest {
   async createContentStack (t) {

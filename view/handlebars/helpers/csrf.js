@@ -2,7 +2,6 @@
 
 const _ = require('lodash')
 const Handlebars = require('handlebars')
-const Config = require('../../../config')
 
 /**
  * Generates a CSRF token hidden input form field.
@@ -10,8 +9,7 @@ const Config = require('../../../config')
  * @returns {String} HTML
  */
 function csrf (context) {
-  const tokenName = Config.get('session.token')
-  const token = _.get(context, `data.root.${tokenName}`)
+  const token = _.get(context, 'data.root._csrfToken')
 
   if (token) {
     return new Handlebars.SafeString(`<input type="hidden" name="_csrfToken" value="${token}">`)
