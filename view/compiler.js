@@ -61,7 +61,7 @@ class HandlebarsCompiler {
 
       if (typeof helper === 'function') {
         this.engine.registerHelper(name, helper)
-        Logger.debug(`Registered view helper:  ${Path.basename(file)}`)
+        Logger.debug(`Registered view helper: ${Path.basename(file)}`)
       } else {
         Logger.warn(`View helper "${Path.basename(file)}" is not a function, it's a ${typeof helper}`)
       }
@@ -102,9 +102,9 @@ class HandlebarsCompiler {
    * @returns {Array}
    */
   layoutLocations () {
-    const views = this.viewsPath()
-
-    return [Path.resolve(views, 'layouts')]
+    return [
+      Path.resolve(this.viewsPath(), 'layouts')
+    ]
   }
 
   /**
@@ -114,11 +114,9 @@ class HandlebarsCompiler {
    * @returns {Array}
    */
   helpersLocations () {
-    const views = this.viewsPath()
-
     return [
-      Path.resolve(views, 'helpers'),
-      Path.resolve(__dirname, 'handlebars', 'helpers')
+      Path.resolve(this.viewsPath(), 'helpers'),
+      Path.resolve(__dirname, 'handlebars/helpers')
     ]
   }
 
@@ -129,9 +127,9 @@ class HandlebarsCompiler {
    * @returns {Array}
    */
   partialsLocations () {
-    const views = this.viewsPath()
-
-    return [Path.resolve(views, 'partials')]
+    return [
+      Path.resolve(this.viewsPath(), 'partials')
+    ]
   }
 
   /**

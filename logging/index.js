@@ -2,8 +2,8 @@
 
 const Winston = require('winston')
 const Config = require('../config')
-const FileLogger = require('./file-logger')
-const ConsoleLogger = require('./console-logger')
+const FileLogger = require('./driver/file-logger')
+const ConsoleLogger = require('./driver/console-logger')
 
 /**
  * The application logger based on Winston to
@@ -17,7 +17,7 @@ class Logger {
    * based on the application config.
    */
   constructor () {
-    this.driver = Config.get('logging.driver') || 'console'
+    this.driver = Config.get('logging.driver')
     this.logger = Winston.createLogger()
 
     this.loadDrivers()

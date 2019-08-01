@@ -58,7 +58,9 @@ class RegistersRoutes extends RegistersMiddleware {
 
   async routeFiles () {
     if (!this._routeFiles) {
-      this._routeFiles = await ReadRecursive(this.routesFolder(), [this.shouldIgnore])
+      this._routeFiles = await ReadRecursive(this.routesFolder(), [
+        file => this.shouldIgnore(file)
+      ])
     }
 
     return this._routeFiles
@@ -66,10 +68,6 @@ class RegistersRoutes extends RegistersMiddleware {
 
   resolveRoute (file) {
     return require(Path.resolve(this.routesFolder(), file))
-  }
-
-  shouldIgnore (file) {
-    return Path.basename(file).startsWith('_')
   }
 }
 

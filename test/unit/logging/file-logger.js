@@ -5,7 +5,7 @@ const Winston = require('winston')
 const Config = require('../../../config')
 const Fs = require('../../../filesystem')
 const BaseTest = require('../../../base-test')
-const FileLogger = require('../../../logging/file-logger')
+const FileLogger = require('../../../logging/driver/file-logger')
 
 class FileLoggerTest extends BaseTest {
   constructor () {

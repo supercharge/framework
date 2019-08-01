@@ -160,15 +160,13 @@ class SessionManager {
   }
 
   /**
-   * Instantiates and boots the session driver.
+   * Instantiates the session driver.
    *
    * @param {String} name
    * @param {Class} Driver
    */
   async _create (name, Driver) {
-    const driver = new Driver(this.config())
-
-    this._addDriver(name, driver)
+    this._addDriver(name, new Driver(this.config()))
   }
 }
 

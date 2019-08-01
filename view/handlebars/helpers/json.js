@@ -8,7 +8,9 @@ const Handlebars = require('handlebars')
  * @returns {String} JSON
  */
 function json (content) {
-  return new Handlebars.SafeString(JSON.stringify(content, undefined, 2))
+  return new Handlebars.SafeString(
+    JSON.stringify(content, undefined, 2)
+  )
 }
 
 module.exports = json

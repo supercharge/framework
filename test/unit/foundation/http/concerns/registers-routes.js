@@ -61,11 +61,6 @@ class LoadRoutesTest extends BaseTest {
 
     t.true(spy.called)
   }
-
-  async ignoresRoutesStartingWithUnderscore (t) {
-    const registerRoutes = new RegistersRoutes()
-    t.true(registerRoutes.shouldIgnore('_route-name.js'))
-  }
 }
 
 module.exports = new LoadRoutesTest()

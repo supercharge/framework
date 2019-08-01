@@ -1,12 +1,10 @@
 'use strict'
 
-const Config = require('../../../../config')
 const BaseTest = require('../../../../base-test')
 
 class CsrfHelperTest extends BaseTest {
   async createsHtmlInputForCsrf (t) {
-    const tokenName = Config.get('session.token')
-    const data = { [tokenName]: 'test-csrf' }
+    const data = { _csrfToken: 'test-csrf' }
 
     const input = await this.render('<form>{{csrf}}</form>', data)
 
