@@ -1,7 +1,7 @@
 'use strict'
 
 const Youch = require('youch')
-const forTerminal = require('youch-terminal')
+const toTerminal = require('youch-terminal')
 
 class UnhandledSystemErrorsHandler {
   on () {
@@ -10,7 +10,7 @@ class UnhandledSystemErrorsHandler {
 
   async handle (error) {
     const output = await new Youch(error).toJSON()
-    console.log(forTerminal(output))
+    console.log(toTerminal(output))
     process.exit(1)
   }
 
