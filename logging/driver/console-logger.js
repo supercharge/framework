@@ -2,7 +2,7 @@
 
 const Chalk = require('chalk')
 const Winston = require('winston')
-const Config = require('../config')
+const Config = require('../../config')
 const { combine, timestamp, printf } = Winston.format
 
 /**
@@ -60,10 +60,10 @@ class ConsoleLogger {
    * @returns {Function}
    */
   format (info) {
-    const Color = this.getColorForLevel(info.level)
+    const color = this.getColorForLevel(info.level)
     const time = new Date(info.timestamp).getTime()
 
-    return `${Chalk.gray(time)} ${Color(info.level)} ${info.message}`
+    return `${Chalk.gray(time)} ${color(info.level)} ${info.message}`
   }
 
   /**

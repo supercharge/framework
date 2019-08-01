@@ -1,7 +1,7 @@
 'use strict'
 
 const Winston = require('winston')
-const Config = require('../config')
+const Config = require('../../config')
 const { combine, timestamp, printf } = Winston.format
 
 /**
