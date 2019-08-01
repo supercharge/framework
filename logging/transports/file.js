@@ -9,7 +9,7 @@ const { combine, timestamp, printf } = Winston.format
  * desired log file and a custom log format
  * that includes the ISO date time.
  */
-class FileLogger {
+class FileTransport {
   /**
    * Create a new file logger instance that
    * saves the readable UTC time besides
@@ -18,7 +18,11 @@ class FileLogger {
   constructor () {
     this.config = Config.get('logging.channels.file')
 
-    this.transport = new Winston.transports.File({
+    return this.createTransporter()
+  }
+
+  createTransporter () {
+    return new Winston.transports.File({
       filename: this.config.path,
       level: this.config.level,
       format: combine(
@@ -31,15 +35,6 @@ class FileLogger {
       )
     })
   }
-
-  /**
-   * Returns the file logger instance.
-   *
-   * @returns {Object}
-   */
-  logger () {
-    return this.transport
-  }
 }
 
-module.exports = FileLogger
+module.exports = FileTransport

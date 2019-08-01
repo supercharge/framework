@@ -2,46 +2,48 @@
 
 const Winston = require('winston')
 const Config = require('../config')
-const FileLogger = require('./driver/file-logger')
-const ConsoleLogger = require('./driver/console-logger')
+const Transports = require('./transports')
 
-/**
- * The application logger based on Winston to
- * send messages to different locations,
- * like terminal, file or both.
- */
-class Logger {
-  /**
-   * Initialize the Winston logger instance
-   * and configure the desired transports
-   * based on the application config.
-   */
+class LoggingManager {
   constructor () {
-    this.driver = Config.get('logging.driver')
-    this.logger = Winston.createLogger()
-
-    this.loadDrivers()
+    this.drivers = new Map()
   }
 
   /**
-   * Load and register the logger transports.
+   * Returns the name of the default logging driver.
+   *
+   * @returns {String}
    */
-  loadDrivers () {
-    if (this.driver === 'console') {
-      this.logger.clear().add(new ConsoleLogger().logger())
+  _defaultDriver () {
+    return Config.get('logging.driver')
+  }
+
+  ensureLogger (name = this._defaultDriver()) {
+    this.driver(name)
+  }
+
+  driver (name = this._defaultDriver()) {
+    if (!this._hasDriver(name)) {
+      this._createDriver(name)
     }
 
-    if (this.driver === 'file') {
-      this.logger.clear().add(new FileLogger().logger())
-    }
+    return this.drivers.get(name)
+  }
 
-    if (this.driver === 'stacked') {
-      this
-        .logger
-        .clear()
-        .add(new ConsoleLogger().logger())
-        .add(new FileLogger().logger())
-    }
+  _hasDriver (name) {
+    return this.drivers.has(name)
+  }
+
+  _createDriver (name) {
+    this.drivers.set(name, this._createLogger(name))
+  }
+
+  _createLogger (name) {
+    const Transport = Transports[name]
+
+    return Winston.createLogger().add(
+      new Transport()
+    )
   }
 
   /**
@@ -51,7 +53,7 @@ class Logger {
    * @param  {...Mixed} options
    */
   silly (message, ...options) {
-    this.logger.silly(message, ...options)
+    this.driver().silly(message, ...options)
   }
 
   /**
@@ -61,7 +63,7 @@ class Logger {
    * @param  {...Mixed} options
    */
   debug (message, ...options) {
-    this.logger.debug(message, ...options)
+    this.driver().debug(message, ...options)
   }
 
   /**
@@ -71,7 +73,7 @@ class Logger {
    * @param  {...Mixed} options
    */
   verbose (message, ...options) {
-    this.logger.verbose(message, ...options)
+    this.driver().verbose(message, ...options)
   }
 
   /**
@@ -81,7 +83,7 @@ class Logger {
    * @param  {...Mixed} options
    */
   info (message, ...options) {
-    this.logger.info(message, ...options)
+    this.driver().info(message, ...options)
   }
 
   /**
@@ -91,7 +93,7 @@ class Logger {
    * @param  {...Mixed} options
    */
   warn (message, ...options) {
-    this.logger.warn(message, ...options)
+    this.driver().warn(message, ...options)
   }
 
   /**
@@ -101,8 +103,8 @@ class Logger {
    * @param  {...Mixed} options
    */
   error (message, ...options) {
-    this.logger.error(message, ...options)
+    this.driver().error(message, ...options)
   }
 }
 
-module.exports = new Logger()
+module.exports = new LoggingManager()
