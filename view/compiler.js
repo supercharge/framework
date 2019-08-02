@@ -61,7 +61,6 @@ class HandlebarsCompiler {
 
       if (typeof helper === 'function') {
         this.engine.registerHelper(name, helper)
-        Logger.debug(`Registered view helper: ${Path.basename(file)}`)
       } else {
         Logger.warn(`View helper "${Path.basename(file)}" is not a function, it's a ${typeof helper}`)
       }
