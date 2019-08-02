@@ -10,7 +10,7 @@ const { combine, timestamp, printf } = Winston.format
  * desired log file and a custom log format
  * that includes the ISO date time.
  */
-class ConsoleLogger {
+class ConsoleTransport {
   /**
    * Create a new console logger instance that
    * logs a colored message.
@@ -19,22 +19,17 @@ class ConsoleLogger {
     this.config = Config.get('logging.channels.console')
     this.colors = this.logColors()
 
-    this.transport = new Winston.transports.Console({
+    return this.createTransporter()
+  }
+
+  createTransporter () {
+    return new Winston.transports.Console({
       level: this.config.level,
       format: combine(
         timestamp(),
         printf(info => this.format(info))
       )
     })
-  }
-
-  /**
-   * Returns the console logger instance.
-   *
-   * @returns {Object}
-   */
-  logger () {
-    return this.transport
   }
 
   /**
@@ -84,4 +79,4 @@ class ConsoleLogger {
   }
 }
 
-module.exports = ConsoleLogger
+module.exports = ConsoleTransport
