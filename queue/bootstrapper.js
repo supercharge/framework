@@ -16,7 +16,6 @@ class QueueBootstrapper {
   async boot () {
     await this.manager.connect()
     await this.loadQueueJobs()
-    console.log(this.manager.queues)
   }
 
   async loadQueueJobs () {
