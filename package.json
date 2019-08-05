@@ -26,6 +26,7 @@
     "events": "~3.0.0",
     "execa": "~2.0.3",
     "extends-classes": "~1.0.5",
+    "faktory-worker": "~3.0.3",
     "fs-extra": "~8.1.0",
     "handlebars": "~4.1.2",
     "handlebars-helper-repeat": "~2.0.0",
