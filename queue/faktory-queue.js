@@ -1,22 +1,18 @@
 'use strict'
 
-const Faktory = require('faktory-worker')
-
 class FaktoryQueue {
-  constructor () {
-    this.client = null
+  constructor (client) {
+    this.client = client
   }
 
-  async start () {
-    this.client = await Faktory.connect()
-  }
+  async push (jobName, data, queue) {
+    const job = this.client.job(jobName, data)
 
-  async stop () {
-    await this.client.close()
-  }
+    if (queue) {
+      job.queue = queue
+    }
 
-  async push (job, data) {
-    return this.client.job(job, data).push()
+    return this.client.push(job)
   }
 
   async pop (...queues) {

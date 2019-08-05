@@ -3,8 +3,11 @@
 const QueueManager = require('./')
 const Fs = require('../filesystem')
 const Helper = require('../helper')
+const Connectors = require('./connectors')
 const ReadRecursive = require('recursive-readdir')
 const Collect = require('@supercharge/collections')
+
+const Job = require('./dispatchable')
 
 class QueueBootstrapper {
   constructor () {
@@ -14,8 +17,20 @@ class QueueBootstrapper {
   }
 
   async boot () {
-    await this.manager.connect()
+    await this.registerConnectors()
     await this.loadQueueJobs()
+
+    Job
+      .onQueue('log-names')
+      .dispatch({ name: 'Marcus' })
+  }
+
+  registerConnectors () {
+    Object
+      .entries(Connectors)
+      .forEach(([name, connector]) => {
+        this.manager.addConnector(name, connector)
+      })
   }
 
   async loadQueueJobs () {

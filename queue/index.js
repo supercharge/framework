@@ -1,14 +1,12 @@
 'use strict'
 
 const Config = require('../config')
-const Drivers = require('./driver')
-const Manager = require('../foundation/manager')
 
-class QueueManager extends Manager {
+class QueueManager {
   constructor () {
-    super(Drivers)
-
     this.queues = new Map()
+    this.connectors = new Map()
+    this.connections = new Map()
   }
 
   /**
@@ -39,12 +37,54 @@ class QueueManager extends Manager {
     return Config.get('queue.driver')
   }
 
-  async connect (name = this._defaultDriver()) {
-    return this.driver(name)
+  addConnector (name, connector) {
+    this.connectors.set(name, connector)
+  }
+
+  async connection (name = this._defaultDriver()) {
+    if (!this.hasConnection(name)) {
+      this.connections.set(name, await this.resolveConnection(name))
+    }
+
+    return this.connections.get(name)
+  }
+
+  hasConnection (name) {
+    return this.connections.has(name)
+  }
+
+  async resolveConnection (name) {
+    const config = Config.get(`queue.connections.${name}`)
+
+    return this.getConnector(name).connect(config)
+  }
+
+  getConnector (name) {
+    if (!this.hasConnector(name)) {
+      throw new Error(`Missing queue connector for driver "${name}`)
+    }
+
+    return this.resolveConnector(name)
+  }
+
+  resolveConnector (name) {
+    const Connector = this.connectors.get(name)
+
+    return new Connector()
+  }
+
+  hasConnector (name) {
+    return this.connectors.has(name)
   }
 
   _createQueueForJob (Job) {
     this.queues.set(Job.name, Job)
+  }
+
+  async dispatch (job, data, queue) {
+    const connection = await this.connection()
+
+    connection.push(job.name, data, queue)
   }
 }
 
