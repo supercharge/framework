@@ -1,7 +1,7 @@
 'use strict'
 
-const AWS = require('aws-sdk')
 const Nodemailer = require('nodemailer')
+const SES = require('aws-sdk/clients/ses')
 
 /**
  * Creates the SES transporter for Nodemailer
@@ -10,7 +10,7 @@ const Nodemailer = require('nodemailer')
 class SesTransporter {
   constructor (options) {
     return Nodemailer.createTransport({
-      SES: new AWS.SES(options)
+      SES: new SES(options)
     })
   }
 }
