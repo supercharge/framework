@@ -7,8 +7,6 @@ const Connectors = require('./connectors')
 const ReadRecursive = require('recursive-readdir')
 const Collect = require('@supercharge/collections')
 
-const Job = require('./dispatchable')
-
 class QueueBootstrapper {
   constructor () {
     this._jobFiles = null
@@ -16,15 +14,19 @@ class QueueBootstrapper {
     this.manager = QueueManager
   }
 
+  /**
+   * Booting the queue bootstrapper will register all available queues
+   * and load and cache all jobs. Loading the queue jobs into memory
+   * helps to dispatch individual job instances.
+   */
   async boot () {
     await this.registerConnectors()
     await this.loadQueueJobs()
-
-    Job
-      .onQueue('log-names')
-      .dispatch({ name: 'Marcus' })
   }
 
+  /**
+   * Register all available queues to the queue manager.
+   */
   registerConnectors () {
     Object
       .entries(Connectors)
@@ -33,6 +35,9 @@ class QueueBootstrapper {
       })
   }
 
+  /**
+   * Load the application’s queue jobs if existent.
+   */
   async loadQueueJobs () {
     if (await this.hasJobs()) {
       return this.loadJobs()
@@ -40,7 +45,8 @@ class QueueBootstrapper {
   }
 
   /**
-   * Text
+   * Determines whether queue jobs exist in
+   * expected location.
    *
    * @returns {Boolean}
    */
@@ -52,7 +58,8 @@ class QueueBootstrapper {
   }
 
   /**
-   * Text
+   * Determines whether the default location for
+   * queue jobs exists on the file system.
    *
    * @returns {Boolean}
    */
@@ -61,7 +68,7 @@ class QueueBootstrapper {
   }
 
   /**
-   * Text
+   * Returns the absolute path to the jobs folder.
    *
    * @returns {String}
    */
@@ -70,7 +77,7 @@ class QueueBootstrapper {
   }
 
   /**
-   * Text
+   * Determines whether job files exist in the application.
    *
    * @returns {Boolean}
    */
@@ -81,7 +88,7 @@ class QueueBootstrapper {
   }
 
   /**
-   * Text
+   * Loads all job files recursively from the file system.
    *
    * @returns {Array}
    */
@@ -94,15 +101,13 @@ class QueueBootstrapper {
   }
 
   /**
-   * Text
-   *
-   * @returns {Array}
+   * Registers all queue jobs to the queue manager.
    */
   async loadJobs () {
     await Collect(
       await this.jobFiles()
     ).forEach(jobfile => {
-      return this.manager._createQueueForJob(require(jobfile))
+      return this.manager.addJob(require(jobfile))
     })
   }
 }
