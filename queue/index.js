@@ -1,10 +1,11 @@
 'use strict'
 
 const Config = require('../config')
+const Collect = require('@supercharge/collections')
 
 class QueueManager {
   constructor () {
-    this.queues = new Map()
+    this.jobs = new Map()
     this.connectors = new Map()
     this.connections = new Map()
   }
@@ -37,10 +38,26 @@ class QueueManager {
     return Config.get('queue.driver')
   }
 
+  /**
+   * Register a queue connector which can then be used to
+   * dispatch queue jobs onto the related connection.
+   *
+   * @param {String} name
+   * @param {Class} connector
+   */
   addConnector (name, connector) {
     this.connectors.set(name, connector)
   }
 
+  /**
+   * Retrieves a queue connection. If there’s no existing
+   * connection identified by `name`, it creates a new
+   * connection and returns it afterwards.
+   *
+   * @param {String} name
+   *
+   * @returns {Object}
+   */
   async connection (name = this._defaultDriver()) {
     if (!this.hasConnection(name)) {
       this.connections.set(name, await this.resolveConnection(name))
@@ -49,42 +66,117 @@ class QueueManager {
     return this.connections.get(name)
   }
 
+  /**
+   * Determines whether there’s an active queue
+   * connection identified by the given `name`.
+   *
+   * @param {String} name
+   *
+   * @returns {Boolean}
+   */
   hasConnection (name) {
     return this.connections.has(name)
   }
 
+  /**
+   * Creates a new connection instance and connects to the
+   * individual service, like the AWS SQS service,
+   * a Faktory instance  or Redis database.
+   *
+   * @param {String} name
+   *
+   * @returns {Object}
+   */
   async resolveConnection (name) {
     const config = Config.get(`queue.connections.${name}`)
 
     return this.getConnector(name).connect(config)
   }
 
+  /**
+   * Resolves the requested connector or
+   * throws when unavailable.
+   *
+   * @param {String} name
+   *
+   * @returns {Object}
+   *
+   * @throws
+   */
   getConnector (name) {
     if (!this.hasConnector(name)) {
-      throw new Error(`Missing queue connector for driver "${name}`)
+      throw new Error(`Missing queue connector for driver "${name}"`)
     }
 
     return this.resolveConnector(name)
   }
 
+  /**
+   * Creates a new queue connection instance.
+   *
+   * @param {String} name
+   *
+   * @returns {Object}
+   */
   resolveConnector (name) {
     const Connector = this.connectors.get(name)
 
     return new Connector()
   }
 
+  /**
+   * Determines whether the queue connector
+   * identified by `name` is available.
+   *
+   * @param {String} name
+   *
+   * @returns {Boolean}
+   */
   hasConnector (name) {
     return this.connectors.has(name)
   }
 
-  _createQueueForJob (Job) {
-    this.queues.set(Job.name, Job)
+  /**
+   * Caches the given job class.
+   *
+   * @param {Class} Job
+   */
+  addJob (Job) {
+    this.jobs.set(Job.name, Job)
   }
 
-  async dispatch (job, data, queue) {
-    const connection = await this.connection()
+  /**
+   * Retrieves a cached job class.
+   *
+   * @param {String} name
+   *
+   * @returns {Class}
+   */
+  getJob (name) {
+    return this.jobs.get(name)
+  }
 
-    connection.push(job.name, data, queue)
+  /**
+   * Dispatches a job with the given data.
+   *
+   * @param {Class} job
+   * @param {Object} options
+   */
+  async dispatch (job, { data, connection: connectionName, queue }) {
+    const connection = await this.connection(connectionName)
+
+    await connection.push(job.name, data, queue)
+  }
+
+  /**
+   * Stops all queue connections.
+   */
+  async stop () {
+    await Collect(
+      Array.from(this.connections.values())
+    ).forEach(async (connector) => {
+      await connector.disconnect()
+    })
   }
 }
 
