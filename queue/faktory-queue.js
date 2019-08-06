@@ -1,8 +1,22 @@
 'use strict'
 
+const Faktory = require('faktory-worker')
+const FaktoryJob = require('./jobs/faktory-job')
+const Collect = require('@supercharge/collections')
+
 class FaktoryQueue {
-  constructor (client) {
-    this.client = client
+  constructor () {
+    this.client = null
+  }
+
+  async connect (config) {
+    this.client = await Faktory.connect(config)
+
+    return this
+  }
+
+  async disconnect () {
+    await this.client.close()
   }
 
   async push (jobName, data, queue) {
@@ -16,13 +30,20 @@ class FaktoryQueue {
   }
 
   async pop (...queues) {
-    return this.client.fetch(...queues)
+    const job = await this.client.fetch(...queues)
+
+    if (job) {
+      return new FaktoryJob(job, this.client)
+    }
   }
 
-  async size () {
-    console.log(
-      await this.client.info()
-    )
+  async size (...queues) {
+    const info = await this.client.info()
+
+    return Collect(Object.keys(info.queues))
+      .filter(queueName => queues.includes(queueName))
+      .map(queueName => info.queues[queueName])
+      .reduce((sum, amount) => sum + amount)
   }
 }
 

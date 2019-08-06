@@ -1,20 +1,25 @@
 'use strict'
 
+const Config = require('../../../config')
+const Logger = require('../../../logging')
 const BaseCommand = require('../base-command')
 const Worker = require('../../../queue/worker')
+const WorkerOptions = require('../../../queue/worker-options')
+const QueueBootstrapper = require('../../../queue/bootstrapper')
 
 class QueueWork extends BaseCommand {
   constructor () {
     super()
 
-    this.heartBeat = null
-    this.worker = new Worker({})
+    this.worker = null
   }
 
   static get signature () {
     return `
       queue:work
-        { queues?: The queues to process }
+        { connection?: The name of the queue connection to fetch jobs from }
+        { --queue=@value: The queues to process }
+        { --shutdown-timeout=@value: The timeout in seconds to wait before forcefully stopping the queue connection }
     `
   }
 
@@ -25,23 +30,50 @@ class QueueWork extends BaseCommand {
     return 'Start the queue worker and process enqueued jobs'
   }
 
-  async handle ({ queues }) {
-    this.initializeHeartBeat()
+  async handle (args, options) {
+    await this.run(async () => {
+      await new QueueBootstrapper().boot() // TODO
+      this.listenForShutdownSignals()
 
-    process.on('SIGINT', () => {
-      this.stop()
+      const config = this.createWorkerOptionsFrom(args, options)
+      this.worker = new Worker(config)
+
+      Logger.info(`Queue worker starting for connection "${config.connection()}" processing queue(s) "${config.queues()}"`)
+      await this.worker.run()
     })
-
-    // TODO handle jobs
   }
 
-  initializeHeartBeat () {
-    this.heartBeat = setInterval(() => {}, 1000)
+  createWorkerOptionsFrom ({ connection }, { queue, shutdownTimeout }) {
+    connection = this.getConnection(connection)
+
+    return new WorkerOptions({
+      connection,
+      shutdownTimeout,
+      queues: this.getQueue(connection, queue)
+    })
+  }
+
+  getConnection (connection) {
+    return connection || Config.get('queue.driver')
+  }
+
+  getQueue (connection, queue) {
+    return queue
+      ? queue.split(',')
+      : Config.get(`queue.connections.${connection}.default`)
+  }
+
+  listenForShutdownSignals () {
+    process
+      .once('SIGINT', () => this.stop())
+      .once('SIGTERM', () => this.stop())
   }
 
   async stop () {
-    console.log('terminating queue worker')
+    Logger.info('Stopping the queue worker')
     await this.worker.stop()
+
+    Logger.info('Queue worker stopped')
     process.exit(0)
   }
 }

@@ -1,6 +1,6 @@
 'use strict'
 
 module.exports = {
-  sync: require('./sync'),
-  faktory: require('./faktory')
+  sync: require('../sync-queue'),
+  faktory: require('../faktory-queue')
 }
