@@ -1,20 +1,62 @@
 'use strict'
 
+const SqsClient = require('aws-sdk/clients/sqs')
+
 class SqsQueue {
-  constructor (sqsClient) {
-    this.client = sqsClient
+  constructor () {
+    this.client = null
   }
 
-  async push (job, data) {
-    //
+  /**
+   * Create a queue connection.
+   *
+   * @param {Object} config
+   *
+   * @returns {SqsQueue}
+   */
+  async connect (config) {
+    this.client = new SqsClient(config)
   }
 
-  async pop (...queues) {
-    //
+  /**
+   * Close an existing queue connection.
+   */
+  async disconnect () {
+    // TODO
   }
 
-  async size () {
-    //
+  /**
+   * Push a new job with `data` to process
+   * onto the given `queue`.
+   *
+   * @param {String} jobName
+   * @param {*} data
+   * @param {String} queue
+   */
+  async push (job, data, queue) {
+    // TODO
+  }
+
+  /**
+   * Retrieve the next job from the queue.
+   *
+   * @param  {String} queue
+   *
+   * @returns {Job}
+   */
+  async pop (queue) {
+    // TODO
+  }
+
+  /**
+   * Returns the size of the queue.
+   *
+   * @param  {String} queues
+   *
+   * @returns {Number}
+   */
+  async size (queue) {
+    // TODO
   }
 }
 
