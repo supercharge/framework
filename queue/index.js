@@ -176,7 +176,7 @@ class QueueManager {
   async dispatch (job, { data, connection: connectionName, queue }) {
     const connection = await this.connection(connectionName)
 
-    await connection.push(job.name, data, queue)
+    await connection.push(job, data, queue)
   }
 
   /**
