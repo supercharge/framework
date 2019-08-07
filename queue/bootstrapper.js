@@ -3,7 +3,7 @@
 const QueueManager = require('./')
 const Fs = require('../filesystem')
 const Helper = require('../helper')
-const Connectors = require('./connectors')
+const Connectors = require('./connections')
 const ReadRecursive = require('recursive-readdir')
 const Collect = require('@supercharge/collections')
 

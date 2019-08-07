@@ -1,7 +1,7 @@
 'use strict'
 
 const Faktory = require('faktory-worker')
-const FaktoryJob = require('./jobs/faktory-job')
+const FaktoryJob = require('../jobs/faktory-job')
 const Collect = require('@supercharge/collections')
 
 class FaktoryQueue {
@@ -38,11 +38,11 @@ class FaktoryQueue {
    * @param {*} data
    * @param {String} queue
    */
-  async push (jobName, data, queue) {
+  async push (job, data, queue) {
     return this.client.push({
       queue,
       args: data,
-      jobtype: jobName
+      jobtype: job.name
     })
   }
 
@@ -56,9 +56,9 @@ class FaktoryQueue {
   async pop (queue) {
     const job = await this.client.fetch(queue)
 
-    if (job) {
-      return new FaktoryJob(job, this.client)
-    }
+    return job
+      ? new FaktoryJob(job, this.client)
+      : null
   }
 
   /**
