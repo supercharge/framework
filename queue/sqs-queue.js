@@ -1,10 +1,12 @@
 'use strict'
 
-const SqsClient = require('aws-sdk/clients/sqs')
+const AWS = require('aws-sdk')
+const SqsClient = AWS.SQS
 
 class SqsQueue {
-  constructor () {
+  constructor (config) {
     this.client = null
+    this.config = config
   }
 
   /**
@@ -14,8 +16,42 @@ class SqsQueue {
    *
    * @returns {SqsQueue}
    */
-  async connect (config) {
-    this.client = new SqsClient(config)
+  async connect () {
+    this.client = new SqsClient(
+      this.createConfiguration()
+    )
+
+    return this
+  }
+
+  /**
+   * Composes and returns the AWS SQS configuration.
+   *
+   * @param {Object} config
+   *
+   * @returns {Object}
+   */
+  createConfiguration () {
+    return Object.assign({
+      version: 'latest',
+      httpOptions: {
+        connectTimeout: 60
+      },
+      credentials: this.createCredentials()
+    }, this.config)
+  }
+
+  /**
+   * Create an AWS credentials instance based
+   * on the configured access key, secret,
+   * and token.
+   *
+   * @returns {AWS.Credentials} AWS.Credentials
+   */
+  createCredentials () {
+    const { key, secret, token } = this.config
+
+    return new AWS.Credentials(key, secret, token)
   }
 
   /**
