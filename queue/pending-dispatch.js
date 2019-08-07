@@ -11,7 +11,7 @@ class PendingDispatch {
    * @param {Dispatchable} dispatchable
    */
   constructor (dispatchable) {
-    this.queue = null
+    this.queue = undefined
     this.connection = undefined
     this.dispatchable = dispatchable
   }
