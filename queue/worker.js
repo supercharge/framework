@@ -70,7 +70,20 @@ class Worker {
    * @param {Object} job
    */
   async handle (job) {
+    // TODO handle max attemps: mark job as failed if exceeding max attemps
+    // TODO return early if job is arleady deleted
+
     await job.fire()
+
+    // try {
+    //   await job.fire()
+    // } catch (error) {
+    //   // TODO handle job failure
+    //   throw error
+    // } finally {
+    //   // TODO release job back to the queue if not exceeding max attemps
+    //   // TODO release job back with delay?
+    // }
   }
 
   /**
