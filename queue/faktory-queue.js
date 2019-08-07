@@ -74,7 +74,9 @@ class FaktoryQueue {
     return Collect(Object.keys(info.queues))
       .filter(queueName => queue === queueName)
       .map(queueName => info.queues[queueName])
-      .reduce((sum, jobCountInQueue) => sum + jobCountInQueue, 0)
+      .reduce((sum, jobCountInQueue) => {
+        return sum + jobCountInQueue
+      }, 0)
   }
 }
 
