@@ -88,9 +88,7 @@ class QueueManager {
    * @returns {Object}
    */
   async resolveConnection (name) {
-    const config = Config.get(`queue.connections.${name}`)
-
-    return this.getConnector(name).connect(config)
+    return this.getConnector(name).connect()
   }
 
   /**
@@ -121,7 +119,20 @@ class QueueManager {
   resolveConnector (name) {
     const Connector = this.connectors.get(name)
 
-    return new Connector()
+    return new Connector(
+      this.getConfig(name)
+    )
+  }
+
+  /**
+   * Returns the queue   connection configuration.
+   *
+   * @param {String} name
+   *
+   * @returns {Object}
+   */
+  getConfig (name) {
+    return Config.get(`queue.connections.${name}`)
   }
 
   /**

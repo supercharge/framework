@@ -5,8 +5,9 @@ const FaktoryJob = require('./jobs/faktory-job')
 const Collect = require('@supercharge/collections')
 
 class FaktoryQueue {
-  constructor () {
+  constructor (config) {
     this.client = null
+    this.config = config
   }
 
   /**
@@ -16,8 +17,8 @@ class FaktoryQueue {
    *
    * @returns {FaktoryQueue}
    */
-  async connect (config) {
-    this.client = await Faktory.connect(config)
+  async connect () {
+    this.client = await Faktory.connect(this.config)
 
     return this
   }
