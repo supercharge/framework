@@ -6,7 +6,17 @@ class Job {
   constructor (job) {
     this._job = job
     this._instance = null
+    this._deleted = false
     this._manager = QueueManager
+  }
+
+  /**
+   * Flags the job as deleted. The actual procedure to delete
+   * the job from the queue must be part of the `delete`
+   * method implemented by the individual job class.
+   */
+  delete () {
+    this._deleted = true
   }
 
   /**
