@@ -116,8 +116,6 @@ class SqsQueue {
 
     const messages = response.Messages
 
-    console.log(messages)
-
     return await Collect(messages).isNotEmpty()
       ? new SqsJob(messages[0], this.client, this.queueUrlFor(queue))
       : null
