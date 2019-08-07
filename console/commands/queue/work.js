@@ -14,6 +14,10 @@ class QueueWork extends BaseCommand {
     this.worker = null
   }
 
+  /**
+   * Returns the command signature with
+   * allowed arguments and flags.
+   */
   static get signature () {
     return `
       queue:work
@@ -30,19 +34,36 @@ class QueueWork extends BaseCommand {
     return 'Start the queue worker and process enqueued jobs'
   }
 
+  /**
+   * Handle the queue:work command.
+   *
+   * @param {Object} args
+   * @param {Object} options
+   */
   async handle (args, options) {
     await this.run(async () => {
       await new QueueBootstrapper().boot() // TODO
       this.listenForShutdownSignals()
 
-      const config = this.createWorkerOptionsFrom(args, options)
-      this.worker = new Worker(config)
+      this.worker = new Worker(
+        this.createWorkerOptionsFrom(args, options)
+      )
 
-      Logger.info(`Queue worker starting for connection "${config.connection}" processing queue(s) "${config.queues}"`)
+      Logger.info(`Queue worker starting for connection "${this.worker.connection}" processing queue(s) "${this.worker.queues}"`)
       await this.worker.run()
     })
   }
 
+  /**
+   * Create the queue worker options based on the
+   * given arguments and flags passed to the
+   * command while starting the worker.
+   *
+   * @param {Object} arguments
+   * @param {Object} flags
+   *
+   * @returns {WorkerOptions}
+   */
   createWorkerOptionsFrom ({ connection }, { queue, shutdownTimeout }) {
     connection = this.getConnection(connection)
 
@@ -53,22 +74,46 @@ class QueueWork extends BaseCommand {
     })
   }
 
+  /**
+   * Returns the queue connection name.
+   *
+   * @param {String} connection
+   */
   getConnection (connection) {
     return connection || Config.get('queue.driver')
   }
 
+  /**
+   * Returns the queue names to process by this
+   * worker. If not provided, uses the default
+   * queue defined in the app config.
+   *
+   * @param {String} connection
+   * @param {String} queue
+   *
+   * @returns {Array|String}
+   */
   getQueue (connection, queue) {
     return queue
       ? queue.split(',')
       : Config.get(`queue.connections.${connection}.queue`)
   }
 
+  /**
+   * Register event listener to properly shut
+   * down the queue worker and connections
+   * on `SIGINT` or `SIGTERM` events.
+   */
   listenForShutdownSignals () {
     process
       .once('SIGINT', () => this.stop())
       .once('SIGTERM', () => this.stop())
   }
 
+  /**
+   * Stop the queue worker and connections
+   * and exit the process.
+   */
   async stop () {
     Logger.info('Stopping the queue worker')
     await this.worker.stop()
