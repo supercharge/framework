@@ -1,6 +1,7 @@
 'use strict'
 
 const QueueManager = require('.')
+const Logger = require('../logging')
 const Dispatcher = require('../event/dispatcher')
 
 class Worker {
@@ -13,12 +14,21 @@ class Worker {
     this.workerOptions = workerOptions
   }
 
+  /**
+   * Poll the queue continuously for jobs
+   * and process jobs when available.
+   */
   async run () {
     this.connection = await this.manager.connection(this.workerOptions.connection)
 
-    return this.workHardBrewHard()
+    setImmediate(() => this.workHardBrewHard())
   }
 
+  /**
+   * This is the actual function long-polling the queue connection for new jobs.
+   * When no job is available in the queue, it waits for a second. If a job
+   * was available, it immediately tries to fetch the next job.
+   */
   async workHardBrewHard () {
     if (!this.shouldRun()) {
       return this.pause(1000)
@@ -34,29 +44,57 @@ class Worker {
         this.pause(1000)
       }
     } catch (error) {
-      console.log(error)
+      Logger.error(error)
     }
   }
 
+  /**
+   * Determine whether to fetch the next job.
+   */
   shouldRun () {
     return !this.shouldStop
   }
 
+  /**
+   * Retrieve the next job from the queue connection.
+   *
+   * @returns {Object}
+   */
   async getNextJob () {
     return this.connection.pop(...this.workerOptions.queues)
   }
 
+  /**
+   * Start the job processing.
+   *
+   * @param {Object} job
+   */
   async handle (job) {
     await job.fire()
   }
 
+  /**
+   * Restart polling the queue connection
+   * for a new job after the given time.
+   *
+   * @param {Number} ms
+   */
   pause (ms) {
     setTimeout(() => this.workHardBrewHard(), ms)
   }
 
+  /**
+   * Stop the queue worker by finishing the job in
+   * progress and closing the queue connection.
+   */
   async stop () {
     this.shouldStop = true
 
+    /**
+     * This timeout is used to ensure that the worker forcefully
+     * stops after the `shutdownTimeout`. If all other
+     * processing finishes earlier, everything is fine.
+     */
     const timeout = setTimeout(async () => {
       await this.manager.stop()
     }, this.workerOptions.shutdownTimeout)
