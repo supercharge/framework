@@ -38,7 +38,7 @@ class QueueWork extends BaseCommand {
       const config = this.createWorkerOptionsFrom(args, options)
       this.worker = new Worker(config)
 
-      Logger.info(`Queue worker starting for connection "${config.connection()}" processing queue(s) "${config.queues()}"`)
+      Logger.info(`Queue worker starting for connection "${config.connection}" processing queue(s) "${config.queues}"`)
       await this.worker.run()
     })
   }
@@ -60,7 +60,7 @@ class QueueWork extends BaseCommand {
   getQueue (connection, queue) {
     return queue
       ? queue.split(',')
-      : Config.get(`queue.connections.${connection}.default`)
+      : Config.get(`queue.connections.${connection}.queue`)
   }
 
   listenForShutdownSignals () {
