@@ -39,6 +39,7 @@ class Worker {
 
       if (job) {
         this.jobInProgress = this.handle(job)
+        await this.jobInProgress
         this.pause(0)
       } else {
         this.pause(1000)
