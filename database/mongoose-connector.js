@@ -55,9 +55,15 @@ class MongooseConnector {
    * the database configuration.
    */
   connectionString () {
-    const { url, protocol = 'mongodb', host = 'localhost', port = 27017, database } = this.config
+    const { url, protocol = 'mongodb', host, port, database } = this.config
 
-    return url || `${protocol}://${host}:${port}/${database}`
+    if (url) {
+      return url
+    }
+
+    return host && port
+      ? `${protocol}://${host}:${port}${host}/${database}`
+      : `${protocol}://${host}/${database}`
   }
 
   /**
