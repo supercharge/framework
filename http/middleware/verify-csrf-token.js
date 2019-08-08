@@ -51,7 +51,7 @@ class VerifyCsrfToken {
    *
    * @returns {Boolean}
    */
-  async isReadingOrTesting (request) {
+  isReadingOrTesting (request) {
     return this.isReading(request) || this.isTesting()
   }
 
