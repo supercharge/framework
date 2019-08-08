@@ -107,6 +107,16 @@ const schema = new Mongoose.Schema({
   toJSON: {
     transform: function (_, ret) {
       delete ret._id
+      delete ret.__v
+      delete ret.password
+
+      return ret
+    }
+  },
+  toObject: {
+    transform: function (_, ret) {
+      delete ret._id
+      delete ret.__v
       delete ret.password
 
       return ret
