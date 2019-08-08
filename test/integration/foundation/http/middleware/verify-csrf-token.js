@@ -125,7 +125,7 @@ class CsrfMiddlewareTest extends BaseTest {
     Env.set('NODE_ENV', 'testing')
   }
 
-  async serialForbidden (t) {
+  async serialForbiddenDueToMissingToken (t) {
     Env.set('NODE_ENV', 'development')
 
     this.server.route({

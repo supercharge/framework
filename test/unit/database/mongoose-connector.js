@@ -11,7 +11,7 @@ class MongooseConnectorTest extends BaseTest {
       mongoose: {
         host: 'localhost',
         port: 27017,
-        database: 'boost'
+        database: 'supercharge-testing'
       }
     })
   }
@@ -26,7 +26,7 @@ class MongooseConnectorTest extends BaseTest {
     await connector.connect()
     t.true(connector.isConnected())
 
-    await connector.close()
+    await connector.disconnect()
     t.false(connector.isConnected())
   }
 
@@ -37,7 +37,7 @@ class MongooseConnectorTest extends BaseTest {
     await connector.connect()
     t.true(connector.isConnected())
 
-    await connector.close()
+    await connector.disconnect()
     t.true(connector.isNotConnected())
   }
 
@@ -53,12 +53,23 @@ class MongooseConnectorTest extends BaseTest {
       }
     })
 
-    await connector.close()
+    await connector.disconnect()
 
     await t.throwsAsync(async () => connector.connect())
     t.false(connector.isConnected())
 
     stub.restore()
+  }
+
+  async serialConnectsWithMongoDbUrl (t) {
+    const connector = new MongooseConnector({
+      url: 'mongodb://localhost:27017/supercharge-testing'
+    })
+
+    await connector.connect()
+    t.true(connector.isConnected())
+
+    await connector.disconnect()
   }
 
   async throwsWithoutConfig (t) {
