@@ -17,7 +17,11 @@ class VerifyCsrfToken {
    * @param {Toolkit} h
    */
   async onPostAuth (request, h) {
-    if (await this.canProceed(request)) {
+    if (this.isReadingOrTesting(request)) {
+      return h.continue
+    }
+
+    if (await this.tokensMatch(request)) {
       this.rotateToken(request)
 
       return h.continue
@@ -47,8 +51,8 @@ class VerifyCsrfToken {
    *
    * @returns {Boolean}
    */
-  async canProceed (request) {
-    return this.isReading(request) || this.isTesting() || this.tokensMatch(request)
+  async isReadingOrTesting (request) {
+    return this.isReading(request) || this.isTesting()
   }
 
   /**
