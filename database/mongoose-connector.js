@@ -46,7 +46,7 @@ class MongooseConnector {
    */
   async connect () {
     if (this.isNotConnected()) {
-      await Mongoose.connect(this.connectionString(), Object.assign({ useNewUrlParser: true }, this.config.options))
+      await Mongoose.connect(this.connectionString(), this.config.options)
     }
   }
 
@@ -55,9 +55,9 @@ class MongooseConnector {
    * the database configuration.
    */
   connectionString () {
-    const { host = 'localhost', port = 27017, database } = this.config
+    const { url, protocol = 'mongodb', host = 'localhost', port = 27017, database } = this.config
 
-    return `mongodb://${host}:${port}/${database}`
+    return url || `${protocol}://${host}:${port}/${database}`
   }
 
   /**
