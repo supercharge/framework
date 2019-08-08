@@ -47,7 +47,7 @@ class DatabaseManager {
       })
       .filter(({ connection }) => connection)
       .forEach(async ({ name, connection }) => {
-        await connection.close()
+        await connection.disconnect()
         delete this.connections[name]
       })
   }

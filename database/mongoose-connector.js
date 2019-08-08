@@ -1,7 +1,7 @@
 'use strict'
 
-const Mongoose = require('mongoose')
 const Logger = require('../logging')
+const Mongoose = require('mongoose')
 
 /**
  * This Mongoose connector manages the database
@@ -63,7 +63,7 @@ class MongooseConnector {
   /**
    * Close the MongoDB connection.
    */
-  async close () {
+  async disconnect () {
     await Mongoose.disconnect()
   }
 
