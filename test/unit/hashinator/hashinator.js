@@ -21,13 +21,17 @@ class HashinatorTest extends BaseTest {
   }
 
   sha256 (t) {
-    const hash = Hash.sha256('boost')
+    const plain = 'supercharge-testing'
+    const hash = Hash.sha256(plain)
     t.truthy(hash)
+    t.notDeepEqual(plain, hash)
   }
 
   sha512 (t) {
-    const hash = Hash.sha512('boost')
+    const plain = 'supercharge-testing'
+    const hash = Hash.sha512(plain)
     t.truthy(hash)
+    t.notDeepEqual(plain, hash)
   }
 
   async selectHashinatorBasedOnConfig (t) {

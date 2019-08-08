@@ -6,13 +6,14 @@ const BaseTest = require('../../../base-test')
 
 class TestConnector {
   connect () {}
-  close () {}
+
+  disconnect () {}
 }
 
 class DatabaseManagerTest extends BaseTest {
   before () {
     Config.set('database.default', 'mongoose')
-    Config.set('database.connections', { mongoose: { database: 'boost' } })
+    Config.set('database.connections', { mongoose: { database: 'supercharge-testing' } })
   }
 
   after () {

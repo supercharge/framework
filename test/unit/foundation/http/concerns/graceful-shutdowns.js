@@ -11,7 +11,7 @@ const GracefulShutdown = require('../../../../../http/concerns/06-graceful-shutd
 class GracefulShutdownTest extends BaseTest {
   before () {
     Config.set('database.default', 'mongoose')
-    Config.set('database.connections', { mongoose: { database: 'boost' } })
+    Config.set('database.connections', { mongoose: { database: 'supercharge-testing' } })
   }
 
   after () {
