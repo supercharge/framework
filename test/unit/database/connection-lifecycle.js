@@ -10,7 +10,13 @@ const ConnectionLifecycle = require('../../../database/middleware/connection-lif
 class DatabaseConnectionLifecycleTest extends BaseTest {
   async serialStartConnection (t) {
     Config.set('database.default', 'mongoose')
-    Config.set('database.connections', { mongoose: { database: 'supercharge-testing' } })
+    Config.set('database.connections', {
+      mongoose: {
+        host: 'localhost',
+        database: 'supercharge-testing',
+        options: { useNewUrlParser: true }
+      }
+    })
 
     this.modelsPathStub = this.stub(Helper, 'modelsPath').returns(
       Path.resolve(__dirname, 'fixtures/models')

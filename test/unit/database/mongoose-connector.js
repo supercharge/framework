@@ -11,7 +11,8 @@ class MongooseConnectorTest extends BaseTest {
       mongoose: {
         host: 'localhost',
         port: 27017,
-        database: 'supercharge-testing'
+        database: 'supercharge-testing',
+        options: { useNewUrlParser: true }
       }
     })
   }
