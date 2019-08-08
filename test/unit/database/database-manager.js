@@ -13,7 +13,13 @@ class TestConnector {
 class DatabaseManagerTest extends BaseTest {
   before () {
     Config.set('database.default', 'mongoose')
-    Config.set('database.connections', { mongoose: { database: 'supercharge-testing' } })
+    Config.set('database.connections', {
+      mongoose: {
+        host: 'localhost',
+        database: 'supercharge-testing',
+        options: { useNewUrlParser: true }
+      }
+    })
   }
 
   after () {

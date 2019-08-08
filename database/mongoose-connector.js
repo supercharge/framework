@@ -62,7 +62,7 @@ class MongooseConnector {
     }
 
     return host && port
-      ? `${protocol}://${host}:${port}${host}/${database}`
+      ? `${protocol}://${host}:${port}/${database}`
       : `${protocol}://${host}/${database}`
   }
 
