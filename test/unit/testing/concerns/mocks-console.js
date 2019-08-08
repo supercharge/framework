@@ -10,8 +10,6 @@ class MockConsoleTest extends BaseTest {
 
     const { stdout, stderr } = this.endConsoleMock()
     t.falsy(stderr)
-
-    console.log(stdout)
     t.true(stdout.includes('test message'))
   }
 
