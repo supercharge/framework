@@ -5,7 +5,7 @@ const Winston = require('winston')
 const Config = require('../../../config')
 const Fs = require('../../../filesystem')
 const BaseTest = require('../../../base-test')
-const FileLogger = require('../../../logging/driver/file-logger')
+const FileLogger = require('../../../logging/transports/file')
 
 class FileLoggerTest extends BaseTest {
   constructor () {
@@ -24,7 +24,7 @@ class FileLoggerTest extends BaseTest {
   }
 
   async serialLogToFile (t) {
-    const logger = Winston.createLogger().clear().add(new FileLogger().logger())
+    const logger = Winston.createLogger().clear().add(new FileLogger())
     logger.info('test log')
     // wait for logger to write the message
     await new Promise(resolve => setTimeout(resolve, 100))

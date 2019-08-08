@@ -1,6 +1,7 @@
 'use strict'
 
 const Config = require('../config')
+const Collect = require('@supercharge/collections')
 const MongooseConnector = require('./mongoose-connector')
 
 /**
@@ -38,19 +39,17 @@ class DatabaseManager {
    * @param {String|Array} name
    */
   async close (name) {
-    let connections = name || Object.keys(this.connections)
-    connections = Array.isArray(connections) ? connections : [connections]
+    const connectionNames = name || Object.keys(this.connections)
 
-    await Promise.all(
-      connections.map(async name => {
-        const connection = this.connections[name]
-
-        if (connection) {
-          await connection.close()
-          delete this.connections[name]
-        }
+    await Collect(connectionNames)
+      .map(name => {
+        return { name, connection: this.connections[name] }
       })
-    )
+      .filter(({ connection }) => connection)
+      .forEach(async ({ name, connection }) => {
+        await connection.close()
+        delete this.connections[name]
+      })
   }
 
   /**

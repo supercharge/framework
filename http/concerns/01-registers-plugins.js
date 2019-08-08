@@ -10,7 +10,6 @@ class RegistersCorePlugins extends LoadBootstrappers {
   async _registerCorePlugins () {
     await this.server.register([
       { plugin: require('@hapi/vision') },
-      { plugin: require('@hapi/cookie') },
       { plugin: require('hapi-request-utilities') },
       { plugin: require('hapi-response-utilities') },
       { plugin: require('hapi-class-extension-points') }

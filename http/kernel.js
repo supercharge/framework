@@ -14,6 +14,7 @@ class HttpKernel extends HttpConcerns {
     this.app = app
     this.server = this._createServer()
     this.bootstrappers = [
+      '../logging/bootstrapper.js',
       '../auth/bootstrapper.js',
       '../database/bootstrapper.js',
       '../view/bootstrapper.js'
