@@ -2,7 +2,6 @@
 
 const Logger = require('../logging')
 const Mongoose = require('mongoose')
-const { URL } = require('url')
 
 /**
  * This Mongoose connector manages the database
