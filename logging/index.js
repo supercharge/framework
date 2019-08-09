@@ -41,9 +41,30 @@ class LoggingManager {
   _createLogger (name) {
     const Transport = Transports[name]
 
-    return Winston.createLogger().add(
+    return Winston.createLogger({
+      format: Winston.format.combine(
+        this.handleErrorLogs()
+      )
+    }).add(
       new Transport()
     )
+  }
+
+  /**
+   * Create a log transform instance to handle `Error`
+   * instances that log the error stack trace
+   * besides the actual error message.
+   *
+   * @returns {object}
+   */
+  handleErrorLogs () {
+    const formatter = Winston.format(info => {
+      return info instanceof Error
+        ? Object.assign({ message: `${info.message}\n${info.stack}` }, info)
+        : info
+    })
+
+    return formatter()
   }
 
   /**
