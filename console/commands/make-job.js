@@ -49,6 +49,11 @@ class MakeJob extends BaseCommand {
     })
   }
 
+  /**
+   * Create the job file.
+   *
+   * @param {String} file
+   */
   async createJob (file) {
     const content = await this.createJobFileContent(file)
     await this.writeFile(Helper.jobsPath(file), content)
@@ -56,6 +61,14 @@ class MakeJob extends BaseCommand {
     this.completed('created', `jobs/${file}`)
   }
 
+  /**
+   * Create the job’s class name and render it
+   * into the stub.
+   *
+   * @param {String} file
+   *
+   * @returns {String}
+   */
   async createJobFileContent (file) {
     const stubContent = await this.getFileContent(this.stub)
     const template = Handlebars.compile(stubContent)
@@ -63,12 +76,28 @@ class MakeJob extends BaseCommand {
     return template({ className: this.createClassNameFrom(file) })
   }
 
+  /**
+   * Create a class name based on the job’s
+   * file name. Uppercase the first letter
+   * and camelCase the rest.
+   *
+   * @param {String} filepath
+   *
+   * @returns {String}
+   */
   createClassNameFrom (filepath) {
     return _.upperFirst(
       _.camelCase(this.extractFileNameFrom(filepath))
     )
   }
 
+  /**
+   * Extract the job file’s name from the path.
+   *
+   * @param {String} filepath
+   *
+   * @returns {String}
+   */
   extractFileNameFrom (filepath) {
     const { name } = Path.parse(filepath)
 
