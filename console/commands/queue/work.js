@@ -51,6 +51,7 @@ class QueueWork extends BaseCommand {
       )
 
       Logger.info(`Queue worker starting for connection "${this.worker.options.connectionName}" processing queue(s) "${this.worker.options.queues}"`)
+
       await this.worker.longPoll()
     })
   }

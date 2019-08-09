@@ -95,30 +95,63 @@ class Job {
     return this._deleted
   }
 
+  /**
+   * Determine whether a job has not been deleted.
+   *
+   * @returns {Boolean}
+   */
   isNotDeleted () {
     return !this.isDeleted()
   }
 
+  /**
+   * Set a job as released.
+   */
   release () {
     this._released = true
   }
 
+  /**
+   * Determine whether a job has been
+   * released back onto the queue.
+   *
+   * @returns {Boolean}
+   */
   isReleased () {
     return this._released
   }
 
+  /**
+   * Determine whether a job has not been
+   * released back onto the queue.
+   *
+   * @returns {Boolean}
+   */
   isNotReleased () {
     return !this.isReleased()
   }
 
+  /**
+   * Mark this job as failed.
+   */
   markAsFailed () {
     this._failed = true
   }
 
+  /**
+   * Determine whether a job has been marked as failed.
+   *
+   * @returns {Boolean}
+   */
   hasFailed () {
     return this._failed
   }
 
+  /**
+   * Determine whether a job has not been failed.
+   *
+   * @returns {Boolean}
+   */
   hasNotFailed () {
     return !this.hasFailed()
   }
