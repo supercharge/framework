@@ -23,7 +23,7 @@ class QueueWork extends BaseCommand {
       queue:work
         { connection?: The name of the queue connection to fetch jobs from }
         { --queue=@value: The queues to process }
-        { --shutdown-timeout=@value: The timeout in seconds to wait before forcefully stopping the queue connection }
+        { --attempts=@value: The maximum number of attempts to process a job before marking it failed }
     `
   }
 
@@ -43,14 +43,15 @@ class QueueWork extends BaseCommand {
   async handle (args, options) {
     await this.run(async () => {
       await new QueueBootstrapper().boot() // TODO
+
       this.listenForShutdownSignals()
 
       this.worker = new Worker(
         this.createWorkerOptionsFrom(args, options)
       )
 
-      Logger.info(`Queue worker starting for connection "${this.worker.connection}" processing queue(s) "${this.worker.queues}"`)
-      await this.worker.run()
+      Logger.info(`Queue worker starting for connection "${this.worker.options.connectionName}" processing queue(s) "${this.worker.options.queues}"`)
+      await this.worker.longPoll()
     })
   }
 
@@ -64,14 +65,16 @@ class QueueWork extends BaseCommand {
    *
    * @returns {WorkerOptions}
    */
-  createWorkerOptionsFrom ({ connection }, { queue, shutdownTimeout }) {
+  createWorkerOptionsFrom ({ connection }, { queue, attempts }) {
     connection = this.getConnection(connection)
+    const { maxAttempts } = Config.get('queue.worker')
 
     return new WorkerOptions({
       connection,
-      shutdownTimeout,
+      maxAttempts: attempts || maxAttempts,
       queues: this.getQueue(connection, queue)
-    })
+    }
+    )
   }
 
   /**
