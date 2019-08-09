@@ -10,10 +10,10 @@ class WorkerOptions {
      *
      * @returns {WorkerOptions}
      */
-  constructor ({ connection, queues, shutdownTimeout }) {
-    this._connection = connection
-    this._queues = [].concat(queues || 'default')
-    this._shutdownTimeout = (Number(shutdownTimeout) || 10) * 1000
+  constructor ({ connection, queues, maxAttempts }) {
+    this._queues = [].concat(queues)
+    this._connectionName = connection
+    this._maxAttempts = parseInt(maxAttempts)
   }
 
   /**
@@ -21,8 +21,8 @@ class WorkerOptions {
    *
    * @returns {String}
    */
-  get connection () {
-    return this._connection
+  get connectionName () {
+    return this._connectionName
   }
 
   /**
@@ -35,14 +35,13 @@ class WorkerOptions {
   }
 
   /**
-   * Returns the shutdown timeout in milliseconds which
-   * represents the time interval before forcefully
-   * shutting down the queue connection.
+   * Returns the maximum number of attempts to
+   * process a job before marking it failed.
    *
    * @returns {Number}
    */
-  get shutdownTimeout () {
-    return this._shutdownTimeout
+  get maxAttempts () {
+    return this._maxAttempts
   }
 }
 
