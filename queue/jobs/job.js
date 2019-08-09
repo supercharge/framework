@@ -5,18 +5,11 @@ const QueueManager = require('../')
 class Job {
   constructor (job) {
     this._job = job
-    this._instance = null
+    this._failed = false
     this._deleted = false
+    this._released = false
+    this._instance = null
     this._manager = QueueManager
-  }
-
-  /**
-   * Flags the job as deleted. The actual procedure to delete
-   * the job from the queue must be part of the `delete`
-   * method implemented by the individual job class.
-   */
-  delete () {
-    this._deleted = true
   }
 
   /**
@@ -74,13 +67,109 @@ class Job {
   }
 
   /**
+   * Returns the number of attempts for this job.
+   *
+   * @returns {Number}
+   */
+  attempts () {
+    const { attempts } = this.payload()
+
+    return attempts
+  }
+
+  /**
+   * Flags the job as deleted. The actual procedure to delete
+   * the job from the queue must be part of the `delete`
+   * method implemented by the individual job class.
+   */
+  delete () {
+    this._deleted = true
+  }
+
+  /**
+   * Determine whether a job has been deleted.
+   *
+   * @returns {Boolean}
+   */
+  isDeleted () {
+    return this._deleted
+  }
+
+  isNotDeleted () {
+    return !this.isDeleted()
+  }
+
+  release () {
+    this._released = true
+  }
+
+  isReleased () {
+    return this._released
+  }
+
+  isNotReleased () {
+    return !this.isReleased()
+  }
+
+  markAsFailed () {
+    this._failed = true
+  }
+
+  hasFailed () {
+    return this._failed
+  }
+
+  hasNotFailed () {
+    return !this.hasFailed()
+  }
+
+  /**
    * Fire the job.
    */
   async fire () {
-    const JobClass = this.manager.getJob(this.jobName())
-    this.instance = new JobClass(this.payload())
+    this._instance = this.resolveInstance()
 
-    return this.instance.handle()
+    return this._instance.handle()
+  }
+
+  /**
+   * Resolve a job instance.
+   *
+   * @returns {Object}
+   */
+  resolveInstance () {
+    const JobClass = this.manager.getJob(this.jobName())
+
+    return new JobClass(this.payload())
+  }
+
+  /**
+   * This job ultimately failed. Delete it and call the
+   * `failed` method if existing on the job instance.
+   *
+   * @param {Error} error
+   */
+  async fail (error) {
+    this.markAsFailed()
+
+    try {
+      await this.delete()
+      await this.failed(error)
+    } catch (ignoreError) { }
+  }
+
+  /**
+   * If available, call the `failed` method on the job instance.
+   *
+   * @param {Error} error
+   */
+  async failed (error) {
+    this.instance = this.resolveInstance()
+
+    if (typeof this.instance.failed === 'function') {
+      error.job = this
+      await this.instance.failed(error)
+    }
   }
 }
 

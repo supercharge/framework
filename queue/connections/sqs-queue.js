@@ -28,7 +28,7 @@ class SqsQueue {
    *
    * @returns {String}
    */
-  get defaultQueue () {
+  get defaultQueueName () {
     return this.config.queue
   }
 
@@ -80,9 +80,7 @@ class SqsQueue {
   /**
    * Close an existing queue connection.
    */
-  async disconnect () {
-    // TODO
-  }
+  async disconnect () { }
 
   /**
    * Push a new job with `data` to process
@@ -90,11 +88,11 @@ class SqsQueue {
    *
    * @param {String} jobName
    * @param {*} data
-   * @param {String} queue
+   * @param {String} queueName
    */
-  async push (job, data, queue) {
+  async push (job, data, queueName) {
     const response = await this.client.sendMessage({
-      QueueUrl: this.queueUrlFor(queue),
+      QueueUrl: this.queueUrlFor(queueName),
       MessageBody: this.createPayload(job, data)
     }).promise()
 
@@ -104,33 +102,33 @@ class SqsQueue {
   /**
    * Retrieve the next job from the queue.
    *
-   * @param  {String} queue
+   * @param  {String} queueName
    *
    * @returns {Job}
    */
-  async pop (queue) {
+  async pop (queueName) {
     const response = await this.client.receiveMessage({
-      QueueUrl: this.queueUrlFor(queue),
-      AttributeNames: []
+      QueueUrl: this.queueUrlFor(queueName),
+      AttributeNames: ['ApproximateReceiveCount']
     }).promise()
 
     const messages = response.Messages
 
     return await Collect(messages).isNotEmpty()
-      ? new SqsJob(messages[0], this.client, this.queueUrlFor(queue))
+      ? new SqsJob(messages[0], this.client, this.queueUrlFor(queueName))
       : null
   }
 
   /**
    * Returns the size of the queue.
    *
-   * @param  {String} queues
+   * @param  {String} queueName
    *
    * @returns {Number}
    */
-  async size (queue) {
+  async size (queueName) {
     const response = await this.client.getQueueAttributes({
-      QueueUrl: this.queueUrlFor(queue),
+      QueueUrl: this.queueUrlFor(queueName),
       AttributeNames: ['ApproximateNumberOfMessages']
     }).promise()
 
@@ -157,12 +155,12 @@ class SqsQueue {
    * Compose the queue URL for the given
    * `queue` or use the default queue.
    *
-   * @param {String} queue
+   * @param {String} queueName
    *
    * @returns {String}
    */
-  queueUrlFor (queue = this.defaultQueue) {
-    return _.trimEnd(this.prefix, '/').concat('/', queue)
+  queueUrlFor (queueName = this.defaultQueueName) {
+    return _.trimEnd(this.prefix, '/').concat('/', queueName)
   }
 }
 

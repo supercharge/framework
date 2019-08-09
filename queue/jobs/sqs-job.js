@@ -40,6 +40,16 @@ class SqsJob extends Job {
   }
 
   /**
+   * Returns the job payload parsed to JavaScript.
+   *
+   *
+   * @returns {Object}
+   */
+  getParsedBody () {
+    return JSON.parse(this.getRawBody())
+  }
+
+  /**
    * Returns the raw JSON job payload.
    *
    * @returns {JSON}
@@ -49,13 +59,10 @@ class SqsJob extends Job {
   }
 
   /**
-   * Returns the job payload parsed to JavaScript.
-   *
-   *
-   * @returns {Object}
+   * Returns the SQS attributes from the job.
    */
-  getParsedBody () {
-    return JSON.parse(this.getRawBody())
+  getAttributes () {
+    return this.job['Attributes']
   }
 
   /**
@@ -70,9 +77,36 @@ class SqsJob extends Job {
     return displayName
   }
 
+  /**
+   * Returns the number of attempts for this job.
+   *
+   * @returns {Number}
+   */
+  attempts () {
+    const { ApproximateReceiveCount } = this.getAttributes()
+
+    return parseInt(ApproximateReceiveCount)
+  }
+
+  /**
+   * Fire the job.
+   */
   async fire () {
     await super.fire()
     await this.delete()
+  }
+
+  /**
+   * Release the job back to the queue.
+   */
+  async release () {
+    await super.release()
+
+    await this.client.changeMessageVisibility({
+      VisibilityTimeout: 0,
+      QueueUrl: this.queueUrl,
+      ReceiptHandle: this.receiptHandle()
+    })
   }
 
   /**

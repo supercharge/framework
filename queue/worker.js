@@ -6,22 +6,27 @@ const Dispatcher = require('../event/dispatcher')
 
 class Worker {
   constructor (workerOptions) {
-    this.connection = null
-    this.shouldStop = false
-    this.jobInProgress = null
+    this._shouldStop = false
     this.manager = QueueManager
     this.dispatcher = Dispatcher
     this.workerOptions = workerOptions
   }
 
   /**
+   * Returns the worker options.
+   *
+   * @returns {WorkerOptions}
+   */
+  get options () {
+    return this.workerOptions
+  }
+
+  /**
    * Poll the queue continuously for jobs
    * and process jobs when available.
    */
-  async run () {
-    this.connection = await this.manager.connection(this.workerOptions.connection)
-
-    setImmediate(() => this.workHardBrewHard())
+  async longPoll () {
+    setImmediate(() => this.workHardPollHard())
   }
 
   /**
@@ -29,62 +34,26 @@ class Worker {
    * When no job is available in the queue, it waits for a second. If a job
    * was available, it immediately tries to fetch the next job.
    */
-  async workHardBrewHard () {
-    if (!this.shouldRun()) {
-      return this.pause(1000)
+  async workHardPollHard () {
+    if (this.shouldStop()) {
+      return this.sleep(1000)
     }
 
-    try {
-      const job = await this.getNextJob()
+    const job = await this.getNextJob()
 
-      if (job) {
-        this.jobInProgress = this.handle(job)
-        await this.jobInProgress
-        this.pause(0)
-      } else {
-        this.pause(1000)
-      }
-    } catch (error) {
-      Logger.error(error)
+    if (job) {
+      await this.handle(job)
+      this.sleep(0)
+    } else {
+      this.sleep(1000)
     }
   }
 
   /**
    * Determine whether to fetch the next job.
    */
-  shouldRun () {
-    return !this.shouldStop
-  }
-
-  /**
-   * Retrieve the next job from the queue connection.
-   *
-   * @returns {Object}
-   */
-  async getNextJob () {
-    return this.connection.pop(...this.workerOptions.queues)
-  }
-
-  /**
-   * Start the job processing.
-   *
-   * @param {Object} job
-   */
-  async handle (job) {
-    // TODO handle max attemps: mark job as failed if exceeding max attemps
-    // TODO return early if job is arleady deleted
-
-    await job.fire()
-
-    // try {
-    //   await job.fire()
-    // } catch (error) {
-    //   // TODO handle job failure
-    //   throw error
-    // } finally {
-    //   // TODO release job back to the queue if not exceeding max attemps
-    //   // TODO release job back with delay?
-    // }
+  shouldStop () {
+    return this._shouldStop
   }
 
   /**
@@ -93,8 +62,100 @@ class Worker {
    *
    * @param {Number} ms
    */
-  pause (ms) {
-    setTimeout(() => this.workHardBrewHard(), ms)
+  sleep (ms) {
+    setTimeout(() => this.workHardPollHard(), ms)
+  }
+
+  /**
+   * Retrieve the next job from the queue connection.
+   *
+   * @returns {Object}
+   */
+  async getNextJob () {
+    const connection = await this.manager.connection(this.options.connectionName)
+
+    return connection.pop(...this.options.queues)
+  }
+
+  /**
+   * Start the job processing, handle errors
+   * and decide whether to release the
+   * job back onto the queue.
+   *
+   * @param {Object} job
+   */
+  async handle (job) {
+    try {
+      if (this.jobExceedsMaxAttempts(job)) {
+        return this.failJob(job, this.exceedsMaxAttemptsError(job))
+      }
+
+      if (job.isDeleted()) {
+        return
+      }
+
+      await job.fire()
+    } catch (error) {
+      await this.handleJobError(error)
+    } finally {
+      if (job.isNotDeleted() && job.isNotReleased() && job.hasNotFailed()) {
+        await job.release()
+      }
+    }
+  }
+
+  /**
+   * Determines whether the job exceeds
+   * the number of allowed attempts.
+   *
+   * @param {Object} job
+   *
+   * @returns {Boolean}
+   */
+  jobExceedsMaxAttempts (job) {
+    if (this.options.maxAttempts === 0) {
+      return false
+    }
+
+    if (job.attempts() && job.attempts() <= this.options.maxAttempts) {
+      return false
+    }
+
+    return true
+  }
+
+  /**
+   * Creates an error indicating that the
+   * allowed number of attempts exceeded.
+   *
+   * @param {Object} job
+   *
+   * @returns {Error}
+   */
+  exceedsMaxAttemptsError (job) {
+    return new Error(`${job.jobName()} exceeted the allowed limit of attempts.`)
+  }
+
+  /**
+   * Delete the job and mark as failed.
+   *
+   * @param {Object} job
+   * @param {Error} error
+   */
+  async failJob (job, error) {
+    await this.handleJobError(error)
+
+    return job.fail(error)
+  }
+
+  /**
+   * Handle job errors. For now, just log the error
+   * and keep going. Eventually, we should have a better handling here.
+   *
+   * @param {Error} error
+   */
+  async handleJobError (error) {
+    Logger.error(error)
   }
 
   /**
@@ -103,19 +164,7 @@ class Worker {
    */
   async stop () {
     this.shouldStop = true
-
-    /**
-     * This timeout is used to ensure that the worker forcefully
-     * stops after the `shutdownTimeout`. If all other
-     * processing finishes earlier, everything is fine.
-     */
-    const timeout = setTimeout(async () => {
-      await this.manager.stop()
-    }, this.workerOptions.shutdownTimeout)
-
-    await this.jobInProgress
     await this.manager.stop()
-    clearTimeout(timeout)
   }
 }
 
