@@ -98,13 +98,15 @@ class SqsJob extends Job {
 
   /**
    * Release the job back to the queue.
+   *
+   * @param {Number} delay in minutes
    */
-  async release () {
-    await super.release()
+  async releaseBack (delay = 0) {
+    await super.releaseBack(delay)
 
     await this.client.changeMessageVisibility({
-      VisibilityTimeout: 0,
       QueueUrl: this.queueUrl,
+      VisibilityTimeout: delay,
       ReceiptHandle: this.receiptHandle()
     })
   }

@@ -105,9 +105,9 @@ class Job {
   }
 
   /**
-   * Set a job as released.
+   * Set a job as released back to the queue.
    */
-  release () {
+  releaseBack () {
     this._released = true
   }
 
