@@ -89,6 +89,8 @@ class SqsQueue {
    * @param {String} jobName
    * @param {*} data
    * @param {String} queueName
+   *
+   * @returns {*} job ID
    */
   async push (job, data, queueName) {
     const response = await this.client.sendMessage({
@@ -107,12 +109,10 @@ class SqsQueue {
    * @returns {Job}
    */
   async pop (queueName) {
-    const response = await this.client.receiveMessage({
+    const { Messages: messages } = await this.client.receiveMessage({
       QueueUrl: this.queueUrlFor(queueName),
       AttributeNames: ['ApproximateReceiveCount']
     }).promise()
-
-    const messages = response.Messages
 
     return await Collect(messages).isNotEmpty()
       ? new SqsJob(messages[0], this.client, this.queueUrlFor(queueName))
