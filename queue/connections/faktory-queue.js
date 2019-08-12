@@ -41,8 +41,8 @@ class FaktoryQueue {
   async push (job, data, queue) {
     return this.client.push({
       queue,
-      args: data,
-      jobtype: job.name
+      jobtype: job.name,
+      custom: Object.assign({ attempts: 0 }, data)
     })
   }
 
@@ -57,7 +57,7 @@ class FaktoryQueue {
     const job = await this.client.fetch(queue)
 
     return job
-      ? new FaktoryJob(job, this.client)
+      ? new FaktoryJob(job, this.client, queue)
       : null
   }
 
