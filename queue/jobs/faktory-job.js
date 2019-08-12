@@ -74,8 +74,6 @@ class FaktoryJob extends Job {
    * @param {Number} delay in minutes
    */
   async releaseBack (delay = 0) {
-    console.log('releasing job back to the queue')
-
     await super.releaseBack(delay)
     await this.client.ack(this.id())
 
