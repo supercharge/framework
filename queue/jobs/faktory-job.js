@@ -93,7 +93,6 @@ class FaktoryJob extends Job {
    */
   async delete () {
     super.delete()
-
     await this.client.ack(this.id())
   }
 
@@ -103,8 +102,8 @@ class FaktoryJob extends Job {
    * @param {Error} error
    */
   async failed (error) {
-    await this.client.fail(this.id(), error)
     await super.failed(error)
+    await this.client.ack(this.id())
   }
 }
 
