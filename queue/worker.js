@@ -99,7 +99,7 @@ class Worker {
       await this.handleJobError(error)
     } finally {
       if (job.isNotDeleted() && job.isNotReleased() && job.hasNotFailed()) {
-        await job.release()
+        await job.releaseBack()
       }
     }
   }
