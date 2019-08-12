@@ -68,11 +68,10 @@ class QueueWork extends BaseCommand {
    */
   createWorkerOptionsFrom ({ connection }, { queue, attempts }) {
     connection = this.getConnection(connection)
-    const { maxAttempts } = Config.get('queue.worker')
 
     return new WorkerOptions({
       connection,
-      maxAttempts: attempts || maxAttempts,
+      maxAttempts: attempts || 0,
       queues: this.getQueue(connection, queue)
     }
     )
