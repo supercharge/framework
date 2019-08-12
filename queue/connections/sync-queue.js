@@ -1,5 +1,7 @@
 'use strict'
 
+const SyncJob = require('../jobs/sync-job')
+
 class SyncQueue {
   /**
    * Create a queue connection.
@@ -22,7 +24,16 @@ class SyncQueue {
    * @param {*} data
    */
   async push (job, data) {
-    // TODO
+    const queueJob = new SyncJob(job, data)
+
+    try {
+      await queueJob.fire()
+    } catch (error) {
+      await queueJob.fail(error)
+      throw error
+    }
+
+    return queueJob.id()
   }
 
   /**
