@@ -37,12 +37,15 @@ class FaktoryQueue {
    * @param {String} jobName
    * @param {*} data
    * @param {String} queue
+   *
+   * @returns {*} job ID
    */
   async push (job, data, queue) {
     return this.client.push({
       queue,
       jobtype: job.name,
-      custom: Object.assign({ attempts: 0 }, data)
+      args: [].concat(data),
+      custom: { attempts: 0 }
     })
   }
 

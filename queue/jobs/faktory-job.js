@@ -26,6 +26,16 @@ class FaktoryJob extends Job {
    * @returns {*}
    */
   payload () {
+    return this.job.args[0]
+  }
+
+  /**
+   * Returns the job’s custom data,
+   * used for job middleware.
+   *
+   * @returns {*}
+   */
+  custom () {
     return this.job.custom
   }
 
@@ -45,7 +55,7 @@ class FaktoryJob extends Job {
    * @returns {Number}
    */
   attempts () {
-    const { attempts } = this.payload()
+    const { attempts } = this.custom()
 
     return attempts
   }
@@ -55,7 +65,7 @@ class FaktoryJob extends Job {
    */
   async fire () {
     await super.fire()
-    await this.client.ack(this.id())
+    await this.delete()
   }
 
   /**
@@ -64,16 +74,19 @@ class FaktoryJob extends Job {
    * @param {Number} delay in minutes
    */
   async releaseBack (delay = 0) {
+    console.log('releasing job back to the queue')
+
     await super.releaseBack(delay)
     await this.client.ack(this.id())
 
-    const { attempts, ...payload } = this.payload()
+    const { attempts } = this.custom()
 
     return this.client.push({
       queue: this.queue,
       jobtype: this.jobName(),
+      args: [].concat(this.payload()),
       at: Moment().add(delay, 'minutes'),
-      custom: Object.assign({ attempts: attempts + 1 }, payload)
+      custom: Object.assign({}, this.custom, { attempts: attempts + 1 })
     })
   }
 
