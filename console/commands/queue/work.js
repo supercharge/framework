@@ -23,7 +23,7 @@ class QueueWork extends BaseCommand {
       queue:work
         { connection?: The name of the queue connection to fetch jobs from }
         { --queue=@value: The queues to process }
-        { --attempts=@value: The maximum number of attempts to process a job before marking it failed }
+        { --attempts=@value: The maximum number of attempts to process a job before marking it failed (default: inifite attempts) }
     `
   }
 
