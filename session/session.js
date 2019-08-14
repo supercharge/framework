@@ -227,7 +227,7 @@ class Session {
    * @returns {Boolean}
    */
   has (key) {
-    return !!this.store[key]
+    return Object.prototype.hasOwnProperty.call(this.store, key)
   }
 
   /**
