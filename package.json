@@ -16,7 +16,7 @@
     "@supercharge/collections": "~1.4.1",
     "argon2": "~0.24.0",
     "ava": "~2.2.0",
-    "aws-sdk": "~2.503.0",
+    "aws-sdk": "~2.506.0",
     "bcryptjs": "~2.4.3",
     "chalk": "~2.4.2",
     "cookie": "~0.4.0",
@@ -41,7 +41,7 @@
     "md5": "~2.2.1",
     "mock-stdio": "~1.0.3",
     "moment": "~2.24.0",
-    "mongoose": "~5.6.7",
+    "mongoose": "~5.6.9",
     "ms": "~2.1.2",
     "nodemailer": "~6.3.0",
     "nodemailer-mailgun-transport": "~1.4.0",
@@ -50,7 +50,7 @@
     "recursive-readdir": "~2.2.2",
     "require-all": "~3.0.0",
     "simple-encryptor": "~3.0.0",
-    "sinon": "~7.3.2",
+    "sinon": "~7.4.1",
     "tempy": "~0.3.0",
     "uuid": "~3.3.2",
     "validator": "~11.1.0",
@@ -67,7 +67,7 @@
     "eslint-plugin-promise": "~4.2.1",
     "eslint-plugin-standard": "~4.0.0",
     "nyc": "~14.1.1",
-    "proxyquire": "~2.1.1"
+    "proxyquire": "~2.1.2"
   },
   "engines": {
     "node": ">= 8.12.0"
@@ -90,8 +90,9 @@
   },
   "scripts": {
     "coverage": "cross-env NODE_ENV=testing nyc --reporter=text --reporter=html ava",
-    "lint": "eslint ** --fix",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "test": "cross-env NODE_ENV=testing ava",
-    "test-method": "cross-env NODE_ENV=testing ava --match"
+    "test:method": "cross-env NODE_ENV=testing ava --match"
   }
 }
