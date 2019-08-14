@@ -46,6 +46,13 @@ class SessionTest extends BaseTest {
     t.deepEqual(session.all(), { })
   }
 
+  sessionHas (t) {
+    const session = new Session(this._options())
+
+    session.set('age', 0)
+    t.true(session.has('age'))
+  }
+
   sessionTouch (t) {
     const session = new Session(this._options())
     t.false(session.isDirty)

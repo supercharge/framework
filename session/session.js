@@ -165,6 +165,15 @@ class Session {
   }
 
   /**
+   * Returns all session data.
+   *
+   * @returns {Object}
+   */
+  all () {
+    return _.cloneDeep(this.store)
+  }
+
+  /**
    * Returns the value for `key` if existing or
    * `defaultValue`. If existent, removes
    * the key from the session.
@@ -179,15 +188,6 @@ class Session {
     this.forget(key)
 
     return value
-  }
-
-  /**
-   * Returns all session data.
-   *
-   * @returns {Object}
-   */
-  all () {
-    return _.cloneDeep(this.store)
   }
 
   /**
@@ -227,7 +227,7 @@ class Session {
    * @returns {Boolean}
    */
   has (key) {
-    return !!this.store[key]
+    return Object.prototype.hasOwnProperty.call(this.store, key)
   }
 
   /**
