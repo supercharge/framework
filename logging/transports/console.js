@@ -3,7 +3,7 @@
 const Chalk = require('chalk')
 const Winston = require('winston')
 const Config = require('../../config')
-const { combine, timestamp, printf } = Winston.format
+const { combine, timestamp, printf, splat } = Winston.format
 
 /**
  * Configure the Winston console logger with the
@@ -26,6 +26,7 @@ class ConsoleTransport {
     return new Winston.transports.Console({
       level: this.config.level,
       format: combine(
+        splat(),
         timestamp(),
         printf(info => this.format(info))
       )
