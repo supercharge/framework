@@ -10,13 +10,13 @@ class CookieDriver {
    * to do here because the data
    * is stored on the request.
    */
-  start () { }
+  async start () { }
 
   /**
    * Start the cookie driver. Nothing
    * to do here.
    */
-  async stop () {}
+  async stop () { }
 
   /**
    * Read the session data from cookie.
@@ -56,7 +56,6 @@ class CookieDriver {
    * @param {Object} values
    * @param {Toolkit} h
    */
-
   async touch (_, value, h) {
     this.write(_, value, h)
   }
