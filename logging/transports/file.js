@@ -2,7 +2,7 @@
 
 const Winston = require('winston')
 const Config = require('../../config')
-const { combine, timestamp, printf } = Winston.format
+const { combine, timestamp, printf, splat } = Winston.format
 
 /**
  * Configure the Winston file logger with the
@@ -26,11 +26,12 @@ class FileTransport {
       filename: this.config.path,
       level: this.config.level,
       format: combine(
+        splat(),
         timestamp(),
         printf(info => {
-          const time = new Date(info.timestamp).getTime()
-
-          return JSON.stringify(Object.assign(info, { time }))
+          return JSON.stringify(
+            Object.assign(info, { time: new Date(info.timestamp).getTime() })
+          )
         })
       )
     })

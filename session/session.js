@@ -191,6 +191,18 @@ class Session {
   }
 
   /**
+   * Determines whether the session has a
+   * value for `key`.
+   *
+   * @param {String} key
+   *
+   * @returns {Boolean}
+   */
+  has (key) {
+    return Object.prototype.hasOwnProperty.call(this.store, key)
+  }
+
+  /**
    * Removes `key` and related data
    * from the session.
    *
@@ -216,18 +228,6 @@ class Session {
    */
   touch () {
     this.isDirty = true
-  }
-
-  /**
-   * Determines whether the session has a
-   * value for `key`.
-   *
-   * @param {String} key
-   *
-   * @returns {Boolean}
-   */
-  has (key) {
-    return Object.prototype.hasOwnProperty.call(this.store, key)
   }
 
   /**
