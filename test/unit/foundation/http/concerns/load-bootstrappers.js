@@ -12,7 +12,7 @@ class LoadBootstrappers extends BaseTest {
 
     Helper.setAppRoot(Path.resolve(__dirname, 'fixtures/bootstrappers'))
 
-    app._bootstrapperFile = 'is-array.js'
+    app.bootstrapperFile = 'is-array.js'
 
     const bootstrappers = await app.loadUserlandBootstrappers()
     t.deepEqual(bootstrappers, [require('./fixtures/bootstrappers/test-bootstrapper.js')])
@@ -20,7 +20,7 @@ class LoadBootstrappers extends BaseTest {
 
   async seriaLogsDebugWhenMissingBootstrapperFile (t) {
     const app = new Application()
-    app._bootstrapperFile = 'not-existing.js'
+    app.bootstrapperFile = 'not-existing.js'
 
     Helper.setAppRoot(Path.resolve(__dirname, 'fixtures/bootstrappers'))
 
@@ -34,7 +34,7 @@ class LoadBootstrappers extends BaseTest {
 
   async serialLogsErrorWhenNotArrayBootstrappers (t) {
     const app = new Application()
-    app._bootstrapperFile = 'not-array.js'
+    app.bootstrapperFile = 'not-array.js'
 
     Helper.setAppRoot(Path.resolve(__dirname, 'fixtures/bootstrappers'))
 
