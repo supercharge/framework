@@ -100,6 +100,13 @@ class Application {
    */
   async httpWithFullSpeed () {
     await this.initialize()
+    await this.startServer()
+  }
+
+  /**
+   * Start the HTTP server.
+   */
+  async startServer () {
     await this.httpKernel.start()
   }
 
