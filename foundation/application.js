@@ -2,21 +2,19 @@
 
 const Path = require('path')
 const Env = require('../env')
+const Fs = require('../filesystem')
 const Config = require('../config')
 const Helper = require('../helper')
+const Logger = require('../logging')
 const HttpKernel = require('../http/kernel')
-const Dispatcher = require('../event/dispatcher')
 const ConsoleKernel = require('../console/kernel')
-const Bootstrapper = require('./concerns/load-bootstrappers')
-const ExceptionHandler = require('./exceptions/handle-system-exceptions')
+const Collect = require('@supercharge/collections')
 
-class Application extends Bootstrapper {
+class Application {
   constructor () {
-    super()
-
     this.httpKernel = null
     this.consoleKernel = null
-    this.exceptionHandler = new ExceptionHandler()
+    this.bootstrapperFile = 'bootstrap/app.js'
   }
 
   /**
@@ -48,30 +46,19 @@ class Application extends Bootstrapper {
     return this
   }
 
-  async puper () {
-    await this.listenForSystemErrors()
-    await this.loadEnvironmentVariables()
-    await this.loadApplicationConfig()
+  /**
+   * Prepare the HTTP and console kernels, load the core and
+   * userland bootstrappers to compose the application.
+   */
+  async initialize () {
+    await this.registerCoreBootstrappers()
     await this.ensureAppRoot()
     await this.ensureAppKey()
-    await this.initializeEvents()
 
     await this.initializeHttpServer()
-    await this.bootstrapConsole()
+    await this.initializeConsole()
 
-    await this.registerBootstrappers()
-  }
-
-  async listenForSystemErrors () {
-    this.exceptionHandler.listenForSystemErrors()
-  }
-
-  async loadEnvironmentVariables () {
-    Env.loadEnvironmentVariables()
-  }
-
-  async loadApplicationConfig () {
-    await Config.loadConfigFiles(Path.resolve(Helper.appRoot(), 'config'))
+    await this.registerAppBootstrappers()
   }
 
   async ensureAppRoot () {
@@ -81,19 +68,11 @@ class Application extends Bootstrapper {
   }
 
   async ensureAppKey () {
-    if (!Config.get('app.key')) {
+    if (!Config.hasAppKey()) {
       throw new Error(
         'No application key available. Make sure to define the APP_KEY value in your .env file (or generate one with "node craft key:generate")'
       )
     }
-  }
-
-  /**
-   * Register all application events and assign listeners.
-   */
-  async initializeEvents () {
-    // TODO create event bootstrapper
-    await Dispatcher.init()
   }
 
   /**
@@ -106,7 +85,11 @@ class Application extends Bootstrapper {
     await this.httpKernel.bootstrap()
   }
 
-  async bootstrapConsole () {
+  /**
+   * Initialize the console kernel instance,
+   * load and register all core commands.
+   */
+  async initializeConsole () {
     this.consoleKernel = new ConsoleKernel(this)
     await this.consoleKernel.bootstrap()
   }
@@ -116,28 +99,99 @@ class Application extends Bootstrapper {
    * and start the HTTP server.
    */
   async httpWithFullSpeed () {
-    await this.puper()
-    await this.startServer()
-  }
-
-  /**
-   * Start the HTTP server.
-   */
-  async startServer () {
+    await this.initialize()
     await this.httpKernel.start()
   }
 
+  /**
+   * Start the console application.
+   */
   async consoleForLife () {
-    await this.puper()
-    await this.startConsole()
-  }
-
-  async startConsole () {
+    await this.initialize()
     await this.consoleKernel.invoke()
   }
 
   isRunningTests () {
     return Env.isTesting()
+  }
+
+  /**
+   * Load and run the core bootstrappers.
+   */
+  async registerCoreBootstrappers () {
+    await this.registerBootstrapper(require('../env/bootstrapper.js'))
+    await this.registerBootstrapper(require('../config/bootstrapper.js'))
+    await this.registerBootstrapper(require('../event/bootstrapper.js'))
+    await this.registerBootstrapper(require('../logging/bootstrapper.js'))
+  }
+
+  /**
+   * Load and run the user-land bootstrappers.
+   */
+  async registerAppBootstrappers () {
+    await Collect(
+      await this.loadUserlandBootstrappers()
+    ).forEachSeries(async bootstrapper => {
+      await this.registerBootstrapper(bootstrapper)
+    })
+  }
+
+  /**
+   * Load the user-land bootstrappers listed in the
+   * `bootstrap/app.js` file
+   *
+   * @returns {Array}
+   */
+  async loadUserlandBootstrappers () {
+    if (await this.hasBootstrapFile()) {
+      return this.loadBootstrappers()
+    }
+
+    Logger.debug('Missing bootstrap/app.js file. Skipping bootstrappers while app start.')
+
+    return []
+  }
+
+  /**
+   * Determines whether the `bootstrap/app.js` file exists.L0
+   *
+   * @returns {Boolean}
+   */
+  async hasBootstrapFile () {
+    return Fs.exists(this.bootstrapFile())
+  }
+
+  /**
+   * Returns the path to the `bootstrap/app.js` file.
+   *
+   * @returns {String}
+   */
+  bootstrapFile () {
+    return Path.resolve(Helper.appRoot(), this.bootstrapperFile)
+  }
+
+  /**
+   * Resolve the bootstrappers array.
+   *
+   * @returns {Boolean}
+   */
+  async loadBootstrappers () {
+    const { bootstrappers } = require(this.bootstrapFile())
+
+    if (!Array.isArray(bootstrappers)) {
+      Logger.error(`The "bootstrappers" property in bootstrap/app.js must be an array, received ${typeof bootstrappers}. Ignoring the file.`)
+
+      return []
+    }
+
+    return bootstrappers
+  }
+
+  /**
+   * Register a single bootstrapper.
+   */
+  async registerBootstrapper (Bootstrapper) {
+    return new Bootstrapper(this).boot()
   }
 }
 
