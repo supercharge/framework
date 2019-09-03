@@ -29,7 +29,7 @@ class BaseCommand extends Command {
       await this.ensureInProjectRoot()
       await callback()
     } catch (error) {
-      this.prettyPrintError(error)
+      this.prettyPrint(error)
       process.exit(1)
     }
   }
@@ -39,8 +39,11 @@ class BaseCommand extends Command {
    *
    * @param {Object} error
    */
-  prettyPrintError (error) {
-    console.error(`\n  ${Chalk.bgRedBright.whiteBright(' Error ')} ${Chalk.redBright(error.message)}\n`)
+  prettyPrint ({ message, stack }) {
+    console.error(`\n  ${Chalk.bgRed.bold.white(' Error ')} ${Chalk.red(message)}\n`)
+    console.error(
+      stack.split('\n').splice(1).join('\n')
+    )
   }
 
   /**
