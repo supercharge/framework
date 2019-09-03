@@ -5,7 +5,7 @@ const Path = require('path')
 const Fs = require('../filesystem')
 const Helper = require('../helper')
 const EventEmitter = require('events')
-const ReadRecursive = require('recursive-readdir')
+const Collect = require('@supercharge/collections')
 
 /**
  * The event dispatcher registers all events
@@ -21,6 +21,9 @@ class Dispatcher {
 
     this.eventsFolder = 'app/events'
     this.listenersFolder = 'app/listeners'
+    this.coreEventListener = [
+      require('./listeners/handle-system-exceptions')
+    ]
   }
 
   /**
@@ -28,7 +31,7 @@ class Dispatcher {
    * file system. Assign user and system
    * listeners to the related events.
    */
-  async init () {
+  async discoverEventsAndListeners () {
     await this.registerUserEvents()
     await this.registerSystemEventListeners()
   }
@@ -219,11 +222,9 @@ class Dispatcher {
   async loadFiles (folder) {
     const location = Path.resolve(Helper.appRoot(), folder)
 
-    if (await Fs.pathExists(location)) {
-      return ReadRecursive(location)
-    }
-
-    return []
+    return await Fs.exists(location)
+      ? Fs.allFiles(location)
+      : []
   }
 
   /**
@@ -251,11 +252,16 @@ class Dispatcher {
    * emitted by the Node.js process.
    */
   async registerSystemEventListeners () {
-    const listeners = await this.getSystemEventListeners()
-
-    listeners.forEach(listener => {
-      this.registerListeners(listener.on(), listener)
-    })
+    await Collect(this.coreEventListener)
+      .map(Listener => {
+        return new Listener()
+      })
+      .concat(
+        await this.getSystemEventListeners()
+      )
+      .forEach(listener => {
+        this.registerListeners(listener.on(), listener)
+      })
   }
 
   /**
@@ -323,11 +329,11 @@ class Dispatcher {
    * @param {Array|Object} listeners
    */
   registerListeners (eventNames, listeners) {
-    const events = Array.isArray(eventNames) ? eventNames : [eventNames]
-    listeners = Array.isArray(listeners) ? listeners : [listeners]
+    listeners = [].concat(listeners)
+    const events = [].concat(eventNames)
 
-    _.forEach(events, eventName => {
-      _.forEach(listeners, listener => {
+    events.forEach(eventName => {
+      listeners.forEach(listener => {
         listener.type() === 'user'
           ? this.addListener(eventName, listener.handle)
           : this.addSystemListener(eventName, listener.handle)

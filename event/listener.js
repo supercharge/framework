@@ -25,10 +25,9 @@ class Listener {
   }
 
   /**
-   * The event dispatcher supports the `user`
-   * and `system` types. Use the type
-   * `system` for Node.js process listeners,
-   * type `user` for your custom events.
+   * The event dispatcher supports the `user` and `system` types.
+   * Use the `system` type for Node.js process listeners,
+   * the `user` type for your custom events.
    */
   type () {
     return 'user'
