@@ -1,14 +1,15 @@
 'use strict'
 
-const _ = require('lodash')
+const Path = require('path')
 const Fs = require('fs-extra')
 const Tempy = require('tempy')
 const Lockfile = require('lockfile')
 const { promisify: Promisify } = require('util')
+const ReadRecursive = require('recursive-readdir')
 
-const lockFile = Promisify(Lockfile.lock)
-const unlockFile = Promisify(Lockfile.unlock)
-const isFileLocked = Promisify(Lockfile.check)
+const lock = Promisify(Lockfile.lock)
+const unlock = Promisify(Lockfile.unlock)
+const isLocked = Promisify(Lockfile.check)
 
 class Filesystem {
   /**
@@ -142,9 +143,25 @@ class Filesystem {
    *
    * @param {String} path
    * @param {String} encoding
+   *
+   * @returns {Array}
    */
-  async readDir (path, encoding) {
+  async files (path, encoding) {
     return Fs.readdir(path, encoding)
+  }
+
+  /**
+   * Read the contents of the directory at the given `path`
+   * recursively. Returns an array of file names
+   * excluding `.`, `..`, and dotfiles.
+   *
+   * @param {String} path
+   * @param {Array} ignore - list of ignored files
+   *
+   * @returns {Array}
+   */
+  async allFiles (path, ignore) {
+    return ReadRecursive(path, [].concat(ignore))
   }
 
   /**
@@ -287,7 +304,7 @@ class Filesystem {
    * @param {Object} options
    */
   async lockFile (file, options = {}) {
-    return lockFile(await this.prepareLockFile(file), options)
+    return lock(await this.prepareLockFile(file), options)
   }
 
   /**
@@ -296,7 +313,7 @@ class Filesystem {
    * @param {String} file
    */
   async unlockFile (file) {
-    return unlockFile(await this.prepareLockFile(file))
+    return unlock(await this.prepareLockFile(file))
   }
 
   /**
@@ -308,7 +325,7 @@ class Filesystem {
    * @returns {Boolean}
    */
   async isLocked (file, options = {}) {
-    return isFileLocked(await this.prepareLockFile(file), options)
+    return isLocked(await this.prepareLockFile(file), options)
   }
 
   /**
@@ -319,8 +336,8 @@ class Filesystem {
    *
    * @returns {String}
    */
-  async prepareLockFile (file) {
-    return _.endsWith(file, '.lock') ? file : `${file}.lock`
+  async prepareLockFile (file = '') {
+    return file.endsWith(file, '.lock') ? file : `${file}.lock`
   }
 
   /**
@@ -339,6 +356,79 @@ class Filesystem {
    */
   async tempDir () {
     return Tempy.directory()
+  }
+
+  /**
+   * Returns the extension of `file`. For example,
+   * returns `.html` for the HTML file located
+   * at `/path/to/index.html`.
+   *
+   * @param {String} file
+   */
+  async extension (file) {
+    return Path.extname(file)
+  }
+
+  /**
+   * Returns the trailing name component from a file path.
+   *
+   * @param {String} path
+   * @param {String} extension
+   *
+   * @returns {String}
+   */
+  async basename (path, extension) {
+    return Path.basename(path, extension)
+  }
+
+  /**
+   * Returns the directory name of the given `path`.
+   *
+   * @param {String} path
+   *
+   * @returns {String}
+   */
+  async dirname (path) {
+    return Path.dirname(path)
+  }
+
+  /**
+   * Determines whether the given `path` is a file.
+   *
+   * @param {String} path
+   *
+   * @returns {Boolean}
+   */
+  async isFile (path) {
+    const stats = await this.stat(path)
+
+    return stats.isFile()
+  }
+
+  /**
+   * Determines whether the given `path` is a directory.
+   *
+   * @param {String} path
+   *
+   * @returns {Boolean}
+   */
+  async isDirectory (path) {
+    const stats = await this.stat(path)
+
+    return stats.isDirectory()
+  }
+
+  /**
+   * Returns the file size of the file located at `path`.
+   *
+   * @param {String} path
+   *
+   * @returns {Integer}
+   */
+  async size (path) {
+    const { size } = await this.stat(path)
+
+    return size
   }
 }
 

@@ -3,7 +3,7 @@
 const Listr = require('listr')
 const Execa = require('execa')
 const Helper = require('../../helper')
-const BaseCommand = require('./base-command')
+const BaseCommand = require('../command')
 
 /**
  * This command does the required steps

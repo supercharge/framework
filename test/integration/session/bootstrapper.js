@@ -6,7 +6,6 @@ const Helper = require('../../../helper')
 const Fs = require('../../../filesystem')
 const Session = require('../../../session')
 const BaseTest = require('../../../base-test')
-const HttpKernel = require('../../../http/kernel')
 const Application = require('../../../foundation/application')
 const FakeSessionDriver = require('./fixtures/fake-session-driver')
 const SessionBootstrapper = require('../../../session/bootstrapper')
@@ -20,11 +19,11 @@ class SessionBootstrapperTest extends BaseTest {
   async serialDoesNotRegisterBootstrapperWithoutConfig (t) {
     Config.set('session.driver', null)
 
-    const kernel = new HttpKernel(new Application())
-    await kernel._loadAndRegisterPlugins()
-    await kernel._registerBootstrapper(SessionBootstrapper)
+    const app = new Application()
+    await app.initializeHttpServer()
+    await app.registerBootstrapper(SessionBootstrapper)
 
-    const server = kernel.getServer()
+    const server = app.server
 
     server.route({
       method: 'GET',
@@ -51,11 +50,11 @@ class SessionBootstrapperTest extends BaseTest {
     Config.set('session.driver', 'fake-null')
     Session.extend('fake-null', FakeSessionDriver)
 
-    const kernel = new HttpKernel(new Application())
-    await kernel._loadAndRegisterPlugins()
-    await kernel._registerBootstrapper(SessionBootstrapper)
+    const app = new Application()
+    await app.initializeHttpServer()
+    await app.registerBootstrapper(SessionBootstrapper)
 
-    const server = kernel.getServer()
+    const server = app.server
     await server.start()
     t.true(await Session._hasDriver('fake-null'))
     await server.stop()
@@ -65,9 +64,9 @@ class SessionBootstrapperTest extends BaseTest {
     Config.set('session.driver', 'fake-null')
     Session.extend('fake-null', FakeSessionDriver)
 
-    const kernel = new HttpKernel(new Application())
-    await kernel._loadAndRegisterPlugins()
-    await kernel._registerBootstrapper(SessionBootstrapper)
+    const app = new Application()
+    await app.initializeHttpServer()
+    await app.registerBootstrapper(SessionBootstrapper)
 
     await t.notThrowsAsync(async () => Session._stopDriver('not-existing'))
   }
@@ -76,11 +75,11 @@ class SessionBootstrapperTest extends BaseTest {
     Config.set('session.driver', 'fake-null')
     Session.extend('fake-null', FakeSessionDriver)
 
-    const kernel = new HttpKernel(new Application())
-    await kernel._loadAndRegisterPlugins()
-    await kernel._registerBootstrapper(SessionBootstrapper)
+    const app = new Application()
+    await app.initializeHttpServer()
+    await app.registerBootstrapper(SessionBootstrapper)
 
-    const server = kernel.getServer()
+    const server = app.server
 
     server.route({
       method: 'GET',
@@ -112,10 +111,10 @@ class SessionBootstrapperTest extends BaseTest {
   async serialFailsToBootWithUnknownDriver (t) {
     Config.set('session.driver', 'unknown-driver')
 
-    const kernel = new HttpKernel(new Application())
-    await kernel._loadAndRegisterPlugins()
+    const app = new Application()
+    await app.initializeHttpServer()
 
-    await t.throwsAsync(async () => kernel._registerBootstrapper(SessionBootstrapper))
+    await t.throwsAsync(async () => app.registerBootstrapper(SessionBootstrapper))
   }
 
   async serialUsesBootBuiltInDriver (t) {
@@ -123,11 +122,11 @@ class SessionBootstrapperTest extends BaseTest {
     const sessionsDir = Path.resolve(__dirname, 'fixtures/sessions')
     Helper.setAppRoot(sessionsDir)
 
-    const kernel = new HttpKernel(new Application())
-    await kernel._loadAndRegisterPlugins()
-    await kernel._registerBootstrapper(SessionBootstrapper)
+    const app = new Application()
+    await app.initializeHttpServer()
+    await app.registerBootstrapper(SessionBootstrapper)
 
-    const server = kernel.getServer()
+    const server = app.server
 
     server.route({
       method: 'GET',
@@ -147,7 +146,7 @@ class SessionBootstrapperTest extends BaseTest {
     const response = await server.inject(request)
     t.is(response.statusCode, 200)
 
-    const files = await Fs.readDir(`${Helper.storagePath('framework/sessions')}`)
+    const files = await Fs.files(`${Helper.storagePath('framework/sessions')}`)
     t.is(files.length, 1)
 
     await Fs.remove(sessionsDir)
@@ -157,11 +156,11 @@ class SessionBootstrapperTest extends BaseTest {
     Config.set('session.driver', 'file')
     Config.set('session.lifetime', '1m')
 
-    const kernel = new HttpKernel(new Application())
-    await kernel._loadAndRegisterPlugins()
-    await kernel._registerBootstrapper(SessionBootstrapper)
+    const app = new Application()
+    await app.initializeHttpServer()
+    await app.registerBootstrapper(SessionBootstrapper)
 
-    const server = kernel.getServer()
+    const server = app.server
 
     t.true(Object.keys(server.states.cookies).includes('supercharge-test-cookie', 'XSRF-TOKEN'))
   }

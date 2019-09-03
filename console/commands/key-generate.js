@@ -1,6 +1,6 @@
 'use strict'
 
-const BaseCommand = require('./base-command')
+const BaseCommand = require('../command')
 const Encryption = require('../../encryption')
 
 /**

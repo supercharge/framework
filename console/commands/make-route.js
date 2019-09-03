@@ -1,9 +1,9 @@
 'use strict'
 
 const Path = require('path')
-const Handlebars = require('handlebars')
 const Helper = require('../../helper')
-const BaseCommand = require('./base-command')
+const Handlebars = require('handlebars')
+const BaseCommand = require('../command')
 
 class MakeRoute extends BaseCommand {
   constructor () {

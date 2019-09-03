@@ -18,6 +18,9 @@ class ApplicationTest extends BaseTest {
   }
 
   async before () {
+    Config.set('logging.driver', 'file')
+    Config.set('logging.channels.file', { path: './test/temp/app.testing.log' })
+
     this.helperStub = this.stub(Helper, 'resourcePath').returns(
       Path.resolve(this.appRoot, 'resources', 'views')
     )
@@ -50,9 +53,9 @@ class ApplicationTest extends BaseTest {
     const app = new Application().fromAppRoot(this.appRoot)
     await app.httpWithFullSpeed()
 
-    t.truthy(app.getServer().info.started)
+    t.truthy(app.server.info.started)
 
-    await app.getServer().stop()
+    await app.server.stop()
   }
 
   async serialStartsConsoleApplication (t) {
@@ -65,11 +68,6 @@ class ApplicationTest extends BaseTest {
     const { stdout, stderr } = this.consoleOutput()
     t.true(stdout.includes('Available Commands'))
     t.falsy(stderr)
-  }
-
-  async serialThrowsWithoutAppRootForConsole (t) {
-    const app = new Application()
-    await t.throwsAsync(app.consoleForLife())
   }
 }
 

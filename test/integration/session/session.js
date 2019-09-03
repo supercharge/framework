@@ -3,7 +3,6 @@
 const Config = require('../../../config')
 const Session = require('../../../session')
 const BaseTest = require('../../../base-test')
-const HttpKernel = require('../../../http/kernel')
 const Application = require('../../../foundation/application')
 const FakeSessionDriver = require('./fixtures/fake-session-driver')
 const SessionBootstrapper = require('../../../session/bootstrapper')
@@ -18,14 +17,14 @@ class SessionTest extends BaseTest {
     Config.set('session.driver', 'fake-null')
     Session.extend('fake-null', FakeSessionDriver)
 
-    const kernel = new HttpKernel(new Application())
-    await kernel._loadAndRegisterPlugins()
-    await kernel._registerBootstrapper(SessionBootstrapper)
+    const app = new Application()
+    await app.initializeHttpServer()
+    await app.registerBootstrapper(SessionBootstrapper)
 
     const driver = Session.driver('fake-null')
     t.truthy(driver)
 
-    const server = kernel.getServer()
+    const server = app.server
 
     let sessionId
 

@@ -5,59 +5,119 @@ const Env = require('../env')
 const Config = require('../config')
 const Helper = require('../helper')
 const HttpKernel = require('../http/kernel')
-const ConsoleKernel = require('../console/kernel')
 const Dispatcher = require('../event/dispatcher')
+const ConsoleKernel = require('../console/kernel')
+const Bootstrapper = require('./concerns/load-bootstrappers')
 const ExceptionHandler = require('./exceptions/handle-system-exceptions')
 
-class Application {
+class Application extends Bootstrapper {
   constructor () {
-    this.appRoot = null
+    super()
+
     this.httpKernel = null
+    this.consoleKernel = null
     this.exceptionHandler = new ExceptionHandler()
   }
 
   /**
    * Returns the HTTP server instance.
+   *
+   * @returns {Object}
    */
-  getServer () {
+  get server () {
     return this.httpKernel.getServer()
   }
 
-  fromAppRoot (appRoot) {
-    this.appRoot = appRoot
+  /**
+   * Returns the console kernel instance.
+   *
+   * @returns {ConsoleKernel}
+   */
+  get console () {
+    return this.consoleKernel
+  }
+
+  /**
+   * Set the application root directory to the given `path`.
+   *
+   * @param {String} path
+   */
+  fromAppRoot (path) {
+    Helper.setAppRoot(path)
 
     return this
   }
 
-  /**
-   * Initialize the HTTP server to run
-   * your application.
-   */
-  async httpWithFullSpeed () {
-    this.exceptionHandler.listenForSystemErrors()
-
-    await this.prepareHttpServer()
-    await this.startServer()
-  }
-
-  async prepareHttpServer () {
-    if (!this.appRoot) {
-      throw new Error('Cannot start HTTP server without app root directory. Ensure to call .appRoot() inside the server.js file.')
-    }
-
-    Helper.setAppRoot(this.appRoot)
-    this.loadEnvironmentVariables()
+  async puper () {
+    await this.listenForSystemErrors()
+    await this.loadEnvironmentVariables()
     await this.loadApplicationConfig()
+    await this.ensureAppRoot()
+    await this.ensureAppKey()
     await this.initializeEvents()
-    await this.bootstrapHttpKernel()
+
+    await this.initializeHttpServer()
+    await this.bootstrapConsole()
+
+    await this.registerBootstrappers()
   }
 
-  loadEnvironmentVariables () {
+  async listenForSystemErrors () {
+    this.exceptionHandler.listenForSystemErrors()
+  }
+
+  async loadEnvironmentVariables () {
     Env.loadEnvironmentVariables()
   }
 
   async loadApplicationConfig () {
     await Config.loadConfigFiles(Path.resolve(Helper.appRoot(), 'config'))
+  }
+
+  async ensureAppRoot () {
+    if (!Helper.appRoot()) {
+      throw new Error('Missing app root directory. Make sure to call .fromAppRoot() when starting your app.')
+    }
+  }
+
+  async ensureAppKey () {
+    if (!Config.get('app.key')) {
+      throw new Error(
+        'No application key available. Make sure to define the APP_KEY value in your .env file (or generate one with "node craft key:generate")'
+      )
+    }
+  }
+
+  /**
+   * Register all application events and assign listeners.
+   */
+  async initializeEvents () {
+    // TODO create event bootstrapper
+    await Dispatcher.init()
+  }
+
+  /**
+   * Initialize the HTTP server instance and
+   * register core plugins, middleware, app
+   * plugins and configure views.
+   */
+  async initializeHttpServer () {
+    this.httpKernel = new HttpKernel(this)
+    await this.httpKernel.bootstrap()
+  }
+
+  async bootstrapConsole () {
+    this.consoleKernel = new ConsoleKernel(this)
+    await this.consoleKernel.bootstrap()
+  }
+
+  /**
+   * Initialize and bootstrap the application
+   * and start the HTTP server.
+   */
+  async httpWithFullSpeed () {
+    await this.puper()
+    await this.startServer()
   }
 
   /**
@@ -67,54 +127,17 @@ class Application {
     await this.httpKernel.start()
   }
 
-  /**
-   * Initialize the HTTP server instance and
-   * register core plugins, middleware, app
-   * plugins and configure views.
-   */
-  async bootstrapHttpKernel () {
-    this.ensureAppKey()
-
-    this.httpKernel = new HttpKernel(this)
-    await this.httpKernel.bootstrap()
-  }
-
-  ensureAppKey () {
-    if (!Config.get('app.key')) {
-      throw new Error(
-        'No application key available. Make sure to define the APP_KEY value in your .env file (or generate one with "node craft key:generate")'
-      )
-    }
-  }
-
-  /**
-   * Register all application events and
-   * assign listeners.
-   */
-  async initializeEvents () {
-    await Dispatcher.init()
-  }
-
   async consoleForLife () {
-    this.exceptionHandler.listenForSystemErrors()
-
-    if (!this.appRoot) {
-      throw new Error('Cannot start Craft console without app root directory. Ensure to call .appRoot() inside the "craft" file.')
-    }
-
-    Helper.setAppRoot(this.appRoot)
-    this.loadEnvironmentVariables()
-    await this.loadApplicationConfig()
-    await this.bootstrapConsole()
+    await this.puper()
+    await this.startConsole()
   }
 
-  async bootstrapConsole () {
-    const kernel = new ConsoleKernel()
-    await kernel.bootstrap()
+  async startConsole () {
+    await this.consoleKernel.invoke()
   }
 
   isRunningTests () {
-    return Env.get('NODE_ENV') === 'testing'
+    return Env.isTesting()
   }
 }
 

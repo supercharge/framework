@@ -8,7 +8,7 @@ class RegistersCorePluginsTest extends BaseTest {
   async corePluginsWithoutLaabr (t) {
     const kernel = new HttpKernel(new Application())
     await kernel._createServer()
-    await kernel._loadAndRegisterPlugins()
+    await kernel._registerCorePlugins()
     t.falsy(kernel.getServer().registrations['laabr'])
   }
 
@@ -18,7 +18,7 @@ class RegistersCorePluginsTest extends BaseTest {
 
     const kernel = new HttpKernel(app)
     await kernel._createServer()
-    await kernel._loadAndRegisterPlugins()
+    await kernel._registerCorePlugins()
 
     stub.restore()
 

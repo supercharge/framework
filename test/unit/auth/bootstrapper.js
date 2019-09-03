@@ -12,12 +12,11 @@ class AuthBootstrapperTest extends BaseTest {
   async serialLoadSchemesAndStrategies (t) {
     Helper.setAppRoot(Path.resolve(__dirname, 'fixtures'))
 
-    const kernel = new HttpKernel(new Application())
-    await kernel._createServer()
-    const server = kernel.getServer()
+    const app = new Application()
+    await app.initializeHttpServer()
+    await app.registerBootstrapper(AuthBootstrapper)
 
-    const bootstrapper = new AuthBootstrapper(server)
-    await bootstrapper.boot()
+    const server = app.server
 
     t.true(Object.keys(server.auth._schemes).includes('test-scheme', 'class-test-scheme'))
     t.true(Object.keys(server.auth._strategies).includes('test-auth', 'class-test-auth'))
@@ -49,12 +48,11 @@ class AuthBootstrapperTest extends BaseTest {
     Config.set('auth.default', 'test-auth')
     Helper.setAppRoot(Path.resolve(__dirname, 'not-existent-folder'))
 
-    const kernel = new HttpKernel(new Application())
-    await kernel._createServer()
-    const server = kernel.getServer()
+    const app = new Application()
+    await app.initializeHttpServer()
+    await app.registerBootstrapper(AuthBootstrapper)
 
-    const bootstrapper = new AuthBootstrapper(server)
-    await bootstrapper.boot()
+    const server = app.server
 
     t.deepEqual(Object.keys(server.auth._schemes), ['session'])
     t.deepEqual(Object.keys(server.auth._strategies), [])
@@ -64,12 +62,11 @@ class AuthBootstrapperTest extends BaseTest {
     Config.set('auth.default', 'test-auth')
     Helper.setAppRoot(Path.resolve(__dirname, 'fixtures'))
 
-    const kernel = new HttpKernel(new Application())
-    await kernel._createServer()
-    const server = kernel.getServer()
+    const app = new Application()
+    await app.initializeHttpServer()
+    await app.registerBootstrapper(AuthBootstrapper)
 
-    const bootstrapper = new AuthBootstrapper(server)
-    await bootstrapper.boot()
+    const server = app.server
 
     t.deepEqual(server.auth.settings.default.strategies, ['test-auth'])
   }

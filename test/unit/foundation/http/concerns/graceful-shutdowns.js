@@ -6,7 +6,7 @@ const Helper = require('../../../../../helper')
 const BaseTest = require('../../../../../base-test')
 const HttpKernel = require('../../../../../http/kernel')
 const Application = require('../../../../../foundation/application')
-const GracefulShutdown = require('../../../../../http/concerns/06-graceful-shutdowns')
+const GracefulShutdown = require('../../../../../http/concerns/05-graceful-shutdowns')
 
 class GracefulShutdownTest extends BaseTest {
   before () {
@@ -23,8 +23,8 @@ class GracefulShutdownTest extends BaseTest {
 
     const handler = new GracefulShutdown()
 
-    t.is(await handler._lifecycleFile(), Path.resolve(__dirname, 'fixtures', 'bootstrap', 'lifecycle.js'))
-    t.true(Object.keys(await handler._lifecycleMethods()).includes('onPreStop'))
+    t.is(await handler.lifecycleFile(), Path.resolve(__dirname, 'fixtures/bootstrap/lifecycle.js'))
+    t.true(Object.keys(await handler.lifecycleMethods()).includes('onPreStop'))
   }
 
   async registersShutdownHandler (t) {
@@ -43,8 +43,8 @@ class GracefulShutdownTest extends BaseTest {
 
     const handler = new GracefulShutdown()
 
-    t.is(await handler._lifecycleFile(), Path.resolve(__dirname, 'bootstrap', 'lifecycle.js'))
-    t.is(Object.keys(await handler._lifecycleMethods()).length, 0)
+    t.is(await handler.lifecycleFile(), Path.resolve(__dirname, 'bootstrap/lifecycle.js'))
+    t.is(Object.keys(await handler.lifecycleMethods()).length, 0)
   }
 }
 

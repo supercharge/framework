@@ -37,15 +37,16 @@ class HandlebarsCompiler {
   async loadHelpers () {
     const helpersPaths = [].concat(this.helpersLocations())
 
-    await Collect(helpersPaths).forEach(async helpersPath => {
-      if (await Fs.exists(helpersPath)) {
-        const files = await Fs.readDir(helpersPath)
+    await Collect(helpersPaths)
+      .filter(async path => {
+        return Fs.exists(path)
+      }).forEach(async helpersPath => {
+        const files = await Fs.files(helpersPath)
 
         files.forEach(file => {
           this.registerHelper(helpersPath, file)
         })
-      }
-    })
+      })
   }
 
   registerHelper (helpersPath, file) {

@@ -2,12 +2,12 @@
 
 const Path = require('path')
 const Chalk = require('chalk')
-const Helper = require('../../helper')
+const Helper = require('../helper')
 const DotenvEdit = require('edit-dotenv')
 const { Command } = require('@adonisjs/ace')
 
 /**
- * This is Craft's base command providing
+ * This is Craft’s base command providing
  * convenience features like pretty
  * error printing to all commands.
  */

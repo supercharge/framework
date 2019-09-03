@@ -2,7 +2,7 @@
 
 const Path = require('path')
 const Helper = require('../../helper')
-const BaseCommand = require('./base-command')
+const BaseCommand = require('../command')
 const Collect = require('@supercharge/collections')
 
 class MakeAuth extends BaseCommand {

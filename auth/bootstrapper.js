@@ -8,7 +8,7 @@ const ReadRecursive = require('recursive-readdir')
 const Collect = require('@supercharge/collections')
 
 class AuthBoostrapper {
-  constructor (server) {
+  constructor ({ server }) {
     this._server = server
     this._schemeFiles = null
     this._strategyFiles = null

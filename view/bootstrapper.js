@@ -5,7 +5,7 @@ const Config = require('../config')
 const Compiler = require('./compiler')
 
 class ViewBoostrapper {
-  constructor (server) {
+  constructor ({ server }) {
     this.server = server
     this.engine = new Compiler()
     this.config = Config.get('app', {})
