@@ -89,26 +89,39 @@ class Filesystem {
   }
 
   /**
-   * Test whether the given `file` exists on the file system.
+   * Determines whether the given `path` exists on the file system.
    *
-   * @param {String} file
+   * @param {String} path
    *
    * @returns {Boolean}
    */
-  async pathExists (file) {
-    return Fs.pathExists(file)
+  async pathExists (path) {
+    return Fs.pathExists(path)
   }
 
   /**
    * Shortcut for `pathExists` to check whether a given file
    * or directory exists on the file system.
    *
-   * @param {String} file
+   * @param {String} path
    *
    * @returns {Boolean}
    */
-  async exists (file) {
-    return this.pathExists(file)
+  async exists (path) {
+    return this.pathExists(path)
+  }
+
+  /**
+   * Determines wether the given `path` does not exists.
+   *
+   * @param {String} path
+   *
+   * @returns {Boolean}
+   */
+  async notExists (path) {
+    const exists = await this.exists(path)
+
+    return !exists
   }
 
   /**
@@ -156,12 +169,14 @@ class Filesystem {
    * excluding `.`, `..`, and dotfiles.
    *
    * @param {String} path
-   * @param {Array} ignore - list of ignored files
+   * @param {Object} options config object -  supports the `ignore` property: list of ignored files
    *
    * @returns {Array}
    */
-  async allFiles (path, ignore) {
-    return ReadRecursive(path, [].concat(ignore))
+  async allFiles (path, options = {}) {
+    const { ignore } = options
+
+    return ReadRecursive(path, ignore ? [].concat(ignore) : null)
   }
 
   /**
