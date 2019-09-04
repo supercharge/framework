@@ -397,6 +397,17 @@ class Filesystem {
   }
 
   /**
+   * Returns the file name without extension.
+   *
+   * @param {String} file
+   *
+   * @returns {String}
+   */
+  async filename (file) {
+    return Path.parse(file).name
+  }
+
+  /**
    * Returns the directory name of the given `path`.
    *
    * @param {String} path
