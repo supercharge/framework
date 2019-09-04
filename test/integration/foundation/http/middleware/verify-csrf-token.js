@@ -20,7 +20,7 @@ class CsrfMiddlewareTest extends BaseTest {
   async beforeEach () {
     const app = new Application()
     await app.initializeHttpServer()
-    await app.registerBootstrapper(SessionBootstrapper)
+    await app.register(SessionBootstrapper)
 
     this.server = app.server
     this.server.extClass(VerifyCsrf)

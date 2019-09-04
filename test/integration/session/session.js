@@ -19,7 +19,7 @@ class SessionTest extends BaseTest {
 
     const app = new Application()
     await app.initializeHttpServer()
-    await app.registerBootstrapper(SessionBootstrapper)
+    await app.register(SessionBootstrapper)
 
     const driver = Session.driver('fake-null')
     t.truthy(driver)

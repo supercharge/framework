@@ -4,7 +4,6 @@ const Path = require('path')
 const Config = require('../../../config')
 const Helper = require('../../../helper')
 const BaseTest = require('../../../base-test')
-const HttpKernel = require('../../../http/kernel')
 const Application = require('../../../foundation/application')
 const AuthBootstrapper = require('../../../auth/bootstrapper')
 
@@ -14,7 +13,7 @@ class AuthBootstrapperTest extends BaseTest {
 
     const app = new Application()
     await app.initializeHttpServer()
-    await app.registerBootstrapper(AuthBootstrapper)
+    await app.register(AuthBootstrapper)
 
     const server = app.server
 
@@ -50,7 +49,7 @@ class AuthBootstrapperTest extends BaseTest {
 
     const app = new Application()
     await app.initializeHttpServer()
-    await app.registerBootstrapper(AuthBootstrapper)
+    await app.register(AuthBootstrapper)
 
     const server = app.server
 
@@ -64,7 +63,7 @@ class AuthBootstrapperTest extends BaseTest {
 
     const app = new Application()
     await app.initializeHttpServer()
-    await app.registerBootstrapper(AuthBootstrapper)
+    await app.register(AuthBootstrapper)
 
     const server = app.server
 

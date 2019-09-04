@@ -13,7 +13,7 @@ class SessionAuthTest extends BaseTest {
 
     const app = new Application()
     await app.initializeHttpServer()
-    await app.registerBootstrapper(AuthBootstrapper)
+    await app.register(AuthBootstrapper)
 
     this.server = app.server
   }

@@ -21,7 +21,7 @@ class SessionBootstrapperTest extends BaseTest {
 
     const app = new Application()
     await app.initializeHttpServer()
-    await app.registerBootstrapper(SessionBootstrapper)
+    await app.register(SessionBootstrapper)
 
     const server = app.server
 
@@ -52,7 +52,7 @@ class SessionBootstrapperTest extends BaseTest {
 
     const app = new Application()
     await app.initializeHttpServer()
-    await app.registerBootstrapper(SessionBootstrapper)
+    await app.register(SessionBootstrapper)
 
     const server = app.server
     await server.start()
@@ -66,7 +66,7 @@ class SessionBootstrapperTest extends BaseTest {
 
     const app = new Application()
     await app.initializeHttpServer()
-    await app.registerBootstrapper(SessionBootstrapper)
+    await app.register(SessionBootstrapper)
 
     await t.notThrowsAsync(async () => Session._stopDriver('not-existing'))
   }
@@ -77,7 +77,7 @@ class SessionBootstrapperTest extends BaseTest {
 
     const app = new Application()
     await app.initializeHttpServer()
-    await app.registerBootstrapper(SessionBootstrapper)
+    await app.register(SessionBootstrapper)
 
     const server = app.server
 
@@ -114,7 +114,7 @@ class SessionBootstrapperTest extends BaseTest {
     const app = new Application()
     await app.initializeHttpServer()
 
-    await t.throwsAsync(async () => app.registerBootstrapper(SessionBootstrapper))
+    await t.throwsAsync(async () => app.register(SessionBootstrapper))
   }
 
   async serialUsesBootBuiltInDriver (t) {
@@ -124,7 +124,7 @@ class SessionBootstrapperTest extends BaseTest {
 
     const app = new Application()
     await app.initializeHttpServer()
-    await app.registerBootstrapper(SessionBootstrapper)
+    await app.register(SessionBootstrapper)
 
     const server = app.server
 
@@ -158,7 +158,7 @@ class SessionBootstrapperTest extends BaseTest {
 
     const app = new Application()
     await app.initializeHttpServer()
-    await app.registerBootstrapper(SessionBootstrapper)
+    await app.register(SessionBootstrapper)
 
     const server = app.server
 
