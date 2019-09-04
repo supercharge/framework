@@ -1,7 +1,6 @@
 'use strict'
 
 const Ava = require('ava')
-const _ = require('lodash')
 const Database = require('../../database')
 
 class AvaTesting {
@@ -100,42 +99,42 @@ class AvaTesting {
     /**
      * Ignore all methods starting with an underscore.
      */
-    if (_.startsWith(methodName, '_')) {
+    if (methodName.startsWith('_')) {
       return
     }
 
     /**
      * Skip methods starting with "skip*".
      */
-    if (_.startsWith(methodName, 'skip')) {
+    if (methodName.startsWith('skip')) {
       return this.skip(methodName)
     }
 
     /**
      * Mark method as TODO when starting with "todo*".
      */
-    if (_.startsWith(methodName, 'todo')) {
+    if (methodName.startsWith('todo')) {
       return this.todo(methodName)
     }
 
     /**
      * Mark method as the only one to execute.
      */
-    if (_.startsWith(methodName, 'only')) {
+    if (methodName.startsWith('only')) {
       return this.only(methodName)
     }
 
     /**
      * Mark method as failing.
      */
-    if (_.startsWith(methodName, 'failing')) {
+    if (methodName.startsWith('failing')) {
       return this.failing(methodName)
     }
 
     /**
      * Serial execution for this method.
      */
-    if (_.startsWith(methodName, 'serial')) {
+    if (methodName.startsWith('serial')) {
       return this.serial(methodName)
     }
 
