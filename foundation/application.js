@@ -9,6 +9,10 @@ const Logger = require('../logging')
 const HttpKernel = require('../http/kernel')
 const ConsoleKernel = require('../console/kernel')
 const Collect = require('@supercharge/collections')
+const EnvBootstrapper = require('../env/bootstrapper.js')
+const EventBootstrapper = require('../event/bootstrapper.js')
+const ConfigBootstrapper = require('../config/bootstrapper.js')
+const LoggingBootstrapper = require('../logging/bootstrapper.js')
 
 class Application {
   constructor () {
@@ -126,10 +130,10 @@ class Application {
    * Load and run the core bootstrappers.
    */
   async registerCoreBootstrappers () {
-    await this.registerBootstrapper(require('../env/bootstrapper.js'))
-    await this.registerBootstrapper(require('../config/bootstrapper.js'))
-    await this.registerBootstrapper(require('../event/bootstrapper.js'))
-    await this.registerBootstrapper(require('../logging/bootstrapper.js'))
+    await this.register(EnvBootstrapper)
+    await this.register(ConfigBootstrapper)
+    await this.register(EventBootstrapper)
+    await this.register(LoggingBootstrapper)
   }
 
   /**
@@ -139,7 +143,7 @@ class Application {
     await Collect(
       await this.loadUserlandBootstrappers()
     ).forEachSeries(async bootstrapper => {
-      await this.registerBootstrapper(bootstrapper)
+      await this.register(bootstrapper)
     })
   }
 
@@ -197,8 +201,8 @@ class Application {
   /**
    * Register a single bootstrapper.
    */
-  async registerBootstrapper (Bootstrapper) {
-    return new Bootstrapper(this).boot()
+  async register (Bootstrapper) {
+    await new Bootstrapper(this).boot()
   }
 }
 
