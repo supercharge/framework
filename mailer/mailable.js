@@ -4,9 +4,9 @@ const Fs = require('fs')
 const _ = require('lodash')
 const Util = require('util')
 const Helper = require('../helper')
+const ViewCompiler = require('../view')
 const HtmlToText = require('html-to-text')
 const ReadFile = Util.promisify(Fs.readFile)
-const ViewCompiler = require('../view/compiler')
 
 class Mailable {
   /**
@@ -14,7 +14,7 @@ class Mailable {
    */
   constructor () {
     this.message = {}
-    this.viewCompiler = new ViewCompiler()
+    this.viewCompiler = ViewCompiler
   }
 
   /**
@@ -168,9 +168,8 @@ class Mailable {
    */
   async buildView () {
     const template = this.message.view ? await this.readTemplate() : this.message.html
-    const render = this.viewCompiler.compile(template || '')
 
-    return render(this.message.viewData)
+    return this.viewCompiler.render(template || '', this.message.viewData)
   }
 
   /**

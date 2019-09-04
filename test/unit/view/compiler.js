@@ -3,13 +3,13 @@
 const Path = require('path')
 const Logger = require('../../../logging')
 const BaseTest = require('../../../base-test')
-const ViewCompiler = require('../../../view/compiler')
+const ViewCompiler = require('../../../view')
 
 class HandlebarsCompilerTest extends BaseTest {
   async serialFailsToRegisterHelper (t) {
     const stub = this.stub(Logger, 'warn').returns()
 
-    const compiler = new ViewCompiler()
+    const compiler = ViewCompiler
     compiler.registerHelper(__dirname, 'not-existent-helper.js')
 
     t.true(stub.called)
@@ -21,7 +21,7 @@ class HandlebarsCompilerTest extends BaseTest {
     const stub = this.stub(Logger, 'warn').returns()
     const helpersPath = Path.resolve(__dirname, 'fixtures')
 
-    const compiler = new ViewCompiler()
+    const compiler = ViewCompiler
     compiler.registerHelper(helpersPath, 'test-helper.js')
 
     t.true(compiler.hasHelper('test-helper'))
@@ -33,7 +33,7 @@ class HandlebarsCompilerTest extends BaseTest {
   async ignoresDotfiles (t) {
     const stub = this.stub(Logger, 'debug').returns()
 
-    const compiler = new ViewCompiler()
+    const compiler = ViewCompiler
     compiler.registerHelper('helpers-path', '.git')
 
     t.false(compiler.hasHelper('.git'))
@@ -46,7 +46,7 @@ class HandlebarsCompilerTest extends BaseTest {
     const stub = this.stub(Logger, 'warn').returns()
     const helpersPath = Path.resolve(__dirname, 'fixtures')
 
-    const compiler = new ViewCompiler()
+    const compiler = ViewCompiler
     compiler.registerHelper(helpersPath, 'no-function-test-helper.js')
 
     t.false(compiler.hasHelper('no-function-test-helper'))

@@ -1,37 +1,34 @@
 'use strict'
 
 const Path = require('path')
+const Env = require('../env')
 const Fs = require('../filesystem')
 const Helper = require('../helper')
+const Config = require('../config')
 const Logger = require('../logging')
 const Handlebars = require('handlebars')
 const Collect = require('@supercharge/collections')
 
-class HandlebarsCompiler {
+class ViewCompiler {
   constructor () {
     this.engine = this.createEngine()
+    this.config = Config.get('app', {})
   }
 
-  async initialize () {
-    await this.loadHelpers()
-  }
-
-  instance () {
-    return this.engine
-  }
-
-  compile (template) {
-    return this.engine.compile(template)
-  }
-
-  render (template, data) {
-    const renderFunction = this.compile(template)
-
-    return renderFunction(data)
-  }
-
+  /**
+   * Create the Handlebars view rendering engine.
+   *
+   * @returns {Object}
+   */
   createEngine () {
     return Handlebars
+  }
+
+  /**
+   * Loads all view helpers.
+   */
+  async initialize () {
+    await this.loadHelpers()
   }
 
   async loadHelpers () {
@@ -43,28 +40,22 @@ class HandlebarsCompiler {
       }).forEach(async helpersPath => {
         const files = await Fs.files(helpersPath)
 
-        files.forEach(file => {
-          this.registerHelper(helpersPath, file)
-        })
+        files
+          .filter(file => !this.isDotFile(file))
+          .forEach(file => this.registerHelper(helpersPath, file))
       })
   }
 
   registerHelper (helpersPath, file) {
-    if (this.isDotFile(file)) {
-      return
-    }
-
     file = Path.join(helpersPath, file)
 
     try {
       const helper = require(file)
       const name = this.filename(helpersPath, file)
 
-      if (typeof helper === 'function') {
-        this.engine.registerHelper(name, helper)
-      } else {
-        Logger.warn(`View helper "${Path.basename(file)}" is not a function, it's a ${typeof helper}`)
-      }
+      typeof helper === 'function'
+        ? this.engine.registerHelper(name, helper)
+        : Logger.warn(`View helper "${Path.basename(file)}" is not a function, it's a ${typeof helper}`)
     } catch (err) {
       Logger.warn(`WARNING: failed to load helper ${file}: ${err.message}`)
     }
@@ -81,8 +72,65 @@ class HandlebarsCompiler {
     return file.startsWith('.')
   }
 
+  /**
+   * Returns the file name without extension.
+   *
+   * @param {String} path
+   * @param {String} file
+   *
+   * @returns {String}
+   */
   filename (path, file) {
     return file.slice(path.length + 1, -Path.extname(file).length)
+  }
+
+  async serveViewsOn (server) {
+    server.views(
+      {
+        engines: {
+          hbs: this.engine
+        },
+        layout: 'app',
+        isCached: Env.isProduction(),
+        path: this.viewsPath(),
+        layoutPath: await this.layoutLocations(),
+        helpersPath: await this.helpersLocations(),
+        partialsPath: await this.partialsLocations(),
+        context: (request) => this.viewContext(request)
+      })
+  }
+
+  /**
+   * Returns the default, global view context data
+   * which will be appended to every request and
+   * therefore available in every template.
+   *
+   * @param {Request} request
+   *
+   * @returns {Object}
+   */
+  viewContext (request) {
+    return {
+      request,
+      user: request.user,
+      title: this.config.name,
+      description: this.config.description
+    }
+  }
+
+  /**
+   * Renders the given `data` into the view `template`
+   * and returns the resulting, rendered HTML.
+   *
+   * @param {String} template
+   * @param {*} data
+   *
+   * @returns {String}
+   */
+  render (template, data) {
+    const render = this.engine.compile(template)
+
+    return render(data)
   }
 
   /**
@@ -102,9 +150,11 @@ class HandlebarsCompiler {
    * @returns {Array}
    */
   layoutLocations () {
-    return [
+    return Collect([
       Path.resolve(this.viewsPath(), 'layouts')
-    ]
+    ])
+      .filter(path => Fs.exists(path))
+      .all()
   }
 
   /**
@@ -114,10 +164,12 @@ class HandlebarsCompiler {
    * @returns {Array}
    */
   helpersLocations () {
-    return [
+    return Collect([
       Path.resolve(this.viewsPath(), 'helpers'),
       Path.resolve(__dirname, 'handlebars/helpers')
-    ]
+    ])
+      .filter(path => Fs.exists(path))
+      .all()
   }
 
   /**
@@ -127,9 +179,11 @@ class HandlebarsCompiler {
    * @returns {Array}
    */
   partialsLocations () {
-    return [
+    return Collect([
       Path.resolve(this.viewsPath(), 'partials')
-    ]
+    ])
+      .filter(path => Fs.exists(path))
+      .all()
   }
 
   /**
@@ -146,4 +200,4 @@ class HandlebarsCompiler {
   }
 }
 
-module.exports = HandlebarsCompiler
+module.exports = new ViewCompiler()
