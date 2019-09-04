@@ -1,13 +1,13 @@
 'use strict'
 
+const Command = require('../../command')
 const Config = require('../../../config')
 const Logger = require('../../../logging')
-const BaseCommand = require('../base-command')
 const Worker = require('../../../queue/worker')
 const WorkerOptions = require('../../../queue/worker-options')
 const QueueBootstrapper = require('../../../queue/bootstrapper')
 
-class QueueWork extends BaseCommand {
+class QueueWork extends Command {
   constructor () {
     super()
 

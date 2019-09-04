@@ -2,11 +2,11 @@
 
 const _ = require('lodash')
 const Path = require('path')
+const Command = require('../command')
 const Helper = require('../../helper')
 const Handlebars = require('handlebars')
-const BaseCommand = require('./base-command')
 
-class MakeJob extends BaseCommand {
+class MakeJob extends Command {
   constructor () {
     super()
 
