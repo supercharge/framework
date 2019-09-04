@@ -116,7 +116,7 @@ class FilesystemTest extends BaseTest {
     const filePath = Path.resolve(dirPath, 'test.txt')
     Fs.writeFileSync(filePath, 'Hello Supercharge', 'utf8')
 
-    const dirContent = await Filesystem.readDir(dirPath)
+    const dirContent = await Filesystem.files(dirPath)
 
     t.deepEqual(dirContent, ['test.txt'])
   }
@@ -196,7 +196,7 @@ class FilesystemTest extends BaseTest {
 
     await Filesystem.emptyDir(dir)
 
-    const dirContent = await Filesystem.readDir(dir)
+    const dirContent = await Filesystem.files(dir)
 
     t.deepEqual(dirContent, [])
   }

@@ -5,7 +5,7 @@ const Fs = require('../../filesystem')
 const Helper = require('../../helper')
 const ReadRecursive = require('recursive-readdir')
 const Collect = require('@supercharge/collections')
-const GracefulShutdowns = require('./06-graceful-shutdowns')
+const GracefulShutdowns = require('./05-graceful-shutdowns')
 
 class RegistersMiddleware extends GracefulShutdowns {
   constructor () {

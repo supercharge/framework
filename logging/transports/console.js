@@ -16,7 +16,7 @@ class ConsoleTransport {
    * logs a colored message.
    */
   constructor () {
-    this.config = Config.get('logging.channels.console')
+    this.config = Config.get('logging.channels.console', {})
     this.colors = this.logColors()
 
     return this.createTransporter()

@@ -6,7 +6,7 @@ const Helper = require('../../helper')
 const Logger = require('../../logging')
 const ReadRecursive = require('recursive-readdir')
 const Collect = require('@supercharge/collections')
-const RegistersMiddleware = require('./05-registers-middleware')
+const RegistersMiddleware = require('./04-registers-middleware')
 
 class RegistersRoutes extends RegistersMiddleware {
   constructor () {

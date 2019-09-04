@@ -55,6 +55,15 @@ class Config {
   set (key, value) {
     return _.set(this.config, key, value)
   }
+
+  /**
+   * Determines whether the configuration contains an application key.
+   *
+   * @returns {Boolean}
+   */
+  hasAppKey () {
+    return !!this.get('app.key')
+  }
 }
 
 module.exports = new Config()

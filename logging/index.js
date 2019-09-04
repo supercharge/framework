@@ -15,9 +15,14 @@ class LoggingManager {
    * @returns {String}
    */
   _defaultDriver () {
-    return Config.get('logging.driver')
+    return Config.get('logging.driver') || 'console'
   }
 
+  /**
+   * Create a new logging driver if not existent.
+   *
+   * @param {String} name
+   */
   ensureLogger (name = this._defaultDriver()) {
     this.driver(name)
   }

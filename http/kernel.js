@@ -1,11 +1,9 @@
 'use strict'
 
-const Path = require('path')
 const Hapi = require('@hapi/hapi')
 const Boom = require('@hapi/boom')
 const Config = require('../config')
 const HttpConcerns = require('./concerns')
-const Collect = require('@supercharge/collections')
 
 class HttpKernel extends HttpConcerns {
   constructor (app) {
@@ -13,24 +11,18 @@ class HttpKernel extends HttpConcerns {
 
     this.app = app
     this.server = this._createServer()
-    this.bootstrappers = [
-      '../logging/bootstrapper.js',
-      '../auth/bootstrapper.js',
-      '../database/bootstrapper.js',
-      '../view/bootstrapper.js'
-    ]
+  }
+
+  getServer () {
+    return this.server
   }
 
   async bootstrap () {
-    await this._loadAndRegisterPlugins()
-    await this._registerBootstrappers()
+    await this._registerCorePlugins()
     await this._loadAppPlugins()
-
     await this._loadAndRegisterRoutes()
     await this._loadAppMiddleware()
     await this._registerShutdownHandler()
-
-    await this.server.initialize()
   }
 
   /**
@@ -77,51 +69,6 @@ class HttpKernel extends HttpConcerns {
     }, {})
 
     throw Boom.badRequest(error.message, errors)
-  }
-
-  /**
-   * Register the core dependencies.
-   */
-  async _registerBootstrappers () {
-    await Collect(this.bootstrappers)
-      .concat(
-        await this._loadUserlandBootstrappers()
-      )
-      .forEachSeries(async bootstrapper => {
-        return this._registerBootstrapper(bootstrapper)
-      })
-  }
-
-  /**
-   * Register a single bootstrapper.
-   */
-  async _registerBootstrapper (bootstrapper) {
-    let Bootstrapper = bootstrapper
-
-    if (typeof bootstrapper === 'string') {
-      Bootstrapper = this._resolveBootstrapperFromPath(bootstrapper)
-    }
-
-    return new Bootstrapper(this.server).boot()
-  }
-
-  /**
-   * Resolve the bootstrapper, instantiate
-   * a bootstrapper class and pass the
-   * app argument to it.
-   *
-   * @param {String} path
-   *
-   * @returns {Class}
-   */
-  _resolveBootstrapperFromPath (path) {
-    return require(
-      Path.resolve(__dirname, path)
-    )
-  }
-
-  getServer () {
-    return this.server
   }
 
   async start () {

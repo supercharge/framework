@@ -3,7 +3,7 @@
 const DatabaseConnectionLifecycle = require('./middleware/connection-lifecycle')
 
 class DatabaseBoostrapper {
-  constructor (server) {
+  constructor ({ server }) {
     this.server = server
   }
 

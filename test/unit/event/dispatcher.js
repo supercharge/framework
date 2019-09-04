@@ -14,7 +14,7 @@ class EventDispatcherTest extends BaseTest {
     Dispatcher.eventsFolder = Path.resolve(__dirname, 'fixtures', 'events')
     Dispatcher.listenersFolder = Path.resolve(__dirname, 'fixtures', 'listeners')
 
-    await Dispatcher.init()
+    await Dispatcher.discoverEventsAndListeners()
 
     const eventName = new TestEvent().emit()
 
@@ -29,7 +29,7 @@ class EventDispatcherTest extends BaseTest {
     Dispatcher.eventsFolder = Path.resolve(__dirname, 'unavailable')
     Dispatcher.listenersFolder = Path.resolve(__dirname, 'unavailable')
 
-    await Dispatcher.init()
+    await Dispatcher.discoverEventsAndListeners()
 
     t.is(Dispatcher.listenerCount(), 0)
   }
@@ -38,7 +38,7 @@ class EventDispatcherTest extends BaseTest {
     Dispatcher.eventsFolder = Path.resolve(__dirname, 'fixtures', 'events')
     Dispatcher.listenersFolder = Path.resolve(__dirname, 'fixtures', 'listeners')
 
-    await Dispatcher.init()
+    await Dispatcher.discoverEventsAndListeners()
 
     const event = new TestEvent()
     const spy = this.spy(event, 'emit')
@@ -108,7 +108,7 @@ class EventDispatcherTest extends BaseTest {
   async serialHandleSystemEventsListeners (t) {
     Dispatcher.listenersFolder = Path.resolve(__dirname, 'fixtures', 'system-listeners')
 
-    await Dispatcher.init()
+    await Dispatcher.discoverEventsAndListeners()
 
     t.true(process.eventNames().includes('system.test.event'))
   }

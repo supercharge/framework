@@ -4,7 +4,6 @@ const Path = require('path')
 const Boom = require('@hapi/boom')
 const Helper = require('../../../helper')
 const BaseTest = require('../../../base-test')
-const HttpKernel = require('../../../http/kernel')
 const AuthBootstrapper = require('../../../auth/bootstrapper')
 const Application = require('../../../foundation/application')
 
@@ -12,13 +11,11 @@ class SessionAuthTest extends BaseTest {
   async beforeEach () {
     Helper.setAppRoot(Path.resolve(__dirname, 'load-only-the-default-scheme'))
 
-    const kernel = new HttpKernel(new Application())
-    await kernel._createServer()
+    const app = new Application()
+    await app.initializeHttpServer()
+    await app.register(AuthBootstrapper)
 
-    const bootstrapper = new AuthBootstrapper(kernel.getServer())
-    await bootstrapper.boot()
-
-    this.server = kernel.getServer()
+    this.server = app.server
   }
 
   _addRoute () {

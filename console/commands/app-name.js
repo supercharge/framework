@@ -1,6 +1,6 @@
 'use strict'
 
-const BaseCommand = require('./base-command')
+const BaseCommand = require('../command')
 
 /**
  * Craft command to set the application name.

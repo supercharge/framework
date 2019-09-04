@@ -34,10 +34,10 @@ class AppLifecycleTest extends BaseTest {
 
   async serialStartsAndStopsDefaultServer (t) {
     const app = new App().fromAppRoot(this.appRoot)
-    await app.bootstrapHttpKernel()
+    await app.initializeHttpServer()
     await app.startServer()
 
-    const server = app.getServer()
+    const server = app.server
     t.not(server.info.started, 0)
 
     process.emit('SIGTERM')
@@ -48,10 +48,10 @@ class AppLifecycleTest extends BaseTest {
 
   async serialFailsToStartServer (t) {
     const app = new App().fromAppRoot(this.appRoot)
-    await app.bootstrapHttpKernel()
+    await app.initializeHttpServer()
     await app.startServer()
 
-    const server = app.getServer()
+    const server = app.server
     const stub = this.stub(server, 'start').throws(new Error())
 
     await app.startServer()
@@ -65,9 +65,9 @@ class AppLifecycleTest extends BaseTest {
 
   async serialRunsShutdownFunctions (t) {
     const app = new App().fromAppRoot(this.appRoot)
-    await app.bootstrapHttpKernel()
+    await app.initializeHttpServer()
 
-    const server = app.getServer()
+    const server = app.server
     const stub = this.stub(server, 'start').throws(new Error())
 
     await app.startServer()

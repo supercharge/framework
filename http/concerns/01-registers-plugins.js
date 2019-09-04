@@ -1,12 +1,8 @@
 'use strict'
 
-const LoadBootstrappers = require('./02-loads-userland-bootstrappers')
+const RegistersAppPlugins = require('./02-registers-app-plugins')
 
-class RegistersCorePlugins extends LoadBootstrappers {
-  async _loadAndRegisterPlugins () {
-    await this._registerCorePlugins()
-  }
-
+class RegistersCorePlugins extends RegistersAppPlugins {
   async _registerCorePlugins () {
     await this.server.register([
       { plugin: require('@hapi/vision') },
