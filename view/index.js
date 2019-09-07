@@ -11,6 +11,7 @@ const Collect = require('@supercharge/collections')
 
 class ViewCompiler {
   constructor () {
+    this.server = null
     this.engine = this.createEngine()
     this.config = Config.get('app', {})
   }
@@ -31,13 +32,16 @@ class ViewCompiler {
     await this.loadHelpers()
   }
 
+  /**
+   * Load all view helpers, provided by the
+   * Supercharge core and from user-land.
+   */
   async loadHelpers () {
-    const helpersPaths = [].concat(this.helpersLocations())
-
-    await Collect(helpersPaths)
-      .filter(async path => {
-        return Fs.exists(path)
-      }).forEach(async helpersPath => {
+    await Collect(
+      await this.helpersLocations()
+    )
+      .filter(async path => Fs.exists(path))
+      .forEach(async helpersPath => {
         const files = await Fs.files(helpersPath)
 
         files
@@ -98,6 +102,8 @@ class ViewCompiler {
         partialsPath: await this.partialsLocations(),
         context: (request) => this.viewContext(request)
       })
+
+    this.server = server
   }
 
   /**
@@ -119,7 +125,21 @@ class ViewCompiler {
   }
 
   /**
-   * Renders the given `data` into the view `template`
+   * Renders the given `data` into the template
+   * located at `viewPath` and returns the
+   * resulting, rendered HTML.
+   *
+   * @param {String} template
+   * @param {*} data
+   *
+   * @returns {String}
+   */
+  render (viewPath, data) {
+    return this.server.render(viewPath, data, { layout: null })
+  }
+
+  /**
+   * Renders the given `data` into the `template` string
    * and returns the resulting, rendered HTML.
    *
    * @param {String} template
@@ -127,7 +147,7 @@ class ViewCompiler {
    *
    * @returns {String}
    */
-  render (template, data) {
+  renderTemplate (template, data) {
     const render = this.engine.compile(template)
 
     return render(data)
@@ -149,7 +169,7 @@ class ViewCompiler {
    *
    * @returns {Array}
    */
-  layoutLocations () {
+  async layoutLocations () {
     return Collect([
       Path.resolve(this.viewsPath(), 'layouts')
     ])
@@ -163,7 +183,7 @@ class ViewCompiler {
    *
    * @returns {Array}
    */
-  helpersLocations () {
+  async helpersLocations () {
     return Collect([
       Path.resolve(this.viewsPath(), 'helpers'),
       Path.resolve(__dirname, 'handlebars/helpers')
@@ -178,7 +198,7 @@ class ViewCompiler {
    *
    * @returns {Array}
    */
-  partialsLocations () {
+  async partialsLocations () {
     return Collect([
       Path.resolve(this.viewsPath(), 'partials')
     ])
