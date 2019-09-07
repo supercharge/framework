@@ -409,6 +409,8 @@ class Filesystem {
 
   /**
    * Returns the directory name of the given `path`.
+   * For example, a file path of `foo/bar/baz/file.txt`
+   * returns `foo/bar/baz`.
    *
    * @param {String} path
    *
