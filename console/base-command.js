@@ -81,9 +81,9 @@ class BaseCommand extends Command {
    * @throws
    */
   async ensureInProjectRoot () {
-    const exists = await this.pathExists(Path.join(process.cwd(), 'craft'))
+    const insideSuperchargeDir = await this.pathExists(Path.join(process.cwd(), 'craft'))
 
-    if (!exists) {
+    if (!insideSuperchargeDir) {
       throw new Error(`Make sure you are inside a Supercharge app to run the ${this.constructor.commandName} command`)
     }
   }
