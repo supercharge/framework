@@ -445,7 +445,7 @@ class Filesystem {
   }
 
   /**
-   * Returns the file size of the file located at `path`.
+   * Returns the file size in bytes of the file located at `path`.
    *
    * @param {String} path
    *
