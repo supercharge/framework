@@ -22,7 +22,7 @@ class RenderViews {
   async render (template, data = {}) {
     await this._initialize()
 
-    return this.compiler.render(template, data)
+    return this.compiler.renderTemplate(template, data)
   }
 }
 

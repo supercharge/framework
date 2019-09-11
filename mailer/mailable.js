@@ -169,7 +169,7 @@ class Mailable {
   async buildView () {
     const template = this.message.view ? await this.readTemplate() : this.message.html
 
-    return this.viewCompiler.render(template || '', this.message.viewData)
+    return this.viewCompiler.renderTemplate(template || '', this.message.viewData)
   }
 
   /**
