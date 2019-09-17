@@ -68,7 +68,7 @@ class HttpKernel extends HttpConcerns {
       }
     }, {})
 
-    throw Boom.badRequest(error.message, errors)
+    throw Boom.badRequest(error, errors)
   }
 
   async start () {
