@@ -3,11 +3,13 @@
 const Path = require('path')
 const Fs = require('../filesystem')
 const Helper = require('../helper')
+const HttpKernel = require('./kernel')
 const Collect = require('@supercharge/collections')
 
 class HttpBoostrapper {
   constructor (app) {
     this.app = app
+    this.app.httpKernel = new HttpKernel(app)
 
     this._pluginFiles = null
     this._pluginsFolder = 'app/plugins'

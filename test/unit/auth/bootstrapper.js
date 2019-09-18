@@ -63,7 +63,7 @@ class AuthBootstrapperTest extends BaseTest {
     Helper.setAppRoot(Path.resolve(__dirname, 'fixtures'))
 
     const app = new Application()
-
+    await app.register(HttpBootstrapper)
     await app.register(AuthBootstrapper)
 
     const server = app.server

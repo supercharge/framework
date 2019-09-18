@@ -6,7 +6,6 @@ const Fs = require('../filesystem')
 const Config = require('../config')
 const Helper = require('../helper')
 const Logger = require('../logging')
-const HttpKernel = require('../http/kernel')
 const ConsoleKernel = require('../console/kernel')
 const Collect = require('@supercharge/collections')
 const EnvBootstrapper = require('../env/bootstrapper')
@@ -21,8 +20,8 @@ const RoutingBootstrapper = require('../http/routing-bootstrapper')
 
 class Application {
   constructor () {
-    this.httpKernel = new HttpKernel(this)
-    this.consoleKernel = new ConsoleKernel(this)
+    this.httpKernel = null
+    this.consoleKernel = null
     this.bootstrapperFile = 'bootstrap/app.js'
   }
 
@@ -60,13 +59,14 @@ class Application {
    * userland bootstrappers to compose the application.
    */
   async initialize () {
-    await this.ensureAppRoot()
     await this.registerCoreBootstrappers()
+    await this.ensureAppRoot()
     await this.ensureAppKey()
 
-    await this.initializeConsole()
-
     await this.registerAppBootstrappers()
+    await this.registerUserlandBootstrappers()
+
+    await this.initializeConsole()
   }
 
   async ensureAppRoot () {
@@ -88,6 +88,7 @@ class Application {
    * load and register all core commands.
    */
   async initializeConsole () {
+    this.consoleKernel = new ConsoleKernel(this)
     await this.consoleKernel.bootstrap()
   }
 
@@ -127,18 +128,27 @@ class Application {
     await this.register(ConfigBootstrapper)
     await this.register(EventBootstrapper)
     await this.register(LoggingBootstrapper)
+  }
+
+  /**
+   * Load and run the app bootstrappers bringing features
+   * like the HTTP server, authentication, views,
+   * and more to the application.
+   */
+  async registerAppBootstrappers () {
     await this.register(HttpBootstrapper)
     await this.register(AuthBootstrapper)
     await this.register(ViewBootstrapper)
-    // await this.register(SessionBootstrapper) // loaded from userland
     await this.register(DatabaseBootstrapper)
     await this.register(RoutingBootstrapper)
+
+    // session bootstrapper can be extended and is therefore loaded from userland
   }
 
   /**
    * Load and run the user-land bootstrappers.
    */
-  async registerAppBootstrappers () {
+  async registerUserlandBootstrappers () {
     await Collect(
       await this.loadUserlandBootstrappers()
     ).forEachSeries(async bootstrapper => {

@@ -5,7 +5,7 @@ const Boom = require('@hapi/boom')
 const Config = require('../config')
 
 class HttpKernel {
-  constructor (app) {
+  constructor () {
     this.server = this._createServer()
   }
 

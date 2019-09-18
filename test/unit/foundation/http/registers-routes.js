@@ -5,6 +5,7 @@ const Helper = require('../../../../helper')
 const Logger = require('../../../../logging')
 const BaseTest = require('../../../../base-test')
 const Application = require('../../../../foundation/application')
+const HttpBootstrapper = require('../../../../http/bootstrapper')
 const RoutingBootstrapper = require('../../../../http/routing-bootstrapper')
 
 class LoadRoutesTest extends BaseTest {
@@ -12,6 +13,8 @@ class LoadRoutesTest extends BaseTest {
     Helper.setAppRoot(Path.resolve(__dirname, 'fixtures'))
 
     const app = new Application()
+    await app.register(HttpBootstrapper)
+
     const kernel = new RoutingBootstrapper(app)
 
     kernel._routesFolder = 'routes'
