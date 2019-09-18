@@ -38,6 +38,18 @@ class SessionBootstrapper {
   }
 
   /**
+   * Returns the session lifetime as a
+   * human-readable string, e.g. “7d”.
+   *
+   * @returns {Integer|String}
+   */
+  lifetime () {
+    const { lifetime } = this.manager.config()
+
+    return lifetime ? ms(lifetime) : null
+  }
+
+  /**
    * Add session support to the HTTP server for a configured session driver.
    * Starts the driver instance, prepares the session cookie and decorates
    * the request with `request.session`. Extends the request lifecycle
@@ -77,31 +89,27 @@ class SessionBootstrapper {
    * Initializes the session cookie.
    */
   _prepareSessionCookie () {
-    const { name } = this.cookieOptions()
+    const { name, ...options } = this.cookieOptions()
 
-    this._prepareCookieOnServer(name)
+    this.server.state(name, {
+      ttl: this.lifetime(),
+      ...this._defaultCookieOptions(),
+      ...options
+    })
   }
 
   /**
    * Initializes the CSRF response cookie.
    */
   _prepareCsrfCookie () {
-    this._prepareCookieOnServer('XSRF-TOKEN')
-  }
+    const { name, ...options } = this.cookieOptions()
 
-  /**
-   * Initializes and configures a cookie on the server.
-   *
-   * @param {String} cookieName
-   */
-  _prepareCookieOnServer (cookieName) {
-    const { cookie, lifetime } = this.manager.config()
-    const { name, ...options } = cookie
-
-    this.server.state(cookieName, {
-      ttl: lifetime ? ms(lifetime) : null,
+    this.server.state('XSRF-TOKEN', {
+      ttl: this.lifetime(),
+      ignoreErrors: true,
       ...this._defaultCookieOptions(),
       ...options
+
     })
   }
 
