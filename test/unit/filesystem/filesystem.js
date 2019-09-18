@@ -267,10 +267,10 @@ class FilesystemTest extends BaseTest {
   }
 
   async prepareLockFile (t) {
-    const withlock = await Filesystem.prepareLockFile(`file.lock`)
+    const withlock = await Filesystem.prepareLockFile('file.lock')
     t.true(withlock.includes('.lock'))
 
-    const withoutlock = await Filesystem.prepareLockFile(`file`)
+    const withoutlock = await Filesystem.prepareLockFile('file')
     t.true(withoutlock.includes('.lock'))
   }
 
