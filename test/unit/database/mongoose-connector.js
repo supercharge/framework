@@ -12,7 +12,7 @@ class MongooseConnectorTest extends BaseTest {
         host: 'localhost',
         port: 27017,
         database: 'supercharge-testing',
-        options: { useNewUrlParser: true }
+        options: { useNewUrlParser: true, useUnifiedTopology: true }
       }
     })
   }
@@ -49,9 +49,7 @@ class MongooseConnectorTest extends BaseTest {
       host: 'wrong',
       port: 27017,
       database: 'not-existent',
-      options: {
-        useNewUrlParser: true
-      }
+      options: { useNewUrlParser: true, useUnifiedTopology: true }
     })
 
     await connector.disconnect()

@@ -17,7 +17,7 @@ class DatabaseManagerTest extends BaseTest {
       mongoose: {
         host: 'localhost',
         database: 'supercharge-testing',
-        options: { useNewUrlParser: true }
+        options: { useNewUrlParser: true, useUnifiedTopology: true }
       }
     })
   }
