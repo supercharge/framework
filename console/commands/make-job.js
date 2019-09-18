@@ -2,9 +2,9 @@
 
 const _ = require('lodash')
 const Path = require('path')
-const Command = require('../command')
 const Helper = require('../../helper')
 const Handlebars = require('handlebars')
+const Command = require('../base-command')
 
 class MakeJob extends Command {
   constructor () {
@@ -27,7 +27,7 @@ class MakeJob extends Command {
    * Returns the command description.
    */
   static get description () {
-    return 'Scaffold a new job'
+    return 'Scaffold a new queue job'
   }
 
   /**

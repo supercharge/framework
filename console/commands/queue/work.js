@@ -1,8 +1,8 @@
 'use strict'
 
-const Command = require('../../command')
 const Config = require('../../../config')
 const Logger = require('../../../logging')
+const Command = require('../../base-command')
 const Worker = require('../../../queue/worker')
 const WorkerOptions = require('../../../queue/worker-options')
 const QueueBootstrapper = require('../../../queue/bootstrapper')
