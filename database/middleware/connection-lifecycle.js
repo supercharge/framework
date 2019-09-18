@@ -5,7 +5,6 @@ const Database = require('../index')
 const Helper = require('../../helper')
 const Config = require('../../config')
 const Fs = require('../../filesystem')
-const ReadRecursive = require('recursive-readdir')
 const Collect = require('@supercharge/collections')
 
 class DatabaseConnectionLifecycle {
@@ -19,7 +18,7 @@ class DatabaseConnectionLifecycle {
    * the HTTP server.
    */
   async onPreStart () {
-    await this.connectDatabase()
+    await this.connectToDatabase()
   }
 
   /**
@@ -27,7 +26,7 @@ class DatabaseConnectionLifecycle {
    * after server stop.
    */
   async onPostStop () {
-    await this.disconnectDatabase()
+    await this.disconnectFromDatabase()
   }
 
   /**
@@ -35,7 +34,7 @@ class DatabaseConnectionLifecycle {
    * If no models are existent, no
    * connection is needed.
    */
-  async connectDatabase () {
+  async connectToDatabase () {
     if (await this.shouldConnect()) {
       await Database.connect()
     }
@@ -44,7 +43,7 @@ class DatabaseConnectionLifecycle {
   /**
    * Close the database connection
    */
-  async disconnectDatabase () {
+  async disconnectFromDatabase () {
     await Database.close()
   }
 
@@ -104,12 +103,36 @@ class DatabaseConnectionLifecycle {
    */
   async loadModelFiles () {
     if (await Fs.exists(Helper.modelsPath())) {
-      return ReadRecursive(Helper.modelsPath(), [
-        file => this.shouldIgnore(file)
-      ])
+      return Collect(await this.retrieveFilesFromDisk())
+        .map(file => {
+          this.registerModelToMongoose(file)
+
+          return file
+        })
+        .all()
     }
 
     return []
+  }
+
+  /**
+   * Read all models files recursively from the hard disk.
+   *
+   * @returns {Array}
+   */
+  async retrieveFilesFromDisk () {
+    return Fs.allFiles(Helper.modelsPath(), {
+      ignore: this.shouldIgnore
+    })
+  }
+
+  /**
+   * Resolve the model file which registers the model to Mongoose.
+   *
+   * @param {String} modelFile
+   */
+  registerModelToMongoose (modelFile) {
+    require(modelFile)
   }
 
   /**

@@ -7,8 +7,12 @@ const BaseTest = require('../../../base-test')
 const Filesystem = require('../../../filesystem')
 
 class FilesystemTest extends BaseTest {
-  async before () {
+  constructor () {
+    super()
     this.tempDir = Path.resolve(__dirname, 'tmp')
+  }
+
+  async before () {
     Fs.mkdirSync(this.tempDir)
   }
 
@@ -263,10 +267,10 @@ class FilesystemTest extends BaseTest {
   }
 
   async prepareLockFile (t) {
-    const withlock = await Filesystem.prepareLockFile(`file.lock`)
+    const withlock = await Filesystem.prepareLockFile('file.lock')
     t.true(withlock.includes('.lock'))
 
-    const withoutlock = await Filesystem.prepareLockFile(`file`)
+    const withoutlock = await Filesystem.prepareLockFile('file')
     t.true(withoutlock.includes('.lock'))
   }
 
@@ -280,6 +284,49 @@ class FilesystemTest extends BaseTest {
   async tempDirectory (t) {
     const dir = await Filesystem.tempDir()
     t.true(await Filesystem.exists(dir))
+  }
+
+  async extension (t) {
+    const filename = `${Uuid()}.test`
+    const file = await this._ensureTempFile(filename)
+    t.deepEqual(await Filesystem.extension(file), '.test')
+  }
+
+  async basename (t) {
+    const filename = `${Uuid()}.test`
+    const file = await this._ensureTempFile(filename)
+    t.deepEqual(await Filesystem.basename(file), filename)
+  }
+
+  async filename (t) {
+    const filename = Uuid()
+    const file = await this._ensureTempFile(filename)
+    t.deepEqual(await Filesystem.filename(file), filename)
+  }
+
+  async dirname (t) {
+    const file = await this._ensureTempFile()
+    t.deepEqual(await Filesystem.dirname(file), Path.parse(file).dir)
+  }
+
+  async isFile (t) {
+    const file = await this._ensureTempFile()
+    t.true(await Filesystem.isFile(file))
+    t.false(await Filesystem.isFile(Path.parse(file).dir))
+  }
+
+  async isDirectory (t) {
+    const file = await this._ensureTempFile()
+    t.true(await Filesystem.isDirectory(Path.parse(file).dir))
+    t.false(await Filesystem.isDirectory(file))
+  }
+
+  async size (t) {
+    const file = await this._ensureTempFile()
+    t.deepEqual(await Filesystem.size(file), 0)
+
+    await Filesystem.writeFile(file, 'hello')
+    t.deepEqual(await Filesystem.size(file), 5)
   }
 }
 

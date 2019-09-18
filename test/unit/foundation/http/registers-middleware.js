@@ -1,25 +1,23 @@
 'use strict'
 
 const Path = require('path')
-const Helper = require('../../../../../helper')
-const BaseTest = require('../../../../../base-test')
-const HttpKernel = require('../../../../../http/kernel')
-const Application = require('../../../../../foundation/application')
+const Helper = require('../../../../helper')
+const BaseTest = require('../../../../base-test')
+const Application = require('../../../../foundation/application')
+const HttpBootstrapper = require('../../../../http/bootstrapper')
 
 class LoadMiddlewareTest extends BaseTest {
   async loadMiddleware (t) {
     Helper.setAppRoot(Path.resolve(__dirname, 'fixtures'))
 
-    const kernel = new HttpKernel(new Application())
-    await kernel._createServer()
-    await kernel._registerCorePlugins()
+    const app = new Application()
+    const kernel = new HttpBootstrapper(app)
+    await kernel.registerCorePlugins()
 
     kernel._middlewareFolder = 'middleware/works-fine'
-    await kernel._loadAppMiddleware()
+    await kernel.loadAppMiddleware()
 
-    const server = kernel.getServer()
-
-    server.route({
+    app.server.route({
       method: 'GET',
       path: '/',
       handler: () => 'response'
@@ -30,7 +28,7 @@ class LoadMiddlewareTest extends BaseTest {
       method: 'GET'
     }
 
-    const response = await server.inject(request)
+    const response = await app.server.inject(request)
     t.true(response.result.includes('supercharge class middleware'))
     t.true(response.result.includes('supercharge object middleware'))
   }
@@ -38,48 +36,46 @@ class LoadMiddlewareTest extends BaseTest {
   async throwsForInvalidExtensionPoint (t) {
     Helper.setAppRoot(Path.resolve(__dirname, 'fixtures'))
 
-    const kernel = new HttpKernel(new Application())
-    await kernel._createServer()
-    await kernel._registerCorePlugins()
+    const app = new Application()
+    const kernel = new HttpBootstrapper(app)
+    await kernel.registerCorePlugins()
 
     kernel._middlewareFolder = 'middleware/invalid-extension-point'
-    await t.throwsAsync(kernel._loadAppMiddleware())
+    await t.throwsAsync(kernel.loadAppMiddleware())
   }
 
   async throwsForInvalidMiddlewareFormat (t) {
     Helper.setAppRoot(Path.resolve(__dirname, 'fixtures'))
 
-    const kernel = new HttpKernel(new Application())
-    await kernel._createServer()
-    await kernel._registerCorePlugins()
+    const app = new Application()
+    const kernel = new HttpBootstrapper(app)
+    await kernel.registerCorePlugins()
 
     kernel._middlewareFolder = 'middleware/invalid-format'
-    await t.throwsAsync(kernel._loadAppMiddleware())
+    await t.throwsAsync(kernel.loadAppMiddleware())
   }
 
   async ignoresUnavailableMiddlewareFolder (t) {
     Helper.setAppRoot(Path.resolve(__dirname, 'fixtures'))
 
-    const kernel = new HttpKernel(new Application())
-    await kernel._createServer()
-    await kernel._registerCorePlugins()
+    const app = new Application()
+    const kernel = new HttpBootstrapper(app)
+    await kernel.registerCorePlugins()
 
-    await t.notThrowsAsync(kernel._loadAppMiddleware())
+    await t.notThrowsAsync(kernel.loadAppMiddleware())
   }
 
   async ignoresFilesStartingWithUnderscore (t) {
     Helper.setAppRoot(Path.resolve(__dirname, 'fixtures'))
 
-    const kernel = new HttpKernel(new Application())
-    await kernel._createServer()
-    await kernel._registerCorePlugins()
+    const app = new Application()
+    const kernel = new HttpBootstrapper(app)
+    await kernel.registerCorePlugins()
 
     kernel._middlewareFolder = 'middleware/starts-with-underscore'
-    await kernel._loadAppMiddleware()
+    await kernel.loadAppMiddleware()
 
-    const server = kernel.getServer()
-
-    server.route({
+    app.server.route({
       method: 'GET',
       path: '/',
       handler: () => 'response'
@@ -90,7 +86,7 @@ class LoadMiddlewareTest extends BaseTest {
       method: 'GET'
     }
 
-    const response = await server.inject(request)
+    const response = await app.server.inject(request)
     t.true(response.result.includes('supercharge middleware'))
     t.false(response.result.includes('not loaded'))
   }

@@ -3,7 +3,7 @@
 const Path = require('path')
 const Fs = require('../../../../../filesystem')
 const BaseTest = require('../../../../../base-test')
-const BaseCommand = require('../../../../../console/command')
+const BaseCommand = require('../../../../../console/base-command')
 
 class BaseCommandTest extends BaseTest {
   async serialRunFailsWhenCallbackThrows (t) {

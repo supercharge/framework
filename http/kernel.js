@@ -3,26 +3,14 @@
 const Hapi = require('@hapi/hapi')
 const Boom = require('@hapi/boom')
 const Config = require('../config')
-const HttpConcerns = require('./concerns')
 
-class HttpKernel extends HttpConcerns {
-  constructor (app) {
-    super()
-
-    this.app = app
+class HttpKernel {
+  constructor () {
     this.server = this._createServer()
   }
 
   getServer () {
     return this.server
-  }
-
-  async bootstrap () {
-    await this._registerCorePlugins()
-    await this._loadAppPlugins()
-    await this._loadAndRegisterRoutes()
-    await this._loadAppMiddleware()
-    await this._registerShutdownHandler()
   }
 
   /**
@@ -68,7 +56,7 @@ class HttpKernel extends HttpConcerns {
       }
     }, {})
 
-    throw Boom.badRequest(error.message, errors)
+    throw Boom.badRequest(error, errors)
   }
 
   async start () {

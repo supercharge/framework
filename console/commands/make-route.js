@@ -3,7 +3,7 @@
 const Path = require('path')
 const Helper = require('../../helper')
 const Handlebars = require('handlebars')
-const BaseCommand = require('../command')
+const BaseCommand = require('../base-command')
 
 class MakeRoute extends BaseCommand {
   constructor () {

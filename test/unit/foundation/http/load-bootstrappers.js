@@ -1,10 +1,10 @@
 'use strict'
 
 const Path = require('path')
-const Helper = require('../../../../../helper')
-const Logger = require('../../../../../logging')
-const BaseTest = require('../../../../../base-test')
-const Application = require('../../../../../foundation/application')
+const Helper = require('../../../../helper')
+const Logger = require('../../../../logging')
+const BaseTest = require('../../../../base-test')
+const Application = require('../../../../foundation/application')
 
 class LoadBootstrappers extends BaseTest {
   async serialLoadBootstrappers (t) {

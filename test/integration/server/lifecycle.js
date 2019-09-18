@@ -5,6 +5,7 @@ const Fs = require('../../../filesystem')
 const Config = require('../../../config')
 const BaseTest = require('../../../base-test')
 const App = require('../../../foundation/application')
+const HttpBootstrapper = require('../../../http/bootstrapper')
 
 class AppLifecycleTest extends BaseTest {
   constructor () {
@@ -34,7 +35,7 @@ class AppLifecycleTest extends BaseTest {
 
   async serialStartsAndStopsDefaultServer (t) {
     const app = new App().fromAppRoot(this.appRoot)
-    await app.initializeHttpServer()
+    await app.register(HttpBootstrapper)
     await app.startServer()
 
     const server = app.server
@@ -48,7 +49,7 @@ class AppLifecycleTest extends BaseTest {
 
   async serialFailsToStartServer (t) {
     const app = new App().fromAppRoot(this.appRoot)
-    await app.initializeHttpServer()
+    await app.register(HttpBootstrapper)
     await app.startServer()
 
     const server = app.server
@@ -65,7 +66,7 @@ class AppLifecycleTest extends BaseTest {
 
   async serialRunsShutdownFunctions (t) {
     const app = new App().fromAppRoot(this.appRoot)
-    await app.initializeHttpServer()
+    await app.register(HttpBootstrapper)
 
     const server = app.server
     const stub = this.stub(server, 'start').throws(new Error())

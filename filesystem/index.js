@@ -409,6 +409,8 @@ class Filesystem {
 
   /**
    * Returns the directory name of the given `path`.
+   * For example, a file path of `foo/bar/baz/file.txt`
+   * returns `foo/bar/baz`.
    *
    * @param {String} path
    *
@@ -445,7 +447,7 @@ class Filesystem {
   }
 
   /**
-   * Returns the file size of the file located at `path`.
+   * Returns the file size in bytes of the file located at `path`.
    *
    * @param {String} path
    *

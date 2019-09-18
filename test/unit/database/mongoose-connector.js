@@ -12,7 +12,7 @@ class MongooseConnectorTest extends BaseTest {
         host: 'localhost',
         port: 27017,
         database: 'supercharge-testing',
-        options: { useNewUrlParser: true }
+        options: { useNewUrlParser: true, useUnifiedTopology: true }
       }
     })
   }
@@ -49,9 +49,7 @@ class MongooseConnectorTest extends BaseTest {
       host: 'wrong',
       port: 27017,
       database: 'not-existent',
-      options: {
-        useNewUrlParser: true
-      }
+      options: { useNewUrlParser: true, useUnifiedTopology: true }
     })
 
     await connector.disconnect()
@@ -64,7 +62,8 @@ class MongooseConnectorTest extends BaseTest {
 
   async serialConnectsWithMongoDbUrl (t) {
     const connector = new MongooseConnector({
-      url: 'mongodb://localhost:27017/supercharge-testing'
+      url: 'mongodb://localhost:27017/supercharge-testing',
+      options: { useNewUrlParser: true, useUnifiedTopology: true }
     })
 
     await connector.connect()

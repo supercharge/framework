@@ -6,13 +6,17 @@ const Fs = require('../filesystem')
 const Config = require('../config')
 const Helper = require('../helper')
 const Logger = require('../logging')
-const HttpKernel = require('../http/kernel')
 const ConsoleKernel = require('../console/kernel')
 const Collect = require('@supercharge/collections')
-const EnvBootstrapper = require('../env/bootstrapper.js')
-const EventBootstrapper = require('../event/bootstrapper.js')
-const ConfigBootstrapper = require('../config/bootstrapper.js')
-const LoggingBootstrapper = require('../logging/bootstrapper.js')
+const EnvBootstrapper = require('../env/bootstrapper')
+const AuthBootstrapper = require('../auth/bootstrapper')
+const HttpBootstrapper = require('../http/bootstrapper')
+const ViewBootstrapper = require('../view/bootstrapper')
+const EventBootstrapper = require('../event/bootstrapper')
+const ConfigBootstrapper = require('../config/bootstrapper')
+const LoggingBootstrapper = require('../logging/bootstrapper')
+const DatabaseBootstrapper = require('../database/bootstrapper')
+const RoutingBootstrapper = require('../http/routing-bootstrapper')
 
 class Application {
   constructor () {
@@ -59,10 +63,10 @@ class Application {
     await this.ensureAppRoot()
     await this.ensureAppKey()
 
-    await this.initializeHttpServer()
-    await this.initializeConsole()
-
     await this.registerAppBootstrappers()
+    await this.registerUserlandBootstrappers()
+
+    await this.initializeConsole()
   }
 
   async ensureAppRoot () {
@@ -77,16 +81,6 @@ class Application {
         'No application key available. Make sure to define the APP_KEY value in your .env file (or generate one with "node craft key:generate")'
       )
     }
-  }
-
-  /**
-   * Initialize the HTTP server instance and
-   * register core plugins, middleware, app
-   * plugins and configure views.
-   */
-  async initializeHttpServer () {
-    this.httpKernel = new HttpKernel(this)
-    await this.httpKernel.bootstrap()
   }
 
   /**
@@ -137,9 +131,24 @@ class Application {
   }
 
   /**
-   * Load and run the user-land bootstrappers.
+   * Load and run the app bootstrappers bringing features
+   * like the HTTP server, authentication, views,
+   * and more to the application.
    */
   async registerAppBootstrappers () {
+    await this.register(HttpBootstrapper)
+    await this.register(AuthBootstrapper)
+    await this.register(ViewBootstrapper)
+    await this.register(DatabaseBootstrapper)
+    await this.register(RoutingBootstrapper)
+
+    // session bootstrapper can be extended and is therefore loaded from userland
+  }
+
+  /**
+   * Load and run the user-land bootstrappers.
+   */
+  async registerUserlandBootstrappers () {
     await Collect(
       await this.loadUserlandBootstrappers()
     ).forEachSeries(async bootstrapper => {

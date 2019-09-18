@@ -1,7 +1,7 @@
 'use strict'
 
-const BaseCommand = require('../command')
 const Encryption = require('../../encryption')
+const BaseCommand = require('../base-command')
 
 /**
  * Craft command to generate an application key.

@@ -1,28 +1,31 @@
 'use strict'
 
 const Path = require('path')
-const Helper = require('../../../../../helper')
-const Logger = require('../../../../../logging')
-const BaseTest = require('../../../../../base-test')
-const HttpKernel = require('../../../../../http/kernel')
-const Application = require('../../../../../foundation/application')
+const Helper = require('../../../../helper')
+const Logger = require('../../../../logging')
+const BaseTest = require('../../../../base-test')
+const Application = require('../../../../foundation/application')
+const HttpBootstrapper = require('../../../../http/bootstrapper')
+const RoutingBootstrapper = require('../../../../http/routing-bootstrapper')
 
 class LoadRoutesTest extends BaseTest {
   async serialLoadRoutes (t) {
     Helper.setAppRoot(Path.resolve(__dirname, 'fixtures'))
 
-    const kernel = new HttpKernel(new Application())
-    await kernel._createServer()
+    const app = new Application()
+    await app.register(HttpBootstrapper)
+
+    const kernel = new RoutingBootstrapper(app)
 
     kernel._routesFolder = 'routes'
-    await kernel._loadAndRegisterRoutes()
+    await kernel.loadAndRegisterRoutes()
 
     const request = {
       method: 'GET',
       url: '/test-route'
     }
 
-    const response = await kernel.getServer().inject(request)
+    const response = await app.server.inject(request)
     t.is(response.statusCode, 200)
   }
 
@@ -33,11 +36,10 @@ class LoadRoutesTest extends BaseTest {
     const stub = this.stub(app, 'isRunningTests').returns(false)
     const logStub = this.stub(Logger, 'debug').returns()
 
-    const kernel = new HttpKernel(app)
-    await kernel._createServer()
+    const kernel = new RoutingBootstrapper(app)
 
     kernel._routesFolder = 'routes'
-    await kernel._loadAndRegisterRoutes()
+    await kernel.loadAndRegisterRoutes()
 
     this.sinon().assert.called(Logger.debug)
     stub.restore()
@@ -52,11 +54,10 @@ class LoadRoutesTest extends BaseTest {
     const app = new Application()
     const spy = this.spy(app, 'isRunningTests')
 
-    const kernel = new HttpKernel(app)
-    await kernel._createServer()
+    const kernel = new RoutingBootstrapper(app)
 
     kernel._routesFolder = 'routes'
-    await kernel._loadAndRegisterRoutes()
+    await kernel.loadAndRegisterRoutes()
 
     t.true(spy.called)
   }

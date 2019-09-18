@@ -4,6 +4,7 @@ const _ = require('lodash')
 const Cookie = require('cookie')
 const HttpKernel = require('../http/kernel')
 const Application = require('../foundation/application')
+const HttpBootstrapper = require('../http/bootstrapper')
 
 /**
  * A helper class to create HTTP requests in
@@ -30,14 +31,14 @@ class PendingRequest {
    * @returns {Object}
    */
   async createServer () {
-    const server = new HttpKernel(new Application())
-    await server.bootstrap()
+    const app = new Application()
+    await app.register(HttpBootstrapper)
 
     this.routes.forEach(route => {
-      server.server.route(route)
+      app.server.route(route)
     })
 
-    return server.server
+    return app.server
   }
 
   /**
