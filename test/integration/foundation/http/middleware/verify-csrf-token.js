@@ -4,6 +4,7 @@ const Env = require('../../../../../env')
 const Config = require('../../../../../config')
 const BaseTest = require('../../../../../base-test')
 const Application = require('../../../../../foundation/application')
+const HttpBootstrapper = require('../../../../../http/bootstrapper')
 const SessionBootstrapper = require('../../../../../session/bootstrapper')
 const VerifyCsrf = require('../../../../../http/middleware/verify-csrf-token')
 
@@ -19,7 +20,7 @@ class CsrfMiddlewareTest extends BaseTest {
 
   async beforeEach () {
     const app = new Application()
-    await app.initializeHttpServer()
+    await await app.register(HttpBootstrapper)
     await app.register(SessionBootstrapper)
 
     this.server = app.server

@@ -1,22 +1,32 @@
 'use strict'
 
 const Path = require('path')
-const Fs = require('../../filesystem')
-const Helper = require('../../helper')
-const Logger = require('../../logging')
-const ReadRecursive = require('recursive-readdir')
+const Fs = require('../filesystem')
+const Helper = require('../helper')
+const Logger = require('../logging')
 const Collect = require('@supercharge/collections')
-const RegistersMiddleware = require('./04-registers-middleware')
 
-class RegistersRoutes extends RegistersMiddleware {
-  constructor () {
-    super()
+class RoutingBoostrapper {
+  constructor (app) {
+    this.app = app
 
     this._routeFiles = null
     this._routesFolder = 'app/routes'
   }
 
-  async _loadAndRegisterRoutes () {
+  /**
+   * Bootstrap authentication by loading the schemes,
+   * strategies and applying the default app's
+   * authentication strategy.
+   */
+  async boot () {
+    await this.loadAndRegisterRoutes()
+  }
+
+  /**
+   * Load the authentication schemes.
+   */
+  async loadAndRegisterRoutes () {
     if (await this.hasRoutes()) {
       return this.loadRoutes()
     }
@@ -38,6 +48,10 @@ class RegistersRoutes extends RegistersMiddleware {
     return Fs.exists(this.routesFolder())
   }
 
+  routesFolder () {
+    return Path.resolve(Helper.appRoot(), this._routesFolder)
+  }
+
   async hasRouteFiles () {
     return Collect(
       await this.routeFiles()
@@ -48,22 +62,22 @@ class RegistersRoutes extends RegistersMiddleware {
     await Collect(
       await this.routeFiles()
     ).forEach(routeFile => {
-      this.server.route(this.resolveRoute(routeFile))
+      this.app.server.route(this.resolveRoute(routeFile))
     })
-  }
-
-  routesFolder () {
-    return Path.resolve(Helper.appRoot(), this._routesFolder)
   }
 
   async routeFiles () {
     if (!this._routeFiles) {
-      this._routeFiles = await ReadRecursive(this.routesFolder(), [
-        file => this.shouldIgnore(file)
-      ])
+      this._routeFiles = await Fs.allFiles(this.routesFolder(), {
+        ignore: file => this.shouldIgnore(file)
+      })
     }
 
     return this._routeFiles
+  }
+
+  shouldIgnore (file) {
+    return Path.basename(file).startsWith('_')
   }
 
   resolveRoute (file) {
@@ -71,4 +85,4 @@ class RegistersRoutes extends RegistersMiddleware {
   }
 }
 
-module.exports = RegistersRoutes
+module.exports = RoutingBoostrapper

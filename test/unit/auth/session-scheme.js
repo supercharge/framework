@@ -4,6 +4,7 @@ const Path = require('path')
 const Boom = require('@hapi/boom')
 const Helper = require('../../../helper')
 const BaseTest = require('../../../base-test')
+const HttpBootstrapper = require('../../../http/bootstrapper')
 const AuthBootstrapper = require('../../../auth/bootstrapper')
 const Application = require('../../../foundation/application')
 
@@ -12,7 +13,7 @@ class SessionAuthTest extends BaseTest {
     Helper.setAppRoot(Path.resolve(__dirname, 'load-only-the-default-scheme'))
 
     const app = new Application()
-    await app.initializeHttpServer()
+    await app.register(HttpBootstrapper)
     await app.register(AuthBootstrapper)
 
     this.server = app.server

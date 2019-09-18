@@ -9,15 +9,20 @@ const Logger = require('../logging')
 const HttpKernel = require('../http/kernel')
 const ConsoleKernel = require('../console/kernel')
 const Collect = require('@supercharge/collections')
-const EnvBootstrapper = require('../env/bootstrapper.js')
-const EventBootstrapper = require('../event/bootstrapper.js')
-const ConfigBootstrapper = require('../config/bootstrapper.js')
-const LoggingBootstrapper = require('../logging/bootstrapper.js')
+const EnvBootstrapper = require('../env/bootstrapper')
+const AuthBootstrapper = require('../auth/bootstrapper')
+const HttpBootstrapper = require('../http/bootstrapper')
+const ViewBootstrapper = require('../view/bootstrapper')
+const EventBootstrapper = require('../event/bootstrapper')
+const ConfigBootstrapper = require('../config/bootstrapper')
+const LoggingBootstrapper = require('../logging/bootstrapper')
+const DatabaseBootstrapper = require('../database/bootstrapper')
+const RoutingBootstrapper = require('../http/routing-bootstrapper')
 
 class Application {
   constructor () {
-    this.httpKernel = null
-    this.consoleKernel = null
+    this.httpKernel = new HttpKernel(this)
+    this.consoleKernel = new ConsoleKernel(this)
     this.bootstrapperFile = 'bootstrap/app.js'
   }
 
@@ -55,11 +60,10 @@ class Application {
    * userland bootstrappers to compose the application.
    */
   async initialize () {
-    await this.registerCoreBootstrappers()
     await this.ensureAppRoot()
+    await this.registerCoreBootstrappers()
     await this.ensureAppKey()
 
-    await this.initializeHttpServer()
     await this.initializeConsole()
 
     await this.registerAppBootstrappers()
@@ -80,21 +84,10 @@ class Application {
   }
 
   /**
-   * Initialize the HTTP server instance and
-   * register core plugins, middleware, app
-   * plugins and configure views.
-   */
-  async initializeHttpServer () {
-    this.httpKernel = new HttpKernel(this)
-    await this.httpKernel.bootstrap()
-  }
-
-  /**
    * Initialize the console kernel instance,
    * load and register all core commands.
    */
   async initializeConsole () {
-    this.consoleKernel = new ConsoleKernel(this)
     await this.consoleKernel.bootstrap()
   }
 
@@ -134,6 +127,12 @@ class Application {
     await this.register(ConfigBootstrapper)
     await this.register(EventBootstrapper)
     await this.register(LoggingBootstrapper)
+    await this.register(HttpBootstrapper)
+    await this.register(AuthBootstrapper)
+    await this.register(ViewBootstrapper)
+    // await this.register(SessionBootstrapper) // loaded from userland
+    await this.register(DatabaseBootstrapper)
+    await this.register(RoutingBootstrapper)
   }
 
   /**

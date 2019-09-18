@@ -6,13 +6,14 @@ const Helper = require('../../../helper')
 const BaseTest = require('../../../base-test')
 const Application = require('../../../foundation/application')
 const AuthBootstrapper = require('../../../auth/bootstrapper')
+const HttpBootstrapper = require('../../../http/bootstrapper')
 
 class AuthBootstrapperTest extends BaseTest {
   async serialLoadSchemesAndStrategies (t) {
     Helper.setAppRoot(Path.resolve(__dirname, 'fixtures'))
 
     const app = new Application()
-    await app.initializeHttpServer()
+    await app.register(HttpBootstrapper)
     await app.register(AuthBootstrapper)
 
     const server = app.server
@@ -48,7 +49,7 @@ class AuthBootstrapperTest extends BaseTest {
     Helper.setAppRoot(Path.resolve(__dirname, 'not-existent-folder'))
 
     const app = new Application()
-    await app.initializeHttpServer()
+    await app.register(HttpBootstrapper)
     await app.register(AuthBootstrapper)
 
     const server = app.server
@@ -62,7 +63,7 @@ class AuthBootstrapperTest extends BaseTest {
     Helper.setAppRoot(Path.resolve(__dirname, 'fixtures'))
 
     const app = new Application()
-    await app.initializeHttpServer()
+
     await app.register(AuthBootstrapper)
 
     const server = app.server
