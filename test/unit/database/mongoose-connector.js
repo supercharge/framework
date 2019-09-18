@@ -62,7 +62,8 @@ class MongooseConnectorTest extends BaseTest {
 
   async serialConnectsWithMongoDbUrl (t) {
     const connector = new MongooseConnector({
-      url: 'mongodb://localhost:27017/supercharge-testing'
+      url: 'mongodb://localhost:27017/supercharge-testing',
+      options: { useNewUrlParser: true, useUnifiedTopology: true }
     })
 
     await connector.connect()
