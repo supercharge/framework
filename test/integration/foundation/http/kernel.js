@@ -39,7 +39,11 @@ class HttpKernelTest extends BaseTest {
       path: '/kernel-test-failAction',
       options: {
         handler: () => { return 'not called' },
-        validate: { query: { name: Joi.required() } },
+        validate: {
+          query: Joi.object({
+            name: Joi.required()
+          })
+        },
         ext: {
           onPreResponse: {
             method: async (request, h) => {
