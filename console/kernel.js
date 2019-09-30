@@ -31,6 +31,8 @@ class ConsoleKernel {
 
   /**
    * Load all core commands files.
+   *
+   * @returns {Array}
    */
   async loadCommandFiles () {
     return Fs.allFiles(Path.resolve(__dirname, 'commands'), {
@@ -50,7 +52,7 @@ class ConsoleKernel {
   /**
    * Start the console kernel.
    */
-  invoke () {
+  start () {
     this._kernel.wireUpWithCommander()
     this._kernel.invoke()
   }

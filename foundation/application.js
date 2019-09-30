@@ -58,15 +58,13 @@ class Application {
    * Prepare the HTTP and console kernels, load the core and
    * userland bootstrappers to compose the application.
    */
-  async initialize () {
+  async initializeHttp () {
     await this.registerCoreBootstrappers()
     await this.ensureAppRoot()
     await this.ensureAppKey()
 
     await this.registerAppBootstrappers()
     await this.registerUserlandBootstrappers()
-
-    await this.initializeConsole()
   }
 
   async ensureAppRoot () {
@@ -88,6 +86,12 @@ class Application {
    * load and register all core commands.
    */
   async initializeConsole () {
+    await this.registerCoreBootstrappers()
+    await this.ensureAppRoot()
+
+    await this.registerAppBootstrappers()
+    await this.registerUserlandBootstrappers()
+
     this.consoleKernel = new ConsoleKernel(this)
     await this.consoleKernel.bootstrap()
   }
@@ -97,7 +101,7 @@ class Application {
    * and start the HTTP server.
    */
   async httpWithFullSpeed () {
-    await this.initialize()
+    await this.initializeHttp()
     await this.startServer()
   }
 
@@ -112,8 +116,8 @@ class Application {
    * Start the console application.
    */
   async consoleForLife () {
-    await this.initialize()
-    await this.consoleKernel.invoke()
+    await this.initializeConsole()
+    await this.consoleKernel.start()
   }
 
   isRunningTests () {
