@@ -10,7 +10,7 @@ class CsrfHelperTest extends BaseTest {
 
     t.true(input.includes('<input type="hidden"'))
     t.true(input.includes('value="test-csrf"'))
-    t.true(input.includes(`name="_csrfToken"`))
+    t.true(input.includes('name="_csrfToken"'))
   }
 
   async emptyStringForMissingCsrfToken (t) {

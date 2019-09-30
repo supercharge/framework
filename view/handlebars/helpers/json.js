@@ -7,9 +7,11 @@ const Handlebars = require('handlebars')
  *
  * @returns {String} JSON
  */
-function json (content) {
+function json (content, options) {
   return new Handlebars.SafeString(
-    JSON.stringify(content, undefined, 2)
+    options.hash.pretty
+      ? JSON.stringify(content, undefined, 2)
+      : JSON.stringify(content)
   )
 }
 
