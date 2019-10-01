@@ -8,9 +8,8 @@ const Event = require('@supercharge/framework/event')
  */
 class UserRegistered extends Event {
   /**
-   * Create a new instance that keeps the
-   * event related data. This data is
-   * passed to the event listeners.
+   * Create a new instance that keeps the event related data.
+   * This data is passed to all the event listeners.
    *
    * @param {Object} user
    */
@@ -20,9 +19,8 @@ class UserRegistered extends Event {
   }
 
   /**
-   * Returns the emitted event identifier. Every
-   * listener for this event must return the
-   * same value in there `on()` method.
+   * Returns the event identifier. Every listener for this event
+   * must return the same value in their `on()` method.
    */
   emit () {
     return 'user.registered'
