@@ -15,7 +15,7 @@ class MakeRouteCommandTest extends BaseTest {
     t.true(MakeRouteCommand.description.includes('new route'))
   }
 
-  async serialMakeRoute (t) {
+  async serialMakeRouteWithoutJsExtension (t) {
     const command = new MakeRouteCommand()
 
     const testfile = Path.resolve(__dirname, 'fixtures/routes/testroute.js')
@@ -30,6 +30,29 @@ class MakeRouteCommandTest extends BaseTest {
     t.true(stdout.includes('routes/testroute.js'))
     t.false(stdout.includes('.env'))
 
+    const content = await Fs.readFile(testfile)
+    t.true(content.includes('path: \'/testroute\''))
+
+    helperStub.restore()
+    ensureInProjectRootStub.restore()
+
+    await Fs.remove(testfile)
+  }
+
+  async serialMakeRouteWithJsExtension (t) {
+    const command = new MakeRouteCommand()
+
+    const testfile = Path.resolve(__dirname, 'fixtures/routes/testroute.js')
+
+    const ensureInProjectRootStub = this.stub(command, 'ensureInProjectRoot').returns()
+    const helperStub = this.stub(Helper, 'routesPath').returns(testfile)
+
+    this.muteConsole()
+    await command.handle({ filename: 'testroute.js' })
+    const { stdout } = this.consoleOutput()
+
+    t.true(stdout.includes('routes/testroute.js'))
+    t.false(stdout.includes('.env'))
     const content = await Fs.readFile(testfile)
     t.true(content.includes('path: \'/testroute\''))
 
