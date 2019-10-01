@@ -10,7 +10,7 @@ class RegistersCorePluginsTest extends BaseTest {
 
     const bootstrapper = new HttpBootstrapper(app)
     await bootstrapper.registerCorePlugins()
-    t.falsy(app.server.registrations['laabr'])
+    t.falsy(app.server.registrations.laabr)
   }
 
   async corePluginsWithLaabr (t) {
@@ -22,7 +22,7 @@ class RegistersCorePluginsTest extends BaseTest {
 
     stub.restore()
 
-    t.truthy(app.server.registrations['laabr'])
+    t.truthy(app.server.registrations.laabr)
   }
 }
 

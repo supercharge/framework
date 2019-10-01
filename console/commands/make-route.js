@@ -2,6 +2,7 @@
 
 const Path = require('path')
 const Helper = require('../../helper')
+const Fs = require('../../filesystem')
 const Handlebars = require('handlebars')
 const BaseCommand = require('../base-command')
 
@@ -34,7 +35,7 @@ class MakeRoute extends BaseCommand {
    */
   async handle ({ filename }) {
     await this.run(async () => {
-      const file = `${filename}.js`
+      const file = filename.endsWith('.js') ? filename : `${filename}.js`
 
       if (await this.pathExists(Helper.routesPath(file))) {
         if (!await this.confirm(`The route [${file}] exists already. Replace it?`)) {
@@ -44,7 +45,7 @@ class MakeRoute extends BaseCommand {
 
       const stubContent = await this.getFileContent(this.stub)
       const template = Handlebars.compile(stubContent)
-      const content = template({ path: filename.toLowerCase() })
+      const content = template({ routePath: await Fs.filename(file) })
 
       await this.writeFile(Helper.routesPath(file), content)
 

@@ -100,7 +100,7 @@ class Setup extends BaseCommand {
     const lines = [
       '',
       '    Your project is ready for take off',
-      `    Launch the server with:`,
+      '    Launch the server with:',
       '',
       `    ${this.chalk.dim('$')} ${this.chalk.cyan(`cd ${appName}`)}`,
       `    ${this.chalk.dim('$')} ${this.chalk.cyan('node server')}`,

@@ -11,7 +11,7 @@ class ConsoleKernelTest extends BaseTest {
 
     process.argv = ['node']
     await kernel.bootstrap()
-    await kernel.invoke()
+    await kernel.start()
 
     const { stdout, stderr } = this.consoleOutput()
     t.true(stdout.includes('Available Commands'))

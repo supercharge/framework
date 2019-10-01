@@ -1,4 +1,3 @@
 'use strict'
 
-module.exports = {
-  bootstrappers: require('./test-bootstrapper') }
+module.exports = { bootstrappers: require('./test-bootstrapper') }

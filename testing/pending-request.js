@@ -2,7 +2,6 @@
 
 const _ = require('lodash')
 const Cookie = require('cookie')
-const HttpKernel = require('../http/kernel')
 const Application = require('../foundation/application')
 const HttpBootstrapper = require('../http/bootstrapper')
 
@@ -33,10 +32,7 @@ class PendingRequest {
   async createServer () {
     const app = new Application()
     await app.register(HttpBootstrapper)
-
-    this.routes.forEach(route => {
-      app.server.route(route)
-    })
+    this.routes.forEach(route => app.server.route(route))
 
     return app.server
   }

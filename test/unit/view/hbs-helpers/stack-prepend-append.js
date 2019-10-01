@@ -7,7 +7,7 @@ class StackHelperTest extends BaseTest {
   async createContentStack (t) {
     const name = Encryption.randomKey()
 
-    const output = await this.render(`{{#append name}}appended{{/append}}{{#prepend name}}prepended{{/prepend}}{{#stack name}}content{{/stack}}`, { name })
+    const output = await this.render('{{#append name}}appended{{/append}}{{#prepend name}}prepended{{/prepend}}{{#stack name}}content{{/stack}}', { name })
 
     t.is(output, 'prepended\ncontent\nappended')
   }
