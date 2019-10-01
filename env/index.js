@@ -102,6 +102,18 @@ class Env {
 
     return env === 'testing'
   }
+
+  /**
+   * Determines whether the `NODE_ENV` environment
+   * variable is set to the given `environment`.
+   *
+   * @returns {Boolean}
+   */
+  is (environment) {
+    const currentEnvironment = this.get('NODE_ENV').toLowerCase()
+
+    return currentEnvironment === environment
+  }
 }
 
 module.exports = new Env()

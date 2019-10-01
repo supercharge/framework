@@ -56,6 +56,22 @@ class EnvTest extends BaseTest {
     process.env.NODE_ENV = 'production'
     t.true(Env.isProduction())
   }
+
+  async is (t) {
+    process.env.NODE_ENV = 'testing'
+    t.false(Env.is('production'))
+    t.true(Env.is('testing'))
+
+    process.env.NODE_ENV = 'production'
+    t.true(Env.is('production'))
+    t.false(Env.is('testing'))
+
+    process.env.NODE_ENV = ''
+    t.false(Env.is('local'))
+
+    process.env.NODE_ENV = undefined
+    t.false(Env.is('local'))
+  }
 }
 
 module.exports = new EnvTest()
