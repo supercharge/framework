@@ -41,7 +41,7 @@ class MakeAuth extends BaseCommand {
    * Returns the command signature.
    */
   static get signature () {
-    return `make:auth`
+    return 'make:auth'
   }
 
   /**
@@ -98,8 +98,8 @@ class MakeAuth extends BaseCommand {
       await this.writeFile(
         welcomeRoute,
         content.replace(
-          `h.view('welcome', null, { layout: 'clean' })`,
-          `h.view('welcome')`
+          'h.view(\'welcome\', null, { layout: \'clean\' })',
+          'h.view(\'welcome\')'
         )
       )
     }

@@ -118,8 +118,8 @@ class DatabaseManagerTest extends BaseTest {
 
   async addConnection (t) {
     Database.addConnection('test', new TestConnector())
-    t.true(!!Database.connections['test'])
-    delete Database.connections['test']
+    t.true(!!Database.connections.test)
+    delete Database.connections.test
   }
 
   async throwsWhenAddingAConnectionTwice (t) {

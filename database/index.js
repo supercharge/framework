@@ -164,7 +164,7 @@ class DatabaseManager {
     }
 
     if (!name) {
-      throw new Error(`Database connector name is required but missing.`)
+      throw new Error('Database connector name is required but missing.')
     }
 
     if (!connection) {
