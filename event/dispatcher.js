@@ -215,6 +215,8 @@ class Dispatcher {
    * related folder on the filesystem.
    *
    * @param {String} folder
+   *
+   * @returns {Array}
    */
   async loadFiles (folder) {
     const location = Path.resolve(Helper.appRoot(), folder)
@@ -226,6 +228,8 @@ class Dispatcher {
 
   /**
    * Ensure that the given instance extends the `Event` class.
+   *
+   * @throws
    */
   ensureEvent (event) {
     if (Object.getPrototypeOf(event.constructor).name !== 'Event') {
@@ -235,6 +239,8 @@ class Dispatcher {
 
   /**
    * Ensure that the given instance extends the `Listener` class.
+   *
+   * @throws
    */
   ensureListener (listener) {
     if (Object.getPrototypeOf(listener.constructor).name !== 'Listener') {
@@ -263,6 +269,8 @@ class Dispatcher {
    * Find all event listeners for the given event.
    *
    * @param {String} eventName
+   *
+   * @returns {Array}
    */
   async getListenersFor (eventName) {
     const listenerFiles = await this.loadListeners()
@@ -282,6 +290,8 @@ class Dispatcher {
    * Find all listeners of type `system`. All event
    * files in the app directory should return
    * the type `user`.
+   *
+   * @returns {Array}
    */
   async getSystemEventListeners () {
     const listenerFiles = await this.loadListeners()
