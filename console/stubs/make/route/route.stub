@@ -2,7 +2,7 @@
 
 module.exports = {
   method: 'GET',
-  path: '/{{path}}',
+  path: '/{{routePath}}',
   options: {
     handler: async (request, h) => {
       /**

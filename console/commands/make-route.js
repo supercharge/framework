@@ -2,6 +2,7 @@
 
 const Path = require('path')
 const Helper = require('../../helper')
+const Fs = require('../../filesystem')
 const Handlebars = require('handlebars')
 const BaseCommand = require('../base-command')
 
@@ -44,8 +45,8 @@ class MakeRoute extends BaseCommand {
 
       const stubContent = await this.getFileContent(this.stub)
       const template = Handlebars.compile(stubContent)
-      const routePath = Path.parse(file).name
-      const content = template({ path: routePath })
+      const content = template({ routePath: await Fs.filename(file) })
+
       await this.writeFile(Helper.routesPath(file), content)
 
       this.completed('created', `routes/${file}`)
