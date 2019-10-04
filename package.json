@@ -56,7 +56,8 @@
     "validator": "~11.1.0",
     "winston": "~3.2.1",
     "youch": "~2.0.10",
-    "youch-terminal": "~1.0.0"
+    "youch-terminal": "~1.0.0",
+    "snyk": "^1.230.5"
   },
   "devDependencies": {
     "cross-env": "~6.0.3",
@@ -93,6 +94,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "cross-env NODE_ENV=testing ava",
-    "test:method": "cross-env NODE_ENV=testing ava --match"
-  }
+    "test:method": "cross-env NODE_ENV=testing ava --match",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
+  },
+  "snyk": true
 }
