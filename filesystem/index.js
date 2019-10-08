@@ -331,7 +331,7 @@ class Filesystem {
    * @param {String} file
    * @param {Object} options
    */
-  async lockFile (file, options = {}) {
+  async lock (file, options = {}) {
     return lock(await this.prepareLockFile(file), options)
   }
 
@@ -340,7 +340,7 @@ class Filesystem {
    *
    * @param {String} file
    */
-  async unlockFile (file) {
+  async unlock (file) {
     return unlock(await this.prepareLockFile(file))
   }
 
