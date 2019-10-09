@@ -3,10 +3,21 @@
 const Env = require('../../env')
 const Boom = require('@hapi/boom')
 const Logger = require('../../logging')
+const { parse, match } = require('matchit')
 
 class VerifyCsrfToken {
   constructor (server) {
     this.server = server
+  }
+
+  /**
+   * Returns an array of URIs that should
+   * be excluded from CSRF verfication.
+   *
+   * @returns {Array}
+   */
+  get exclude () {
+    return []
   }
 
   /**
@@ -17,7 +28,7 @@ class VerifyCsrfToken {
    * @param {Toolkit} h
    */
   async onPostAuth (request, h) {
-    if (this.isReadingOrTesting(request)) {
+    if (this.shouldSkip(request)) {
       return h.continue
     }
 
@@ -51,8 +62,8 @@ class VerifyCsrfToken {
    *
    * @returns {Boolean}
    */
-  isReadingOrTesting (request) {
-    return this.isReading(request) || this.isTesting()
+  shouldSkip (request) {
+    return this.isReading(request) || this.isTesting() || this.isExcluded(request)
   }
 
   /**
@@ -74,6 +85,19 @@ class VerifyCsrfToken {
    */
   isTesting () {
     return Env.isTesting()
+  }
+
+  /**
+   * Determines whether the requested URI should be
+   * excluded from CSRF verification.
+   *
+   * @returns {Boolean}
+   */
+  isExcluded (request) {
+    const excludes = [].concat(this.exclude).map(parse)
+    const matches = match(request.path, excludes)
+
+    return matches.length > 0
   }
 
   /**
