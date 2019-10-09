@@ -91,6 +91,8 @@ class VerifyCsrfToken {
    * Determines whether the requested URI should be
    * excluded from CSRF verification.
    *
+   * @param {Request} request
+   *
    * @returns {Boolean}
    */
   isExcluded (request) {
