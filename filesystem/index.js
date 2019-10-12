@@ -25,6 +25,19 @@ class Filesystem {
   }
 
   /**
+   * Returns the file size in bytes of the file located at `path`.
+   *
+   * @param {String} path
+   *
+   * @returns {Integer}
+   */
+  async size (path) {
+    const { size } = await this.stat(path)
+
+    return size
+  }
+
+  /**
    * Retrieve the time when `file` was last modified.
    *
    * @param {String} file
@@ -318,7 +331,7 @@ class Filesystem {
    * @param {String} file
    * @param {Object} options
    */
-  async lockFile (file, options = {}) {
+  async lock (file, options = {}) {
     return lock(await this.prepareLockFile(file), options)
   }
 
@@ -327,7 +340,7 @@ class Filesystem {
    *
    * @param {String} file
    */
-  async unlockFile (file) {
+  async unlock (file) {
     return unlock(await this.prepareLockFile(file))
   }
 
@@ -444,19 +457,6 @@ class Filesystem {
     const stats = await this.stat(path)
 
     return stats.isDirectory()
-  }
-
-  /**
-   * Returns the file size in bytes of the file located at `path`.
-   *
-   * @param {String} path
-   *
-   * @returns {Integer}
-   */
-  async size (path) {
-    const { size } = await this.stat(path)
-
-    return size
   }
 }
 

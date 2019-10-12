@@ -71,8 +71,7 @@ class Dispatcher {
   }
 
   /**
-   * Removes all listeners, or those
-   * specified by `eventName`.
+   * Removes all listeners, or those specified by `eventName`.
    *
    * @param {String} eventName
    *
@@ -168,13 +167,13 @@ class Dispatcher {
   listen (eventName, handler) {
     if (!eventName) {
       throw new Error(
-        'Event name missing. Pass an event name as the first parameter to "Event.listen(eventName, listener)".'
+        'Event name missing. Pass an event name as the first parameter to "Event.listen(eventName, handler)".'
       )
     }
 
     if (!handler) {
       throw new Error(
-        'Listener missing. Pass an event listener as the second parameter to "Event.listen(eventName, listener)".'
+        'Event handler missing. Pass an event handler as the second parameter to "Event.listen(eventName, handler)".'
       )
     }
 
@@ -188,11 +187,9 @@ class Dispatcher {
    * @param  {...Mixed} data
    */
   fire (event, ...data) {
-    if (typeof event === 'string') {
-      this.emitter.emit(event, ...data)
-    } else {
-      this.emitter.emit(event.emit(), event)
-    }
+    typeof event === 'string'
+      ? this.emitter.emit(event, ...data)
+      : this.emitter.emit(event.emit(), event)
   }
 
   /**
@@ -218,6 +215,8 @@ class Dispatcher {
    * related folder on the filesystem.
    *
    * @param {String} folder
+   *
+   * @returns {Array}
    */
   async loadFiles (folder) {
     const location = Path.resolve(Helper.appRoot(), folder)
@@ -228,8 +227,9 @@ class Dispatcher {
   }
 
   /**
-   * Ensure that the given instance extends the
-   * `Event` class.
+   * Ensure that the given instance extends the `Event` class.
+   *
+   * @throws
    */
   ensureEvent (event) {
     if (Object.getPrototypeOf(event.constructor).name !== 'Event') {
@@ -238,8 +238,9 @@ class Dispatcher {
   }
 
   /**
-   * Ensure that the given instance extends the
-   * `Listener` class.
+   * Ensure that the given instance extends the `Listener` class.
+   *
+   * @throws
    */
   ensureListener (listener) {
     if (Object.getPrototypeOf(listener.constructor).name !== 'Listener') {
@@ -268,6 +269,8 @@ class Dispatcher {
    * Find all event listeners for the given event.
    *
    * @param {String} eventName
+   *
+   * @returns {Array}
    */
   async getListenersFor (eventName) {
     const listenerFiles = await this.loadListeners()
@@ -287,6 +290,8 @@ class Dispatcher {
    * Find all listeners of type `system`. All event
    * files in the app directory should return
    * the type `user`.
+   *
+   * @returns {Array}
    */
   async getSystemEventListeners () {
     const listenerFiles = await this.loadListeners()
@@ -322,8 +327,7 @@ class Dispatcher {
   }
 
   /**
-   * Register the array of event listeners to
-   * the event.
+   * Register the array of event listeners to the event.
    *
    * @param {String} eventNames
    * @param {Array|Object} listeners
@@ -353,8 +357,7 @@ class Dispatcher {
   }
 
   /**
-   * Add an event `listener` to the given
-   * `eventName`.
+   * Add an event `listener` to the given `eventName`.
    *
    * @param {String} eventName
    * @param {Object} listener
@@ -376,8 +379,7 @@ class Dispatcher {
   }
 
   /**
-   * Checks and (if necessary) updates the
-   * max listeners count.
+   * Checks and (if necessary) update the max listeners count.
    *
    * @param {Object} emitter
    * @param {String} eventName

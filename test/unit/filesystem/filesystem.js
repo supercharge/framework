@@ -249,20 +249,20 @@ class FilesystemTest extends BaseTest {
     t.true(exists)
   }
 
-  async lockFile (t) {
+  async lock (t) {
     const file = await this._ensureTempFile()
     t.false(await Filesystem.isLocked(file))
 
-    await Filesystem.lockFile(file)
+    await Filesystem.lock(file)
     t.true(await Filesystem.isLocked(file))
   }
 
-  async unlockFile (t) {
+  async unlock (t) {
     const file = await this._ensureTempFile()
-    await Filesystem.lockFile(file)
+    await Filesystem.lock(file)
     t.true(await Filesystem.isLocked(file))
 
-    await Filesystem.unlockFile(file)
+    await Filesystem.unlock(file)
     t.false(await Filesystem.isLocked(file))
   }
 

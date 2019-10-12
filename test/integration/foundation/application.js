@@ -57,18 +57,6 @@ class ApplicationTest extends BaseTest {
 
     await app.server.stop()
   }
-
-  async serialStartsConsoleApplication (t) {
-    this.muteConsole()
-    process.argv = ['node']
-
-    const app = new Application().fromAppRoot(this.appRoot)
-    await app.consoleForLife()
-
-    const { stdout, stderr } = this.consoleOutput()
-    t.true(stdout.includes('Available Commands'))
-    t.falsy(stderr)
-  }
 }
 
 module.exports = new ApplicationTest()
