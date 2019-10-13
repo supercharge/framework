@@ -97,6 +97,14 @@ class FilesystemTest extends BaseTest {
     t.true(exists)
   }
 
+  async notExists (t) {
+    const file = await this._ensureTempFile()
+    t.false(await Filesystem.notExists(file))
+
+    await Filesystem.removeFile(file)
+    t.true(await Filesystem.notExists(file))
+  }
+
   async ensureFile (t) {
     const file = await this._tempFile()
     await Filesystem.ensureFile(file)
@@ -113,7 +121,7 @@ class FilesystemTest extends BaseTest {
     t.is(content, 'Hello Supercharge')
   }
 
-  async readDir (t) {
+  async files (t) {
     const dirPath = Path.resolve(this.tempDir, 'tempDir')
     Fs.mkdirSync(dirPath)
 
@@ -123,6 +131,29 @@ class FilesystemTest extends BaseTest {
     const dirContent = await Filesystem.files(dirPath)
 
     t.deepEqual(dirContent, ['test.txt'])
+  }
+
+  async allFiles (t) {
+    const dirPath = Path.resolve(this.tempDir, 'allFilesTempDir')
+    const subDirPath = Path.resolve(dirPath, 'subDir')
+    Fs.mkdirSync(dirPath)
+    Fs.mkdirSync(subDirPath)
+
+    const filePath = Path.resolve(dirPath, 'test.txt')
+    Fs.writeFileSync(filePath, 'Hello Supercharge', 'utf8')
+
+    const subFilePath = Path.resolve(subDirPath, 'sub.txt')
+    Fs.writeFileSync(subFilePath, 'Hello Supercharge', 'utf8')
+
+    t.deepEqual(await Filesystem.allFiles(dirPath), [
+      Path.resolve(dirPath, 'test.txt'),
+      Path.resolve(subDirPath, 'sub.txt')
+    ])
+
+    t.deepEqual(await Filesystem.allFiles(dirPath, { ignore: 'helper' }), [
+      Path.resolve(dirPath, 'test.txt'),
+      Path.resolve(subDirPath, 'sub.txt')
+    ])
   }
 
   async writeFile (t) {
@@ -269,6 +300,8 @@ class FilesystemTest extends BaseTest {
   async prepareLockFile (t) {
     const withlock = await Filesystem.prepareLockFile('file.lock')
     t.true(withlock.includes('.lock'))
+
+    t.deepEqual(await Filesystem.prepareLockFile(), '.lock')
 
     const withoutlock = await Filesystem.prepareLockFile('file')
     t.true(withoutlock.includes('.lock'))

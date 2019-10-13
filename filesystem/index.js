@@ -365,7 +365,7 @@ class Filesystem {
    * @returns {String}
    */
   async prepareLockFile (file = '') {
-    return file.endsWith(file, '.lock') ? file : `${file}.lock`
+    return file.endsWith('.lock') ? file : `${file}.lock`
   }
 
   /**
