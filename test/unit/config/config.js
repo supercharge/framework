@@ -24,6 +24,13 @@ class ConfigTest extends BaseTest {
     t.is(value, 'value')
   }
 
+  async getConfig (t) {
+    Config.set('testing', true)
+    const config = Config.getConfig()
+    t.true(typeof config === 'object')
+    t.is(config.testing, true)
+  }
+
   async fallbackValue (t) {
     const value = Config.get('unavailable', 'fallback')
     t.is(value, 'fallback')

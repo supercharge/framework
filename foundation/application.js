@@ -44,6 +44,15 @@ class Application {
   }
 
   /**
+   * Returns the configuration object.
+   *
+   * @returns {Object}
+   */
+  get config () {
+    return Config.getConfig()
+  }
+
+  /**
    * Set the application root directory to the given `path`.
    *
    * @param {String} path
