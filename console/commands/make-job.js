@@ -2,6 +2,7 @@
 
 const _ = require('lodash')
 const Path = require('path')
+const Fs = require('../../filesystem')
 const Helper = require('../../helper')
 const Handlebars = require('handlebars')
 const Command = require('../base-command')
@@ -35,17 +36,15 @@ class MakeJob extends Command {
    */
   async handle ({ filename }) {
     await this.run(async () => {
-      const file = filename.endsWith('.js')
-        ? filename
-        : `${filename}.js`
+      const file = filename.endsWith('.js') ? filename : `${filename}.js`
 
-      if (await this.pathExists(Helper.jobsPath(file))) {
-        if (!await this.confirm(`The job [${file}] exists already. Replace it?`)) {
-          return
-        }
+      if (await Fs.notExists(Helper.jobsPath(file))) {
+        return this.createJob(file)
       }
 
-      await this.createJob(file)
+      if (await this.confirm(`The job [${file}] already exists. Replace it?`)) {
+        return this.createJob(file)
+      }
     })
   }
 
@@ -70,10 +69,11 @@ class MakeJob extends Command {
    * @returns {String}
    */
   async createJobFileContent (file) {
-    const stubContent = await this.getFileContent(this.stub)
-    const template = Handlebars.compile(stubContent)
+    const template = Handlebars.compile(
+      await this.getFileContent(this.stub)
+    )
 
-    return template({ className: this.createClassNameFrom(file) })
+    return template({ className: await this.createClassNameFrom(file) })
   }
 
   /**
@@ -85,9 +85,9 @@ class MakeJob extends Command {
    *
    * @returns {String}
    */
-  createClassNameFrom (filepath) {
+  async createClassNameFrom (filepath) {
     return _.upperFirst(
-      _.camelCase(this.extractFileNameFrom(filepath))
+      _.camelCase(await this.extractFileNameFrom(filepath))
     )
   }
 
@@ -98,10 +98,8 @@ class MakeJob extends Command {
    *
    * @returns {String}
    */
-  extractFileNameFrom (filepath) {
-    const { name } = Path.parse(filepath)
-
-    return name
+  async extractFileNameFrom (filepath) {
+    return Fs.filename(filepath)
   }
 }
 
