@@ -57,9 +57,7 @@ class SqsQueue {
   createConfiguration () {
     return Object.assign({
       version: 'latest',
-      httpOptions: {
-        connectTimeout: 60
-      },
+      httpOptions: { connectTimeout: 60 },
       credentials: this.createCredentials()
     }, this.config)
   }
