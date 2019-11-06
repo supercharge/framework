@@ -55,14 +55,14 @@ class SqsJob extends Job {
    * @returns {JSON}
    */
   getRawBody () {
-    return this.job['Body']
+    return this.job.Body
   }
 
   /**
    * Returns the SQS attributes from the job.
    */
   getAttributes () {
-    return this.job['Attributes']
+    return this.job.Attributes
   }
 
   /**
