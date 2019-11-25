@@ -57,9 +57,7 @@ class SqsQueue {
   createConfiguration () {
     return Object.assign({
       version: 'latest',
-      httpOptions: {
-        connectTimeout: 60
-      },
+      httpOptions: { connectTimeout: 60 },
       credentials: this.createCredentials()
     }, this.config)
   }
@@ -83,8 +81,7 @@ class SqsQueue {
   async disconnect () { }
 
   /**
-   * Push a new job with `data` to process
-   * onto the given `queue`.
+   * Push a new job with `data` to process onto the given `queue`.
    *
    * @param {String} jobName
    * @param {*} data
@@ -132,14 +129,11 @@ class SqsQueue {
       AttributeNames: ['ApproximateNumberOfMessages']
     }).promise()
 
-    const { ApproximateNumberOfMessages } = response.Attributes
-
-    return parseInt(ApproximateNumberOfMessages)
+    return parseInt(response.Attributes.ApproximateNumberOfMessages)
   }
 
   /**
-   * Create the queue job’s JSON payload
-   * based on the job name and data.
+   * Create the queue job’s JSON payload based on the job name and data.
    *
    * @param {Class} job
    * @param {*} data
@@ -152,8 +146,7 @@ class SqsQueue {
   }
 
   /**
-   * Compose the queue URL for the given
-   * `queue` or use the default queue.
+   * Compose the queue URL for the given `queue` or use the default queue.
    *
    * @param {String} queueName
    *

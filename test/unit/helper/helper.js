@@ -37,6 +37,10 @@ class HelperTest extends BaseTest {
     t.deepEqual(t.context.helper.modelsPath(), Path.resolve(__dirname, 'app/models'))
   }
 
+  jobsPath (t) {
+    t.deepEqual(t.context.helper.jobsPath(), Path.resolve(__dirname, 'app/jobs'))
+  }
+
   routesPath (t) {
     t.deepEqual(t.context.helper.routesPath(), Path.resolve(__dirname, 'app/routes'))
   }

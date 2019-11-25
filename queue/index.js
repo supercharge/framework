@@ -185,7 +185,7 @@ class QueueManager {
   async stop () {
     await Collect(
       Array.from(this.connections.values())
-    ).forEach(async (connector) => {
+    ).forEach(async connector => {
       await connector.disconnect()
     })
   }

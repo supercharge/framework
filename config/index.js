@@ -11,17 +11,23 @@ const RequireAll = require('require-all')
  */
 class Config {
   /**
-   * Initialize the application configuration
-   * by setting the configuration path and
-   * reading all config files.
+   * Initialize the configuration instance.
    */
   constructor (items = {}) {
     this.config = items
   }
 
   /**
-   * Import all application configuration items
-   * from the given `path`.
+   * Returns the current configuration.
+   *
+   * @returns {Object}
+   */
+  getConfig () {
+    return this.config
+  }
+
+  /**
+   * Import all application configuration items from the given `path`.
    */
   async loadConfigFiles (path) {
     if (await Fs.exists(path)) {

@@ -160,9 +160,9 @@ class Job {
    * Fire the job.
    */
   async fire () {
-    this._instance = this.resolveInstance()
+    this.instance = this.resolveInstance()
 
-    return this._instance.handle()
+    return this.instance.handle()
   }
 
   /**
