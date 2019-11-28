@@ -33,6 +33,16 @@ class SyncQueueTest extends BaseTest {
     this.succeeded = false
   }
 
+  async connect (t) {
+    const queue = new SyncQueue()
+    t.is(queue, queue.connect())
+  }
+
+  async disconnect (t) {
+    const queue = new SyncQueue()
+    t.is(await queue.disconnect(), undefined)
+  }
+
   async serialHandlesSyncJobImmediately (t) {
     const queue = new SyncQueue()
     await queue.push(TestingSyncJob, this)

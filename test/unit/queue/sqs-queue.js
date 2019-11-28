@@ -77,6 +77,16 @@ class SqsQueueTest extends BaseTest {
     this.sqsClient = new SqsClient()
   }
 
+  async connect (t) {
+    const queue = new SqsQueue(this.mockConfig)
+    t.is(queue, await queue.connect())
+  }
+
+  async disconnect (t) {
+    const queue = new SqsQueue(this.mockConfig)
+    t.is(await queue.disconnect(), undefined)
+  }
+
   async push (t) {
     const queue = new SqsQueue(this.mockConfig)
     queue.client = this.sqsClient
