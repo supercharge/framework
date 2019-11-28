@@ -33,7 +33,9 @@ class SqsQueue {
   }
 
   /**
-   * Create a queue connection.
+   * Create a queue connection. The SQS client
+   * uses HTTP requests to send jobs onto
+   * and retrieve them from the queue.
    *
    * @param {Object} config
    *
