@@ -42,7 +42,6 @@ class SqsJob extends Job {
   /**
    * Returns the job payload parsed to JavaScript.
    *
-   *
    * @returns {Object}
    */
   getParsedBody () {
@@ -108,7 +107,7 @@ class SqsJob extends Job {
       QueueUrl: this.queueUrl,
       VisibilityTimeout: delay,
       ReceiptHandle: this.receiptHandle()
-    })
+    }).promise()
   }
 
   /**
