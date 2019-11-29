@@ -14,6 +14,7 @@ class SyncQueueTest extends BaseTest {
 
     Queue.addJob(TestingSyncJob)
     Queue.addJob(FailingTestingSyncJob)
+    Queue.addJob(FailingTestingSyncJobWithoutFailedMethod)
   }
 
   _setSucceeded () {
@@ -54,9 +55,21 @@ class SyncQueueTest extends BaseTest {
   async serialCallsFailMethodImmediately (t) {
     const queue = new SyncQueue()
     try {
+      this.failed = false
       await queue.push(FailingTestingSyncJob, this)
     } catch (error) {
       t.true(this.failed)
+      t.false(this.succeeded)
+    }
+  }
+
+  async serialNotCallingFailMethod (t) {
+    const queue = new SyncQueue()
+    try {
+      this.failed = false
+      await queue.push(FailingTestingSyncJobWithoutFailedMethod, this)
+    } catch (error) {
+      t.false(this.failed)
       t.false(this.succeeded)
     }
   }
@@ -95,6 +108,20 @@ class FailingTestingSyncJob {
 
   async failed () {
     this.test._setFailed()
+  }
+}
+
+class FailingTestingSyncJobWithoutFailedMethod {
+  constructor (test) {
+    this.test = test
+  }
+
+  async handle () {
+    throw new Error('sync job error')
+  }
+
+  get failed () {
+    return 'failed'
   }
 }
 
