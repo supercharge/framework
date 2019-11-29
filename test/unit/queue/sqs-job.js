@@ -54,7 +54,6 @@ class SqsJobTest extends BaseTest {
       Body: this.mockPayload,
       ReceiptHandle: this.mockReceiptHandle,
       Attributes: { ApproximateReceiveCount: 1221 }
-
     }
   }
 
