@@ -17,7 +17,12 @@ class FaktoryQueueTest extends BaseTest {
 
     this.mockPayload = { name: 'Marcus' }
 
-    this.mockPushResponse = { jid: '1234', jobtype: 'TestingFaktoryJob' }
+    this.mockJob = { jid: '1234', jobtype: 'TestingFaktoryJob' }
+    this.mockInfo = {
+      queues: {
+        [this.queue]: 101
+      }
+    }
   }
 
   async before () {
@@ -33,21 +38,21 @@ class FaktoryQueueTest extends BaseTest {
     await this.faktoryServer.stop()
   }
 
-  async serialConnect (t) {
+  async serialFaktoryConnect (t) {
     const queue = new FaktoryQueue(this.config)
     t.is(queue, await queue.connect())
 
     t.pass()
   }
 
-  async serialDisconnect (t) {
+  async serialFaktoryDisconnect (t) {
     const queue = new FaktoryQueue(this.config)
     await queue.connect()
 
     t.is(await queue.disconnect(), undefined)
   }
 
-  async serialPush (t) {
+  async serialFaktoryPush (t) {
     const queue = new FaktoryQueue(this.config)
     await queue.connect()
 
@@ -62,55 +67,75 @@ class FaktoryQueueTest extends BaseTest {
         args: [this.mockPayload],
         jobtype: 'TestingFaktoryJob'
       })
-      .returns(this.mockPushResponse.jid)
+      .returns(this.mockJob.jid)
 
     const id = await queue.push(TestingFaktoryJob, this.mockPayload)
 
     mock.restore()
     mock.verify()
 
-    t.is(id, this.mockPushResponse.jid)
+    t.is(id, this.mockJob.jid)
   }
 
-  // async pop (t) {
-  //   const queue = new FaktoryQueue(this.mockConfig)
-  //   queue.client = this.sqsClient
+  async serialFaktoryPop (t) {
+    const queue = new FaktoryQueue(this.config)
+    await queue.connect()
 
-  //   const receiveMessageStub = this.stub(queue.client, 'receiveMessage').returns(this.mockReceiveMessagesResult)
-  //   t.true(await queue.pop() instanceof FaktoryJob)
-  //   t.true(receiveMessageStub.calledOnce)
+    const mock = this.mock(queue.client)
 
-  //   receiveMessageStub.restore()
-  // }
+    mock
+      .expects('fetch')
+      .once()
+      .withArgs(this.queue)
+      .returns(this.mockJob)
 
-  // async serialPopNull (t) {
-  //   const queue = new FaktoryQueue(this.mockConfig)
-  //   queue.client = this.sqsClient
+    const job = await queue.pop()
 
-  //   const receiveMessageStub = this.stub(queue.client, 'receiveMessage').returns(this.mockReceiveEmptyMessagesResult)
-  //   t.is(await queue.pop(), null)
-  //   t.true(receiveMessageStub.calledOnce)
+    mock.restore()
+    mock.verify()
 
-  //   receiveMessageStub.restore()
-  // }
+    t.true(job instanceof FaktoryJob)
+  }
 
-  // async size (t) {
-  //   const queue = new FaktoryQueue(this.mockConfig)
-  //   queue.client = this.sqsClient
-  //   const getQueueAttributesStub = this.stub(queue.client, 'getQueueAttributes').returns(this.mockQueueAttributesResult)
+  async serialFaktoryPopNull (t) {
+    const queue = new FaktoryQueue(this.config)
+    await queue.connect()
 
-  //   t.is(await queue.size(), 1)
+    const mock = this.mock(queue.client)
 
-  //   getQueueAttributesStub.restore()
-  // }
+    mock
+      .expects('fetch')
+      .once()
+      .withArgs(this.queue)
+      .returns(null)
 
-  // async resolvesQueueUrl (t) {
-  //   const queue = new FaktoryQueue(this.mockConfig)
-  //   queue.client = this.sqsClient
+    const job = await queue.pop()
 
-  //   t.is(queue.queueUrlFor(), this.queueUrl)
-  //   t.is(queue.queueUrlFor('test'), `${this.prefix}/test`)
-  // }
+    mock.restore()
+    mock.verify()
+
+    t.not(job instanceof FaktoryJob)
+    t.is(job, null)
+  }
+
+  async serialFaktorySize (t) {
+    const queue = new FaktoryQueue(this.config)
+    await queue.connect()
+
+    const mock = this.mock(queue.client)
+
+    mock
+      .expects('info')
+      .once()
+      .returns(this.mockInfo)
+
+    const size = await queue.size()
+
+    mock.restore()
+    mock.verify()
+
+    t.is(size, 101)
+  }
 }
 
 class TestingFaktoryJob {
