@@ -6,7 +6,7 @@ const SqsClient = require('aws-sdk').SQS
 const BaseTest = require('../../../base-test')
 const SqsJob = require('../../../queue/jobs/sqs-job')
 
-class SqsQueueTest extends BaseTest {
+class SqsJobTest extends BaseTest {
   constructor () {
     super()
 
@@ -127,4 +127,4 @@ class TestingSqsJob {
   }
 }
 
-module.exports = new SqsQueueTest()
+module.exports = new SqsJobTest()
