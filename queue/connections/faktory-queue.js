@@ -11,6 +11,15 @@ class FaktoryQueue {
   }
 
   /**
+   * Returns the default queue name.
+   *
+   * @returns {String}
+   */
+  get defaultQueueName () {
+    return this.config.queue
+  }
+
+  /**
    * Create a queue connection.
    *
    * @param {Object} config
@@ -38,9 +47,9 @@ class FaktoryQueue {
    * @param {*} data
    * @param {String} queue
    *
-   * @returns {*} job ID
+   * @returns {String} the job ID
    */
-  async push (job, data, queue) {
+  async push (job, data, queue = this.defaultQueueName) {
     return this.client.push({
       queue,
       jobtype: job.name,
@@ -56,7 +65,7 @@ class FaktoryQueue {
    *
    * @returns {Job}
    */
-  async pop (queue) {
+  async pop (queue = this.defaultQueueName) {
     const job = await this.client.fetch(queue)
 
     return job
@@ -71,7 +80,7 @@ class FaktoryQueue {
    *
    * @returns {Number}
    */
-  async size (queue) {
+  async size (queue = this.defaultQueueName) {
     const info = await this.client.info()
 
     return Collect(Object.keys(info.queues))
