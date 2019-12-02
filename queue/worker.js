@@ -36,16 +36,16 @@ class Worker {
    */
   async workHardPollHard () {
     if (this.shouldStop()) {
-      return this.sleep(1000)
+      return this.sleepSeconds(1)
     }
 
     const job = await this.getNextJob()
 
     if (job) {
       await this.handle(job)
-      this.sleep(0)
+      this.sleepSeconds(0)
     } else {
-      this.sleep(1000)
+      this.sleepSeconds(1)
     }
   }
 
@@ -54,6 +54,16 @@ class Worker {
    */
   shouldStop () {
     return this._shouldStop
+  }
+
+  /**
+   * Restart polling the queue connection for a new job
+   * after the given amount of seconds `s`.
+   *
+   * @param {Number} seconds
+   */
+  sleepSeconds (seconds) {
+    this.sleep(seconds * 1000)
   }
 
   /**
