@@ -57,6 +57,17 @@ class Application {
    *
    * @param {String} path
    */
+  static fromAppRoot (path) {
+    Helper.setAppRoot(path)
+
+    return new this()
+  }
+
+  /**
+   * Set the application root directory to the given `path`.
+   *
+   * @param {String} path
+   */
   fromAppRoot (path) {
     Helper.setAppRoot(path)
 
@@ -112,6 +123,8 @@ class Application {
   async httpWithFullSpeed () {
     await this.initializeHttp()
     await this.startServer()
+
+    return this
   }
 
   /**
