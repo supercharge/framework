@@ -63,7 +63,7 @@ class VerifyCsrfToken {
    * @returns {Boolean}
    */
   shouldSkip (request) {
-    return this.isReading(request) || this.isTesting() || this.isExcluded(request)
+    return this.isReading(request) || this.isTesting() || this.hasNoSession(request) || this.isExcluded(request)
   }
 
   /**
@@ -85,6 +85,17 @@ class VerifyCsrfToken {
    */
   isTesting () {
     return Env.isTesting()
+  }
+
+  /**
+   * Determines whether the request contains a session.
+   * This can be the case for APIs where a session
+   * won’t be attached to a request.
+   *
+   * @returns {Boolean}
+   */
+  hasNoSession (request) {
+    return !request.session
   }
 
   /**
