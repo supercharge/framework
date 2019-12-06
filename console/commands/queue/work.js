@@ -73,8 +73,7 @@ class QueueWork extends Command {
       connection,
       maxAttempts: attempts || 0,
       queues: this.getQueue(connection, queue)
-    }
-    )
+    })
   }
 
   /**
