@@ -22,6 +22,25 @@ class Worker {
   }
 
   /**
+   * Determine whether to fetch the next job. Returns `true`
+   * if the worker should stop, `false` otherwise.
+   *
+   * @returns {Boolean}
+   */
+  get shouldStop () {
+    return this._shouldStop
+  }
+
+  /**
+   * Set the `shouldStop` value.
+   *
+   * @param {Boolean} shouldStop
+   */
+  set shouldStop (shouldStop) {
+    this._shouldStop = shouldStop
+  }
+
+  /**
    * Poll the queue continuously for jobs
    * and process jobs when available.
    */
@@ -35,7 +54,7 @@ class Worker {
    * was available, it immediately tries to fetch the next job.
    */
   async workHardPollHard () {
-    if (this.shouldStop()) {
+    if (this.shouldStop) {
       return this.sleepSeconds(1)
     }
 
@@ -47,13 +66,6 @@ class Worker {
     } else {
       this.sleepSeconds(1)
     }
-  }
-
-  /**
-   * Determine whether to fetch the next job.
-   */
-  shouldStop () {
-    return this._shouldStop
   }
 
   /**
