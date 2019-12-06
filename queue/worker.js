@@ -2,13 +2,11 @@
 
 const QueueManager = require('.')
 const Logger = require('../logging')
-const Dispatcher = require('../event/dispatcher')
 
 class Worker {
   constructor (workerOptions) {
     this._shouldStop = false
     this.manager = QueueManager
-    this.dispatcher = Dispatcher
     this.workerOptions = workerOptions
   }
 
