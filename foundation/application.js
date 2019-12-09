@@ -129,6 +129,15 @@ class Application {
   }
 
   /**
+   * Initialize and bootstrap the application and HTTP server
+   * without binding to a TCP port. This allows injecting
+   * requests in in serverless environments.
+   */
+  async httpForServerless () {
+    return this.initializeServer()
+  }
+
+  /**
    * Initialize and bootstrap the application and start the HTTP server.
    *
    * @returns {Application}
