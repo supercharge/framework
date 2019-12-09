@@ -48,6 +48,10 @@ class VerifyCsrfToken {
    * @param {Toolkit} h
    */
   onPreResponse (request, h) {
+    if (this.hasNoSession(request)) {
+      return h.continue
+    }
+
     this.addCookieToResponse(request, h)
     this.addTokenToViewContext(request, h)
 
