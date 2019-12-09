@@ -117,11 +117,24 @@ class Application {
   }
 
   /**
-   * Initialize and bootstrap the application
-   * and start the HTTP server.
+   * Initialize and bootstrap the application without starting
+   * the HTTP server. Initializing the HTTP server won't bind
+   * to a TCP port and is useful in serverless environments.
+   */
+  async initializeServer () {
+    await this.initializeHttp()
+    await this.server.initialize()
+
+    return this
+  }
+
+  /**
+   * Initialize and bootstrap the application and start the HTTP server.
+   *
+   * @returns {Application}
    */
   async httpWithFullSpeed () {
-    await this.initializeHttp()
+    await this.initializeServer()
     await this.startServer()
 
     return this
