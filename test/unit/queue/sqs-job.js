@@ -27,7 +27,7 @@ class SqsJobTest extends BaseTest {
     this.mockMessageId = Uuid()
     this.mockReceiptHandle = Uuid()
     this.mockData = { name: 'Supercharge' }
-    this.mockPayload = JSON.stringify({ displayName: 'TestingSqsJob', data: this.mockData })
+    this.mockPayload = JSON.stringify({ jobClassName: 'TestingSqsJob', data: this.mockData })
 
     this.mockChangeMessageVisibility = {
       promise: () => {

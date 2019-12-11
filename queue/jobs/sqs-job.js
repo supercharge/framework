@@ -71,9 +71,9 @@ class SqsJob extends Job {
    * @returns {String}
    */
   jobName () {
-    const { displayName } = this.getParsedBody()
+    const { jobClassName } = this.getParsedBody()
 
-    return displayName
+    return jobClassName
   }
 
   /**

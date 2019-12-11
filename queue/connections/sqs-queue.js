@@ -142,7 +142,7 @@ class SqsQueue {
    */
   createPayload (job, data) {
     return JSON.stringify({
-      displayName: job.name,
+      jobClassName: job.name,
       data
     })
   }
