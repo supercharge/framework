@@ -24,12 +24,10 @@ jobs:
       with:
         mongoDBVersion: ${{ matrix.mongodb-version }}
 
-    - name: npm install
-      run: npm install
+    - run: npm install
       env:
         CI: true
 
-    - name: npm test
-      run: npm test
+    - run: npm test
       env:
         CI: true
