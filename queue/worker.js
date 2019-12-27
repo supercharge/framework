@@ -153,7 +153,7 @@ class Worker {
    * @returns {Error}
    */
   exceedsMaxAttemptsError (job) {
-    return new Error(`${job.jobName()} exceeted the allowed limit of attempts.`)
+    return new Error(`${job.jobName()} exceeded the allowed limit of ${this.options.maxAttempts} attempts.`)
   }
 
   /**
