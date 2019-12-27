@@ -170,7 +170,8 @@ class Worker {
 
   /**
    * Handle job errors. For now, just log the error
-   * and keep going. Eventually, we should have a better handling here.
+   * and keep going. Eventually, we should have
+   * a better handling here.
    *
    * @param {Error} error
    */
