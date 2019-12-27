@@ -41,7 +41,7 @@ class QueueManagerTest extends BaseTest {
     const manager = QueueManager
 
     class QueueConnector {
-      connect () {}
+      connect () { }
     }
 
     const connect = this
@@ -55,6 +55,32 @@ class QueueManagerTest extends BaseTest {
     t.true(connect.calledOnce)
 
     connect.restore()
+  }
+
+  async serialRetrievesTheSameConnection (t) {
+    const manager = QueueManager
+
+    class SameQueueConnector {
+      connect () { }
+    }
+
+    const connect = this
+      .stub(SameQueueConnector.prototype, 'connect')
+      .returns(new SameQueueConnector())
+
+    const name = 'same-testing-connector'
+    manager.addConnector(name, SameQueueConnector)
+
+    const connection = await manager.connection(name)
+
+    t.true(connection instanceof SameQueueConnector)
+    t.is(await manager.connection(name), connection)
+
+    connect.restore()
+  }
+
+  async throwsWhenRetrievingMissingConnector (t) {
+    t.throws(() => QueueManager.getConnector('not-existent'))
   }
 }
 
