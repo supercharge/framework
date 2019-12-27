@@ -22,15 +22,6 @@ class Job {
   }
 
   /**
-   * Set a raw job.
-   *
-   * @param {Object} job
-   */
-  set job (job) {
-    this._job = job
-  }
-
-  /**
    * Returns the job instance.
    *
    * @returns {Object}

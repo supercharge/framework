@@ -125,7 +125,7 @@ class QueueManager {
   }
 
   /**
-   * Returns the queue   connection configuration.
+   * Returns the queue connection configuration.
    *
    * @param {String} name
    *
