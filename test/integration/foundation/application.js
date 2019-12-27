@@ -50,10 +50,18 @@ class ApplicationTest extends BaseTest {
   }
 
   async serialStartsHttpApplication (t) {
-    const app = new Application().fromAppRoot(this.appRoot)
+    const app = Application.fromAppRoot(this.appRoot)
     await app.httpWithFullSpeed()
 
     t.truthy(app.server.info.started)
+
+    await app.server.stop()
+  }
+
+  async serialInitializesAnHttpApplication (t) {
+    const app = await Application.fromAppRoot(this.appRoot).httpForServerless()
+
+    t.is(app.server.info.started, 0)
 
     await app.server.stop()
   }
