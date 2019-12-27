@@ -5,7 +5,6 @@ const Logger = require('../../../logging')
 const Command = require('../../base-command')
 const Worker = require('../../../queue/worker')
 const WorkerOptions = require('../../../queue/worker-options')
-const QueueBootstrapper = require('../../../queue/bootstrapper')
 
 class QueueWork extends Command {
   constructor () {
@@ -35,15 +34,13 @@ class QueueWork extends Command {
   }
 
   /**
-   * Handle the queue:work command.
+   * Handle the “queue:work” command.
    *
    * @param {Object} args
    * @param {Object} options
    */
   async handle (args, options) {
     await this.run(async () => {
-      await new QueueBootstrapper().boot() // TODO
-
       this.listenForShutdownSignals()
 
       this.worker = new Worker(
