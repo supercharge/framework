@@ -42,15 +42,26 @@ class QueueWork extends Command {
   async handle (args, options) {
     await this.run(async () => {
       this.listenForShutdownSignals()
-
-      this.worker = new Worker(
-        this.createWorkerOptionsFrom(args, options)
-      )
+      this.createWorker(args, options)
 
       Logger.info(`Queue worker starting for connection "${this.worker.options.connectionName}" processing queue(s) "${this.worker.options.queues}"`)
 
       await this.worker.longPoll()
     })
+  }
+
+  /**
+   * Create a queue worker for the given arguments and options.
+   *
+   * @param {Object} args
+   * @param {Object} options
+   *
+   * @returns {Worker}
+   */
+  createWorker (args, options) {
+    this.worker = new Worker(
+      this.createWorkerOptionsFrom(args, options)
+    )
   }
 
   /**
