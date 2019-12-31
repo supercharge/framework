@@ -1,10 +1,12 @@
 'use strict'
 
+const Config = require('../../../../../../config')
 const BaseTest = require('../../../../../../base-test')
 const QueueWorkCommand = require('../../../../../../console/commands/queue/work')
 
 class QueueWorkCommandTest extends BaseTest {
   before () {
+    Config.set('database.default', 'mongoose')
     this.processExitStub = this.stub(process, 'exit')
   }
 
@@ -33,7 +35,6 @@ class QueueWorkCommandTest extends BaseTest {
   }
 
   async serialStartStopWorker (t) {
-    // process.argv = ['node']
     await this.command.handle({ }, { })
     t.truthy(this.command.worker)
     t.false(this.command.worker.shouldStop)
@@ -54,7 +55,7 @@ class QueueWorkCommandTest extends BaseTest {
   }
 
   async createsWorkerOptions (t) {
-    await this.command.handle({ connection: 'test-con' }, { queue: 'test-q', attempts: 100 })
+    await this.command.createWorker({ connection: 'test-con' }, { queue: 'test-q', attempts: 100 })
 
     const options = this.command.worker.options
     t.deepEqual(options.queues, ['test-q'])
