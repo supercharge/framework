@@ -81,7 +81,10 @@ class DatabaseQueue {
    * @returns {DatabaseQueueClient}
    */
   client () {
-    return ClientFactory.make(this.defaultDatabaseDriver())
+    return ClientFactory.make({
+      driver: this.defaultDatabaseDriver(),
+      config: this.config
+    })
   }
 
   /**
