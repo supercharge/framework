@@ -5,12 +5,15 @@ const { Mongoose } = Database
 const MongooseJob = require('../jobs/mongoose-job')
 
 class DatabaseQueueMongooseClient {
-  static async insert (job) {
-    return this.create(job)
-  }
-
+  /**
+   * Push a new job into the MongoDB queue.
+   *
+   * @param {options} options
+   *
+   * @returns {String} job ID
+   */
   static async push ({ job, payload, queue, attempts = 0 }) {
-    const doc = await this.insert({
+    const doc = await this.create({
       queue,
       payload,
       attempts,
@@ -20,6 +23,13 @@ class DatabaseQueueMongooseClient {
     return doc.id
   }
 
+  /**
+   * Fetches the next job from the given `queue`.
+   *
+   * @param {String} queue
+   *
+   * @returns {Job}
+   */
   static async pop (queue) {
     const query = { startTime: null, queue }
     const update = { startTime: new Date() }
@@ -35,25 +45,53 @@ class DatabaseQueueMongooseClient {
       : null
   }
 
+  /**
+   * Returns the size of the queue.
+   *
+   * @param  {String} queue
+   *
+   * @returns {Number}
+   */
   static async size (queue) {
     return this.countDocuments({ startTime: null, queue })
   }
 
+  /**
+   * Deletes the job with the given `id` from the queue.
+   *
+   * @param  {String} queue
+   *
+   * @returns {Number}
+   */
   static async delete (id) {
     return this.findByIdAndDelete(id)
   }
 }
 
-const schema = new Mongoose.Schema({
-  startTime: Date,
-  endTime: Date,
-  queue: String,
-  payload: Object,
-  jobClassName: String,
-  attempts: { type: Number, default: 0 },
-  createdOn: { type: Date, default: Date.now }
-})
+/**
+ * The factory function to create a Mongoose model for the given
+ * `config`. The config defines the model’s collection name.
+ *
+ * @param {Object} config
+ *
+ * @returns {Model}
+ */
+const factory = (config) => {
+  const schema = new Mongoose.Schema({
+    startTime: Date,
+    endTime: Date,
+    queue: String,
+    payload: Object,
+    jobClassName: String,
+    attempts: { type: Number, default: 0 },
+    createdOn: { type: Date, default: Date.now }
+  }, {
+    collection: config.table
+  })
 
-schema.loadClass(DatabaseQueueMongooseClient)
+  schema.loadClass(DatabaseQueueMongooseClient)
 
-module.exports = Mongoose.model('Queue-Jobs', schema)
+  return Mongoose.model('Queue-Jobs', schema)
+}
+
+module.exports = factory
