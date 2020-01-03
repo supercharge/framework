@@ -20,16 +20,6 @@ class QueueManager {
   }
 
   /**
-   * Determines whether the default session driver
-   * has a truthy value.
-   *
-   * @returns {Boolean}
-   */
-  _queueConfigured () {
-    return !!this._defaultDriver()
-  }
-
-  /**
    * Returns the name of the default queue driver.
    *
    * @returns {String}
