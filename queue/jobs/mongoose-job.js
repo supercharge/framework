@@ -3,10 +3,9 @@
 const Job = require('./job')
 
 class MongooseJob extends Job {
-  constructor (job, client, queue) {
+  constructor (job, client) {
     super(job)
 
-    this.queue = queue
     this.client = client
   }
 
@@ -26,6 +25,15 @@ class MongooseJob extends Job {
    */
   payload () {
     return this.job.payload
+  }
+
+  /**
+   * Returns the job’s queue.
+   *
+   * @returns {String}
+   */
+  queue () {
+    return this.job.queue
   }
 
   /**
@@ -65,7 +73,7 @@ class MongooseJob extends Job {
 
     await this.client.delete(this.id())
     await this.client.push({
-      queue: this.queue,
+      queue: this.queue(),
       payload: this.payload(),
       job: { name: this.jobName() },
       attempts: this.attempts() + 1
@@ -77,11 +85,7 @@ class MongooseJob extends Job {
    */
   async delete () {
     super.delete()
-    try {
-      await this.client.delete(this.id())
-    } catch (error) {
-      console.log(error)
-    }
+    await this.client.delete(this.id())
   }
 
   /**
