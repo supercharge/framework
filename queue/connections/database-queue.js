@@ -35,7 +35,10 @@ class DatabaseQueue {
    * Close an existing queue connection.
    */
   async disconnect () {
-    await Database.close()
+    /**
+     * We’re not closing the database connection here
+     * because the main application may still need it.
+     */
   }
 
   /**
