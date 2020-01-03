@@ -22,6 +22,28 @@ class ConsoleTransport {
     return this.createTransporter()
   }
 
+  /**
+   * Color levels, ranked ascending
+   * from freakout to chilly
+   *
+   * @returns {Object}
+   */
+  logColors () {
+    return {
+      error: Chalk.bold.red,
+      warn: Chalk.yellow,
+      info: Chalk.green,
+      verbose: Chalk.blue,
+      debug: Chalk.yellow,
+      silly: Chalk.grey
+    }
+  }
+
+  /**
+   * Create a Winston console transporter.
+   *
+   * @returns {Object}
+   */
   createTransporter () {
     return new Winston.transports.Console({
       level: this.config.level,
@@ -60,23 +82,6 @@ class ConsoleTransport {
     const time = new Date(info.timestamp).getTime()
 
     return `${Chalk.gray(time)} ${color(info.level)} ${info.message}`
-  }
-
-  /**
-   * Color levels, ranked ascending
-   * from freakout to chilly
-   *
-   * @returns {Object}
-   */
-  logColors () {
-    return {
-      error: Chalk.bold.red,
-      warn: Chalk.yellow,
-      info: Chalk.green,
-      verbose: Chalk.blue,
-      debug: Chalk.yellow,
-      silly: Chalk.grey
-    }
   }
 }
 

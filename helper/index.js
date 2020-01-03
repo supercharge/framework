@@ -28,6 +28,19 @@ class Helper {
   }
 
   /**
+   * Returns absolute path starting from the application’s
+   * root directory traversing the directory structure
+   * along the given `path` segment.
+   *
+   * @param {String}
+   *
+   * @returns {String}
+   */
+  fromAppRoot (...path) {
+    return Path.resolve(this.appRoot(), ...path)
+  }
+
+  /**
    * Absolute path to the resources/views directory.
    *
    * @param {String}
@@ -69,6 +82,17 @@ class Helper {
    */
   modelsPath (...path) {
     return Path.resolve(this.appRoot(), 'app', 'models', ...path)
+  }
+
+  /**
+   * Absolute path to the queue jobs directory.
+   *
+   * @param {String}
+   *
+   * @returns {String}
+   */
+  jobsPath (...path) {
+    return Path.resolve(this.appRoot(), 'app', 'jobs', ...path)
   }
 
   /**

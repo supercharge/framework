@@ -36,7 +36,7 @@ class ConsoleKernel {
    */
   async loadCommandFiles () {
     return Fs.allFiles(Path.resolve(__dirname, 'commands'), {
-      ignore: ['base-command.js']
+      ignore: ['command.js']
     })
   }
 

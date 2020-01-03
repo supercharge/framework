@@ -10,6 +10,10 @@ class EventDispatcherTest extends BaseTest {
     Dispatcher.removeAllListeners()
   }
 
+  alwaysAfter () {
+    Dispatcher.removeAllListeners()
+  }
+
   async serialLoadsEventsAndListeners (t) {
     Dispatcher.eventsFolder = Path.resolve(__dirname, 'fixtures', 'events')
     Dispatcher.listenersFolder = Path.resolve(__dirname, 'fixtures', 'listeners')

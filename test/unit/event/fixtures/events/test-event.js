@@ -4,7 +4,7 @@ const Event = require('../../../../../event')
 
 class TestEvent extends Event {
   emit () {
-    return 'test.event'
+    return 'testing.event'
   }
 }
 

@@ -24,7 +24,8 @@ class ApplicationTest extends BaseTest {
     this.muteConsole()
     process.argv = ['node']
 
-    await new Application().consoleForLife()
+    const app = await new Application().consoleForLife()
+    t.truthy(app.console)
 
     const { stdout, stderr } = this.consoleOutput()
     t.true(stdout.includes('Available Commands'))

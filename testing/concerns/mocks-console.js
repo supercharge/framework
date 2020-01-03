@@ -19,6 +19,13 @@ class MockConsole {
   }
 
   /**
+   * Retrieve console output again.
+   */
+  unmuteConsole () {
+    return MockIo.end()
+  }
+
+  /**
    * Return the collected terminal output. Returns
    * and object with `stdout` and `stderr`
    * properties.

@@ -158,10 +158,14 @@ class Application {
 
   /**
    * Start the console application.
+   *
+   * @returns {Application}
    */
   async consoleForLife () {
     await this.initializeConsole()
     await this.consoleKernel.start()
+
+    return this
   }
 
   isRunningTests () {
