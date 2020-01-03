@@ -107,7 +107,7 @@ class Worker {
   async handle (job) {
     try {
       if (this.jobExceedsMaxAttempts(job)) {
-        return this.failJob(job, this.exceedsMaxAttemptsError(job))
+        return await this.failJob(job, this.exceedsMaxAttemptsError(job))
       }
 
       if (job.isDeleted()) {
@@ -137,7 +137,7 @@ class Worker {
       return false
     }
 
-    if (job.attempts() && job.attempts() <= this.options.maxAttempts) {
+    if (job.attempts() < this.options.maxAttempts) {
       return false
     }
 
