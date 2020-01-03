@@ -49,15 +49,6 @@ class Job {
   }
 
   /**
-   * Sets a queue manager instance.
-   *
-   * @param {Object} manager
-   */
-  set manager (manager) {
-    this._manager = manager
-  }
-
-  /**
    * Returns the number of attempts for this job.
    *
    * @returns {Number}
