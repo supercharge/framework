@@ -26,12 +26,12 @@ class DatabaseQueueMongooseClient {
   /**
    * Fetches the next job from the given `queue`.
    *
-   * @param {String} queue
+   * @param {Array|String} queue
    *
    * @returns {Job}
    */
   static async pop (queue) {
-    const query = { startTime: null, queue }
+    const query = { startTime: null, queue: { $in: [].concat(queue) } }
     const update = { startTime: new Date() }
     const options = {
       new: true, // tells MongoDB to return the updated document
