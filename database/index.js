@@ -62,11 +62,9 @@ class DatabaseManager {
    * @returns {Object}
    */
   connection (name = this.defaultConnection()) {
-    if (this.hasConnection(name)) {
-      return this.connections[name]
+    if (!this.hasConnection(name)) {
+      this.createNewConnection(name)
     }
-
-    this.createNewConnection(name)
 
     return this.connections[name]
   }
@@ -128,6 +126,8 @@ class DatabaseManager {
    *
    * @param {String} name
    *
+   * @returns {Object}
+   *
    * @throws
    */
   configuration (name = this.defaultConnection()) {
@@ -141,8 +141,9 @@ class DatabaseManager {
   }
 
   /**
-   * Returns the name of the default database
-   * configuration.
+   * Returns the name of the default database configuration.
+   *
+   * @returns {String}
    */
   defaultConnection () {
     return Config.get('database.default')
