@@ -105,7 +105,7 @@ class QueueWork extends Command {
    */
   getQueue (connection, queue) {
     return queue
-      ? queue.split(',')
+      ? queue.split(',').map(queue => queue.trim())
       : Config.get(`queue.connections.${connection}.queue`)
   }
 
