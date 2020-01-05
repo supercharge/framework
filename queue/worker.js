@@ -59,7 +59,7 @@ class Worker {
     const job = await this.getNextJob()
 
     if (job) {
-      await this.handle(job)
+      await this.process(job)
       this.sleepSeconds(0)
     } else {
       this.sleepSeconds(1)
@@ -104,11 +104,9 @@ class Worker {
    *
    * @param {Object} job
    */
-  async handle (job) {
+  async process (job) {
     try {
-      if (this.jobExceedsMaxAttempts(job)) {
-        return await this.failJob(job, this.exceedsMaxAttemptsError(job))
-      }
+      await this.ensureJobNotAlreadyExceedsMaxAttempts(job)
 
       if (job.isDeleted()) {
         return
@@ -116,7 +114,7 @@ class Worker {
 
       await job.fire()
     } catch (error) {
-      await this.handleJobError(error)
+      await this.handleError(job, error)
     } finally {
       if (job.isNotDeleted() && job.isNotReleased() && job.hasNotFailed()) {
         await job.releaseBack()
@@ -130,18 +128,18 @@ class Worker {
    *
    * @param {Object} job
    *
-   * @returns {Boolean}
+   * @throws
    */
-  jobExceedsMaxAttempts (job) {
+  async ensureJobNotAlreadyExceedsMaxAttempts (job) {
     if (this.options.maxAttempts === 0) {
-      return false
+      return
     }
 
     if (job.attempts() < this.options.maxAttempts) {
-      return false
+      return
     }
 
-    return true
+    return this.throwExceedsMaxAttemptsError(job)
   }
 
   /**
@@ -152,8 +150,40 @@ class Worker {
    *
    * @returns {Error}
    */
-  exceedsMaxAttemptsError (job) {
-    return new Error(`${job.jobName()} exceeded the allowed limit of ${this.options.maxAttempts} attempts.`)
+  throwExceedsMaxAttemptsError (job) {
+    throw new Error(`${job.jobName()} exceeded the allowed limit of ${this.options.maxAttempts} attempts.`)
+  }
+
+  /**
+   * Handle job errors. For now, just log the error
+   * and keep going. Eventually, we should have
+   * a better handling here.
+   *
+   * @param {Object} job
+   * @param {Error} error
+   */
+  async handleError (job, error) {
+    Logger.error(error)
+
+    await this.markAsFailedIfJobWillExceedMaxAttempts(job, error)
+  }
+
+  /**
+   * Mark the job as failed if it will exceed the max attempts.
+   * It wouldn’t be processed again next time so we can just
+   * fail it here and delete it from the queue.
+   *
+   * @param {Object} job
+   * @param {Error} error
+   */
+  async markAsFailedIfJobWillExceedMaxAttempts (job, error) {
+    if (this.options.maxAttempts === 0) {
+      return
+    }
+
+    if (job.attempts() + 1 >= this.options.maxAttempts) {
+      await this.failJob(job, error)
+    }
   }
 
   /**
@@ -163,20 +193,7 @@ class Worker {
    * @param {Error} error
    */
   async failJob (job, error) {
-    await this.handleJobError(error)
-
     return job.fail(error)
-  }
-
-  /**
-   * Handle job errors. For now, just log the error
-   * and keep going. Eventually, we should have
-   * a better handling here.
-   *
-   * @param {Error} error
-   */
-  async handleJobError (error) {
-    Logger.error(error)
   }
 
   /**

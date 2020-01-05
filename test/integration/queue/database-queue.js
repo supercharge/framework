@@ -12,6 +12,7 @@ const DatabaseQueue = require('../../../queue/connections/database-queue')
 
 let handled = false
 let failed = false
+let error = null
 
 class MongooseJobTest extends BaseTest {
   constructor () {
@@ -51,6 +52,7 @@ class MongooseJobTest extends BaseTest {
 
     handled = false
     failed = false
+    error = null
   }
 
   async _deleteOldJobs (config) {
@@ -126,7 +128,7 @@ class MongooseJobTest extends BaseTest {
     await queue.push(FailingTestingJob, this.mockPayload, this.queue)
 
     const worker = new Worker(
-      new WorkerOptions({ connection: 'database', queues: [this.queue], maxAttempts: 1 })
+      new WorkerOptions({ connection: 'database', queues: [this.queue], maxAttempts: 2 })
     )
 
     const stub = this.stub(worker, 'sleep').returns()
@@ -134,12 +136,13 @@ class MongooseJobTest extends BaseTest {
     await worker.workHardPollHard()
     t.false(failed)
     t.false(handled)
-    t.is(await queue.size(), 1)
+    t.is(await queue.size(), 1) // job should be released back onto the queue
 
     await worker.workHardPollHard()
     t.true(failed)
     t.false(handled)
-    t.is(await queue.size(), 0)
+    t.is(await queue.size(), 0) // job failed, not released back
+    t.is(error.message, 'failed in database queue test')
 
     await worker.stop()
 
@@ -193,11 +196,12 @@ class TestingMongooseJob {
 
 class FailingTestingJob {
   async handle () {
-    throw new Error('failed')
+    throw new Error('failed in database queue test')
   }
 
-  async failed () {
+  async failed (err) {
     failed = true
+    error = err
   }
 }
 

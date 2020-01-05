@@ -46,7 +46,7 @@ class QueueWorkerTest extends BaseTest {
     mock.expects('fire').once().resolves()
     mock.expects('fail').never().resolves()
 
-    await worker.handle(job)
+    await worker.process(job)
 
     mock.restore()
     mock.verify()
@@ -77,7 +77,7 @@ class QueueWorkerTest extends BaseTest {
 
     mock.expects('releaseBack').once().resolves()
 
-    await worker.handle(job)
+    await worker.process(job)
 
     mock.restore()
     mock.verify()
@@ -98,7 +98,7 @@ class QueueWorkerTest extends BaseTest {
     const job = new ErrorWhenExceedingMaxAttemptsJob()
     const worker = this._getWorker({ options: { maxAttempts: 1 }, jobs: [job] })
 
-    await worker.handle(job)
+    await worker.process(job)
 
     t.true(job.isDeleted())
   }
@@ -116,7 +116,7 @@ class QueueWorkerTest extends BaseTest {
     const mock = this.mock(job)
     mock.expects('fire').never().resolves()
 
-    await worker.handle(job)
+    await worker.process(job)
 
     mock.restore()
     mock.verify()
@@ -139,7 +139,7 @@ class QueueWorkerTest extends BaseTest {
     const mock = this.mock(job)
     mock.expects('fire').once().resolves()
 
-    await worker.handle(job)
+    await worker.process(job)
 
     mock.restore()
     mock.verify()
