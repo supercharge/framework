@@ -20,7 +20,7 @@ class Filesystem {
    *
    * @returns {Stats}
    */
-  async stat (file) {
+  static async stat (file) {
     return Fs.stat(file)
   }
 
@@ -31,7 +31,7 @@ class Filesystem {
    *
    * @returns {Integer}
    */
-  async size (path) {
+  static async size (path) {
     const { size } = await this.stat(path)
 
     return size
@@ -44,7 +44,7 @@ class Filesystem {
    *
    * @returns {Date}
    */
-  async lastModified (file) {
+  static async lastModified (file) {
     const { mtime } = await this.stat(file)
 
     return mtime
@@ -57,7 +57,7 @@ class Filesystem {
    *
    * @returns {Date}
    */
-  async lastAccessed (file) {
+  static async lastAccessed (file) {
     const { atime } = await this.stat(file)
 
     return atime
@@ -74,7 +74,7 @@ class Filesystem {
    *
    * @throws
    */
-  async updateTimestamps (path, atime, mtime) {
+  static async updateTimestamps (path, atime, mtime) {
     if (!(atime instanceof Date)) {
       throw new Error(`Updating the last accessed timestamp for ${path} requires an instance of "Date".`)
     }
@@ -97,7 +97,7 @@ class Filesystem {
    * @returns {Boolean}
    * @throws
    */
-  async canAccess (path, mode) {
+  static async canAccess (path, mode) {
     return Fs.access(path, mode)
   }
 
@@ -108,7 +108,7 @@ class Filesystem {
    *
    * @returns {Boolean}
    */
-  async pathExists (path) {
+  static async pathExists (path) {
     return Fs.pathExists(path)
   }
 
@@ -120,7 +120,7 @@ class Filesystem {
    *
    * @returns {Boolean}
    */
-  async exists (path) {
+  static async exists (path) {
     return this.pathExists(path)
   }
 
@@ -131,7 +131,7 @@ class Filesystem {
    *
    * @returns {Boolean}
    */
-  async notExists (path) {
+  static async notExists (path) {
     const exists = await this.exists(path)
 
     return !exists
@@ -144,7 +144,7 @@ class Filesystem {
    *
    * @param {String} file
    */
-  async ensureFile (file) {
+  static async ensureFile (file) {
     return Fs.ensureFile(file)
   }
 
@@ -158,7 +158,7 @@ class Filesystem {
    *
    * @returns {String}
    */
-  async readFile (file, encoding = 'utf8') {
+  static async readFile (file, encoding = 'utf8') {
     return Fs.readFile(file, encoding)
   }
 
@@ -172,7 +172,7 @@ class Filesystem {
    *
    * @returns {Array}
    */
-  async files (path, encoding) {
+  static async files (path, encoding) {
     return Fs.readdir(path, encoding)
   }
 
@@ -186,7 +186,7 @@ class Filesystem {
    *
    * @returns {Array}
    */
-  async allFiles (path, options = {}) {
+  static async allFiles (path, options = {}) {
     const { ignore } = options
 
     return ReadRecursive(path, ignore ? [].concat(ignore) : null)
@@ -201,7 +201,7 @@ class Filesystem {
    * @param  {String} content
    * @param  {Object} options
    */
-  async writeFile (file, content, options) {
+  static async writeFile (file, content, options) {
     return Fs.outputFile(file, content, options)
   }
 
@@ -211,7 +211,7 @@ class Filesystem {
    *
    * @param {String} path
    */
-  async remove (path) {
+  static async remove (path) {
     return Fs.remove(path)
   }
 
@@ -220,7 +220,7 @@ class Filesystem {
    *
    * @param {String} file
    */
-  async removeFile (file) {
+  static async removeFile (file) {
     return Fs.remove(file)
   }
 
@@ -237,7 +237,7 @@ class Filesystem {
    * @param {String} dest - destination path
    * @param {Object} options
    */
-  async copy (src, dest, options) {
+  static async copy (src, dest, options) {
     return Fs.copy(src, dest, options)
   }
 
@@ -250,7 +250,7 @@ class Filesystem {
    * @param {String} dest - destination path
    * @param {Object} options
    */
-  async move (src, dest, options = {}) {
+  static async move (src, dest, options = {}) {
     return Fs.move(src, dest, options)
   }
 
@@ -261,7 +261,7 @@ class Filesystem {
    *
    * @param {String} dir - directory path
    */
-  async ensureDir (dir) {
+  static async ensureDir (dir) {
     return Fs.ensureDir(dir)
   }
 
@@ -272,7 +272,7 @@ class Filesystem {
    *
    * @param {String} dir - directory path
    */
-  async removeDir (dir) {
+  static async removeDir (dir) {
     return Fs.remove(dir)
   }
 
@@ -284,7 +284,7 @@ class Filesystem {
    *
    * @param {String} dir
    */
-  async emptyDir (dir) {
+  static async emptyDir (dir) {
     return Fs.emptyDir(dir)
   }
 
@@ -296,7 +296,7 @@ class Filesystem {
    * @param {String} file
    * @param {String|Integer} mode
    */
-  async chmod (file, mode) {
+  static async chmod (file, mode) {
     return Fs.chmod(file, parseInt(mode, 8))
   }
 
@@ -308,7 +308,7 @@ class Filesystem {
    * @param {String} src
    * @param {String} dest
    */
-  async ensureLink (src, dest) {
+  static async ensureLink (src, dest) {
     return Fs.ensureLink(src, dest)
   }
 
@@ -321,7 +321,7 @@ class Filesystem {
    * @param {String} dest
    * @param {String} type
    */
-  async ensureSymlink (src, dest, type = 'file') {
+  static async ensureSymlink (src, dest, type = 'file') {
     return Fs.ensureSymlink(src, dest, type)
   }
 
@@ -331,7 +331,7 @@ class Filesystem {
    * @param {String} file
    * @param {Object} options
    */
-  async lock (file, options = {}) {
+  static async lock (file, options = {}) {
     return lock(await this.prepareLockFile(file), options)
   }
 
@@ -340,7 +340,7 @@ class Filesystem {
    *
    * @param {String} file
    */
-  async unlock (file) {
+  static async unlock (file) {
     return unlock(await this.prepareLockFile(file))
   }
 
@@ -352,7 +352,7 @@ class Filesystem {
    *
    * @returns {Boolean}
    */
-  async isLocked (file, options = {}) {
+  static async isLocked (file, options = {}) {
     return isLocked(await this.prepareLockFile(file), options)
   }
 
@@ -364,7 +364,7 @@ class Filesystem {
    *
    * @returns {String}
    */
-  async prepareLockFile (file = '') {
+  static async prepareLockFile (file = '') {
     return file.endsWith('.lock') ? file : `${file}.lock`
   }
 
@@ -374,7 +374,7 @@ class Filesystem {
    *
    * @param {Object} options
    */
-  async tempFile ({ extension = '', name } = {}) {
+  static async tempFile ({ extension = '', name } = {}) {
     return Tempy.file({ extension, name })
   }
 
@@ -382,7 +382,7 @@ class Filesystem {
    * Create a temporary directory path.
    * The directory is created for you.
    */
-  async tempDir () {
+  static async tempDir () {
     return Tempy.directory()
   }
 
@@ -393,7 +393,7 @@ class Filesystem {
    *
    * @param {String} file
    */
-  async extension (file) {
+  static async extension (file) {
     return Path.extname(file)
   }
 
@@ -405,7 +405,7 @@ class Filesystem {
    *
    * @returns {String}
    */
-  async basename (path, extension) {
+  static async basename (path, extension) {
     return Path.basename(path, extension)
   }
 
@@ -416,7 +416,7 @@ class Filesystem {
    *
    * @returns {String}
    */
-  async filename (file) {
+  static async filename (file) {
     return Path.parse(file).name
   }
 
@@ -429,7 +429,7 @@ class Filesystem {
    *
    * @returns {String}
    */
-  async dirname (path) {
+  static async dirname (path) {
     return Path.dirname(path)
   }
 
@@ -440,7 +440,7 @@ class Filesystem {
    *
    * @returns {Boolean}
    */
-  async isFile (path) {
+  static async isFile (path) {
     const stats = await this.stat(path)
 
     return stats.isFile()
@@ -453,11 +453,11 @@ class Filesystem {
    *
    * @returns {Boolean}
    */
-  async isDirectory (path) {
+  static async isDirectory (path) {
     const stats = await this.stat(path)
 
     return stats.isDirectory()
   }
 }
 
-module.exports = new Filesystem()
+module.exports = Filesystem
