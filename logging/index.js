@@ -176,9 +176,6 @@ class LoggingManager {
    * @param  {...Mixed} options
    */
   error (message, ...options) {
-    console.log(message)
-    console.log('----------')
-
     this.driver().error(message, ...options)
   }
 }
