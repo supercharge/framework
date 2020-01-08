@@ -2,6 +2,7 @@
 
 const Path = require('path')
 const Chalk = require('chalk')
+const Fs = require('../filesystem')
 const Helper = require('../helper')
 const DotenvEdit = require('edit-dotenv')
 const { Command } = require('@adonisjs/ace')
@@ -57,7 +58,7 @@ class BaseCommand extends Command {
    * @throws
    */
   async ensureNotInstalled (force) {
-    const exists = await this.pathExists(Path.join(Helper.appRoot(), '.env'))
+    const exists = await Fs.pathExists(Path.join(Helper.appRoot(), '.env'))
 
     if (!exists) {
       return
@@ -81,11 +82,11 @@ class BaseCommand extends Command {
    * @throws
    */
   async ensureInProjectRoot () {
-    const insideSuperchargeDir = await this.pathExists(Path.join(process.cwd(), 'craft'))
-
-    if (!insideSuperchargeDir) {
-      throw new Error(`Make sure you are inside a Supercharge app to run the ${this.constructor.name} command`)
+    if (await Fs.pathExists(Path.join(process.cwd(), 'craft'))) {
+      return
     }
+
+    throw new Error(`Make sure you are inside a Supercharge app to run the ${this.constructor.name} command`)
   }
 
   /**
@@ -111,9 +112,11 @@ class BaseCommand extends Command {
    * @returns {String}
    */
   async getAbsolutePath (file) {
-    await this.ensureFile(file)
+    await Fs.ensureFile(file)
 
-    return Path.isAbsolute(file) ? file : Path.join(process.cwd(), file)
+    return Path.isAbsolute(file)
+      ? file
+      : Path.join(process.cwd(), file)
   }
 
   /**
@@ -124,7 +127,7 @@ class BaseCommand extends Command {
    * @returns {String}
    */
   async getFileContent (file) {
-    return this.readFile(file, 'utf8')
+    return Fs.readFile(file, 'utf8')
   }
 
   /**
@@ -139,7 +142,7 @@ class BaseCommand extends Command {
     const dotenvContent = await this.getFileContent(envPath)
     const updatedContent = DotenvEdit(dotenvContent, changes)
 
-    await this.writeFile(envPath, updatedContent)
+    await Fs.writeFile(envPath, updatedContent)
   }
 }
 
