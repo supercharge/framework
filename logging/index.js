@@ -27,6 +27,13 @@ class LoggingManager {
     this.driver(name)
   }
 
+  /**
+   * Returns a logging driver for the given `name`.
+   *
+   * @param {String} name
+   *
+   * @returns {Object}
+   */
   driver (name = this._defaultDriver()) {
     if (!this._hasDriver(name)) {
       this._createDriver(name)
@@ -35,23 +42,63 @@ class LoggingManager {
     return this.drivers.get(name)
   }
 
+  /**
+   * Determines whether a logging driver is available for the given `name`.
+   *
+   * @param {String} name
+   *
+   * @returns {Boolean}
+   */
   _hasDriver (name) {
     return this.drivers.has(name)
   }
 
+  /**
+   * Creates a new logging driver identified by `name`.
+   *
+   * @param {String} name
+   */
   _createDriver (name) {
     this.drivers.set(name, this._createLogger(name))
   }
 
+  /**
+   * Creates a new logging transport for a driver identified by `name`.
+   *
+   * @param {String} name
+   */
   _createLogger (name) {
-    const Transport = Transports[name]
-
-    return Winston.createLogger({
+    const logger = Winston.createLogger({
       format: Winston.format.combine(
         this.handleErrorLogs()
       )
-    }).add(
-      new Transport()
+    })
+
+    this
+      .getTransports(name)
+      .forEach(transport => {
+        logger.add(transport)
+      })
+
+    return logger
+  }
+
+  /**
+   * Returns the logging transporter (file, console, stacked, etc.).
+   *
+   * @param {String} name
+   *
+   * @returns {Array}
+   */
+  getTransports (name) {
+    const Transport = Transports[name]
+
+    if (!Transport) {
+      throw new Error(`The logging driver ${name} is not available.`)
+    }
+
+    return [].concat(
+      new Transport().createTransporter()
     )
   }
 
@@ -129,6 +176,9 @@ class LoggingManager {
    * @param  {...Mixed} options
    */
   error (message, ...options) {
+    console.log(message)
+    console.log('----------')
+
     this.driver().error(message, ...options)
   }
 }

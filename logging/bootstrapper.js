@@ -2,7 +2,7 @@
 
 const LoggingManager = require('./')
 
-class SessionBootstrapper {
+class LoggingBootstrapper {
   constructor () {
     this.manager = LoggingManager
   }
@@ -12,4 +12,4 @@ class SessionBootstrapper {
   }
 }
 
-module.exports = SessionBootstrapper
+module.exports = LoggingBootstrapper

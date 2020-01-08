@@ -24,7 +24,7 @@ class FileLoggerTest extends BaseTest {
   }
 
   async serialLogToFile (t) {
-    const logger = Winston.createLogger().clear().add(new FileLogger())
+    const logger = Winston.createLogger().clear().add(new FileLogger().createTransporter())
     logger.info('test log')
     // wait for logger to write the message
     await new Promise(resolve => setTimeout(resolve, 100))

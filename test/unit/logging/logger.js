@@ -1,84 +1,109 @@
 'use strict'
 
 const Config = require('../../../config')
-// const Logger = require('../../../logging')
+const Logger = require('../../../logging')
 const BaseTest = require('../../../base-test')
 
 class LoggerTest extends BaseTest {
   before () {
-    Config.set('logging.channels.console', { level: 'debug' })
+    Config.set('logging.driver', 'console')
+    Config.set('logging.channels.console', { level: 'silly' })
     Config.set('logging.channels.file', { path: './test/temp/testing.log' })
 
     // TODO
     // Logger.logger.silent = true
   }
 
-  after () {
+  alwaysAfter () {
     // Logger.logger.silent = false
   }
 
-  async willberemoved (t) {
-    t.pass()
+  async loadsDefaultDriver (t) {
+    t.truthy(Logger.driver())
   }
 
-  // async loadsDefaultDriver (t) {
-  //   t.truthy(Logger.logger)
-  // }
+  async useConsoleLogger (t) {
+    const logger = new Logger.constructor()
+    t.truthy(logger.driver('console'))
+  }
 
-  // async useConsoleLogger (t) {
-  //   const consoleLogger = new Logger.constructor()
-  //   consoleLogger.driver = 'console'
-  //   consoleLogger.loadDrivers()
+  async useFileLogger (t) {
+    const logger = new Logger.constructor()
+    t.truthy(logger.driver('file'))
+  }
 
-  //   t.is(consoleLogger.logger._readableState.pipesCount, 1)
-  // }
+  async useStackedLogger (t) {
+    const logger = new Logger.constructor()
+    const driver = logger.driver('stacked')
+    t.truthy(driver)
+  }
 
-  // async useFileLogger (t) {
-  //   const fileLogger = new Logger.constructor()
-  //   fileLogger.driver = 'file'
-  //   fileLogger.loadDrivers()
+  async throwsForUnavailableLogDriver (t) {
+    const logger = new Logger.constructor()
+    t.throws(() => logger.driver('unavailable'))
+  }
 
-  //   t.is(fileLogger.logger._readableState.pipesCount, 1)
-  //   t.truthy(fileLogger.logger._readableState.pipes.dirname)
-  // }
+  async serialLogsSillyLevelMessage (t) {
+    this.muteConsole()
+    Logger.silly('test silly message')
+    const { stdout } = this.consoleOutput()
+    t.true(stdout.includes('test silly message'))
+  }
 
-  // async useStackedLogger (t) {
-  //   const stackedLogger = new Logger.constructor()
-  //   stackedLogger.driver = 'stacked'
-  //   stackedLogger.loadDrivers()
+  async serialLogsDebugLevelMessage (t) {
+    this.muteConsole()
+    Logger.debug('test debug message')
+    const { stdout } = this.consoleOutput()
+    t.true(stdout.includes('test debug message'))
+  }
 
-  //   t.is(stackedLogger.logger._readableState.pipesCount, 2)
-  // }
+  async serialLogsVerboseLevelMessage (t) {
+    this.muteConsole()
+    Logger.verbose('test verbose message')
+    const { stdout } = this.consoleOutput()
+    t.true(stdout.includes('test verbose message'))
+  }
 
-  // async serialLogsSillyLevelMessage (t) {
-  //   Logger.silly('test message')
-  //   t.pass()
-  // }
+  async serialLogsInfoLevelMessage (t) {
+    this.muteConsole()
+    Logger.info('test info message')
+    const { stdout } = this.consoleOutput()
+    t.true(stdout.includes('test info message'))
+  }
 
-  // async serialLogsDebugLevelMessage (t) {
-  //   Logger.debug('test message')
-  //   t.pass()
-  // }
+  async serialLogsWarnLevelMessage (t) {
+    this.muteConsole()
+    Logger.warn('test warn message')
+    const { stdout } = this.consoleOutput()
+    t.true(stdout.includes('test warn message'))
+  }
 
-  // async serialLogsVerboseLevelMessage (t) {
-  //   Logger.verbose('test message')
-  //   t.pass()
-  // }
+  async serialLogsErrorLevelMessage (t) {
+    this.muteConsole()
+    Logger.error('test error message')
+    const { stdout } = this.consoleOutput()
+    t.true(stdout.includes('test error message'))
+  }
 
-  // async serialLogsInfoLevelMessage (t) {
-  //   Logger.info('test message')
-  //   t.pass()
-  // }
+  async serialLogsErrorMessageFromError (t) {
+    const message = 'error test message'
 
-  // async serialLogsWarnLevelMessage (t) {
-  //   Logger.warn('test message')
-  //   t.pass()
-  // }
+    this.muteConsole()
+    Logger.error(new Error(message))
+    const { stdout } = this.consoleOutput()
 
-  // async serialLogsErrorLevelMessage (t) {
-  //   Logger.error('test message')
-  //   t.pass()
-  // }
+    t.true(stdout.includes(message))
+  }
+
+  async serialConsoleLoggerFallback (t) {
+    Config.set('logging.driver', null)
+
+    this.muteConsole()
+    Logger.info('console fallback message')
+
+    const { stdout } = this.consoleOutput()
+    t.true(stdout.includes('console fallback message'))
+  }
 }
 
 module.exports = new LoggerTest()

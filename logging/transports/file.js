@@ -17,10 +17,13 @@ class FileTransport {
    */
   constructor () {
     this.config = Config.get('logging.channels.file')
-
-    return this.createTransporter()
   }
 
+  /**
+   * Create a Winston file transporter.
+   *
+   * @returns {Object}
+   */
   createTransporter () {
     return new Winston.transports.File({
       filename: this.config.path,

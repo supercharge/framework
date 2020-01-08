@@ -2,5 +2,6 @@
 
 module.exports = {
   file: require('./file'),
-  console: require('./console')
+  console: require('./console'),
+  stacked: require('./stacked')
 }

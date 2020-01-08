@@ -18,13 +18,10 @@ class ConsoleTransport {
   constructor () {
     this.config = Config.get('logging.channels.console', {})
     this.colors = this.logColors()
-
-    return this.createTransporter()
   }
 
   /**
-   * Color levels, ranked ascending
-   * from freakout to chilly
+   * Color levels, ranked ascending from freakout to chilly.
    *
    * @returns {Object}
    */

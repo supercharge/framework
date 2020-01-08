@@ -1,6 +1,5 @@
 'use strict'
 
-const Winston = require('winston')
 const Config = require('../../../config')
 const BaseTest = require('../../../base-test')
 const ConsoleLogger = require('../../../logging/transports/console')
@@ -10,36 +9,15 @@ class ConsoleLoggerTest extends BaseTest {
     Config.set('logging.channels.console', { level: 'debug' })
   }
 
-  async willberemoved (t) {
-    t.pass()
+  async colorForLevel (t) {
+    const logger = new ConsoleLogger()
+    t.truthy(logger.getColorForLevel('info'))
   }
-  // async colorForLevel (t) {
-  //   const logger = new ConsoleLogger()
-  //   t.truthy(logger.getColorForLevel('info'))
-  // }
 
-  // async fallbackColorForLevel (t) {
-  //   const logger = new ConsoleLogger()
-  //   t.truthy(logger.getColorForLevel('unavailable-level'))
-  // }
-
-  // async customFormat (t) {
-  //   const logger = new ConsoleLogger()
-  //   t.true(logger.format({ level: 'debug', message: 'testing' }).includes('debug'))
-  //   t.true(logger.format({ level: 'debug', message: 'testing' }).includes('testing'))
-  // }
-
-  // async serialCustomFormatFromLogger (t) {
-  //   const consoleLogger = new ConsoleLogger()
-  //   const stub = this.stub(consoleLogger, 'format').throws(new Error('logger format error'))
-
-  //   const logger = Winston.createLogger()
-  //   logger.add(consoleLogger)
-  //   // t.throws(() => logger.info(''))
-
-  //   this.sinon().assert.called(stub)
-  //   stub.restore()
-  // }
+  async fallbackColorForLevel (t) {
+    const logger = new ConsoleLogger()
+    t.truthy(logger.getColorForLevel('unavailable-level'))
+  }
 }
 
 module.exports = new ConsoleLoggerTest()
