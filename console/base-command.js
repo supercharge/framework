@@ -2,7 +2,6 @@
 
 const Path = require('path')
 const Chalk = require('chalk')
-const Fs = require('../filesystem')
 const Helper = require('../helper')
 const DotenvEdit = require('edit-dotenv')
 const { Command } = require('@adonisjs/ace')
@@ -58,7 +57,7 @@ class BaseCommand extends Command {
    * @throws
    */
   async ensureNotInstalled (force) {
-    const exists = await Fs.pathExists(Path.join(Helper.appRoot(), '.env'))
+    const exists = await this.pathExists(Path.join(Helper.appRoot(), '.env'))
 
     if (!exists) {
       return
@@ -82,7 +81,7 @@ class BaseCommand extends Command {
    * @throws
    */
   async ensureInProjectRoot () {
-    if (await Fs.pathExists(Path.join(process.cwd(), 'craft'))) {
+    if (await this.pathExists(Path.join(process.cwd(), 'craft'))) {
       return
     }
 
@@ -112,7 +111,7 @@ class BaseCommand extends Command {
    * @returns {String}
    */
   async getAbsolutePath (file) {
-    await Fs.ensureFile(file)
+    await this.ensureFile(file)
 
     return Path.isAbsolute(file)
       ? file
@@ -127,7 +126,7 @@ class BaseCommand extends Command {
    * @returns {String}
    */
   async getFileContent (file) {
-    return Fs.readFile(file, 'utf8')
+    return this.readFile(file, 'utf8')
   }
 
   /**
@@ -142,7 +141,7 @@ class BaseCommand extends Command {
     const dotenvContent = await this.getFileContent(envPath)
     const updatedContent = DotenvEdit(dotenvContent, changes)
 
-    await Fs.writeFile(envPath, updatedContent)
+    await this.writeFile(envPath, updatedContent)
   }
 }
 
