@@ -201,7 +201,7 @@ class Filesystem {
    * @param  {String} content
    * @param  {Object} options
    */
-  static async writeFile (file, content, options) {
+  static async writeFile (file, content, options = 'utf8') {
     return Fs.outputFile(file, content, options)
   }
 

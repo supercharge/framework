@@ -81,11 +81,11 @@ class BaseCommand extends Command {
    * @throws
    */
   async ensureInProjectRoot () {
-    const insideSuperchargeDir = await this.pathExists(Path.join(process.cwd(), 'craft'))
-
-    if (!insideSuperchargeDir) {
-      throw new Error(`Make sure you are inside a Supercharge app to run the ${this.constructor.name} command`)
+    if (await this.pathExists(Path.join(process.cwd(), 'craft'))) {
+      return
     }
+
+    throw new Error(`Make sure you are inside a Supercharge app to run the ${this.constructor.name} command`)
   }
 
   /**
@@ -113,7 +113,9 @@ class BaseCommand extends Command {
   async getAbsolutePath (file) {
     await this.ensureFile(file)
 
-    return Path.isAbsolute(file) ? file : Path.join(process.cwd(), file)
+    return Path.isAbsolute(file)
+      ? file
+      : Path.join(process.cwd(), file)
   }
 
   /**
