@@ -123,16 +123,17 @@ class BaseCommandTest extends BaseTest {
   }
 
   async serialUpdateEnvContents (t) {
-    const file = Path.resolve(__dirname, 'fixtures/test.env')
-    await Fs.ensureFile(file)
-    await Fs.writeFile(file, 'NAME=')
+    const dotEnv = Path.resolve(__dirname, 'fixtures/test.env')
+    await Fs.ensureFile(dotEnv)
+    await Fs.writeFile(dotEnv, 'NAME=')
 
     const command = new BaseCommand()
-    await command.updateEnvContents(file, { NAME: 'Supercharge' })
+    await command.updateEnvContents(dotEnv, { NAME: 'Supercharge' })
 
-    t.is(await Fs.readFile(file), 'NAME=Supercharge')
+    const env = await Fs.readFile(dotEnv)
+    t.true(env.includes('NAME=Supercharge'))
 
-    await Fs.remove(file)
+    await Fs.remove(dotEnv)
   }
 }
 
