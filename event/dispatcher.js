@@ -273,17 +273,20 @@ class Dispatcher {
    * @returns {Array}
    */
   async getListenersFor (eventName) {
-    const listenerFiles = await this.loadListeners()
-
-    return listenerFiles
+    return Collect(await this.loadListeners())
       .map(listenerFile => {
-        const Listener = this.resolve(listenerFile)
+        return this.resolve(listenerFile)
+      })
+      .map(Listener => {
         const listener = new Listener()
         this.ensureListener(listener)
 
-        return listener.on().includes(eventName) ? listener : null
+        return listener
       })
-      .filter(listener => !!listener)
+      .filter(listener => {
+        return listener.on().includes(eventName)
+      })
+      .all()
   }
 
   /**
@@ -314,16 +317,20 @@ class Dispatcher {
    * listeners to the event emitter.
    */
   async registerUserEvents () {
-    const eventFiles = await this.loadEvents()
+    await Collect(await this.loadEvents())
+      .map(eventFile => {
+        return this.resolve(eventFile)
+      })
+      .map(Event => {
+        const event = new Event()
+        this.ensureEvent(event)
 
-    _.forEach(eventFiles, async eventFile => {
-      const Event = this.resolve(eventFile)
-      const event = new Event()
-      this.ensureEvent(event)
-
-      const listeners = await this.getListenersFor(event.emit())
-      this.registerListeners(event.emit(), listeners)
-    })
+        return event
+      })
+      .forEach(async event => {
+        const listeners = await this.getListenersFor(event.emit())
+        this.registerListeners(event.emit(), listeners)
+      })
   }
 
   /**
@@ -373,7 +380,7 @@ class Dispatcher {
    * @param {String} eventName
    * @param {Object} listener
    */
-  async addSystemListener (eventName, listener) {
+  addSystemListener (eventName, listener) {
     this.ensureMaxListenersCount(process, eventName)
     process.on(eventName, listener)
   }
