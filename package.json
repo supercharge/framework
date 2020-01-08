@@ -4,7 +4,7 @@
   "version": "1.0.0-beta7",
   "author": "Marcus Poehls <marcus@futurestud.io>",
   "bugs": {
-    "url": "https://github.com/superchargejs/framework/issues"
+    "url": "https://github.com/supercharge/framework/issues"
   },
   "dependencies": {
     "@adonisjs/ace": "~5.0.8",
@@ -88,7 +88,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/superchargejs/framework.git"
+    "url": "git+https://github.com/supercharge/framework.git"
   },
   "scripts": {
     "coverage": "cross-env NODE_ENV=testing nyc --reporter=text --reporter=html ava",

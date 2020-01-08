@@ -15,7 +15,7 @@
   <br/>
   <br/>
   <p>
-    <a href="https://snyk.io/test/github/superchargejs/framework"><img src="https://snyk.io/test/github/superchargejs/framework/badge.svg" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/superchargejs/framework" style="max-width:100%;"></a>
+    <a href="https://snyk.io/test/github/supercharge/framework"><img src="https://snyk.io/test/github/supercharge/framework/badge.svg" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/supercharge/framework" style="max-width:100%;"></a>
     <a href="https://www.npmjs.com/package/@supercharge/framework"><img src="https://img.shields.io/npm/v/@supercharge/framework.svg" alt="Supercharge Version" data-canonical-src="https://img.shields.io/npm/v/@supercharge/framework.svg.svg" style="max-width:100%;"></a>
   </p>
   <p>
@@ -64,7 +64,7 @@ Supercharge has an extensive [documentation](https://superchargejs.com/docs) tha
 
 
 ## License
-Supercharge is [MIT licensed](https://github.com/superchargejs/framework/blob/master/LICENSE).
+Supercharge is [MIT licensed](https://github.com/supercharge/framework/blob/master/LICENSE).
 
 ---
 
