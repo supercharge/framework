@@ -11,15 +11,6 @@ class QueueManager {
   }
 
   /**
-   * Returns the queue config.
-   *
-   * @returns {Object}
-   */
-  config () {
-    return Config.get('queue')
-  }
-
-  /**
    * Returns the name of the default queue driver.
    *
    * @returns {String}
