@@ -38,7 +38,7 @@ class EventDispatcherTest extends BaseTest {
     t.is(Dispatcher.listenerCount(), 0)
   }
 
-  async fireEvent (t) {
+  async serialFireEvent (t) {
     Dispatcher.eventsFolder = Path.resolve(__dirname, 'fixtures', 'events')
     Dispatcher.listenersFolder = Path.resolve(__dirname, 'fixtures', 'listeners')
 
@@ -82,7 +82,7 @@ class EventDispatcherTest extends BaseTest {
     t.is(Dispatcher.getMaxListeners(), 11)
   }
 
-  async emitOnce (t) {
+  async serialEmitOnce (t) {
     const spy = this.spy()
     Dispatcher.once('once.event', spy)
 

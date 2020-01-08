@@ -10,7 +10,7 @@ class EventTest extends BaseTest {
     t.is(event.emit(), 'Event')
   }
 
-  async onOff (t) {
+  async serialOnOff (t) {
     const event = 'test.on'
     const handler = function () {}
 
@@ -23,7 +23,7 @@ class EventTest extends BaseTest {
     t.is(Dispatcher.listenerCount(event), 0)
   }
 
-  async listenForget (t) {
+  async serialListenForget (t) {
     const event = 'test.on'
     const handler = function () {}
 
@@ -36,7 +36,7 @@ class EventTest extends BaseTest {
     t.is(Dispatcher.listenerCount(event), 0)
   }
 
-  async listenForgetArray (t) {
+  async serialListenForgetArray (t) {
     const event = 'test.on'
     const handler = function () {}
 
@@ -49,7 +49,7 @@ class EventTest extends BaseTest {
     t.is(Dispatcher.listenerCount(event), 0)
   }
 
-  async fire (t) {
+  async serialFire (t) {
     const event = 'test.on'
     const spy = this.spy()
 
