@@ -13,7 +13,15 @@ class ViewCompiler {
   constructor () {
     this.server = null
     this.engine = this.createEngine()
-    this.config = Config.get('app', {})
+  }
+
+  /**
+   * Returns the application configuration.
+   *
+   * @returns {Object}
+   */
+  get config () {
+    return Config.get('app', {})
   }
 
   /**
