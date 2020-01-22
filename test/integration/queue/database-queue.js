@@ -5,6 +5,7 @@ const Queue = require('../../../queue')
 const Config = require('../../../config')
 const BaseTest = require('../../../base-test')
 const Worker = require('../../../queue/worker')
+const Dispatchable = require('../../../queue/dispatchable')
 const WorkerOptions = require('../../../queue/worker-options')
 const MongooseJob = require('../../../queue/jobs/mongoose-job')
 const QueueBootstrapper = require('../../../queue/bootstrapper')
@@ -188,13 +189,13 @@ class MongooseJobTest extends BaseTest {
   }
 }
 
-class TestingMongooseJob {
+class TestingMongooseJob extends Dispatchable {
   async handle () {
     handled = true
   }
 }
 
-class FailingTestingJob {
+class FailingTestingJob extends Dispatchable {
   async handle () {
     throw new Error('failed in database queue test')
   }
