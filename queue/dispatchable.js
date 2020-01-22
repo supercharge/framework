@@ -2,24 +2,19 @@
 
 const Uuid = require('uuid/v4')
 const PendingDispatch = require('./pending-dispatch')
+const InteractsWithQueue = require('./interacts-with-queue')
 
-class Dispatchable {
+class Dispatchable extends InteractsWithQueue {
   /**
-   * Every queue job should extend this class
-   * to conveniently dispatch jobs onto queues.
+   * Every queue job should extend this class to
+   * conveniently dispatch jobs onto queues.
    */
   constructor () {
+    super()
+
     this.id = Uuid()
     this.queue = null
     this.connection = null
-  }
-
-  /**
-   * Every queue job must implement a `handle` method
-   * which will then override this one.
-   */
-  async handle () {
-    throw new Error(`${this.contructor.name} must implement a handle() function.`)
   }
 
   /**

@@ -155,7 +155,7 @@ class Job {
   resolveInstance () {
     const JobClass = this.manager.getJob(this.jobName())
 
-    return new JobClass(this.payload())
+    return new JobClass(this.payload()).setJob(this)
   }
 
   /**
