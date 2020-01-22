@@ -76,8 +76,23 @@ class MongooseJob extends Job {
       queue: this.queue(),
       payload: this.payload(),
       job: { name: this.jobName() },
-      attempts: this.attempts() + 1
+      attempts: this.attempts() + 1,
+      notBefore: this.dateWith(delay)
     })
+  }
+
+  /**
+   * Calculates the date with added `delay`.
+   *
+   * @param {Number} delay in seconds
+   *
+   * @returns {Date}
+   */
+  dateWith (delay) {
+    const date = new Date()
+    date.setSeconds(date.getSeconds() + delay)
+
+    return date
   }
 
   /**

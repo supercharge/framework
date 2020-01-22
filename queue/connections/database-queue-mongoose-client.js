@@ -12,11 +12,12 @@ class DatabaseQueueMongooseClient {
    *
    * @returns {String} job ID
    */
-  static async push ({ job, payload, queue, attempts = 0 }) {
+  static async push ({ job, payload, queue, attempts = 0, notBefore = new Date() }) {
     const doc = await this.create({
       queue,
       payload,
       attempts,
+      notBefore,
       jobClassName: job.name
     })
 
@@ -31,8 +32,16 @@ class DatabaseQueueMongooseClient {
    * @returns {Job}
    */
   static async pop (queue) {
-    const query = { startTime: null, queue: { $in: [].concat(queue) } }
-    const update = { startTime: new Date() }
+    const query = {
+      startTime: null,
+      notBefore: { $lte: new Date() },
+      queue: { $in: [].concat(queue) }
+    }
+
+    const update = {
+      startTime: new Date()
+    }
+
     const options = {
       new: true, // tells MongoDB to return the updated document
       sort: { createdOn: 1 } // sort by oldest creation date (ensures FIFO)
@@ -53,7 +62,10 @@ class DatabaseQueueMongooseClient {
    * @returns {Number}
    */
   static async size (queue) {
-    return this.countDocuments({ startTime: null, queue })
+    return this.countDocuments({
+      startTime: null,
+      queue: { $in: [].concat(queue) }
+    })
   }
 
   /**
@@ -80,6 +92,7 @@ const factory = (config) => {
   const schema = new Mongoose.Schema({
     startTime: Date,
     endTime: Date,
+    notBefore: Date,
     queue: String,
     payload: Object,
     jobClassName: String,
