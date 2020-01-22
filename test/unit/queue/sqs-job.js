@@ -5,6 +5,7 @@ const Queue = require('../../../queue')
 const SqsClient = require('aws-sdk').SQS
 const BaseTest = require('../../../base-test')
 const SqsJob = require('../../../queue/jobs/sqs-job')
+const Dispatchable = require('../../../queue/dispatchable')
 
 class SqsJobTest extends BaseTest {
   constructor () {
@@ -120,7 +121,7 @@ class SqsJobTest extends BaseTest {
   }
 }
 
-class TestingSqsJob {
+class TestingSqsJob extends Dispatchable {
   async handle () {
     //
   }

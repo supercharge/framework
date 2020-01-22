@@ -3,6 +3,7 @@
 const Uuid = require('uuid/v4')
 const Queue = require('../../../queue')
 const BaseTest = require('../../../base-test')
+const Dispatchable = require('../../../queue/dispatchable')
 const FaktoryJob = require('../../../queue/jobs/faktory-job')
 const FaktoryMockServer = require('./fixtures/faktory-server')
 const FaktoryQueue = require('../../../queue/connections/faktory-queue')
@@ -148,7 +149,7 @@ class FaktoryJobTest extends BaseTest {
   }
 }
 
-class TestingFaktoryJob {
+class TestingFaktoryJob extends Dispatchable {
   async handle () {
     //
   }

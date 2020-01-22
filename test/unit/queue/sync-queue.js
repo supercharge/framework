@@ -3,6 +3,7 @@
 const Queue = require('../../../queue')
 const Config = require('../../../config')
 const BaseTest = require('../../../base-test')
+const Dispatchable = require('../../../queue/dispatchable')
 const SyncQueue = require('../../../queue/connections/sync-queue')
 
 class SyncQueueTest extends BaseTest {
@@ -87,8 +88,9 @@ class SyncQueueTest extends BaseTest {
   }
 }
 
-class TestingSyncJob {
+class TestingSyncJob extends Dispatchable {
   constructor (test) {
+    super()
     this.test = test
   }
 
@@ -97,8 +99,9 @@ class TestingSyncJob {
   }
 }
 
-class FailingTestingSyncJob {
+class FailingTestingSyncJob extends Dispatchable {
   constructor (test) {
+    super()
     this.test = test
   }
 
@@ -111,8 +114,9 @@ class FailingTestingSyncJob {
   }
 }
 
-class FailingTestingSyncJobWithoutFailedMethod {
+class FailingTestingSyncJobWithoutFailedMethod extends Dispatchable {
   constructor (test) {
+    super()
     this.test = test
   }
 
