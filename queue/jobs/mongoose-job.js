@@ -66,7 +66,7 @@ class MongooseJob extends Job {
   /**
    * Release the job back to the queue.
    *
-   * @param {Number} delay in minutes
+   * @param {Number} delay in seconds
    */
   async releaseBack (delay = 0) {
     await super.releaseBack(delay)

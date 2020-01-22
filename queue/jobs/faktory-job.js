@@ -71,7 +71,7 @@ class FaktoryJob extends Job {
   /**
    * Release the job back to the queue.
    *
-   * @param {Number} delay in minutes
+   * @param {Number} delay in seconds
    */
   async releaseBack (delay = 0) {
     await super.releaseBack(delay)
@@ -83,7 +83,7 @@ class FaktoryJob extends Job {
       queue: this.queue,
       jobtype: this.jobName(),
       args: [].concat(this.payload()),
-      at: Moment().add(delay, 'minutes'),
+      at: Moment().add(delay, 'seconds'),
       custom: Object.assign({}, this.custom, { attempts: attempts + 1 })
     })
   }
