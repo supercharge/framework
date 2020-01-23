@@ -2,8 +2,8 @@
 
 const AWS = require('aws-sdk')
 const SqsClient = AWS.SQS
-const Uuid = require('uuid/v4')
 const Queue = require('../../../queue')
+const Str = require('@supercharge/strings')
 const BaseTest = require('../../../base-test')
 const SqsJob = require('../../../queue/jobs/sqs-job')
 const SqsQueue = require('../../../queue/connections/sqs-queue')
@@ -26,8 +26,8 @@ class SqsQueueTest extends BaseTest {
       queue: this.queueName,
       prefix: this.prefix
     }
-    this.mockMessageId = Uuid()
-    this.mockReceiptHandle = Uuid()
+    this.mockMessageId = Str.uuid()
+    this.mockReceiptHandle = Str.uuid()
     this.mockData = { name: 'Supercharge' }
     this.mockPayload = JSON.stringify({ name: 'TestingSqsJob', data: this.mockData })
 

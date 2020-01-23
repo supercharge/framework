@@ -1,8 +1,8 @@
 'use strict'
 
-const Uuid = require('uuid/v4')
 const Queue = require('../../../queue')
 const Config = require('../../../config')
+const Str = require('@supercharge/strings')
 const BaseTest = require('../../../base-test')
 const Worker = require('../../../queue/worker')
 const Dispatchable = require('../../../queue/dispatchable')
@@ -19,7 +19,7 @@ class MongooseJobTest extends BaseTest {
   constructor () {
     super()
 
-    this.jobId = Uuid()
+    this.jobId = Str.uuid()
     this.queue = 'database-queue-integration-test'
 
     this.config = {

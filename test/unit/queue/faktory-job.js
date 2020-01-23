@@ -1,7 +1,7 @@
 'use strict'
 
-const Uuid = require('uuid/v4')
 const Queue = require('../../../queue')
+const Str = require('@supercharge/strings')
 const BaseTest = require('../../../base-test')
 const Dispatchable = require('../../../queue/dispatchable')
 const FaktoryJob = require('../../../queue/jobs/faktory-job')
@@ -17,7 +17,7 @@ class FaktoryJobTest extends BaseTest {
     this.faktoryClient = null
     this.faktoryServer = null
 
-    this.jobId = Uuid()
+    this.jobId = Str.uuid()
     this.queue = 'supercharge-testing'
 
     this.mockPayload = { name: 'Marcus' }

@@ -1,8 +1,8 @@
 'use strict'
 
-const Uuid = require('uuid/v4')
 const Queue = require('../../../queue')
 const SqsClient = require('aws-sdk').SQS
+const Str = require('@supercharge/strings')
 const BaseTest = require('../../../base-test')
 const SqsJob = require('../../../queue/jobs/sqs-job')
 const Dispatchable = require('../../../queue/dispatchable')
@@ -25,8 +25,8 @@ class SqsJobTest extends BaseTest {
       queue: this.queueName,
       prefix: this.prefix
     }
-    this.mockMessageId = Uuid()
-    this.mockReceiptHandle = Uuid()
+    this.mockMessageId = Str.uuid()
+    this.mockReceiptHandle = Str.uuid()
     this.mockData = { name: 'Supercharge' }
     this.mockPayload = JSON.stringify({ jobClassName: 'TestingSqsJob', data: this.mockData })
 
@@ -50,7 +50,7 @@ class SqsJobTest extends BaseTest {
     }
 
     this.mockJob = {
-      MD5OfBody: Uuid(),
+      MD5OfBody: Str.uuid(),
       MessageId: this.mockMessageId,
       Body: this.mockPayload,
       ReceiptHandle: this.mockReceiptHandle,

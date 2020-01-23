@@ -1,7 +1,7 @@
 'use strict'
 
 const _ = require('lodash')
-const Uuid = require('uuid/v4')
+const Str = require('@supercharge/strings')
 const Encryption = require('../encryption')
 
 class Session {
@@ -93,7 +93,7 @@ class Session {
    * @returns {String}
    */
   _generateSessionId () {
-    return Uuid()
+    return Str.uuid()
   }
 
   /**

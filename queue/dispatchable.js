@@ -1,6 +1,6 @@
 'use strict'
 
-const Uuid = require('uuid/v4')
+const Str = require('@supercharge/strings')
 const PendingDispatch = require('./pending-dispatch')
 const InteractsWithQueue = require('./interacts-with-queue')
 
@@ -12,7 +12,7 @@ class Dispatchable extends InteractsWithQueue {
   constructor () {
     super()
 
-    this.id = Uuid()
+    this.id = Str.uuid()
     this.queue = null
     this.connection = null
   }

@@ -2,7 +2,7 @@
 
 const Fs = require('fs')
 const Path = require('path')
-const Uuid = require('uuid/v4')
+const Str = require('@supercharge/strings')
 const BaseTest = require('../../../base-test')
 const Filesystem = require('../../../filesystem')
 
@@ -20,11 +20,11 @@ class FilesystemTest extends BaseTest {
     await Filesystem.removeDir(this.tempDir)
   }
 
-  async _tempFile (file = `${Uuid()}.txt`) {
+  async _tempFile (file = `${Str.uuid()}.txt`) {
     return Path.resolve(this.tempDir, file)
   }
 
-  async _ensureTempFile (filename = `${Uuid()}.txt`) {
+  async _ensureTempFile (filename = `${Str.uuid()}.txt`) {
     const file = await this._tempFile(filename)
     await Filesystem.ensureFile(file)
 
@@ -320,19 +320,19 @@ class FilesystemTest extends BaseTest {
   }
 
   async extension (t) {
-    const filename = `${Uuid()}.test`
+    const filename = `${Str.uuid()}.test`
     const file = await this._ensureTempFile(filename)
     t.deepEqual(await Filesystem.extension(file), '.test')
   }
 
   async basename (t) {
-    const filename = `${Uuid()}.test`
+    const filename = `${Str.uuid()}.test`
     const file = await this._ensureTempFile(filename)
     t.deepEqual(await Filesystem.basename(file), filename)
   }
 
   async filename (t) {
-    const filename = Uuid()
+    const filename = Str.uuid()
     const file = await this._ensureTempFile(filename)
     t.deepEqual(await Filesystem.filename(file), filename)
   }
