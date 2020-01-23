@@ -48,6 +48,11 @@ class SyncQueue {
   async size () {
     return 0
   }
+
+  /**
+   * Clears all jobs from all queues.
+   */
+  async clear () { }
 }
 
 module.exports = SyncQueue

@@ -90,6 +90,13 @@ class FaktoryQueue {
         return sum + jobCountInQueue
       }, 0)
   }
+
+  /**
+   * Clears all jobs from all queues.
+   */
+  async clear () {
+    return this.client.flush()
+  }
 }
 
 module.exports = FaktoryQueue

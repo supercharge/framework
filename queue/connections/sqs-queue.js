@@ -135,6 +135,17 @@ class SqsQueue {
   }
 
   /**
+   * Clear all jobs from the given `queue`.
+   *
+   * @param {String} queueName
+   */
+  async clear (queueName) {
+    await this.client.purgeQueue({
+      QueueUrl: this.queueUrlFor(queueName)
+    }).promise()
+  }
+
+  /**
    * Create the queue job’s JSON payload based on the job name and data.
    *
    * @param {Class} job
