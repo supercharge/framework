@@ -1,6 +1,5 @@
 'use strict'
 
-const MD5 = require('md5')
 const Crypto = require('crypto')
 const Config = require('../config')
 const ArgonHashinator = require('./argon-hashinator')
@@ -53,8 +52,11 @@ class Hashinator {
    *
    * @returns {String}
    */
-  md5 (value) {
-    return MD5(value)
+  md5 (value, encoding = 'hex') {
+    return Crypto
+      .createHash('md5')
+      .update(value)
+      .digest(encoding)
   }
 
   /**
@@ -66,7 +68,10 @@ class Hashinator {
    * @returns {String}
    */
   sha256 (value, encoding = 'hex') {
-    return Crypto.createHash('sha256').update(value).digest(encoding)
+    return Crypto
+      .createHash('sha256')
+      .update(value)
+      .digest(encoding)
   }
 
   /**
@@ -78,7 +83,10 @@ class Hashinator {
    * @returns {String}
    */
   sha512 (value, encoding = 'hex') {
-    return Crypto.createHash('sha512').update(value).digest(encoding)
+    return Crypto
+      .createHash('sha512')
+      .update(value)
+      .digest(encoding)
   }
 }
 
