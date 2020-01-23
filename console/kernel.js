@@ -11,13 +11,6 @@ class ConsoleKernel {
   }
 
   /**
-   * Returns the console kernel instance.
-   */
-  get kernel () {
-    return this._kernel
-  }
-
-  /**
    * Load all console commands coming from the
    * framework’s core and user-land bootstrappers.
    */
