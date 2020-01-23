@@ -56,19 +56,14 @@ class MongooseJobTest extends BaseTest {
     error = null
   }
 
+  async alwaysAfter () {
+    await this._deleteOldJobs()
+  }
+
   async _deleteOldJobs (config) {
     const queue = new DatabaseQueue(config || this.config)
     await queue.connect()
-
-    let job = await queue.pop()
-
-    while (job) {
-      if (job) {
-        await job.delete()
-      }
-
-      job = await queue.pop()
-    }
+    await queue.clear()
   }
 
   async serialPushAndPopJob (t) {
@@ -98,6 +93,18 @@ class MongooseJobTest extends BaseTest {
 
     job = await queue.pop()
     t.is(job.attempts(), 1)
+  }
+
+  async serialClearQueue (t) {
+    const queue = new DatabaseQueue(this.config)
+    await queue.connect()
+
+    await queue.push(TestingMongooseJob, this.mockPayload)
+
+    t.is(await queue.size(), 1)
+
+    await queue.clear()
+    t.is(await queue.size(), 0)
   }
 
   async serialHandleSuccessJob (t) {
