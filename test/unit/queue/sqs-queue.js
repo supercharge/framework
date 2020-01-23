@@ -71,6 +71,10 @@ class SqsQueueTest extends BaseTest {
         }
       }
     }
+
+    this.mockQueuePurgeResult = {
+      promise: () => { }
+    }
   }
 
   beforeEach () {
@@ -130,12 +134,15 @@ class SqsQueueTest extends BaseTest {
     getQueueAttributesStub.restore()
   }
 
-  async resolvesQueueUrl (t) {
+  async clear (t) {
     const queue = new SqsQueue(this.mockConfig)
     queue.client = this.sqsClient
+    const purgeQueueStub = this.stub(queue.client, 'purgeQueue').returns(this.mockQueuePurgeResult)
 
-    t.is(queue.queueUrlFor(), this.queueUrl)
-    t.is(queue.queueUrlFor('test'), `${this.prefix}/test`)
+    await queue.clear()
+    t.true(purgeQueueStub.calledOnce)
+
+    purgeQueueStub.restore()
   }
 }
 

@@ -100,6 +100,19 @@ class DatabaseQueueTest extends BaseTest {
     t.is(0, await queue.size())
   }
 
+  async serialDatabaseQueueClear (t) {
+    const queue = new DatabaseQueue(this.config)
+    await queue.connect()
+
+    await queue.push(TestingDatabaseJob, this.mockPayload)
+    await queue.push(TestingDatabaseJob, this.mockPayload)
+    await queue.push(TestingDatabaseJob, this.mockPayload)
+    t.is(3, await queue.size())
+
+    await queue.clear()
+    t.is(0, await queue.size())
+  }
+
   async throwsWhenUsingUnknownDatabaseClient (t) {
     Config.set('database.default', 'not-existent')
     const queue = new DatabaseQueue(this.config)

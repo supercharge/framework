@@ -136,6 +136,25 @@ class FaktoryQueueTest extends BaseTest {
 
     t.is(size, 101)
   }
+
+  async serialFaktoryClear (t) {
+    const queue = new FaktoryQueue(this.config)
+    await queue.connect()
+
+    const mock = this.mock(queue.client)
+
+    mock
+      .expects('flush')
+      .once()
+      .returns()
+
+    await queue.clear()
+
+    mock.restore()
+    mock.verify()
+
+    t.pass()
+  }
 }
 
 class TestingFaktoryJob {
