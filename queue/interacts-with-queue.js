@@ -21,6 +21,14 @@ class InteractsWithQueue {
   }
 
   /**
+   * Every queue job must implement a `handle` method
+   * which will then override this one.
+   */
+  async handle () {
+    throw new Error(`${this.contructor.name} must implement a handle() function.`)
+  }
+
+  /**
    * Returns the number of attempts for this job.
    *
    * @returns {Number}
@@ -29,14 +37,6 @@ class InteractsWithQueue {
     if (this.job) {
       return this.job.attempts()
     }
-  }
-
-  /**
-   * Every queue job must implement a `handle` method
-   * which will then override this one.
-   */
-  async handle () {
-    throw new Error(`${this.contructor.name} must implement a handle() function.`)
   }
 
   /**
