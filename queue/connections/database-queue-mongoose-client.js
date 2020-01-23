@@ -27,7 +27,7 @@ class DatabaseQueueMongooseClient {
   /**
    * Fetches the next job from the given `queue`.
    *
-   * @param {Array|String} queue
+   * @param {String|Array} queue
    *
    * @returns {Job}
    */
@@ -55,15 +55,26 @@ class DatabaseQueueMongooseClient {
   }
 
   /**
-   * Returns the size of the queue.
+   * Returns number of jobs on the given `queue`.
    *
-   * @param  {String} queue
+   * @param  {String|Array} queue
    *
    * @returns {Number}
    */
   static async size (queue) {
     return this.countDocuments({
       startTime: null,
+      queue: { $in: [].concat(queue) }
+    })
+  }
+
+  /**
+   * Clear all jobs from the given `queue`.
+   *
+   * @param {String|Array} queue
+   */
+  static async clear (queue) {
+    return this.deleteMany({
       queue: { $in: [].concat(queue) }
     })
   }

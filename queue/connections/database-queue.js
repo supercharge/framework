@@ -56,9 +56,9 @@ class DatabaseQueue {
   }
 
   /**
-   * Retrieve the next job from the queue.
+   * Retrieve the next job from the given `queue`.
    *
-   * @param  {String} queue
+   * @param  {String|Array} queue
    *
    * @returns {Job}
    */
@@ -67,14 +67,23 @@ class DatabaseQueue {
   }
 
   /**
-   * Returns the size of the queue.
+   * Returns number of jobs on the given `queue`.
    *
-   * @param  {String} queue
+   * @param  {String|Array} queue
    *
    * @returns {Number}
    */
   async size (queue = this.defaultQueueName) {
     return this.client().size(queue)
+  }
+
+  /**
+   * Clear all jobs from the given `queue`.
+   *
+   * @param {String|Array} queue
+   */
+  async clear (queue = this.defaultQueueName) {
+    return this.client().clear(queue)
   }
 
   /**
