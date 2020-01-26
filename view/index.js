@@ -123,7 +123,7 @@ class ViewCompiler {
    *
    * @returns {Object}
    */
-  viewContext (request) {
+  viewContext (request = {}) {
     return {
       request,
       user: request.user,
