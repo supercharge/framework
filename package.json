@@ -35,7 +35,7 @@
     "hapi-request-utilities": "~3.0.0",
     "hapi-response-utilities": "~1.6.0",
     "html-to-text": "~5.1.1",
-    "laabr": "~5.1.6",
+    "laabr": "~6.0.1",
     "listr": "~0.14.3",
     "lockfile": "~1.0.4",
     "lodash": "~4.17.15",
