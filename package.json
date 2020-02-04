@@ -23,7 +23,7 @@
     "dotenv": "~8.2.0",
     "dotenv-expand": "~5.1.0",
     "edit-dotenv": "~1.0.4",
-    "events": "~3.0.0",
+    "events": "~3.1.0",
     "execa": "~3.4.0",
     "extends-classes": "~1.0.5",
     "faktory-worker": "~3.1.0",
