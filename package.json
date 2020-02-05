@@ -54,7 +54,7 @@
     "simple-encryptor": "~3.0.0",
     "sinon": "~8.0.4",
     "tempy": "~0.3.0",
-    "uuid": "~3.3.3",
+    "uuid": "~3.4.0",
     "winston": "~3.2.1",
     "youch": "~2.0.10",
     "youch-terminal": "~1.0.0"
