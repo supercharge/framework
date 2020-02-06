@@ -52,7 +52,7 @@
     "recursive-readdir": "~2.2.2",
     "require-all": "~3.0.0",
     "simple-encryptor": "~3.0.0",
-    "sinon": "~8.0.4",
+    "sinon": "~8.1.1",
     "tempy": "~0.3.0",
     "uuid": "~3.4.0",
     "winston": "~3.2.1",
