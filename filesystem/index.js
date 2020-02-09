@@ -398,7 +398,8 @@ class Filesystem {
   }
 
   /**
-   * Returns the trailing name component from a file path.
+   * Returns the trailing name component from a file path. For example,
+   * returns `file.png` from the path `/home/user/file.png/`.
    *
    * @param {String} path
    * @param {String} extension
