@@ -14,7 +14,7 @@
     "@hapi/joi": "~16.1.8",
     "@hapi/vision": "~5.5.4",
     "@supercharge/collections": "~1.11.0",
-    "argon2": "~0.24.1",
+    "argon2": "~0.25.1",
     "ava": "~2.4.0",
     "aws-sdk": "~2.613.0",
     "bcryptjs": "~2.4.3",
