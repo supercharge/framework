@@ -13,7 +13,7 @@
     "@hapi/hapi": "~18.4.0",
     "@hapi/joi": "~16.1.8",
     "@hapi/vision": "~5.5.4",
-    "@supercharge/collections": "~1.11.0",
+    "@supercharge/collections": "~1.12.0",
     "argon2": "~0.24.1",
     "ava": "~2.4.0",
     "aws-sdk": "~2.614.0",
