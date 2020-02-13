@@ -143,7 +143,10 @@ class ViewCompiler {
    * @returns {String}
    */
   async render (viewPath, data, options = {}) {
-    return this.server.render(viewPath, data, { layout: null, ...options })
+    return this.server.render(viewPath, data, {
+      layout: false,
+      ...options
+    })
   }
 
   /**
