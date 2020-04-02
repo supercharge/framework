@@ -3,10 +3,7 @@ export default {
   require: ['./test/pretest-setup.js'],
   files: [
     'test/**/*.js',
-    '!test/pretest-setup.js'
-  ],
-  helpers: [
-    '**/helpers/**/*',
-    '**/fixtures/**/*'
+    '!test/pretest-setup.js',
+    '!test/**/fixtures/**/*'
   ]
 }

@@ -31,8 +31,8 @@ class BaseTest extends Many(Http, MocksStubsSpies, MocksConsole, RenderViews, Te
    *
    * @param {String} method
    */
-  __call (method) {
-    console.log(`'${method}()' is missing in your test class!`)
+  __call (method, [...args]) {
+    console.log(`'${method}()' is missing in your test class!`, args)
   }
 }
 

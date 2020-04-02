@@ -46,7 +46,7 @@ class BaseCommandTest extends BaseTest {
   async failsToEnsureInProjectRoot (t) {
     const command = new BaseCommand()
 
-    const error = await t.throwsAsync(command.ensureInProjectRoot())
+    const error = await t.throwsAsync(() => command.ensureInProjectRoot())
     t.true(error.message.includes('Make sure you are inside a Supercharge app'))
   }
 
@@ -62,7 +62,7 @@ class BaseCommandTest extends BaseTest {
     const command = new BaseCommand()
     const stub = this.stub(command, 'pathExists').returns(true)
 
-    const error = await t.throwsAsync(command.ensureNotInstalled())
+    const error = await t.throwsAsync(() => command.ensureNotInstalled())
     t.true(error.message.includes('already includes a .env file'))
 
     stub.restore()

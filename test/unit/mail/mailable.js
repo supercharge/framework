@@ -14,7 +14,7 @@ class MailableTest extends BaseTest {
 
   async throwsWithoutCreateMethod (t) {
     const mailable = new MissingCreateMailable()
-    const error = await t.throwsAsync(mailable.buildMessage())
+    const error = await t.throwsAsync(() => mailable.buildMessage())
     t.true(error.message.includes('Make sure to implement the "create" method '))
     t.true(error.message.includes('MissingCreateMailable'))
   }

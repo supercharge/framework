@@ -251,7 +251,7 @@ class QueueJobTest extends BaseTest {
 
   async throwsDueToMissingHandleMethod (t) {
     await t.throwsAsync(async () => {
-      return MissingHandleMethod.dispatch({ name: 'Marcus' })
+      await MissingHandleMethod.dispatch({ name: 'Marcus' })
     })
   }
 

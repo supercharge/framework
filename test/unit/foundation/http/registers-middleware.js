@@ -41,7 +41,7 @@ class LoadMiddlewareTest extends BaseTest {
     await kernel.registerCorePlugins()
 
     kernel._middlewareFolder = 'middleware/invalid-extension-point'
-    await t.throwsAsync(kernel.loadAppMiddleware())
+    await t.throwsAsync(() => kernel.loadAppMiddleware())
   }
 
   async throwsForInvalidMiddlewareFormat (t) {
@@ -52,7 +52,7 @@ class LoadMiddlewareTest extends BaseTest {
     await kernel.registerCorePlugins()
 
     kernel._middlewareFolder = 'middleware/invalid-format'
-    await t.throwsAsync(kernel.loadAppMiddleware())
+    await t.throwsAsync(() => kernel.loadAppMiddleware())
   }
 
   async ignoresUnavailableMiddlewareFolder (t) {
@@ -62,7 +62,7 @@ class LoadMiddlewareTest extends BaseTest {
     const kernel = new HttpBootstrapper(app)
     await kernel.registerCorePlugins()
 
-    await t.notThrowsAsync(kernel.loadAppMiddleware())
+    await t.notThrowsAsync(() => kernel.loadAppMiddleware())
   }
 
   async ignoresFilesStartingWithUnderscore (t) {

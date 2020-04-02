@@ -45,7 +45,9 @@ class TestingLifecycleHooks {
    * Returns all methods from the test class.
    */
   classMethods () {
-    return Object.getOwnPropertyNames(Object.getPrototypeOf(this))
+    return Object.getOwnPropertyNames(
+      Object.getPrototypeOf(this)
+    )
   }
 
   /**

@@ -79,13 +79,13 @@ class MailerTest extends BaseTest {
   }
 
   async failsSendForEmptyMailableParameter (t) {
-    const error = await t.throwsAsync(Mailer.send())
+    const error = await t.throwsAsync(async () => Mailer.send())
     t.true(error.message.includes('Pass a Mailable instance to the Mailer'))
   }
 
   async failsSendForNonMailableParameter (t) {
     class TestMail {}
-    const error = await t.throwsAsync(Mailer.send(new TestMail()))
+    const error = await t.throwsAsync(async () => Mailer.send(new TestMail()))
     t.true(error.message.includes('Pass a Mailable instance to the Mailer'))
   }
 
@@ -115,7 +115,7 @@ class MailerTest extends BaseTest {
     const stub = this.stub(Mailer.transporter, 'sendMail').throws(new Error('fake sendMail error'))
 
     this.muteConsole()
-    const error = await t.throwsAsync(Mailer.send(new TestMailable()))
+    const error = await t.throwsAsync(async () => Mailer.send(new TestMailable()))
     this.consoleOutput()
 
     this.sinon().assert.called(stub)

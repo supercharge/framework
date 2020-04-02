@@ -13,7 +13,7 @@ class StackHelperTest extends BaseTest {
   }
 
   async throwsForStacksWithoutName (t) {
-    await t.throwsAsync(this.render('{{#stack}}content{{/stack}}'))
+    await t.throwsAsync(async () => this.render('{{#stack}}content{{/stack}}'))
   }
 
   async prependsToExistingStack (t) {
@@ -41,11 +41,11 @@ class StackHelperTest extends BaseTest {
   }
 
   async throwsWhenPrependingWithoutName (t) {
-    await t.throwsAsync(this.render('{{#prepend}}content{{/prepend}}'))
+    await t.throwsAsync(async () => this.render('{{#prepend}}content{{/prepend}}'))
   }
 
   async throwsWhenAppendingWithoutName (t) {
-    await t.throwsAsync(this.render('{{#append}}content{{/append}}'))
+    await t.throwsAsync(async () => this.render('{{#append}}content{{/append}}'))
   }
 }
 

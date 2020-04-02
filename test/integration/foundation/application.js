@@ -40,13 +40,13 @@ class ApplicationTest extends BaseTest {
 
   async serialThrowsWithoutAppRootForHttp (t) {
     const app = new Application()
-    await t.throwsAsync(app.httpWithFullSpeed())
+    await t.throwsAsync(async () => app.httpWithFullSpeed())
   }
 
   async serialThrowsWithoutAppKey (t) {
     Config.set('app.key', null)
     const app = new Application().fromAppRoot(this.appRoot)
-    await t.throwsAsync(app.httpWithFullSpeed())
+    await t.throwsAsync(async () => app.httpWithFullSpeed())
   }
 
   async serialStartsHttpApplication (t) {

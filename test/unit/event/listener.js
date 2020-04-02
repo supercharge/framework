@@ -30,7 +30,7 @@ class ListenerTest extends BaseTest {
 
   async throwsDueToMissingHandleFunction (t) {
     const listener = new Listener()
-    await t.throwsAsync(listener.handle())
+    await t.throwsAsync(async () => listener.handle())
   }
 }
 

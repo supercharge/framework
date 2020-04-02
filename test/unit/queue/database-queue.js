@@ -117,7 +117,7 @@ class DatabaseQueueTest extends BaseTest {
     Config.set('database.default', 'not-existent')
     const queue = new DatabaseQueue(this.config)
 
-    const error = await t.throwsAsync(() => queue.pop())
+    const error = await t.throwsAsync(async () => queue.pop())
     t.true(error.message.includes('Unknown database queue driver'))
   }
 }
