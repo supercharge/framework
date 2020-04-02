@@ -83,13 +83,23 @@ class PaginatorTest extends BaseTest {
   }
 
   async failsWithoutRequest (t) {
-    t.throws(() => new Paginator({ request: null, totalCount: 10 }))
-    t.throws(() => new Paginator({ request: undefined, totalCount: 10 }))
+    const error = t.throws(() => new Paginator({ totalCount: 10 }))
+    t.true(String(error.message).includes('required parameter'))
+  }
+
+  async failsWithRequestNull (t) {
+    const error = t.throws(() => new Paginator({ request: null, totalCount: 10 }))
+    t.true(String(error.message).includes('required parameter'))
   }
 
   async failsWithoutTotalCount (t) {
-    t.throws(() => new Paginator({ request: {}, totalCount: null }))
-    t.throws(() => new Paginator({ request: {}, totalCount: undefined }))
+    const error = t.throws(() => new Paginator({ request: {} }))
+    t.true(String(error.message).includes('required parameter'))
+  }
+
+  async failsWithTotalCountNull (t) {
+    const error = t.throws(() => new Paginator({ request: {}, totalCount: null }))
+    t.true(String(error.message).includes('required parameter'))
   }
 }
 
