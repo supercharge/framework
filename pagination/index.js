@@ -1,7 +1,6 @@
 'use strict'
 
 const _ = require('lodash')
-const Boom = require('@hapi/boom')
 const Querystring = require('querystring')
 
 /**
@@ -20,11 +19,11 @@ class Paginator {
    */
   constructor ({ request, totalCount, perPage = 8 }) {
     if (!request) {
-      throw new Boom('Request object is a required parameter')
+      throw new Error('Request object is a required parameter')
     }
 
     if (!totalCount) {
-      throw new Boom('Total count is a required parameter')
+      throw new Error('Total count is a required parameter')
     }
 
     this.request = request
