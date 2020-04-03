@@ -145,13 +145,14 @@ class AvaTesting {
   }
 
   /**
-   * Create a test based on the class method's
-   * implementation.
+   * Create a test based on the class method’s implementation.
    *
    * @param {String} name
    */
   addTest (name) {
-    Ava(name, async t => this.test[name](t))
+    Ava(name, async t => {
+      return this.test[name](t)
+    })
   }
 
   /**
