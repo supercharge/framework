@@ -16,7 +16,7 @@
     "@supercharge/collections": "~1.12.0",
     "@supercharge/filesystem": "~1.0.0",
     "@supercharge/strings": "~1.2.0",
-    "argon2": "~0.24.1",
+    "argon2": "~0.26.0",
     "ava": "~2.4.0",
     "aws-sdk": "~2.617.0",
     "bcryptjs": "~2.4.3",

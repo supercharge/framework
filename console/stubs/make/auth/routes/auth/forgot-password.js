@@ -4,6 +4,7 @@ const Joi = require('@hapi/joi')
 const Boom = require('@hapi/boom')
 const User = require('../../models/user')
 const Mailer = require('@supercharge/framework/mailer') /* eslint-disable-line */
+const PasswordResetMail = require('../../mails/user/password-reset')
 
 module.exports = [{
   method: 'GET',
@@ -30,12 +31,11 @@ module.exports = [{
       const resetURL = `http://${request.headers.host}/reset-password/${encodedEmail}/${passwordResetToken}`
 
       try {
-        /**
-         * TODO: create a password reset mail and send this notification to the user
-         */
-        // await Mailer.send(new PasswordResetMail({ user, resetURL }))
+        await Mailer.send(
+          new PasswordResetMail({ user, resetURL })
+        )
       } catch (err) {
-        throw new Boom('We have issues sending the password reset email.')
+        throw Boom.badGateway('We have issues sending the password reset email.')
       }
 
       return h.view('auth/forgot-password-email-sent', null, { layout: 'clean' })
