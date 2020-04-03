@@ -34,6 +34,11 @@ class BaseTest extends Many(Http, MocksStubsSpies, MocksConsole, RenderViews, Te
   __call (method, [...args]) {
     console.log(`'${method}()' is missing in your test class!`, args)
   }
+
+  /**
+   * Called by AVA, not used by us yet.
+   */
+  then () { }
 }
 
 module.exports = BaseTest
