@@ -15,7 +15,7 @@
     "@hapi/vision": "~6.0.0",
     "@supercharge/collections": "~1.13.0",
     "@supercharge/filesystem": "~1.0.0",
-    "@supercharge/strings": "~1.2.0",
+    "@supercharge/strings": "~1.3.0",
     "argon2": "~0.26.1",
     "ava": "~3.5.2",
     "aws-sdk": "~2.652.0",
@@ -91,7 +91,7 @@
     "coverage": "cross-env NODE_ENV=testing nyc --reporter=text --reporter=html ava",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "cross-env NODE_ENV=testing ava --verbose",
+    "test": "cross-env NODE_ENV=testing ava",
     "test:method": "cross-env NODE_ENV=testing ava --match"
   }
 }
