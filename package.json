@@ -17,8 +17,8 @@
     "@supercharge/filesystem": "~1.0.0",
     "@supercharge/strings": "~1.3.0",
     "argon2": "~0.26.1",
-    "ava": "~3.5.2",
-    "aws-sdk": "~2.652.0",
+    "ava": "~3.6.0",
+    "aws-sdk": "~2.653.0",
     "bcryptjs": "~2.4.3",
     "chalk": "~4.0.0",
     "cookie": "~0.4.0",
@@ -29,7 +29,7 @@
     "execa": "~4.0.0",
     "extends-classes": "~1.0.5",
     "faktory-worker": "~3.3.2",
-    "handlebars": "~4.7.5",
+    "handlebars": "~4.7.6",
     "handlebars-helper-repeat": "~2.0.0",
     "hapi-class-extension-points": "~2.0.0",
     "hapi-pulse": "~3.0.0",
@@ -65,7 +65,7 @@
     "eslint-plugin-promise": "~4.2.1",
     "eslint-plugin-standard": "~4.0.1",
     "get-port": "~5.1.1",
-    "nyc": "~15.0.0",
+    "nyc": "~15.0.1",
     "proxyquire": "~2.1.3"
   },
   "engines": {

@@ -1,7 +1,7 @@
 'use strict'
 
-const Env = require('../../../env')
 const Path = require('path')
+const Env = require('../../../env')
 const BaseTest = require('../../../base-test')
 
 class EnvTest extends BaseTest {
@@ -71,6 +71,28 @@ class EnvTest extends BaseTest {
 
     process.env.NODE_ENV = undefined
     t.false(Env.is('local'))
+  }
+
+  async getOrFail (t) {
+    const env = new Env.constructor()
+    t.throws(() => env.getOrFail())
+    const error = t.throws(() => env.getOrFail(null))
+    t.true(error.message.includes('Missing environment variable'))
+
+    env.set('UNDEFINED', undefined)
+    t.throws(() => env.getOrFail('UNDEFINED'))
+
+    env.set('DB', null)
+    t.throws(() => env.getOrFail('DB'))
+
+    env.set('TIMEOUT', 20)
+    t.is(env.getOrFail('TIMEOUT'), '20')
+
+    env.set('FALSE', false)
+    t.is(env.getOrFail('FALSE'), 'false')
+
+    env.set('USER', 'Marcus')
+    t.is(env.getOrFail('USER'), 'Marcus')
   }
 }
 
