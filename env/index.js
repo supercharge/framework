@@ -1,20 +1,18 @@
 'use strict'
 
-const _ = require('lodash')
 const Path = require('path')
 const Dotenv = require('dotenv')
 const Helper = require('./../helper')
+const Str = require('@supercharge/strings')
 const DotenvExpand = require('dotenv-expand')
 
 /**
- * Manage the application's environment variables.
- * It reads the `.env` file located in the
- * project's root directory.
+ * Manage the application's environment variables. It reads
+ * the `.env` file located in the project’s root directory.
  */
 class Env {
   /**
-   * Initialize the applications environment by
-   * reading the .env file.
+   * Initialize the applications environment by reading the .env file.
    */
   loadEnvironmentVariables () {
     this.load(this.envFileName())
@@ -22,9 +20,8 @@ class Env {
   }
 
   /**
-   * Returns the `.env` file name which should
-   * be located in the root directory of the
-   * project.
+   * Returns the `.env` file name which should be located
+   * in the root directory of the project.
    *
    * @returns {String}
    */
@@ -43,30 +40,69 @@ class Env {
   }
 
   /**
-   * Load the `.env` file to resolve all
-   * environment variables. DotenvExpand
-   * resolves dynamic values inside of
-   * the .env file.
+   * Load the `.env` file to resolve all* environment variables.
+   * DotenvExpand resolves dynamic values inside of the .env file.
    *
    * @param {String} filename
    */
   load (filename) {
     const path = Path.resolve(Helper.appRoot(), filename)
-    const config = Dotenv.config({ path })
-    DotenvExpand(config)
+    const env = Dotenv.config({ path })
+    DotenvExpand(env)
   }
 
   /**
-   * Returns the value of the request
-   * environment variable.
+   * Returns the value of the request environment variable.
    *
    * @param {String} key
    * @param {String} defaultValue
    *
-   * @returns {Mixed}
+   * @returns {*}
    */
   get (key, defaultValue) {
-    return _.get(process.env, key, defaultValue)
+    return process.env[key] || defaultValue
+  }
+
+  /**
+   * This method is similar to the `Env.get` method, except that
+   * it throws an error when the value is not existent in the environment.
+   *
+   * @param {String} key
+   *
+   * @returns {*}
+   *
+   * @throws
+   */
+  getOrFail (key) {
+    const value = this.get(key)
+
+    if (this._isEmpty(value)) {
+      throw new Error(`Missing environment variable ${key}`)
+    }
+
+    return value
+  }
+
+  /**
+   * Determine whether the given `value` is null or undefined.
+   *
+   * @param {String} value
+   *
+   * @returns {Boolean}
+   */
+  _isEmpty (value) {
+    switch (value) {
+      case null:
+      case 'null':
+        return true
+
+      case undefined:
+      case 'undefined':
+        return true
+
+      default:
+        return false
+    }
   }
 
   /**
@@ -76,43 +112,42 @@ class Env {
    * @param {String} value
    */
   set (key, value) {
-    _.set(process.env, key, value)
+    process.env[key] = value
   }
 
   /**
-   * Determines whether the `NODE_ENV` environment
-   * variable is set to `production`.
+   * Determine whether the `NODE_ENV` variable is set to `production`.
    *
    * @returns {Boolean}
    */
   isProduction () {
-    const env = this.get('NODE_ENV', 'development').toLowerCase()
-
-    return env === 'production'
+    return Str(this.get('NODE_ENV', 'development'))
+      .lower()
+      .equals('production')
   }
 
   /**
-   * Determines whether the `NODE_ENV` environment
-   * variable is set to `testing`.
+   * Determine whether the `NODE_ENV` variable is set to `testing`.
    *
    * @returns {Boolean}
    */
   isTesting () {
-    const env = this.get('NODE_ENV', 'development').toLowerCase()
-
-    return env === 'testing'
+    return Str(this.get('NODE_ENV', 'development'))
+      .lower()
+      .equals('testing')
   }
 
   /**
-   * Determines whether the `NODE_ENV` environment
-   * variable is set to the given `environment`.
+   * Determine whether the `NODE_ENV` variable equals the given `environment`.
+   *
+   * @param {String} environment
    *
    * @returns {Boolean}
    */
   is (environment) {
-    const currentEnvironment = this.get('NODE_ENV').toLowerCase()
-
-    return currentEnvironment === environment
+    return Str(this.get('NODE_ENV'))
+      .lower()
+      .equals(environment)
   }
 }
 
