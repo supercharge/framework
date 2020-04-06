@@ -15,7 +15,7 @@
     "@hapi/vision": "~5.5.4",
     "@supercharge/collections": "~1.12.0",
     "@supercharge/filesystem": "~1.0.0",
-    "@supercharge/strings": "~1.2.0",
+    "@supercharge/strings": "~1.3.0",
     "argon2": "~0.26.0",
     "ava": "~2.4.0",
     "aws-sdk": "~2.617.0",
