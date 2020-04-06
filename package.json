@@ -1,8 +1,8 @@
 {
   "name": "@supercharge/framework",
   "description": "Supercharge Node.js framework",
-  "version": "1.0.0-beta8",
-  "author": "Marcus Pöhls <marcus@superchargejs.com>",
+  "version": "1.0.0-beta9",
+  "author": "Marcus Poehls <marcus@futurestud.io>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
   },
