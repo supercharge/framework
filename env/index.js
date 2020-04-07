@@ -121,9 +121,7 @@ class Env {
    * @returns {Boolean}
    */
   isProduction () {
-    return Str(this.get('NODE_ENV', 'development'))
-      .lower()
-      .equals('production')
+    return this.is('production')
   }
 
   /**
@@ -132,9 +130,7 @@ class Env {
    * @returns {Boolean}
    */
   isTesting () {
-    return Str(this.get('NODE_ENV', 'development'))
-      .lower()
-      .equals('testing')
+    return this.is('testing')
   }
 
   /**
