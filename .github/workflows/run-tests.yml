@@ -10,7 +10,7 @@ jobs:
         node-version: [12.x, 13.x]
         mongodb-version: [4.0, 4.2]
 
-    name: N ${{ matrix.node-version }} - M ${{ matrix.mongodb-version }}
+    name: Node ${{ matrix.node-version }} - Mongo ${{ matrix.mongodb-version }}
 
     steps:
     - name: Git checkout
