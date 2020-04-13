@@ -10,6 +10,8 @@ jobs:
         node-version: [12.x, 13.x]
         mongodb-version: [4.0, 4.2]
 
+    name: N ${{ matrix.node-version }} - M ${{ matrix.mongodb-version }}
+
     steps:
     - name: Git checkout
       uses: actions/checkout@v2
@@ -19,13 +21,15 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Start MongoDB
-      uses: superchargejs/mongodb-github-action@1.2.0
+    - name: Start MongoDB ${{ matrix.mongodb-version }}
+      uses: superchargejs/mongodb-github-action@1.3.0
       with:
         mongodb-version: ${{ matrix.mongodb-version }}
 
-    - run: npm install
+    - name: Install dependencies
+      run: npm install
 
-    - run: npm test
+    - name: Run tests
+      run: npm test
       env:
         CI: true
