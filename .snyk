@@ -1,0 +1,44 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.14.1
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-567746:
+    - lodash:
+        patched: '2020-05-01T03:36:57.398Z'
+    - '@adonisjs/ace > lodash':
+        patched: '2020-05-01T03:36:57.398Z'
+    - ava > lodash:
+        patched: '2020-05-01T03:36:57.398Z'
+    - hapi-class-extension-points > lodash:
+        patched: '2020-05-01T03:36:57.398Z'
+    - hapi-request-utilities > lodash:
+        patched: '2020-05-01T03:36:57.398Z'
+    - html-to-text > lodash:
+        patched: '2020-05-01T03:36:57.398Z'
+    - ava > @babel/core > lodash:
+        patched: '2020-05-01T03:36:57.398Z'
+    - winston > async > lodash:
+        patched: '2020-05-01T03:36:57.398Z'
+    - nodemailer-sparkpost-transport > sparkpost > lodash:
+        patched: '2020-05-01T03:36:57.398Z'
+    - ava > @babel/core > @babel/helper-module-transforms > lodash:
+        patched: '2020-05-01T03:36:57.398Z'
+    - nodemailer-mailgun-transport > mailgun-js > async > lodash:
+        patched: '2020-05-01T03:36:57.398Z'
+    - ava > @ava/babel-preset-stage-4 > @babel/plugin-transform-modules-commonjs > @babel/helper-module-transforms > lodash:
+        patched: '2020-05-01T03:36:57.398Z'
+    - ava > @ava/babel-preset-transform-test-files > babel-plugin-espower > @babel/generator > lodash:
+        patched: '2020-05-01T03:36:57.398Z'
+    - ava > @ava/babel-preset-stage-4 > @babel/plugin-transform-dotall-regex > @babel/helper-create-regexp-features-plugin > @babel/helper-regex > lodash:
+        patched: '2020-05-01T03:36:57.398Z'
+    - ava > @ava/babel-preset-transform-test-files > babel-plugin-espower > @babel/generator > @babel/types > lodash:
+        patched: '2020-05-01T03:36:57.398Z'
+    - ava > @ava/babel-preset-stage-4 > @babel/plugin-transform-modules-commonjs > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > lodash:
+        patched: '2020-05-01T03:36:57.398Z'
+    - ava > @ava/babel-preset-stage-4 > @babel/plugin-transform-modules-commonjs > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-05-01T03:36:57.398Z'
+    - ava > @ava/babel-preset-stage-4 > @babel/plugin-transform-modules-commonjs > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-05-01T03:36:57.398Z'
+    - ava > @ava/babel-preset-stage-4 > @babel/plugin-transform-modules-commonjs > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
+        patched: '2020-05-01T03:36:57.398Z'
