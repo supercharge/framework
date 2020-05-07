@@ -40,8 +40,7 @@ class FaktoryQueue {
   }
 
   /**
-   * Push a new job with `data` to process
-   * onto the given `queue`.
+   * Push a new job with `data` to process onto the given `queue`.
    *
    * @param {String} jobName
    * @param {*} data

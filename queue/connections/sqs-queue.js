@@ -2,7 +2,6 @@
 
 const _ = require('lodash')
 const AWS = require('aws-sdk')
-const SqsClient = AWS.SQS
 const SqsJob = require('../jobs/sqs-job')
 const Collect = require('@supercharge/collections')
 
@@ -33,16 +32,15 @@ class SqsQueue {
   }
 
   /**
-   * Create a queue connection. The SQS client
-   * uses HTTP requests to send jobs onto
-   * and retrieve them from the queue.
+   * Create a queue connection. The SQS client uses HTTP requests
+   * to send jobs onto and retrieve them from the queue.
    *
    * @param {Object} config
    *
    * @returns {SqsQueue}
    */
   async connect () {
-    this.client = new SqsClient(
+    this.client = new AWS.SQS(
       this.createConfiguration()
     )
 
@@ -65,9 +63,8 @@ class SqsQueue {
   }
 
   /**
-   * Create an AWS credentials instance based
-   * on the configured access key, secret,
-   * and token.
+   * Create an AWS credentials instance based on the
+   * configured access key, secret, and token.
    *
    * @returns {AWS.Credentials} AWS.Credentials
    */

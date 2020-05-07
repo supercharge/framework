@@ -42,8 +42,7 @@ class DatabaseQueue {
   }
 
   /**
-   * Push a new job with `data` to process
-   * onto the given `queue`.
+   * Push a new job with `data` to process onto the given `queue`.
    *
    * @param {String} jobName
    * @param {*} payload
@@ -87,8 +86,7 @@ class DatabaseQueue {
   }
 
   /**
-   * Create the database client for the configured
-   * default database driver.
+   * Create the database client for the configured default database driver.
    *
    * @returns {DatabaseQueueClient}
    */

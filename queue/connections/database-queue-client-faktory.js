@@ -15,8 +15,7 @@ class DatabaseQueueClientFaktory {
   }
 
   /**
-   * Creates the database queue client to insert,
-   * fetch, or count queue jobs.
+   * Creates the database queue client to insert, fetch, or count queue jobs.
    *
    * @param {Object} containing `driver` and `config`
    *
