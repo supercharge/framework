@@ -49,14 +49,14 @@ class Job {
   }
 
   /**
-   * Returns the number of attempts for this job.
+   * Returns the maximum number of attempts to process a job before marking it failed.
    *
-   * @returns {Number}
+   * @returns {Number|undefined}
    */
-  attempts () {
-    const { attempts } = this.payload()
+  maxAttempts () {
+    this.instance = this.resolveInstance()
 
-    return attempts
+    return this.instance.maxAttempts()
   }
 
   /**

@@ -211,7 +211,7 @@ class TestingBaseJob extends Job {
     return this.constructor.name
   }
 
-  attempts () {
+  maxAttempts () {
     return 0
   }
 }

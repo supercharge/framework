@@ -131,11 +131,15 @@ class Worker {
    * @throws
    */
   async ensureJobNotAlreadyExceedsMaxAttempts (job) {
-    if (this.options.maxAttempts === 0) {
+    const maxAttempts = typeof job.maxAttempts() === 'number'
+      ? job.maxAttempts()
+      : this.options.maxAttempts
+
+    if (maxAttempts === 0) {
       return
     }
 
-    if (job.attempts() < this.options.maxAttempts) {
+    if (job.attempts() < maxAttempts) {
       return
     }
 
