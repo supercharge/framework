@@ -1,0 +1,31 @@
+{
+  "name": "@supercharge/contracts",
+  "description": "The Supercharge contracts package",
+  "version": "0.0.0",
+  "author": "Marcus Pöhls <marcus@superchargejs.com>",
+  "homepage": "https://superchargejs.com",
+  "keywords": [
+    "supercharge",
+    "superchargejs",
+    "contracts"
+  ],
+  "license": "MIT",
+  "main": "dist",
+  "types": "dist",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/supercharge/framework.git"
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.json"
+  },
+  "devDependencies": {
+    "typescript": "~3.8.3"
+  }
+}

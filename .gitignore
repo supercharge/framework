@@ -1,3 +1,5 @@
+haters
+
 lib-cov
 *.seed
 *.log
@@ -8,17 +10,26 @@ lib-cov
 *.gz
 .github-todos
 
+pids
+results
+
+dist
 node_modules
 npm-debug.log
-yarn-error.log
 package-lock.json
 
-.env
-
-.idea
-.vagrant
-.vscode
-
-# code coverage
+# code coverage folder
 coverage
 .nyc_output
+
+# Secrets
+.env
+.env.**
+
+# IDEs and editors
+.idea
+.vscode
+
+.vagrant
+
+tsconfig.tsbuildinfo

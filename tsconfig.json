@@ -1,0 +1,10 @@
+{
+    "extends": "@supercharge/tsconfig",
+    "compilerOptions": {
+        "composite": true,
+    },
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
+}
