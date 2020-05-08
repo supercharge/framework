@@ -55,8 +55,6 @@ class QueueWork extends Command {
    *
    * @param {Object} args
    * @param {Object} options
-   *
-   * @returns {Worker}
    */
   createWorker (args, options) {
     this.worker = new Worker(

@@ -77,14 +77,14 @@ class FaktoryJob extends Job {
     await super.releaseBack(delay)
     await this.client.ack(this.id())
 
-    const { attempts } = this.custom()
-
     return this.client.push({
       queue: this.queue,
       jobtype: this.jobName(),
       args: [].concat(this.payload()),
       at: Moment().add(delay, 'seconds'),
-      custom: Object.assign({}, this.custom, { attempts: attempts + 1 })
+      custom: Object.assign({}, this.custom(), {
+        attempts: this.attempts() + 1
+      })
     })
   }
 

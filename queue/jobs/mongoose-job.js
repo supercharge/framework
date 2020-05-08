@@ -72,6 +72,7 @@ class MongooseJob extends Job {
     await super.releaseBack(delay)
 
     await this.client.delete(this.id())
+
     await this.client.push({
       queue: this.queue(),
       payload: this.payload(),

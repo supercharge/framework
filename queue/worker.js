@@ -131,15 +131,28 @@ class Worker {
    * @throws
    */
   async ensureJobNotAlreadyExceedsMaxAttempts (job) {
-    if (this.options.maxAttempts === 0) {
+    if (this.maxAttempts(job) === 0) {
       return
     }
 
-    if (job.attempts() < this.options.maxAttempts) {
+    if (job.attempts() < this.maxAttempts(job)) {
       return
     }
 
     return this.throwExceedsMaxAttemptsError(job)
+  }
+
+  /**
+   * Returns the maximum number of times to attempt the given `job`.
+   *
+   * @param {Job} job
+   *
+   * @returns {Number}
+   */
+  maxAttempts (job) {
+    return typeof job.maxAttempts() === 'number'
+      ? job.maxAttempts()
+      : this.options.maxAttempts
   }
 
   /**
@@ -177,11 +190,11 @@ class Worker {
    * @param {Error} error
    */
   async markAsFailedIfJobWillExceedMaxAttempts (job, error) {
-    if (this.options.maxAttempts === 0) {
+    if (this.maxAttempts(job) === 0) {
       return
     }
 
-    if (job.attempts() + 1 >= this.options.maxAttempts) {
+    if (job.attempts() + 1 >= this.maxAttempts(job)) {
       await this.failJob(job, error)
     }
   }

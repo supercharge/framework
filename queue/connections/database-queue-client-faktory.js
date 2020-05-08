@@ -15,30 +15,24 @@ class DatabaseQueueClientFaktory {
   }
 
   /**
-   * Creates the database queue client to insert,
-   * fetch, or count queue jobs.
-   *
-   * @param {Object} containing `driver` and `config`
-   *
-   * @returns {DtabaseQueueClient}
-   */
-  static make ({ driver, config }) {
-    if (this.missing(driver)) {
-      this.create(driver, config)
-    }
-
-    return this.get(driver)
-  }
-
-  /**
-   * Determine whether the given `driver` is missing in the cache.
+   * Returns the client instance for the given `driver`.
    *
    * @param {String} driver
    *
-   * @returns {Boolean}
+   * @returns {Object}
    */
-  static missing (driver) {
-    return !this.has(driver)
+  static get (driver) {
+    return this.drivers.get(driver)
+  }
+
+  /**
+   * Cache the client instance for the given `driver`.
+   *
+   * @param {String} driver
+   * @param {Object} client
+   */
+  static set (driver, client) {
+    this.drivers.set(driver, client)
   }
 
   /**
@@ -53,6 +47,32 @@ class DatabaseQueueClientFaktory {
   }
 
   /**
+   * Determine whether the given `driver` is missing in the cache.
+   *
+   * @param {String} driver
+   *
+   * @returns {Boolean}
+   */
+  static missing (driver) {
+    return !this.has(driver)
+  }
+
+  /**
+   * Creates the database queue client to insert, fetch, or count queue jobs.
+   *
+   * @param {Object} containing `driver` and `config`
+   *
+   * @returns {DtabaseQueueClient}
+   */
+  static make ({ driver, config }) {
+    if (this.missing(driver)) {
+      this.create(driver, config)
+    }
+
+    return this.get(driver)
+  }
+
+  /**
    * Create a new database client for the given `driver` name.
    *
    * @param {String} driver
@@ -64,29 +84,8 @@ class DatabaseQueueClientFaktory {
         return this.set(driver, MongooseClient(config))
 
       default:
-        throw new Error(`Unknown database queue driver ${driver}`)
+        throw new Error(`Unknown database queue driver "${driver}"`)
     }
-  }
-
-  /**
-   * Cache the client instance for the given `driver`.
-   *
-   * @param {String} driver
-   * @param {Object} client
-   */
-  static set (driver, client) {
-    this.drivers.set(driver, client)
-  }
-
-  /**
-   * Returns the client instance for the given `driver`.
-   *
-   * @param {String} driver
-   *
-   * @returns {Object}
-   */
-  static get (driver) {
-    return this.drivers.get(driver)
   }
 }
 

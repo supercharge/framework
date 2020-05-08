@@ -49,14 +49,12 @@ class Job {
   }
 
   /**
-   * Returns the number of attempts for this job.
+   * Returns the maximum number of attempts to process a job before marking it failed.
    *
-   * @returns {Number}
+   * @returns {Number|undefined}
    */
-  attempts () {
-    const { attempts } = this.payload()
-
-    return attempts
+  maxAttempts () {
+    return this.resolveInstance().maxAttempts()
   }
 
   /**
@@ -142,9 +140,7 @@ class Job {
    * Fire the job.
    */
   async fire () {
-    this.instance = this.resolveInstance()
-
-    return this.instance.handle()
+    return this.resolveInstance().handle()
   }
 
   /**
@@ -153,9 +149,13 @@ class Job {
    * @returns {Object}
    */
   resolveInstance () {
-    const JobClass = this.manager.getJob(this.jobName())
+    if (!this.instance) {
+      const JobClass = this.manager.getJob(this.jobName())
 
-    return new JobClass(this.payload()).setJob(this)
+      this.instance = new JobClass(this.payload()).setJob(this)
+    }
+
+    return this.instance
   }
 
   /**

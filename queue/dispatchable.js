@@ -21,8 +21,6 @@ class Dispatchable extends InteractsWithQueue {
    * Dispatch the job with the given `data`.
    *
    * @param {*} data
-   *
-   * @returns {PendingDispatch}
    */
   static async dispatch (data) {
     return new PendingDispatch(this).dispatch(data)

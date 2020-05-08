@@ -40,6 +40,15 @@ class InteractsWithQueue {
   }
 
   /**
+   * Returns the maximum number of attempts to process a job before marking it failed.
+   *
+   * @returns {Number}
+   */
+  maxAttempts () {
+    // this method is a placeholder to be overwritten in a job class
+  }
+
+  /**
    * Releases a job back onto the queue.
    *
    * @param {Number} delay in seconds

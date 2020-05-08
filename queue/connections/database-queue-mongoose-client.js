@@ -1,7 +1,6 @@
 'use strict'
 
-const Database = require('../../database')
-const { Mongoose } = Database
+const { Mongoose } = require('../../database')
 const MongooseJob = require('../jobs/mongoose-job')
 
 class DatabaseQueueMongooseClient {

@@ -133,44 +133,6 @@ class QueueJobTest extends BaseTest {
     t.pass()
   }
 
-  async serialAttemptsWithJob (t) {
-    const job = new TestingJob()
-    const baseJob = this._createBaseJob()
-
-    const mock = this.mock(baseJob)
-
-    mock
-      .expects('attempts')
-      .resolves()
-
-    job.setJob(baseJob)
-    await job.attempts()
-
-    mock.restore()
-    mock.verify()
-
-    t.pass()
-  }
-
-  async serialAttemptsWithoutJob (t) {
-    const job = new TestingJob()
-    const baseJob = this._createBaseJob()
-
-    const mock = this.mock(baseJob)
-
-    mock
-      .expects('attempts')
-      .never()
-      .resolves()
-
-    await job.attempts()
-
-    mock.restore()
-    mock.verify()
-
-    t.pass()
-  }
-
   async serialDeleteWithJob (t) {
     const job = new TestingJob()
     const baseJob = this._createBaseJob()
@@ -273,8 +235,6 @@ class TestingJob extends Dispatchable {
   }
 
   attempts () {
-    super.attempts()
-
     return 0
   }
 }
