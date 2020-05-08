@@ -54,9 +54,7 @@ class Job {
    * @returns {Number|undefined}
    */
   maxAttempts () {
-    this.instance = this.resolveInstance()
-
-    return this.instance.maxAttempts()
+    return this.resolveInstance().maxAttempts()
   }
 
   /**
@@ -142,9 +140,7 @@ class Job {
    * Fire the job.
    */
   async fire () {
-    this.instance = this.resolveInstance()
-
-    return this.instance.handle()
+    return this.resolveInstance().handle()
   }
 
   /**
@@ -153,9 +149,13 @@ class Job {
    * @returns {Object}
    */
   resolveInstance () {
-    const JobClass = this.manager.getJob(this.jobName())
+    if (!this.instance) {
+      const JobClass = this.manager.getJob(this.jobName())
 
-    return new JobClass(this.payload()).setJob(this)
+      this.instance = new JobClass(this.payload()).setJob(this)
+    }
+
+    return this.instance
   }
 
   /**
