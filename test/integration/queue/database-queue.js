@@ -89,6 +89,7 @@ class MongooseJobTest extends BaseTest {
     await queue.push(TestingMongooseJob, this.mockPayload)
 
     let job = await queue.pop()
+    t.is(job.attempts(), 0)
     await job.releaseBack()
 
     job = await queue.pop()

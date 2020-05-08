@@ -67,6 +67,8 @@ class QueueWorkerTest extends BaseTest {
       async handle () {
         throw new Error('failing job')
       }
+
+      maxAttempts () {}
     }
 
     const job = new WorkerTestingFailJob()
@@ -86,17 +88,69 @@ class QueueWorkerTest extends BaseTest {
     spy.restore()
   }
 
-  async shouldErrorWhenExceedingMaxAttempts (t) {
-    class ErrorWhenExceedingMaxAttemptsJob extends TestingBaseJob {
+  async releaseBackWhenNotExceedingJobMaxAttempts (t) {
+    class FailingJob extends TestingBaseJob {
+      async handle () {
+        throw new Error('failing job')
+      }
+
+      attempts () {
+        return 1
+      }
+
+      maxAttempts () {
+        return 3
+      }
+    }
+
+    const job = new FailingJob()
+    const worker = this._getWorker({ jobs: [job] })
+
+    const mock = this.mock(job)
+
+    mock.expects('fail').never().resolves()
+    mock.expects('releaseBack').once().resolves()
+
+    await worker.process(job)
+
+    mock.restore()
+    mock.verify()
+
+    t.true(job.hasNotFailed())
+  }
+
+  async shouldFailDueToExceededMaxAttempts (t) {
+    class FailDueToExceededMaxAttemptsJob extends TestingBaseJob {
       handle () { }
 
       attempts () {
         return 20
       }
+
+      maxAttempts () { }
     }
 
-    const job = new ErrorWhenExceedingMaxAttemptsJob()
+    const job = new FailDueToExceededMaxAttemptsJob()
     const worker = this._getWorker({ options: { maxAttempts: 1 }, jobs: [job] })
+
+    await worker.process(job)
+
+    t.true(job.isDeleted())
+  }
+
+  async shouldFailWhenExceedingMaxAttempts (t) {
+    class FailWhenExceedingMaxAttemptsJob extends TestingBaseJob {
+      handle () { }
+
+      attempts () {
+        return 1
+      }
+
+      maxAttempts () { }
+    }
+
+    const job = new FailWhenExceedingMaxAttemptsJob()
+    const worker = this._getWorker({ options: { maxAttempts: 2 }, jobs: [job] })
 
     await worker.process(job)
 
@@ -106,6 +160,7 @@ class QueueWorkerTest extends BaseTest {
   async doesNotFireWhenDeleted (t) {
     class DoesNotFireWhenDeletedJob extends TestingBaseJob {
       handle () { }
+      maxAttempts () {}
     }
 
     const job = new DoesNotFireWhenDeletedJob()
@@ -131,10 +186,12 @@ class QueueWorkerTest extends BaseTest {
       attempts () {
         return 2
       }
+
+      maxAttempts () {}
     }
 
     const job = new RetryJob()
-    const worker = this._getWorker({ options: { maxAttempts: 3 }, jobs: [job] })
+    const worker = this._getWorker({ options: { maxAttempts: 5 }, jobs: [job] })
 
     const mock = this.mock(job)
     mock.expects('fire').once().resolves()
@@ -210,15 +267,15 @@ class TestingBaseJob extends Job {
   jobName () {
     return this.constructor.name
   }
-
-  maxAttempts () {
-    return 0
-  }
 }
 
 class WorkerTestingJob extends TestingBaseJob {
   async handle () {
     //
+  }
+
+  maxAttempts () {
+    return 0
   }
 }
 
