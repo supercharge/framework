@@ -1,8 +1,18 @@
 'use strict'
 
 import Str from '@supercharge/strings'
+import { Application, ConfigStore } from '@supercharge/contracts'
 
 export abstract class Manager {
+  /**
+   * Theh application instance used to access the app configuration.
+   */
+  private readonly app: Application
+
+  constructor (app: Application) {
+    this.app = app
+  }
+
   /**
    * Returns the cached database clients.
    */
@@ -14,6 +24,15 @@ export abstract class Manager {
    * @returns {String}
    */
   abstract defaultDriver(): string
+
+  /**
+   * Returns an instance of the app configuration.
+   *
+   * @returns {ConfigStore}
+   */
+  config (): ConfigStore {
+    return this.app.config()
+  }
 
   /**
    * Returns the driver instance.
