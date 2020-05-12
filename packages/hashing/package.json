@@ -33,7 +33,7 @@
     "nodejs"
   ],
   "license": "MIT",
-  "main": "dist",
+  "main": "index.js",
   "types": "dist",
   "publishConfig": {
     "access": "public"
