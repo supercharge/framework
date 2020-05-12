@@ -1,6 +1,15 @@
 'use strict'
 
+import { ConfigStore } from '../config'
+
 export interface Application {
+  /**
+   * Returns the app config store instance.
+   *
+   * @returns {ConfigStore}
+   */
+  config (): ConfigStore
+
   /**
    * Returns the configuration path.
    *
