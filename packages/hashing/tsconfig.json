@@ -10,10 +10,10 @@
   ],
   "references": [
     {
-      "path": "../config",
+      "path": "../contracts"
     },
     {
-      "path": "../contracts"
+      "path": "../manager",
     }
   ]
 }

@@ -1,10 +1,10 @@
 'use strict'
 
 import Config from '@supercharge/config'
-import { ClientFactory } from './client-factory'
+import { Manager } from '@supercharge/manager'
 import { Hasher as HashContract } from '@supercharge/contracts'
 
-export class HashManager extends ClientFactory implements HashContract {
+export class HashManager extends Manager implements HashContract {
   /**
    * Hash the given `value`.
    *
