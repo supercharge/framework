@@ -1,0 +1,49 @@
+{
+  "name": "@supercharge/manager",
+  "description": "The Supercharge manager package",
+  "version": "0.0.0",
+  "author": "Marcus Pöhls <marcus@superchargejs.com>",
+  "bugs": {
+    "url": "https://github.com/supercharge/framework/issues"
+  },
+  "dependencies": {
+    "@supercharge/strings": "~1.5.0"
+  },
+  "devDependencies": {
+    "@hapi/code": "~7.0.0",
+    "@hapi/lab": "~21.0.0",
+    "typescript": "~3.8.3"
+  },
+  "engines": {
+    "node": ">=8"
+  },
+  "files": [
+    "dist",
+    "index.js"
+  ],
+  "keywords": [
+    "supercharge",
+    "superchargejs",
+    "manager",
+    "nodejs"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "types": "dist",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/supercharge/framework.git"
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.json",
+    "lint": "eslint src --ext .js,.ts",
+    "lint:fix": "eslint src --ext .js,.ts --fix",
+    "list:tests": "lab --assert @hapi/code --dry --verbose",
+    "test": "npm run build && npm run lint && npm run test:run",
+    "test:run": "lab --assert @hapi/code --leaks --coverage --reporter console --output stdout --reporter html --output ./coverage/coverage.html",
+    "test:single": "lab --assert @hapi/code --leaks --lint --id"
+  }
+}
