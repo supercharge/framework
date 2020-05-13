@@ -13,6 +13,7 @@
   "devDependencies": {
     "@hapi/code": "~7.0.0",
     "@hapi/lab": "~21.0.0",
+    "sinon": "~9.0.2",
     "typescript": "~3.8.3"
   },
   "engines": {
