@@ -128,5 +128,3 @@ export abstract class Manager {
     return !this.has(driver)
   }
 }
-
-module.exports = Manager
