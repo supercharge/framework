@@ -58,7 +58,7 @@ export abstract class Manager {
    * @param {Object} config
    */
   createDriver (driver: string): any {
-    const method: string = `create${Str(driver).studly().get() || ''}Driver`
+    const method: string = `create${Str(driver).studly().get()}Driver`
 
     const self = (this as any)
 
