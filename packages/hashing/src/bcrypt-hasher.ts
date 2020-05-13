@@ -3,7 +3,7 @@
 import Bcrypt from 'bcryptjs'
 import { Hasher as HashContract } from '@supercharge/contracts'
 
-class BcryptHasher implements HashContract {
+export class BcryptHasher implements HashContract {
   /**
    * The default number of rounds to generate a salt.
    */
@@ -40,5 +40,3 @@ class BcryptHasher implements HashContract {
     return Bcrypt.compare(value, hash)
   }
 }
-
-module.exports = BcryptHasher

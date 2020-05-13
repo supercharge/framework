@@ -3,7 +3,7 @@
 import Argon from 'argon2'
 import { Hasher as HashContract } from '@supercharge/contracts/src'
 
-class ArgonHasher implements HashContract {
+export class ArgonHasher implements HashContract {
   /**
    * The argon memory factor.
    */
@@ -108,5 +108,3 @@ class ArgonHasher implements HashContract {
     return this._time
   }
 }
-
-module.exports = ArgonHasher
