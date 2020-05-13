@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@supercharge/contracts": "~0.0.0",
-    "@supercharge/strings": "~1.5.0"
+    "@supercharge/strings": "file:../../../supercharge-strings"
   },
   "devDependencies": {
     "@hapi/code": "~7.0.0",
