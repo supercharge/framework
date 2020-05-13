@@ -9,7 +9,6 @@
   "dependencies": {
     "@supercharge/contracts": "~0.0.0",
     "@supercharge/manager": "~0.0.0",
-    "@supercharge/strings": "~1.5.0",
     "argon2": "~0.26.2",
     "bcryptjs": "~2.4.3"
   },
@@ -21,11 +20,6 @@
   "engines": {
     "node": ">=10"
   },
-  "files": [
-    "dist",
-    "index.js",
-    "bootstrapper.js"
-  ],
   "keywords": [
     "supercharge",
     "superchargejs",
@@ -33,6 +27,10 @@
     "nodejs"
   ],
   "license": "MIT",
+  "files": [
+    "dist",
+    "index.js"
+  ],
   "main": "index.js",
   "types": "dist",
   "publishConfig": {

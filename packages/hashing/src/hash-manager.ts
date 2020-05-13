@@ -1,6 +1,5 @@
 'use strict'
 
-import Config from '@supercharge/config'
 import { Manager } from '@supercharge/manager'
 import { Hasher as HashContract } from '@supercharge/contracts'
 
@@ -34,6 +33,6 @@ export class HashManager extends Manager implements HashContract {
    * @returns {String}
    */
   defaultDriver (): string {
-    return Config.get('hashing.driver', 'bcrypt')
+    return this.config().get('hashing.driver', 'bcrypt')
   }
 }
