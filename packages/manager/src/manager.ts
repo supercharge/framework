@@ -7,10 +7,15 @@ export abstract class Manager {
   /**
    * Theh application instance used to access the app configuration.
    */
-  private readonly app: Application
+  private app: Application
 
-  constructor (app: Application) {
-    this.app = app
+  /**
+   * Create a new manager instance.
+   *
+   * @param app
+   */
+  constructor (app?: Application) {
+    this.app = app ?? ({} as any)
   }
 
   /**
@@ -24,6 +29,17 @@ export abstract class Manager {
    * @returns {String}
    */
   abstract defaultDriver(): string
+
+  /**
+   * Set the app instance.
+   *
+   * @param app - the application instance
+   */
+  setApp (app: Application): this {
+    this.app = app
+
+    return this
+  }
 
   /**
    * Returns an instance of the app configuration.

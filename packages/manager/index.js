@@ -1,3 +1,3 @@
 'use strict'
 
-module.exports = require('./dist/src/manager')
+module.exports = require('./dist/src')
