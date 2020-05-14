@@ -24,6 +24,28 @@ describe('Manager', () => {
     expect(() => manager.handle()).to.throw('Unsupported driver "test".')
   })
 
+  it('fails to access the config for missing app instance', () => {
+    class TestManager extends Manager {
+      defaultDriver () {
+        return 'test'
+      }
+
+      createTestDriver () {
+        class TestDriver { }
+
+        return new TestDriver(this.config())
+      }
+
+      handle () {
+        return this.driver()
+      }
+    }
+
+    const manager = new TestManager(null)
+
+    expect(() => manager.handle()).to.throw()
+  })
+
   it('keeps the app instance', () => {
     class TestManager extends Manager {
       defaultDriver () {

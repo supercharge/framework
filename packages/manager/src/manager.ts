@@ -7,7 +7,7 @@ export abstract class Manager {
   /**
    * Theh application instance used to access the app configuration.
    */
-  private app: Application
+  private app: Application | undefined
 
   /**
    * Create a new manager instance.
@@ -15,7 +15,7 @@ export abstract class Manager {
    * @param app
    */
   constructor (app?: Application) {
-    this.app = app ?? ({} as any)
+    this.app = app
   }
 
   /**
@@ -47,7 +47,11 @@ export abstract class Manager {
    * @returns {ConfigStore}
    */
   config (): ConfigStore {
-    return this.app.config()
+    if (this.app) {
+      return this.app.config()
+    }
+
+    throw new Error(`Missing "app" instance on ${this.constructor.name}. Use ".setApp(app)" to set it on your manager.`)
   }
 
   /**
