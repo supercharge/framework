@@ -4,6 +4,7 @@ const Path = require('path')
 const Config = require('..')
 const Lab = require('@hapi/lab')
 const { expect } = require('@hapi/code')
+const Bootstrapper = require('../bootstrapper')
 
 const { describe, it, afterEach } = exports.lab = Lab.script()
 
@@ -12,26 +13,21 @@ describe('Config', () => {
     Config.clear()
   })
 
-  it('loadFrom', () => {
-    Config.loadFrom(
-      Path.resolve(__dirname, 'fixtures/config')
-    )
-
-    expect(Config.get('test.testing')).to.be.true()
-    expect(Config.get('app.name')).to.equal('Supercharge Config')
-  })
-
-  it('loadFrom', () => {
+  it('all', () => {
     Config.set('app.name', 'Supercharge')
-
-    expect(typeof Config.plain()).to.equal('object')
-    expect(Config.plain()).to.equal({ app: { name: 'Supercharge' } })
+    expect(typeof Config.all()).to.equal('object')
+    expect(Config.all()).to.equal({ app: { name: 'Supercharge' } })
   })
 
   it('get', () => {
     Config.set('key', 'value')
     expect(Config.get('key')).to.equal('value')
     expect(Config.get('unavailable')).to.equal(undefined)
+  })
+
+  it('get nested', async () => {
+    await new Bootstrapper().boot(new App())
+    expect(Config.get('app.nested.key')).to.equal('nested-value')
   })
 
   it('get defaultValue', () => {
@@ -56,15 +52,14 @@ describe('Config', () => {
   })
 
   it('initializes with values', () => {
-    const Conf = new Config.constructor({ isProduction: false })
+    const Conf = new Config.constructor({ isProduction: true })
 
-    expect(Conf.has('isProduction')).to.be.true()
-    expect(Conf.get('isProduction')).to.equal(false)
-  })
-
-  it('initializes without values', () => {
-    const Conf = new Config.constructor(null)
-
-    expect(Conf.plain()).to.equal({})
+    expect(Conf.has('isProduction')).to.be.false()
   })
 })
+
+class App {
+  configPath () {
+    return Path.resolve(__dirname, 'fixtures/config')
+  }
+}

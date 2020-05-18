@@ -1,5 +1,8 @@
 'use strict'
 
 module.exports = {
-  name: 'Supercharge Config'
+  name: 'Supercharge Config',
+  nested: {
+    key: 'nested-value'
+  }
 }
