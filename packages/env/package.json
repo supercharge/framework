@@ -1,0 +1,57 @@
+{
+  "name": "@supercharge/env",
+  "description": "The Supercharge environment package",
+  "version": "0.0.0",
+  "author": "Marcus Pöhls <marcus@superchargejs.com>",
+  "bugs": {
+    "url": "https://github.com/supercharge/framework/issues"
+  },
+  "dependencies": {
+    "@supercharge/contracts": "~0.0.0",
+    "@supercharge/filesystem": "~1.0.0",
+    "@supercharge/strings": "~1.8.0",
+    "dotenv": "~8.2.0",
+    "dotenv-expand": "~5.1.0"
+  },
+  "devDependencies": {
+    "@hapi/code": "~7.0.0",
+    "@hapi/lab": "~21.0.0",
+    "@types/lodash": "~4.14.150",
+    "typescript": "~3.9.2"
+  },
+  "engines": {
+    "node": ">=10"
+  },
+  "files": [
+    "dist",
+    "index.js",
+    "bootstrapper.js"
+  ],
+  "homepage": "https://superchargejs.com",
+  "keywords": [
+    "env",
+    "environment",
+    "supercharge",
+    "superchargejs",
+    "nodejs"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/supercharge/framework.git"
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.json",
+    "lint": "eslint src --ext .js,.ts",
+    "lint:fix": "eslint . --fix",
+    "list:tests": "lab --assert @hapi/code --dry --verbose",
+    "test": "npm run build && npm run lint && npm run test:run",
+    "test:run": "lab --assert @hapi/code --leaks --coverage --reporter console --output stdout --reporter html --output ./coverage/coverage.html",
+    "test:single": "lab --assert @hapi/code --leaks --lint --id"
+  },
+  "types": "dist"
+}
