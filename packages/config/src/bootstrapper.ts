@@ -4,7 +4,7 @@ import Config from './index'
 import RequireAll from 'require-all'
 import { Application } from '@supercharge/contracts'
 
-export class ConfigBootstrapper {
+export = class ConfigBootstrapper {
   /**
    * Bootstrap the given application.
    *
