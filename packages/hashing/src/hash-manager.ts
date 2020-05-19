@@ -79,7 +79,7 @@ export class HashManager extends Manager implements HashContract {
    *
    * @returns {String}
    */
-  defaultDriver (): string {
+  protected defaultDriver (): string {
     return this.config().get('hashing.driver', 'bcrypt')
   }
 
@@ -88,7 +88,7 @@ export class HashManager extends Manager implements HashContract {
    *
    * @returns {BcryptHasher}
    */
-  createBcryptDriver (): BcryptHasher {
+  protected createBcryptDriver (): BcryptHasher {
     return new BcryptHasher(
       this.config().get('hashing.bcrypt', {})
     )
@@ -99,7 +99,7 @@ export class HashManager extends Manager implements HashContract {
    *
    * @returns {ArgonHasher}
    */
-  createArgonDriver (): ArgonHasher {
+  protected createArgonDriver (): ArgonHasher {
     return new ArgonHasher(
       this.config().get('hashing.argon', {})
     )

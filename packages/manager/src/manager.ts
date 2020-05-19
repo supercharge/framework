@@ -28,7 +28,7 @@ export abstract class Manager {
    *
    * @returns {String}
    */
-  abstract defaultDriver(): string
+  protected abstract defaultDriver(): string
 
   /**
    * Set the app instance.
@@ -46,7 +46,7 @@ export abstract class Manager {
    *
    * @returns {ConfigStore}
    */
-  config (): ConfigStore {
+  protected config (): ConfigStore {
     if (this.app) {
       return this.app.config()
     }
@@ -63,7 +63,7 @@ export abstract class Manager {
    *
    * @throws
    */
-  driver (driver: string = this.defaultDriver()): any {
+  protected driver (driver: string = this.defaultDriver()): any {
     if (this.missing(driver)) {
       this.createDriver(driver)
     }
@@ -77,7 +77,7 @@ export abstract class Manager {
    * @param {String} driver
    * @param {Object} config
    */
-  createDriver (driver: string): any {
+  private createDriver (driver: string): any {
     const method: string = `create${Str(driver).studly().get()}Driver`
 
     const self = (this as any)
@@ -96,7 +96,7 @@ export abstract class Manager {
    *
    * @returns {Object}
    */
-  get (driver: string): any {
+  private get (driver: string): any {
     return this.drivers.get(driver)
   }
 
@@ -106,7 +106,7 @@ export abstract class Manager {
    * @param {String} driver
    * @param {Object} client
    */
-  set (driver: string, client: any): void {
+  private set (driver: string, client: any): void {
     this.drivers.set(driver, client)
   }
 
@@ -117,7 +117,7 @@ export abstract class Manager {
    *
    * @returns {Boolean}
    */
-  has (driver: string): boolean {
+  private has (driver: string): boolean {
     return this.drivers.has(driver)
   }
 
@@ -128,7 +128,7 @@ export abstract class Manager {
    *
    * @returns {Boolean}
    */
-  missing (driver: string): boolean {
+  private missing (driver: string): boolean {
     return !this.has(driver)
   }
 }
