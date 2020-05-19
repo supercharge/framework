@@ -1,9 +1,9 @@
 'use strict'
 
 import Str from '@supercharge/strings'
-import { EnvContract } from '@supercharge/contracts'
+import { EnvStore } from '@supercharge/contracts'
 
-export class Env implements EnvContract {
+export class Env implements EnvStore {
   /**
    * Returns the value of the request environment variable.
    *
