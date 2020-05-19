@@ -1,5 +1,6 @@
 'use strict'
 
+import Hash from './index'
 import { Application } from '@supercharge/contracts'
 
 export class ConfigBootstrapper {
@@ -9,7 +10,6 @@ export class ConfigBootstrapper {
    * @param {Application} app
    */
   async boot (app: Application): Promise<void> {
-    // TODO
-    await app
+    Hash.setApp(app)
   }
 }
