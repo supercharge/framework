@@ -1,6 +1,6 @@
 'use strict'
 
-export interface EnvContract {
+export interface EnvStore {
   /**
    * Returns the value of the request environment variable.
    *
