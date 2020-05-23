@@ -10,6 +10,11 @@ export abstract class Manager {
   private app: Application | undefined
 
   /**
+   * Returns the cached database clients.
+   */
+  private readonly drivers: Map<string, any> = new Map()
+
+  /**
    * Create a new manager instance.
    *
    * @param app
@@ -17,11 +22,6 @@ export abstract class Manager {
   constructor (app?: Application) {
     this.app = app
   }
-
-  /**
-   * Returns the cached database clients.
-   */
-  private readonly drivers: Map<string, any> = new Map()
 
   /**
    * Returns the default driver name.
