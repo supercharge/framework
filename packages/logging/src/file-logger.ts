@@ -1,27 +1,17 @@
 'use strict'
 
-import { tap } from '@supercharge/goodies'
-import Winston, { format, Logger } from 'winston'
+import { Logger } from './logger'
+import Winston, { format } from 'winston'
 import { Logger as LoggingContract } from '@supercharge/contracts'
 import { FileTransportInstance } from 'winston/lib/winston/transports'
 
 const { combine, timestamp, printf, splat } = format
 
-export class FileLogger implements LoggingContract {
-  /**
-   * The maximum log level.
-   */
-  private readonly level: string = 'debug'
-
+export class FileLogger extends Logger implements LoggingContract {
   /**
    * The log file path.
    */
   private readonly path: string
-
-  /**
-   * The file logger instance.
-   */
-  private readonly logger: Logger
 
   /**
    * Create a new file logger instance.
@@ -29,48 +19,19 @@ export class FileLogger implements LoggingContract {
    * @param options
    */
   constructor (options: any) {
+    super(options)
+
     this.path = options.path
-    this.level = options.level || this.level
-
-    this.logger = this.createFileLogger()
+    this.addFileTransportToLogger()
   }
 
   /**
-   * Create a file logger instance.
-   *
-   * @returns {Logger}
+   * Append a file transport to the logger instance.
    */
-  createFileLogger (): Logger {
-    return tap(this.createLogger(), (logger: Logger) => {
-      logger.add(this.createFileTransport())
-    })
-  }
-
-  /**
-   * Create a logger instance.
-   */
-  createLogger (): Logger {
-    return Winston.createLogger({
-      format: Winston.format.combine(
-        this.handleErrorLogs()
-      )
-    })
-  }
-
-  /**
-   * The winston logger does not log error messages when passing down error objects.
-   * Adding this handling manually allows users to log errors properly.
-   *
-   * @returns {Format}
-   */
-  handleErrorLogs (): any {
-    const formatter = format(log => {
-      return log instanceof Error
-        ? Object.assign({ message: `${log.message}\n${log.stack}` }, log)
-        : log
-    })
-
-    return formatter()
+  addFileTransportToLogger (): void {
+    this.logger.add(
+      this.createFileTransport()
+    )
   }
 
   /**

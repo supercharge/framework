@@ -8,15 +8,16 @@
   },
   "dependencies": {
     "@supercharge/contracts": "~0.0.0",
-    "@supercharge/goodies": "~1.2.0",
+    "@supercharge/goodies": "~1.4.0",
     "@supercharge/manager": "~0.0.0",
+    "chalk": "~4.0.0",
     "winston": "~3.2.1"
   },
   "devDependencies": {
     "@hapi/code": "~7.0.0",
     "@hapi/lab": "~21.0.0",
     "@types/bcryptjs": "~2.4.2",
-    "typescript": "~3.9.2"
+    "typescript": "~3.9.3"
   },
   "engines": {
     "node": ">=8"
