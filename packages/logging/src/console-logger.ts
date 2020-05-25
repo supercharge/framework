@@ -81,66 +81,14 @@ export class ConsoleLogger extends Logger implements LoggingContract {
    */
   logColors (): any {
     return {
-      fatal: Chalk.bold.red,
+      emerg: Chalk.bold.red,
+      alert: Chalk.bold.red,
+      crit: Chalk.bold.redBright,
       error: Chalk.red,
-      warn: Chalk.yellow,
+      warning: Chalk.yellow,
+      notice: Chalk.magenta,
       info: Chalk.green,
-      debug: Chalk.yellow,
-      trace: Chalk.grey
+      debug: Chalk.blue
     }
-  }
-
-  /**
-   * Log the given `message` at trace level.
-   *
-   * @param message
-   */
-  trace (message: string): void {
-    this.logger.log('trace', message)
-  }
-
-  /**
-   * Log the given `message` at debug level.
-   *
-   * @param message
-   */
-  debug (message: string): void {
-    this.logger.debug(message)
-  }
-
-  /**
-   * Log the given `message` at info level.
-   *
-   * @param message
-   */
-  info (message: string): void {
-    this.logger.info(message)
-  }
-
-  /**
-   * Log the given `message` at warn level.
-   *
-   * @param message
-   */
-  warn (message: string): void {
-    this.logger.warn(message)
-  }
-
-  /**
-   * Log the given `message` at error level.
-   *
-   * @param message
-   */
-  error (message: string, ...meta: any[]): void {
-    this.logger.error(message, ...meta)
-  }
-
-  /**
-   * Log the given `message` at fatal level.
-   *
-   * @param message
-   */
-  fatal (message: string): void {
-    this.logger.log('fatal', message)
   }
 }

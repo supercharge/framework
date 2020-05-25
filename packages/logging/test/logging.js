@@ -1,18 +1,18 @@
 'use strict'
 
-const Hash = require('..')
+const Logger = require('..')
 const Lab = require('@hapi/lab')
-const { expect } = require('@hapi/code')
+// const { expect } = require('@hapi/code')
 
 const { describe, it, before } = (exports.lab = Lab.script())
 
-describe('HashManager', () => {
+describe('Logger', () => {
   before(() => {
-    Hash.setApp(new App())
+    Logger.setApp(new App())
   })
 
   it('logs', async () => {
-
+    // expect(Logger.debug('hello world.')).to.exist()
   })
 })
 

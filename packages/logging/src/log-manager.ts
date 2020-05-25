@@ -7,30 +7,12 @@ import { Logger as LoggingContract } from '@supercharge/contracts'
 
 export class LogManager extends Manager implements LoggingContract {
   /**
-   * Returns the default logging driver name.
-   *
-   * @returns {String}
-   */
-  protected defaultDriver (): string {
-    return this.config().get('logging.driver', 'console')
-  }
-
-  /**
-   * Log the given `message` at trace level.
-   *
-   * @param message
-   */
-  trace (message: string): void {
-    this.driver().trace(message)
-  }
-
-  /**
    * Log the given `message` at debug level.
    *
    * @param message
    */
-  debug (message: string): void {
-    this.driver().debug(message)
+  debug (message: string, ...context: any[]): void {
+    this.driver().debug(message, ...context)
   }
 
   /**
@@ -38,8 +20,17 @@ export class LogManager extends Manager implements LoggingContract {
    *
    * @param message
    */
-  info (message: string): void {
-    this.driver().info(message)
+  info (message: string, ...context: any[]): void {
+    this.driver().info(message, ...context)
+  }
+
+  /**
+   * Log the given `message` at trace level.
+   *
+   * @param message
+   */
+  notice (message: string, ...context: any[]): void {
+    this.driver().notice(message, ...context)
   }
 
   /**
@@ -47,8 +38,8 @@ export class LogManager extends Manager implements LoggingContract {
    *
    * @param message
    */
-  warn (message: string): void {
-    this.driver().warn(message)
+  warning (message: string, ...context: any[]): void {
+    this.driver().warning(message, ...context)
   }
 
   /**
@@ -56,17 +47,35 @@ export class LogManager extends Manager implements LoggingContract {
    *
    * @param message
    */
-  error (message: string): void {
-    this.driver().error(message)
+  error (message: string, ...context: any[]): void {
+    this.driver().error(message, ...context)
   }
 
   /**
-   * Log the given `message` at fatal level.
+   * Log the given `message` at critical level.
    *
    * @param message
    */
-  fatal (message: string): void {
-    this.driver().fatal(message)
+  critical (message: string, ...context: any[]): void {
+    this.driver().critical(message, ...context)
+  }
+
+  /**
+   * Log the given `message` at alert level.
+   *
+   * @param message
+   */
+  alert (message: string, ...context: any[]): void {
+    this.driver().alert(message, ...context)
+  }
+
+  /**
+   * Log the given `message` at emergency level.
+   *
+   * @param message
+   */
+  emergency (message: string, ...context: any[]): void {
+    this.driver().emergency(message, ...context)
   }
 
   /**
@@ -80,6 +89,15 @@ export class LogManager extends Manager implements LoggingContract {
    */
   protected driver (name = this.defaultDriver()): LoggingContract {
     return super.driver(name)
+  }
+
+  /**
+   * Returns the default logging driver name.
+   *
+   * @returns {String}
+   */
+  protected defaultDriver (): string {
+    return this.config().get('logging.driver', 'console')
   }
 
   /**

@@ -1,6 +1,7 @@
 'use strict'
 
 import Winston, { format, Logger as WinstonLogger } from 'winston'
+import { AbstractConfigSetLevels } from 'winston/lib/winston/config'
 
 export class Logger {
   /**
@@ -31,10 +32,20 @@ export class Logger {
    */
   createLogger (): WinstonLogger {
     return Winston.createLogger({
+      levels: this.levels(),
       format: Winston.format.combine(
         this.handleErrorLogs()
       )
     })
+  }
+
+  /**
+   * Returns an object of logging levels.
+   *
+   * @returns {Object}
+   */
+  levels (): AbstractConfigSetLevels {
+    return Winston.config.syslog.levels
   }
 
   /**
@@ -55,21 +66,12 @@ export class Logger {
   }
 
   /**
-   * Log the given `message` at trace level.
-   *
-   * @param message
-   */
-  trace (message: string): void {
-    this.logger.log('trace', message)
-  }
-
-  /**
    * Log the given `message` at debug level.
    *
    * @param message
    */
-  debug (message: string): void {
-    this.logger.debug(message)
+  debug (message: string, ...context: any[]): void {
+    this.logger.debug(message, ...context)
   }
 
   /**
@@ -77,17 +79,26 @@ export class Logger {
    *
    * @param message
    */
-  info (message: string): void {
-    this.logger.info(message)
+  info (message: string, ...context: any[]): void {
+    this.logger.info(message, ...context)
   }
 
   /**
-   * Log the given `message` at warn level.
+   * Log the given `message` at notice level.
    *
    * @param message
    */
-  warn (message: string): void {
-    this.logger.warn(message)
+  notice (message: string, ...context: any[]): void {
+    this.logger.notice(message, ...context)
+  }
+
+  /**
+   * Log the given `message` at warning level.
+   *
+   * @param message
+   */
+  warning (message: string, ...context: any[]): void {
+    this.logger.warning(message, ...context)
   }
 
   /**
@@ -95,16 +106,34 @@ export class Logger {
    *
    * @param message
    */
-  error (message: string): void {
-    this.logger.error(message)
+  error (message: string, ...context: any[]): void {
+    this.logger.error(message, ...context)
   }
 
   /**
-   * Log the given `message` at fatal level.
+   * Log the given `message` at critical level.
    *
    * @param message
    */
-  fatal (message: string): void {
-    this.logger.log('fatal', message)
+  critical (message: string, ...context: any[]): void {
+    this.logger.crit(message, ...context)
+  }
+
+  /**
+   * Log the given `message` at alert level.
+   *
+   * @param message
+   */
+  alert (message: string, ...context: any[]): void {
+    this.logger.alert(message, ...context)
+  }
+
+  /**
+   * Log the given `message` at emergency level.
+   *
+   * @param message
+   */
+  emergency (message: string, ...context: any[]): void {
+    this.logger.emerg(message, ...context)
   }
 }
