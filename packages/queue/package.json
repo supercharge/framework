@@ -11,7 +11,7 @@
     "@supercharge/contracts": "~0.0.0",
     "@supercharge/goodies": "~1.4.0",
     "@supercharge/manager": "~0.0.0",
-    "aws-sdk": "~2.671.0",
+    "aws-sdk": "~2.683.0",
     "faktory-worker": "~3.3.2"
   },
   "devDependencies": {
