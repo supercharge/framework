@@ -103,7 +103,7 @@ export class LogManager extends Manager implements LoggingContract {
   /**
    * Create a file logging driver.
    *
-   * @returns {BcryptHasher}
+   * @returns {FileLogger}
    */
   protected createFileDriver (): FileLogger {
     return new FileLogger(
@@ -114,7 +114,7 @@ export class LogManager extends Manager implements LoggingContract {
   /**
    * Create a a console logging driver.
    *
-   * @returns {ArgonHasher}
+   * @returns {ConsoleLogger}
    */
   protected createConsoleDriver (): ConsoleLogger {
     return new ConsoleLogger(
