@@ -41,8 +41,8 @@ export class FileLogger extends Logger implements LoggingContract {
    */
   createFileTransport (): FileTransportInstance {
     return new Winston.transports.File({
+      level: this.logLevel(),
       filename: this.path,
-      level: this.level,
       format: combine(
         splat(),
         timestamp(),
