@@ -36,7 +36,7 @@ export class ConsoleLogger extends Logger implements LoggingContract {
    */
   createConsoleTransport (): ConsoleTransportInstance {
     return new Winston.transports.Console({
-      level: this.level,
+      level: this.logLevel(),
       format: combine(
         splat(),
         timestamp(),
@@ -58,7 +58,9 @@ export class ConsoleLogger extends Logger implements LoggingContract {
     const color = this.getColorForLevel(level)
     const time = new Date(timestamp).getTime()
 
-    return `${Chalk.gray(time)} ${color(level)} ${message} ${JSON.stringify(meta)}`
+    return `${Chalk.gray(time)} ${color(level)} ${message}`.concat(
+      meta ? JSON.stringify(meta) : ''
+    )
   }
 
   /**
