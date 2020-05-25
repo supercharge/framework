@@ -1,7 +1,7 @@
 'use strict'
 
 import Winston, { format, Logger as WinstonLogger } from 'winston'
-import { AbstractConfigSetLevels } from 'winston/lib/winston/config'
+import { AbstractConfigSetLevels, AbstractConfigSetColors } from 'winston/lib/winston/config'
 
 export class Logger {
   /**
@@ -31,6 +31,8 @@ export class Logger {
    * @returns {Logger}
    */
   createLogger (): WinstonLogger {
+    Winston.addColors(this.colors())
+
     return Winston.createLogger({
       levels: this.levels(),
       level: this.logLevel(),
@@ -44,25 +46,34 @@ export class Logger {
    * Returns the log level.
    */
   logLevel (): string {
-    switch (this.level) {
-      case 'emergency':
-        return 'emerg'
-
-      case 'critical':
-        return 'crit'
-
-      default:
-        return this.level
-    }
+    return this.level
   }
 
   /**
-   * Returns an object of logging levels.
+   * Returns an object of logging levels. Winston uses abbreviations for the
+   * "emergency" and "critical" logs levels. The returned log levels extend
+   * the default levels with full-named aliases.
    *
    * @returns {Object}
    */
   levels (): AbstractConfigSetLevels {
-    return Winston.config.syslog.levels
+    return Object.assign({
+      emergency: 0,
+      critical: 2
+    }, Winston.config.syslog.levels)
+  }
+
+  /**
+   * Returns the extended color palette containing the corresponding
+   * colors for the added logging levels "emergency" and "critical".
+   *
+   * @returns {AbstractConfigSetColors}
+   */
+  colors (): AbstractConfigSetColors {
+    return Object.assign({
+      emergency: 'red',
+      critical: 'red'
+    }, Winston.config.syslog.colors)
   }
 
   /**
