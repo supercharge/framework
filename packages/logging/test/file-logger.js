@@ -13,6 +13,7 @@ const logFile = Path.resolve(__dirname, 'test.log')
 describe('File Logger', () => {
   before(() => {
     Logger.setApp(new App())
+    Logger.info('starting tests')
   })
 
   beforeEach(async () => {
@@ -20,7 +21,7 @@ describe('File Logger', () => {
   })
 
   afterEach(async () => {
-    await Fs.remove(logFile)
+    await Fs.removeFile(logFile)
   })
 
   it('logs debug message to file', async () => {
@@ -65,19 +66,21 @@ describe('File Logger', () => {
 
   it('logs message with context data (object)', async () => {
     Logger.info('custom message', { name: 'Marcus' })
-    expect(await Fs.readFile(logFile)).to.include('Marcus')
+    expect(await Fs.readFile(logFile))
+      .to.include('"message":"custom message"')
+      .and.to.include('"name":"Marcus"')
   })
 
   it('honors the log level', async () => {
     Logger.drivers = new Map()
     Logger.setApp(new WarnLevelApp())
 
-    Logger.debug('debug message')
-    expect(await Fs.readFile(logFile)).to.be.empty()
+    Logger.debug('should not appear')
+    expect(await Fs.readFile(logFile)).to.not.include('should not appear')
 
-    Logger.warning('warning message')
+    Logger.warning('this warning should appear')
     expect(await Fs.readFile(logFile))
-      .to.include('"message":"warning message"')
+      .to.include('"message":"this warning should appear"')
       .and.to.include('"level":"warning"')
   })
 })
