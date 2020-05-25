@@ -40,7 +40,7 @@ export class ConsoleLogger extends Logger implements LoggingContract {
       format: combine(
         splat(),
         timestamp(),
-        printf(info => this.format(info))
+        printf(log => this.createLogMessage(log))
       )
     })
   }
@@ -48,13 +48,17 @@ export class ConsoleLogger extends Logger implements LoggingContract {
   /**
    * Returns a log message.
    *
+   * @param {Object} logItem
+   *
    * @returns {String}
    */
-  format (info: any): string {
-    const color = this.getColorForLevel(info.level)
-    const time = new Date(info.timestamp).getTime()
+  createLogMessage (logItem: any): string {
+    const { level, message, timestamp, [Symbol.for('splat')]: meta } = logItem
 
-    return `${Chalk.gray(time)} ${color(info.level)} ${info.message}`
+    const color = this.getColorForLevel(level)
+    const time = new Date(timestamp).getTime()
+
+    return `${Chalk.gray(time)} ${color(level)} ${message} ${JSON.stringify(meta)}`
   }
 
   /**
