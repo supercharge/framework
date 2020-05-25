@@ -7,7 +7,7 @@ export abstract class Manager {
   /**
    * Theh application instance used to access the app configuration.
    */
-  private app: Application | undefined
+  protected app: Application | undefined
 
   /**
    * Returns the cached database clients.
