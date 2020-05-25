@@ -2,7 +2,6 @@
 
 import Dotenv from 'dotenv'
 import DotenvExpand from 'dotenv-expand'
-// @ts-ignore
 import Fs from '@supercharge/filesystem'
 import { Application } from '@supercharge/contracts'
 
