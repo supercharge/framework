@@ -50,20 +50,31 @@ export class Logger {
   }
 
   /**
-   * The winston logger does not log error messages when
-   * passing down error objects. Adding this handling
-   * manually allows users to log errors properly.
+   * The winston logger does not log error messages when passing
+   * down error objects. When receiving an error instance, this
+   * logger will handle it properly and show the stacktrace.
    *
    * @returns {Format}
    */
   handleErrorLogs (): any {
     const formatter = format(log => {
-      return log instanceof Error
+      return this.isError(log)
         ? Object.assign({ message: `${log.message}\n${log.stack}` }, log)
         : log
     })
 
     return formatter()
+  }
+
+  /**
+   * Determine whether the given `log` item is an error.
+   *
+   * @param log
+   *
+   * @returns {Boolean}
+   */
+  isError (log: any): boolean {
+    return log instanceof Error
   }
 
   /**
