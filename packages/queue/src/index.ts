@@ -1,3 +1,5 @@
 'use strict'
 
-// export = TODO
+import { QueueManager } from './queue-manager'
+
+export = new QueueManager()

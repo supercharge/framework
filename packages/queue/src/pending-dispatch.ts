@@ -1,6 +1,7 @@
 'use strict'
 
 import { Dispatchable } from './dispatchable'
+import {} from '@super'
 
 export class PendingDispatch {
   /**
