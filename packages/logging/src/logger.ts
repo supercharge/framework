@@ -32,6 +32,7 @@ export class Logger {
    */
   createLogger (): WinstonLogger {
     return Winston.createLogger({
+      level: this.level,
       levels: this.levels(),
       format: Winston.format.combine(
         this.handleErrorLogs()
