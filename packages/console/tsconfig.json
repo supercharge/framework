@@ -1,0 +1,19 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "rootDir": ".",
+        "outDir": "./dist"
+    },
+    "include": [
+        "./**/*"
+    ],
+    "exclude": [
+        "dist",
+        "node_modules"
+    ],
+    "references": [
+        {
+            "path": "../contracts"
+        }
+    ]
+}
