@@ -1,6 +1,9 @@
 {
     "extends": "@supercharge/tsconfig",
     "compilerOptions": {
+        "lib": [
+            "es2020"
+        ],
         "composite": true
     },
     "exclude": [

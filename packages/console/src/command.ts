@@ -1,23 +1,28 @@
 'use strict'
 
-import { ConsoleCommand as ConsoleCommandContract } from '@supercharge/contracts'
+import { InputArgument } from './input-argument'
+import { ConsoleCommand as CommandContract } from '@supercharge/contracts'
 
-export abstract class Command implements ConsoleCommandContract {
+export class Command implements CommandContract {
   /**
-   * Returns the command name. The command name will be used to register the
-   * console command. Ensure you're not using spaces in your command names.
+   * Returns the command signature. The command signature will be used to register the
+   * console command. Ensure you're not using spaces in your command signatures.
    * Instead, use semicolons as separators, like `make:model`.
    *
    * @returns {String}
    */
-  abstract name(): string
+  signature (): string {
+    throw new Error(`You must implement the "signature" method in your "${this.constructor.name}" command`)
+  }
 
   /**
    * Returns the command description displayed when calling the help overview.
    *
    * @returns {String}
    */
-  abstract description(): string
+  description (): string {
+    return ''
+  }
 
   /**
    * Handle an incoming console command for the given `input`.
@@ -26,5 +31,7 @@ export abstract class Command implements ConsoleCommandContract {
    *
    * @returns {Promise}
    */
-  abstract handle (input: string[]): Promise<any>
+  async handle (parameters: InputArgument[], options: InputArgument[]): Promise<any> {
+    throw new Error(`You must implement the "handle" method in your "${this.constructor.name}" command`)
+  }
 }
