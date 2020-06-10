@@ -1,10 +1,11 @@
 'use strict'
 
-// import { Command } from './command'
+import { Command as CommandInstance } from './command'
 import Fs from '@supercharge/filesystem'
 import Collect from '@supercharge/collections'
+import { isSubclassOf } from '@supercharge/classes'
 import { Application as Craft } from './application'
-import { ConsoleKernel as ConsoleKernelContract, Application, Bootstrapper } from '@supercharge/contracts'
+import { ConsoleKernel as ConsoleKernelContract, Application, Bootstrapper, Command } from '@supercharge/contracts'
 
 export class Kernel implements ConsoleKernelContract {
   /**
@@ -13,14 +14,19 @@ export class Kernel implements ConsoleKernelContract {
   private readonly app: Application
 
   /**
-   * The list of console commands.
+   * The console application instance.
    */
-  private readonly commandList: string[]
+  private readonly craft: Craft | undefined
 
   /**
    * The list of bootstrappers to boot when starting the app.
    */
-  protected readonly bootstrappers: Bootstrapper[] = []
+  protected readonly bootstrappers: Bootstrapper[] = [
+    require('@supercharge/env/bootstrapper'),
+    require('@supercharge/config/bootstrapper'),
+    require('@supercharge/events/bootstrapper'),
+    require('@supercharge/logging/bootstrapper')
+  ]
 
   /**
    * Create a new console kernel instance.
@@ -29,7 +35,6 @@ export class Kernel implements ConsoleKernelContract {
    */
   constructor (app: Application) {
     this.app = app
-    this.commandList = []
   }
 
   /**
@@ -41,15 +46,17 @@ export class Kernel implements ConsoleKernelContract {
    */
   async handle (input: string[]): Promise<any> {
     await this.bootstrap()
-    await this.craft().run(input)
+    await this.getCraft().run(input)
   }
 
   /**
    * Bootstrap the console application for Craft commands.
    */
   async bootstrap (): Promise<void> {
-    // TODO
+    // TODO bootstrap app
     // maybe "this.app.bootstrap()" or "this.app.bootstrapWith(this.bootstrappers)"?
+
+    // load commands
     await this.commands()
   }
 
@@ -66,21 +73,31 @@ export class Kernel implements ConsoleKernelContract {
    * @param {Array} paths
    */
   async loadFrom (...paths: string[]): Promise<void> {
-    // load files from the `directory`, recursively
-
     await Collect(paths)
       .unique()
       .flatMap(async (path: string) => {
         return Fs.allFiles(path)
       })
-      .filter((command: string) => {
-        // TODO the @supercharge/classes package must implement the "isSubclassOf" method
-        // return isSubclassOf(command, Command)
+      .map((commandFile: string) => {
+        return this.resolve(commandFile)
+      })
+      .filter((command: Command) => {
+        return isSubclassOf(command, CommandInstance)
+      })
+      .forEach((command: Command) => {
+        this.getCraft().registerCommand(command)
+      })
+  }
 
-      })
-      .forEach(async (command: string) => {
-        this.commandList.push(command)
-      })
+  /**
+   * Requires the given file from disk.
+   *
+   * @param {String} commandFile
+   *
+   * @returns {*}
+   */
+  resolve (commandFile: string): any {
+    return require(commandFile)
   }
 
   /**
@@ -88,7 +105,11 @@ export class Kernel implements ConsoleKernelContract {
    *
    * @returns {Craft}
    */
-  craft (): Craft {
-    return new Craft(this.app)
+  getCraft (): Craft {
+    if (!this.craft) {
+      return new Craft(this.app)
+    }
+
+    return this.craft
   }
 }

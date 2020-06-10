@@ -1,18 +1,16 @@
 'use strict'
 
 import { CAC } from 'cac'
-import { Command } from './command'
-import { InputSet } from './input-set'
-import Collect from '@supercharge/collections'
-import { ConsoleApplication as ConsoleApplicationContract, Application } from '@supercharge/contracts'
 import { Parser } from './parser'
-import { InputArgument } from './input-argument'
+import { InputArgument } from './input'
+import { Command as CommandInstance } from './command'
+import { Command, ConsoleApplication as ConsoleApplicationContract, Application as App } from '@supercharge/contracts'
 
-export class ConsoleApplication implements ConsoleApplicationContract {
+export class Application implements ConsoleApplicationContract {
   /**
    * The application instance
    */
-  private readonly app: Application
+  private readonly app: App
 
   /**
    * The CLI application instance. We use the CAC library as the
@@ -24,14 +22,14 @@ export class ConsoleApplication implements ConsoleApplicationContract {
   /**
    * The list of commands.
    */
-  protected static commands: []
+  public static commands: Command[]
 
   /**
    * Create a new console application instance.
    *
    * @param app
    */
-  constructor (app: Application) {
+  constructor (app: App) {
     this.app = app
     this.cli = this.createCli()
   }
@@ -63,12 +61,10 @@ export class ConsoleApplication implements ConsoleApplicationContract {
   }
 
   /**
-   *
+   * Register
    */
   async registerCommands (): Promise<void> {
-    await Collect(
-      this.resolveCommands(ConsoleApplication.commands)
-    ).forEach((command: Command) => {
+    Application.commands.forEach((command: Command) => {
       this.registerCommand(command)
     })
   }
@@ -76,16 +72,17 @@ export class ConsoleApplication implements ConsoleApplicationContract {
   /**
    * Register the given console command.
    *
-   * @param {Command} command
+   * @param {Command} candidate
    */
-  registerCommand (command: Command): void {
-    const { name, parameters, options } = Parser.parse(command.signature())
+  registerCommand (candidate: Command): void {
+    const command = this.resolve(candidate)
+
+    const { name, parameters, options } = this.parse(command)
 
     const cliCommand = this.cli
-      .command(name)
-      .action(async () => {
-        // TODO
-        await command.handle(parameters, options)
+      .command(`${name} ${parameters.keys}`)
+      .action(async (...inputs) => {
+        await command.handle(...inputs)
       })
 
     options.forEach((option: InputArgument) => {
@@ -99,22 +96,24 @@ export class ConsoleApplication implements ConsoleApplicationContract {
   }
 
   /**
-   * Resolve an array of console commands.
+   * Create a new instance of the given command.
    *
-   * @param commands
+   * @param CommandConstructor
+   *
+   * @returns {CommandInstance}
    */
-  resolveCommands (commands: string[]): Command[] {
-    return commands.map(command => {
-      return this.resolve(command)
-    })
+  resolve (CommandConstructor: Command): CommandInstance {
+    return new CommandConstructor()
   }
 
   /**
-   * Resolve a console command.
+   * Parse the given `command`’s signature.
    *
-   * @param command
+   * @param {CommandInstance} command
+   *
+   * @returns {Object}
    */
-  resolve (command: any): Command {
-    return new Command()
+  parse (command: CommandInstance) {
+    return Parser.parse(command.signature())
   }
 }

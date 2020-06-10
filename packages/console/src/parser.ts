@@ -2,7 +2,7 @@
 
 import Str from '@supercharge/strings'
 import { upon } from '@supercharge/goodies'
-import { InputArgument } from './input-argument'
+import { InputArgument } from './input'
 import { InputSet } from './input-set'
 
 export class Parser {

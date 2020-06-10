@@ -1,9 +1,8 @@
 'use strict'
 
-import { InputArgument } from './input-argument'
-import { ConsoleCommand as CommandContract } from '@supercharge/contracts'
+import { CommandInstance } from '@supercharge/contracts'
 
-export class Command implements CommandContract {
+export class Command implements CommandInstance {
   /**
    * Returns the command signature. The command signature will be used to register the
    * console command. Ensure you're not using spaces in your command signatures.
@@ -27,11 +26,9 @@ export class Command implements CommandContract {
   /**
    * Handle an incoming console command for the given `input`.
    *
-   * @param {Array} input - command line arguments (argv)
-   *
    * @returns {Promise}
    */
-  async handle (parameters: InputArgument[], options: InputArgument[]): Promise<any> {
+  async handle (..._inputs: any[]): Promise<any> {
     throw new Error(`You must implement the "handle" method in your "${this.constructor.name}" command`)
   }
 }
