@@ -1,4 +1,3 @@
 'use strict'
 
-export class InputSet extends Set {
-}
+export class InputSet extends Set { }

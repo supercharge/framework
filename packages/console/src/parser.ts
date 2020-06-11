@@ -1,9 +1,9 @@
 'use strict'
 
 import Str from '@supercharge/strings'
-import { upon } from '@supercharge/goodies'
-import { InputArgument } from './input'
 import { InputSet } from './input-set'
+import { ConsoleInput } from './input'
+import { upon } from '@supercharge/goodies'
 
 export class Parser {
   /**
@@ -46,8 +46,8 @@ export class Parser {
    * @returns {Object}
    */
   static inputs (signature: string): { parameters: InputSet, options: InputSet} {
-    const parameters = new InputSet()
     const options = new InputSet()
+    const parameters = new InputSet()
 
     /**
      * The following Regex matches all tokens in the signature surrounded by
@@ -88,6 +88,11 @@ export class Parser {
           this.extractName(token), description, this.extractDefaultValue(token)
         )
 
+      case Str(token).endsWith('='):
+        return this.createRequiredArgument(
+          Str(token).rtrim('=').get(), description
+        )
+
       default:
         return this.createRequiredArgument(token, description)
     }
@@ -100,7 +105,7 @@ export class Parser {
    *
    * @returns {*}
    */
-  static parseArgument (input: string): InputArgument {
+  static parseArgument (input: string): ConsoleInput {
     const [token, description] = this.extractDescription(input)
 
     switch (true) {
@@ -126,10 +131,10 @@ export class Parser {
    * @param {String} description
    * @param {*} defaultValue
    *
-   * @returns {InputArgument}
+   * @returns {ConsoleInput}
    */
-  static createOptionalArgument (name: string, description: string, defaultValue?: any): InputArgument {
-    return new InputArgument()
+  static createOptionalArgument (name: string, description: string, defaultValue?: any): ConsoleInput {
+    return new ConsoleInput()
       .setName(name)
       .setDescription(description)
       .setDefaultValue(defaultValue)
@@ -143,10 +148,10 @@ export class Parser {
    * @param {String} description
    * @param {*} defaultValue
    *
-   * @returns {InputArgument}
+   * @returns {ConsoleInput}
    */
-  static createRequiredArgument (name: string, description: string, defaultValue?: any): InputArgument {
-    return new InputArgument()
+  static createRequiredArgument (name: string, description: string, defaultValue?: any): ConsoleInput {
+    return new ConsoleInput()
       .setName(name)
       .setDescription(description)
       .setDefaultValue(defaultValue)

@@ -2,7 +2,7 @@
 
 import { tap } from '@supercharge/goodies'
 
-export class InputArgument {
+export class ConsoleInput {
   private name: string
   private defaultValue: any
   private description: string
@@ -121,6 +121,17 @@ export class InputArgument {
       this.options.optional = true
       this.options.required = false
     })
+  }
+
+  /**
+   * Translate this console input to a CAC command or option input.
+   *
+   * @returns {String}
+   */
+  translateToCacInput (): any {
+    return this.isRequired()
+      ? `${this.getName()} <${this.getName()}>`
+      : `${this.getName()} [${this.getName()}]`
   }
 }
 

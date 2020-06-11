@@ -2,7 +2,7 @@
 
 import { CAC } from 'cac'
 import { Parser } from './parser'
-import { InputArgument } from './input'
+import { ConsoleInput } from './input'
 import { Command as CommandInstance } from './command'
 import { Command, ConsoleApplication as ConsoleApplicationContract, Application as App } from '@supercharge/contracts'
 
@@ -80,16 +80,13 @@ export class Application implements ConsoleApplicationContract {
     const { name, parameters, options } = this.parse(command)
 
     const cliCommand = this.cli
-      .command(`${name} ${parameters.keys}`)
+      .command(`${name} ${}`)
       .action(async (...inputs) => {
         await command.handle(...inputs)
       })
 
-    options.forEach((option: InputArgument) => {
-      // TODO translate option arguments to CAC style:
-      //   “angled brackets indicate that a string / number value is required, while square bracket indicate that the value can also be true”
-
-      cliCommand.option(option.getName(), option.getDescription(), {
+    options.forEach((option: ConsoleInput) => {
+      cliCommand.option(option.translateToCacInput(), option.getDescription(), {
         default: option.getDefault()
       })
     })
