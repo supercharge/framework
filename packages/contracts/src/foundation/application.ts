@@ -1,6 +1,7 @@
 'use strict'
 
 import { ConfigStore } from '../config'
+import { BootstrapperContstructor } from './bootstrapper'
 
 export interface Application {
   /**
@@ -71,4 +72,11 @@ export interface Application {
    * @returns {String}
    */
   environmentPath(): string
+
+  /**
+   * Bootstrap the application with the given array of `boostrappers`.
+   *
+   * @param {BootstrapperContstructor} bootstrappers
+   */
+  bootstrapWith(bootstrappers: BootstrapperContstructor[]): Promise<void>
 }
