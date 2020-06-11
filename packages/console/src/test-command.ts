@@ -10,8 +10,10 @@ export class TestCommand extends Command {
     return `
       make:model
       { file : the model name }
-      { --option-1 : option flag numero uno }
-      { --option-2, -o : another option flag }
+      { --option-1 : optional option, parsed as boolean }
+      { --option-2, -o : optional option with alias, parsed as boolean }
+      { --source=<dir> : optional option, will be assigned the given default value }
+      { --target? : optional option, parsed as boolean }
     `
   }
 
