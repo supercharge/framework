@@ -27,7 +27,7 @@ export = class ConfigBootstrapper {
    */
   loadConfigurationFiles (app: Application): object {
     return RequireAll({
-      dirname: app.configPath(),
+      dirname: app.configPath(''),
       recursive: true,
       filter: /(.*)\.js|.ts$/
     })
