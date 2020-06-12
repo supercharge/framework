@@ -14,8 +14,6 @@ export interface Application {
   /**
    * Returns the root path of the application directory.
    *
-   * @param {String} path - an optional path appended to the config path
-   *
    * @returns {String}
    */
   basePath(): string
@@ -28,36 +26,43 @@ export interface Application {
   config (): ConfigStore
 
   /**
-   * Returns the path to the application's configuration files.
+   * Returns an absolute path into the application’s config directory.
    *
-   * @param {String} path - an optional path appended to the config path
+   * @param {String} path
    *
    * @returns {String}
    */
-  configPath (path?: string): string
+  configPath (path: string): string
 
   /**
-   * Returns the path to the application's resource files.
+   * Returns an absolute path into the application’s resources directory.
    *
-   * @param {String} path - an optional path appended to the resource path
+   * @param {String} path
    *
    * @returns {String}
    */
-  resourcePath (path?: string): string
+  resourcePath (path: string): string
 
   /**
-   * Returns the path to the application's storage directory.
+   * Returns an absolute path into the application’s storage directory.
    *
-   * @param {String} path - an optional path appended to the storage path
+   * @param {String} path
    *
    * @returns {String}
    */
-  storagePath (path?: string): string
+  storagePath (path: string): string
+
+  /**
+   * Set the environment file to be loaded while bootstrapping the application.
+   *
+   * @param {String} file
+   *
+   * @returns {Application}
+   */
+  loadEnvironmentFrom(file: string): this
 
   /**
    * Returns the environment file of the application. By default, this is `.env`.
-   *
-   * @param {String} path - an optional path appended to the config path
    *
    * @returns {String}
    */
@@ -79,4 +84,18 @@ export interface Application {
    * @param {BootstrapperContstructor} bootstrappers
    */
   bootstrapWith(bootstrappers: BootstrapperContstructor[]): Promise<void>
+
+  /**
+   * Determine whether the application is running in the console.
+   *
+   * @returns {Boolean}
+   */
+  runningInConsole (): boolean
+
+  /**
+   * Mark the application as running in the console.
+   *
+   * @returns {Application}
+   */
+  markAsRunningInConsole (): this
 }
