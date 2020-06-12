@@ -15,7 +15,6 @@ export class Parser {
    */
   static parse (signature: string): { name: string, parameters: InputSet, options: InputSet} {
     const name = this.commandName(signature)
-
     const { parameters, options } = this.inputs(signature)
 
     return { name, parameters, options }

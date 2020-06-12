@@ -128,7 +128,7 @@ export class ConsoleInput {
    *
    * @returns {String}
    */
-  translateToCacInput (): any {
+  translateToCacInput (): string {
     return this.isRequired()
       ? `${this.getName()} <${this.getName()}>`
       : `${this.getName()} [${this.getName()}]`
