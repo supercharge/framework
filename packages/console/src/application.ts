@@ -53,10 +53,8 @@ export class Application implements ConsoleApplicationContract {
    * @returns {Promise}
    */
   async run (input: string[]): Promise<any> {
-    // TODO add all commands to the cli
     await this.registerCommands()
 
-    // and finally: run the CLI (by calling .parse() on the CAC instance)
     return this.cli.parse(input)
   }
 
@@ -77,10 +75,10 @@ export class Application implements ConsoleApplicationContract {
   registerCommand (candidate: Command): void {
     const command = this.resolve(candidate)
 
-    const { name, parameters, options } = this.parse(command)
+    const { name, parameters, options } = this.parse(command.signature())
 
     const cliCommand = this.cli
-      .command(`${name} ${}`)
+      .command(`${name} ${parameters.translateToCacInput()}`, command.description())
       .action(async (...inputs) => {
         await command.handle(...inputs)
       })
@@ -104,13 +102,13 @@ export class Application implements ConsoleApplicationContract {
   }
 
   /**
-   * Parse the given `command`’s signature.
+   * Parse the given command `signature`.
    *
-   * @param {CommandInstance} command
+   * @param {String} signature
    *
    * @returns {Object}
    */
-  parse (command: CommandInstance) {
-    return Parser.parse(command.signature())
+  parse (signature: string) {
+    return Parser.parse(signature)
   }
 }
