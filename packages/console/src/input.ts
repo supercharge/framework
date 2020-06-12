@@ -3,9 +3,24 @@
 import { tap } from '@supercharge/goodies'
 
 export class ConsoleInput {
+  /**
+   * The argument or option name.
+   */
   private name: string
+
+  /**
+   * The argument’s or option’s default value.
+   */
   private defaultValue: any
+
+  /**
+   * The argument or option description.
+   */
   private description: string
+
+  /**
+   * The option defining whether the input is optional or required.
+   */
   private readonly options: InputArgumentOptions
 
   constructor (name: string = '', description: string = '', defaultValue?: any, options?: InputArgumentOptions) {
