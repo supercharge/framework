@@ -1,10 +1,10 @@
 'use strict'
 
-import { Command as CommandInstance } from './command'
 import Fs from '@supercharge/filesystem'
 import Collect from '@supercharge/collections'
 import { isSubclassOf } from '@supercharge/classes'
 import { Application as Craft } from './application'
+import { Command as CommandInstance } from './command'
 import { ConsoleKernel as ConsoleKernelContract, Application, BootstrapperContstructor, Command } from '@supercharge/contracts'
 
 export class Kernel implements ConsoleKernelContract {
@@ -16,7 +16,7 @@ export class Kernel implements ConsoleKernelContract {
   /**
    * The console application instance.
    */
-  private readonly craft: Craft | undefined
+  private craft: Craft | undefined
 
   /**
    * The list of bootstrappers to boot when starting the app.
@@ -104,7 +104,7 @@ export class Kernel implements ConsoleKernelContract {
    */
   getCraft (): Craft {
     if (!this.craft) {
-      return new Craft(this.app)
+      this.craft = new Craft(this.app)
     }
 
     return this.craft
