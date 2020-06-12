@@ -85,7 +85,7 @@ export class Application implements ConsoleApplicationContract {
 
     options.forEach((option: ConsoleInput) => {
       cliCommand.option(option.translateToCacInput(), option.getDescription(), {
-        default: option.getDefault()
+        default: option.getDefaultValue()
       })
     })
   }

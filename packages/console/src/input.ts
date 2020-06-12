@@ -79,7 +79,7 @@ export class ConsoleInput {
    *
    * @returns {*}
    */
-  getDefault (): any {
+  getDefaultValue (): any {
     return this.defaultValue
   }
 
