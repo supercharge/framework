@@ -8,11 +8,6 @@ import { Command, ConsoleApplication as ConsoleApplicationContract, Application 
 
 export class Application implements ConsoleApplicationContract {
   /**
-   * The application instance
-   */
-  private readonly app: App
-
-  /**
    * The CLI application instance. We use the CAC library as the
    * underlying CLI framework. All Supercharge and app commands
    * will be translated and registered to the CAC instance.
@@ -30,19 +25,11 @@ export class Application implements ConsoleApplicationContract {
    * @param app
    */
   constructor (app: App) {
-    this.app = app
-    this.cli = this.createCli()
-  }
-
-  /**
-   * Create a CLI instance.
-   *
-   * @returns {CAC}
-   */
-  createCli (): CAC {
-    return new CAC('Supercharge Craft')
-      .version(this.app.version())
+    this.cli = new CAC('Supercharge Craft')
+      .version(app.version())
       .help()
+
+    app.markAsRunningInConsole()
   }
 
   /**
