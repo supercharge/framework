@@ -9,6 +9,9 @@ export class Config implements ConfigStore {
    */
   private config: object = {}
 
+  /**
+   * Create a new config store instance.
+   */
   constructor () {
     this.config = {}
   }
