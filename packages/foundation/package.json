@@ -10,7 +10,10 @@
     "@supercharge/collections": "~2.0.0",
     "@supercharge/config": "~0.0.0",
     "@supercharge/contracts": "~0.0.0",
-    "@supercharge/goodies": "~1.4.0"
+    "@supercharge/env": "~0.0.0",
+    "@supercharge/events": "~0.0.0",
+    "@supercharge/goodies": "~1.4.0",
+    "@supercharge/logging": "~0.0.0"
   },
   "devDependencies": {
     "@hapi/code": "~8.0.1",
@@ -49,5 +52,5 @@
     "test:run": "lab --assert @hapi/code --leaks --coverage --reporter console --output stdout --reporter html --output ./coverage/coverage.html",
     "test:single": "lab --assert @hapi/code --leaks --lint --id"
   },
-  "types": "dist"
+  "types": "dist/src"
 }

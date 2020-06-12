@@ -79,11 +79,9 @@ export interface Application {
   environmentPath(): string
 
   /**
-   * Bootstrap the application with the given array of `boostrappers`.
-   *
-   * @param {BootstrapperContstructor} bootstrappers
+   * Bootstrap the application.
    */
-  bootstrapWith(bootstrappers: BootstrapperContstructor[]): Promise<void>
+  bootstrap(): Promise<void>
 
   /**
    * Determine whether the application is running in the console.

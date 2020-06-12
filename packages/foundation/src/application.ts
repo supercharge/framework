@@ -5,6 +5,8 @@ import Path from 'path'
 import Config from '@supercharge/config'
 import Collect from '@supercharge/collections'
 import { tap, upon } from '@supercharge/goodies'
+import { HandleExceptions } from './bootstrapper/handle-exceptions'
+import { BootstrapBootstrapper } from './bootstrapper/bootstrap-bootstrappers'
 import { Application as ApplicationContract, ConfigStore, Bootstrapper as BootstrapperInstance, BootstrapperContstructor } from '@supercharge/contracts'
 
 export class Application implements ApplicationContract {
@@ -26,6 +28,18 @@ export class Application implements ApplicationContract {
    * Indicate whether the application runs in the console.
    */
   private isRunningInConsole: boolean = false
+
+  /**
+   * The list of bootstrappers to boot when starting the app.
+   */
+  protected readonly bootstrappers: BootstrapperContstructor[] = [
+    HandleExceptions,
+    require('@supercharge/env/bootstrapper'),
+    require('@supercharge/config/bootstrapper'),
+    require('@supercharge/events/bootstrapper'),
+    require('@supercharge/logging/bootstrapper'),
+    BootstrapBootstrapper
+  ]
 
   /**
    * Create a new console application instance.
@@ -162,8 +176,10 @@ export class Application implements ApplicationContract {
    *
    * @param {BootstrapperContstructor} bootstrappers
    */
-  async bootstrapWith (bootstrappers: BootstrapperContstructor[]): Promise<void> {
-    await Collect(bootstrappers).forEach(async (bootstrapper: BootstrapperContstructor) => {
+  async bootstrap (): Promise<void> {
+    await Collect(
+      this.bootstrappers
+    ).forEach(async (bootstrapper: BootstrapperContstructor) => {
       return this.make(bootstrapper).bootstrap(this)
     })
   }
