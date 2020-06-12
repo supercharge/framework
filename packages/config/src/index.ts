@@ -1,5 +1,8 @@
 'use strict'
 
 import { Config } from './config'
+import { ConfigStore } from '@supercharge/contracts'
 
-export = new Config()
+const store: ConfigStore = new Config()
+
+export = store
