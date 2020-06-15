@@ -13,10 +13,6 @@ export class Application implements ApplicationContract {
   /**
    * The absolute path to the application’s root directory.
    */
-
-  /**
-   * Das ist ja ziemlich geil!
-   */
   private readonly appRoot: string
 
   /**
@@ -41,12 +37,23 @@ export class Application implements ApplicationContract {
   ]
 
   /**
-   * Create a new console application instance.
+   * Create a new application instance.
    *
    * @param basePath - the application root path
    */
   constructor (basePath: string) {
     this.appRoot = basePath
+  }
+
+  /**
+   * Create a new application instance.
+   *
+   * @param {String} basePath - absolute path to the application’s root directory
+   *
+   * @returns {Application}
+   */
+  static withAppRoot (basePath: string): Application {
+    return new Application(basePath)
   }
 
   /**
