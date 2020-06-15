@@ -1,7 +1,6 @@
 'use strict'
 
 import { ConfigStore } from '../config'
-import { BootstrapperContstructor } from './bootstrapper'
 
 export interface Application {
   /**
