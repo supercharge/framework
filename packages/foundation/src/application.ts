@@ -36,7 +36,6 @@ export class Application implements ApplicationContract {
     HandleExceptions,
     require('@supercharge/env/bootstrapper'),
     require('@supercharge/config/bootstrapper'),
-    require('@supercharge/events/bootstrapper'),
     require('@supercharge/logging/bootstrapper'),
     BootstrapBootstrapper
   ]
