@@ -1,3 +1,3 @@
 'use strict'
 
-module.exports = require('./dist/src/bootstrapper')
+module.exports = require('./dist/bootstrapper')
