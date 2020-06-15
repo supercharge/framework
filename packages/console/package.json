@@ -11,6 +11,7 @@
     "@supercharge/collections": "~2.0.0",
     "@supercharge/contracts": "~0.0.0",
     "@supercharge/filesystem": "~2.1.0",
+    "@supercharge/foundation": "~0.0.0",
     "@supercharge/goodies": "~1.4.0",
     "@supercharge/strings": "~1.9.0",
     "cac": "~6.5.10"

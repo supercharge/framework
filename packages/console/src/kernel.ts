@@ -5,7 +5,8 @@ import Collect from '@supercharge/collections'
 import { isSubclassOf } from '@supercharge/classes'
 import { Application as Craft } from './application'
 import { Command as CommandInstance } from './command'
-import { ConsoleKernel as ConsoleKernelContract, Application, Command } from '@supercharge/contracts'
+import { BootApplication, HandleExceptions, LoadBootstrappers } from '@supercharge/foundation'
+import { ConsoleKernel as ConsoleKernelContract, Application, Command, BootstrapperContstructor } from '@supercharge/contracts'
 
 export class Kernel implements ConsoleKernelContract {
   /**
@@ -17,6 +18,15 @@ export class Kernel implements ConsoleKernelContract {
    * The console application instance.
    */
   private craft: Craft | undefined
+
+  /**
+   * The list of bootstrappers.
+   */
+  protected bootstrappers: BootstrapperContstructor[] = [
+    HandleExceptions,
+    LoadBootstrappers,
+    BootApplication
+  ]
 
   /**
    * Create a new console kernel instance.
@@ -43,7 +53,7 @@ export class Kernel implements ConsoleKernelContract {
    * Bootstrap the console application for Craft commands.
    */
   async bootstrap (): Promise<void> {
-    await this.app.bootstrap()
+    await this.app.bootstrapWith(this.bootstrappers)
     await this.commands()
   }
 
