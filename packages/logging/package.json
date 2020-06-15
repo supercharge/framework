@@ -35,7 +35,7 @@
     "index.js"
   ],
   "main": "index.js",
-  "types": "dist/src",
+  "types": "dist",
   "publishConfig": {
     "access": "public"
   },

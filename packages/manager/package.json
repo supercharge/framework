@@ -20,7 +20,7 @@
     "node": ">=8"
   },
   "files": [
-    "dist/src",
+    "dist",
     "index.js"
   ],
   "keywords": [
@@ -30,8 +30,8 @@
     "nodejs"
   ],
   "license": "MIT",
-  "main": "dist/src",
-  "types": "dist/src",
+  "main": "dist",
+  "types": "dist",
   "publishConfig": {
     "access": "public"
   },
