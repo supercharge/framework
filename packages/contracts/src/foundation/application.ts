@@ -1,6 +1,7 @@
 'use strict'
 
 import { ConfigStore } from '../config'
+import { BootstrapperContstructor } from './bootstrapper'
 
 export interface Application {
   /**
@@ -78,9 +79,16 @@ export interface Application {
   environmentPath(): string
 
   /**
-   * Bootstrap the application.
+   * Prepare booting application by running the array of `bootstrappers`.
+   *
+   * @param {Array} bootstrappers
    */
-  bootstrap(): Promise<void>
+  bootstrapWith(bootstrappers: BootstrapperContstructor[]): Promise<void>
+
+  /**
+   * Boot the application.
+   */
+  boot(): Promise<void>
 
   /**
    * Determine whether the application is running in the console.
@@ -95,4 +103,9 @@ export interface Application {
    * @returns {Application}
    */
   markAsRunningInConsole (): this
+
+  /**
+   * Load the configured applications bootstrappers.
+   */
+  loadConfiguredBootstrappers (): Promise<void>
 }
