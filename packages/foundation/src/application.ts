@@ -5,8 +5,6 @@ import Path from 'path'
 import Config from '@supercharge/config'
 import Collect from '@supercharge/collections'
 import { tap, upon } from '@supercharge/goodies'
-import { HandleExceptions } from './bootstrapper/handle-exceptions'
-import { BootstrapBootstrapper } from './bootstrapper/bootstrap-bootstrappers'
 import { Application as ApplicationContract, ConfigStore, Bootstrapper as BootstrapperInstance, BootstrapperContstructor } from '@supercharge/contracts'
 
 export class Application implements ApplicationContract {
@@ -26,15 +24,9 @@ export class Application implements ApplicationContract {
   private isRunningInConsole: boolean = false
 
   /**
-   * The list of bootstrappers to boot when starting the app.
+   * The list of application bootstrappers.
    */
-  protected readonly bootstrappers: BootstrapperContstructor[] = [
-    HandleExceptions,
-    require('@supercharge/env/bootstrapper'),
-    require('@supercharge/config/bootstrapper'),
-    require('@supercharge/logging/bootstrapper'),
-    BootstrapBootstrapper
-  ]
+  protected bootstrappers: BootstrapperContstructor[] = []
 
   /**
    * Create a new application instance.
@@ -182,12 +174,32 @@ export class Application implements ApplicationContract {
    *
    * @param {BootstrapperContstructor} bootstrappers
    */
-  async bootstrap (): Promise<void> {
+  async boot (): Promise<void> {
+    await this.bootstrapWith(this.bootstrappers)
+  }
+
+  /**
+   * Prepare booting application by running the `bootstrappers`.
+   *
+   * @param {Array} bootstrappers
+   */
+  async bootstrapWith (bootstrappers: BootstrapperContstructor[]): Promise<void> {
     await Collect(
-      this.bootstrappers
+      bootstrappers
     ).forEach(async (bootstrapper: BootstrapperContstructor) => {
       return this.make(bootstrapper).bootstrap(this)
     })
+  }
+
+  /**
+   * Load the configured applications bootstrappers.
+   */
+  async loadConfiguredBootstrappers () {
+    this.bootstrappers = await Collect(
+      this.bootstrappers
+    ).concat(
+      this.config().get('app.bootstrappers', [])
+    )
   }
 
   /**
