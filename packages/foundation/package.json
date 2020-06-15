@@ -11,7 +11,6 @@
     "@supercharge/config": "~0.0.0",
     "@supercharge/contracts": "~0.0.0",
     "@supercharge/env": "~0.0.0",
-    "@supercharge/events": "~0.0.0",
     "@supercharge/goodies": "~1.4.0",
     "@supercharge/logging": "~0.0.0",
     "youch": "~2.0.10",
