@@ -2,4 +2,6 @@
 
 import { LogManager } from './log-manager'
 
-export = new LogManager()
+const logger: LogManager = new LogManager()
+
+export = logger

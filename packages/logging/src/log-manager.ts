@@ -25,7 +25,7 @@ export class LogManager extends Manager implements LoggingContract {
   }
 
   /**
-   * Log the given `message` at trace level.
+   * Log the given `message` at notice level.
    *
    * @param message
    */
@@ -34,7 +34,7 @@ export class LogManager extends Manager implements LoggingContract {
   }
 
   /**
-   * Log the given `message` at warn level.
+   * Log the given `message` at warning level.
    *
    * @param message
    */
