@@ -30,7 +30,7 @@ export class HandleExceptions implements Bootstrapper {
    *
    * @param {Error} error
    */
-  async handle (error?: Error): Promise<void> {
+  async handle (error: Error): Promise<void> {
     return tap(new Youch(error).toJSON(), output => {
       console.log(toTerminal(output))
       process.exit(1)

@@ -2,7 +2,7 @@
 
 import { Bootstrapper, Application } from '@supercharge/contracts'
 
-export class BootstrapBootstrapper implements Bootstrapper {
+export class BootApplication implements Bootstrapper {
   /**
    * Run the `bootstrap` method on all application providers
    * configured in the `bootstrap/app` directory.
@@ -10,6 +10,6 @@ export class BootstrapBootstrapper implements Bootstrapper {
    * @param app
    */
   async bootstrap (app: Application) {
-    // TODO
+    return app.boot()
   }
 }
