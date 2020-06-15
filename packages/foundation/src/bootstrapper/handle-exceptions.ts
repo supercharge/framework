@@ -15,8 +15,14 @@ export class HandleExceptions implements Bootstrapper {
    */
   async bootstrap () {
     process
-      .on('uncaughtException', (error: Error) => this.handle(error))
-      .on('unhandledRejection', (error: Error) => this.handle(error))
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      .on('uncaughtException', async (error: Error) => {
+        await this.handle(error)
+      })
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      .on('unhandledRejection', async (error: Error) => {
+        await this.handle(error)
+      })
   }
 
   /**
@@ -24,7 +30,7 @@ export class HandleExceptions implements Bootstrapper {
    *
    * @param {Error} error
    */
-  handle (error?: Error): any {
+  async handle (error?: Error): Promise<void> {
     return tap(new Youch(error).toJSON(), output => {
       console.log(toTerminal(output))
       process.exit(1)
