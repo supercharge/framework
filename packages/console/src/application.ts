@@ -17,7 +17,7 @@ export class Application implements ConsoleApplicationContract {
   /**
    * The list of commands.
    */
-  public static commands: Command[]
+  public static commands: Command[] = []
 
   /**
    * Create a new console application instance.
@@ -40,9 +40,23 @@ export class Application implements ConsoleApplicationContract {
    * @returns {Promise}
    */
   async run (input: string[]): Promise<any> {
+    await this.registerDefaultCommand()
     await this.registerCommands()
 
     return this.cli.parse(input)
+  }
+
+  /**
+   * Register a default command printing all available commands
+   * to the terminal when the input is empty. This is done via
+   * an empty CAC command printing the default help text.
+   */
+  private async registerDefaultCommand (): Promise<void> {
+    this.cli
+      .command('')
+      .action(() => {
+        this.cli.outputHelp()
+      })
   }
 
   /**
