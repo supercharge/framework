@@ -1,8 +1,8 @@
 'use strict'
 
-import { CommandInstance } from '@supercharge/contracts'
+import { Command as CommandContract } from '@supercharge/contracts'
 
-export class Command implements CommandInstance {
+export class Command implements CommandContract {
   /**
    * Returns the command signature. The command signature will be used to register the
    * console command. Ensure you're not using spaces in your command signatures.
