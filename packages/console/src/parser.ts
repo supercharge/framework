@@ -5,6 +5,23 @@ import { InputSet } from './input-set'
 import { ConsoleInput } from './input'
 import { upon } from '@supercharge/goodies'
 
+export interface ParsedSignature {
+  /**
+   * The command name.
+   */
+  name: string
+
+  /**
+   * The command parameters (arguments).
+   */
+  parameters: InputSet
+
+  /**
+   * The command options (flags).
+   */
+  options: InputSet
+}
+
 export class Parser {
   /**
    * Parse the given console command `signature` into an object.
@@ -13,7 +30,7 @@ export class Parser {
    *
    * @returns {String}
    */
-  static parse (signature: string): { name: string, parameters: InputSet, options: InputSet} {
+  static parse (signature: string): ParsedSignature {
     const name = this.commandName(signature)
     const { parameters, options } = this.inputs(signature)
 
@@ -58,7 +75,7 @@ export class Parser {
     for (const match of matches) {
       const token = match[1] // the token without curly brackets
 
-      token.startsWith('--')
+      token.trim().startsWith('--')
         ? options.add(this.parseOption(token))
         : parameters.add(this.parseArgument(token))
     }
