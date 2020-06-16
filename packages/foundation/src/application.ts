@@ -5,7 +5,7 @@ import Path from 'path'
 import Config from '@supercharge/config'
 import Collect from '@supercharge/collections'
 import { tap, upon } from '@supercharge/goodies'
-import { Application as ApplicationContract, ConfigStore, Bootstrapper as BootstrapperInstance, BootstrapperContstructor } from '@supercharge/contracts'
+import { Application as ApplicationContract, ConfigStore, Bootstrapper, BootstrapperContstructor } from '@supercharge/contracts'
 
 export class Application implements ApplicationContract {
   /**
@@ -205,12 +205,12 @@ export class Application implements ApplicationContract {
   /**
    * Returns a bootstrapper instance.
    *
-   * @param Bootstrapper
+   * @param Candidate
    *
    * @returns {Bootstrapper}
    */
-  make (Bootstrapper: BootstrapperContstructor): BootstrapperInstance {
-    return new Bootstrapper()
+  make (Candidate: BootstrapperContstructor): Bootstrapper {
+    return new Candidate()
   }
 
   /**

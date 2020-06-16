@@ -2,6 +2,8 @@
 
 import { Application } from './application'
 
+export type BootstrapperContstructor = new() => Bootstrapper
+
 export interface Bootstrapper {
   /**
    * Bootstrap the given application.

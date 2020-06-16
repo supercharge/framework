@@ -6,9 +6,7 @@ import { upon } from '@supercharge/goodies'
 import Collect from '@supercharge/collections'
 import { Application as Craft } from './application'
 import { BootApplication, HandleExceptions, LoadBootstrappers } from '@supercharge/foundation'
-import { ConsoleKernel as ConsoleKernelContract, Application, Bootstrapper } from '@supercharge/contracts'
-
-type BootstrapperContstructor = new() => Bootstrapper
+import { ConsoleKernel as ConsoleKernelContract, Application, BootstrapperContstructor } from '@supercharge/contracts'
 
 export class Kernel implements ConsoleKernelContract {
   /**
