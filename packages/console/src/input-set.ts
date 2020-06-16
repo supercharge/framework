@@ -9,11 +9,13 @@ export class InputSet extends Set {
    * @returns {String}
    */
   translateToCacInput (): string {
-    return this.map((input: ConsoleInput) => {
-      return input.isRequired()
-        ? `${input.getName()} <${input.getName()}>`
-        : `${input.getName()} [${input.getName()}]`
-    }).join(' ')
+    return this
+      .map((input: ConsoleInput) => {
+        return input.isRequired()
+          ? `<${input.getName()}>`
+          : `[${input.getName()}]`
+      })
+      .join(' ')
   }
 
   /**
