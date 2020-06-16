@@ -1,0 +1,58 @@
+{
+  "name": "@supercharge/http",
+  "description": "The Supercharge http package",
+  "version": "0.0.0",
+  "author": "Marcus Pöhls <marcus@superchargejs.com>",
+  "bugs": {
+    "url": "https://github.com/supercharge/framework/issues"
+  },
+  "dependencies": {
+    "@hapi/hapi": "~19.1.1",
+    "@supercharge/collections": "~2.0.0",
+    "@supercharge/contracts": "~0.0.0",
+    "@supercharge/filesystem": "~2.1.0",
+    "@supercharge/foundation": "~0.0.0",
+    "@supercharge/goodies": "~1.4.0",
+    "@types/hapi__hapi": "^19.0.3"
+  },
+  "devDependencies": {
+    "@hapi/code": "~8.0.1",
+    "@hapi/lab": "~22.0.4",
+    "typescript": "~3.9.5"
+  },
+  "engines": {
+    "node": ">=10"
+  },
+  "files": [
+    "dist",
+    "index.js",
+    "bootstrapper.js"
+  ],
+  "homepage": "https://superchargejs.com",
+  "keywords": [
+    "http",
+    "supercharge",
+    "superchargejs",
+    "nodejs"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/supercharge/framework.git"
+  },
+  "scripts": {
+    "build": "tsc --build tsconfig.json",
+    "watch": "tsc --build tsconfig.json --watch",
+    "lint": "eslint src --ext .js,.ts",
+    "lint:fix": "eslint src --fix",
+    "list:tests": "lab --assert @hapi/code --dry --verbose",
+    "test": "npm run build && npm run lint && npm run test:run",
+    "test:run": "lab --assert @hapi/code --leaks --coverage --reporter console --output stdout --reporter html --output ./coverage/coverage.html",
+    "test:single": "lab --assert @hapi/code --leaks --lint --id"
+  },
+  "types": "dist"
+}
