@@ -1,8 +1,6 @@
 'use strict'
 
-export type Command = new() => CommandInstance
-
-export interface CommandInstance {
+export interface Command {
   /**
    * Returns the command signature. The command signature will be used to register the
    * console command. Ensure you're not using spaces in your command signatures.
