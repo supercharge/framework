@@ -44,7 +44,7 @@ export class Application implements ApplicationContract {
    *
    * @returns {Application}
    */
-  static withAppRoot (basePath: string): Application {
+  static createWithAppRoot (basePath: string): Application {
     return new Application(basePath)
   }
 
