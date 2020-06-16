@@ -24,8 +24,8 @@ export class ConsoleInput {
   private readonly options: InputArgumentOptions
 
   constructor (name: string = '', description: string = '', defaultValue?: any, options?: InputArgumentOptions) {
-    this.name = name
-    this.description = description
+    this.name = name.trim()
+    this.description = description.trim()
     this.defaultValue = defaultValue
     this.options = options ?? { optional: true }
   }
@@ -48,7 +48,7 @@ export class ConsoleInput {
    */
   setName (name: string): this {
     return tap(this, () => {
-      this.name = name
+      this.name = name.trim()
     })
   }
 
@@ -70,7 +70,7 @@ export class ConsoleInput {
    */
   setDescription (description: any): this {
     return tap(this, () => {
-      this.description = description
+      this.description = description.trim()
     })
   }
 
