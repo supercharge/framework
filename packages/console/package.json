@@ -7,7 +7,6 @@
     "url": "https://github.com/supercharge/framework/issues"
   },
   "dependencies": {
-    "@supercharge/classes": "~1.3.0",
     "@supercharge/collections": "~2.0.0",
     "@supercharge/contracts": "~0.0.0",
     "@supercharge/filesystem": "~2.1.0",
