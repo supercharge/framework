@@ -1,12 +1,12 @@
 'use strict'
 
+import { Command } from './command'
 import Fs from '@supercharge/filesystem'
+import { upon } from '@supercharge/goodies'
 import Collect from '@supercharge/collections'
-import { isSubclassOf } from '@supercharge/classes'
 import { Application as Craft } from './application'
-import { Command as CommandInstance } from './command'
 import { BootApplication, HandleExceptions, LoadBootstrappers } from '@supercharge/foundation'
-import { ConsoleKernel as ConsoleKernelContract, Application, Command, BootstrapperContstructor } from '@supercharge/contracts'
+import { ConsoleKernel as ConsoleKernelContract, Application, BootstrapperContstructor } from '@supercharge/contracts'
 
 export class Kernel implements ConsoleKernelContract {
   /**
@@ -72,6 +72,9 @@ export class Kernel implements ConsoleKernelContract {
   async loadFrom (...paths: string[]): Promise<void> {
     await Collect(paths)
       .unique()
+      .filter(async (path: string) => {
+        return Fs.exists(path)
+      })
       .flatMap(async (path: string) => {
         return Fs.allFiles(path)
       })
@@ -79,7 +82,7 @@ export class Kernel implements ConsoleKernelContract {
         return this.resolve(commandFile)
       })
       .filter((command: Command) => {
-        return isSubclassOf(command, CommandInstance)
+        return command instanceof Command
       })
       .forEach((command: Command) => {
         this.getCraft().registerCommand(command)
@@ -91,10 +94,13 @@ export class Kernel implements ConsoleKernelContract {
    *
    * @param {String} commandFile
    *
-   * @returns {*}
+   * @returns {Command}
    */
   resolve (commandFile: string): Command {
-    return require(commandFile)
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    return upon(require(commandFile), (Candidate) => {
+      return new Candidate()
+    })
   }
 
   /**
