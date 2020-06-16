@@ -47,7 +47,7 @@ export class Application implements ConsoleApplicationContract {
   private registerDefaultCommand (): void {
     this.cli
       .command('')
-      .usage('{command} {...options}')
+      .usage('[command] [...options]')
       .action(() => {
         this.cli.outputHelp()
       })
