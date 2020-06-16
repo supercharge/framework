@@ -91,9 +91,9 @@
     "url": "git+https://github.com/supercharge/framework.git"
   },
   "scripts": {
+    "build": "lerna run build",
     "coverage": "cross-env NODE_ENV=testing nyc --reporter=text --reporter=html ava",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "lerna run lint",
     "test": "cross-env NODE_ENV=testing ava",
     "test:method": "cross-env NODE_ENV=testing ava --match"
   }
