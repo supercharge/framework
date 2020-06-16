@@ -5,23 +5,6 @@ import { InputSet } from './input-set'
 import { ConsoleInput } from './input'
 import { upon } from '@supercharge/goodies'
 
-export interface ParsedSignature {
-  /**
-   * The command name.
-   */
-  name: string
-
-  /**
-   * The command parameters (arguments).
-   */
-  parameters: InputSet
-
-  /**
-   * The command options (flags).
-   */
-  options: InputSet
-}
-
 export class Parser {
   /**
    * Parse the given console command `signature` into an object.
@@ -110,7 +93,7 @@ export class Parser {
         )
 
       default:
-        return this.createRequiredArgument(token, description)
+        return this.createOptionalArgument(token, description)
     }
   }
 
@@ -223,4 +206,21 @@ export class Parser {
       return matches[2]
     })
   }
+}
+
+export interface ParsedSignature {
+  /**
+   * The command name.
+   */
+  name: string
+
+  /**
+   * The command parameters (arguments).
+   */
+  parameters: InputSet
+
+  /**
+   * The command options (flags).
+   */
+  options: InputSet
 }
