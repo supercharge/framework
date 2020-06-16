@@ -40,10 +40,20 @@ export class Application implements ConsoleApplicationContract {
    * @returns {Promise}
    */
   async run (input: string[]): Promise<any> {
-    await this.registerDefaultCommand()
     await this.registerCommands()
 
     return this.cli.parse(input)
+  }
+
+  /**
+   * Register
+   */
+  async registerCommands (): Promise<void> {
+    this.registerDefaultCommand()
+
+    Application.commands.forEach((command: Command) => {
+      this.registerCommand(command)
+    })
   }
 
   /**
@@ -51,21 +61,12 @@ export class Application implements ConsoleApplicationContract {
    * to the terminal when the input is empty. This is done via
    * an empty CAC command printing the default help text.
    */
-  private async registerDefaultCommand (): Promise<void> {
+  private registerDefaultCommand (): void {
     this.cli
       .command('')
       .action(() => {
         this.cli.outputHelp()
       })
-  }
-
-  /**
-   * Register
-   */
-  async registerCommands (): Promise<void> {
-    Application.commands.forEach((command: Command) => {
-      this.registerCommand(command)
-    })
   }
 
   /**
