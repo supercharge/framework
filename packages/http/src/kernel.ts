@@ -2,9 +2,7 @@
 
 import { Server } from '@hapi/hapi'
 import { BootApplication, HandleExceptions, LoadBootstrappers } from '@supercharge/foundation'
-import { HttpKernel as HttpKernelContract, Application, Bootstrapper } from '@supercharge/contracts'
-
-type BootstrapperContstructor = new() => Bootstrapper
+import { HttpKernel as HttpKernelContract, Application, BootstrapperContstructor } from '@supercharge/contracts'
 
 export class Kernel implements HttpKernelContract {
   /**
