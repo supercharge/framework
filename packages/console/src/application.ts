@@ -1,10 +1,10 @@
 'use strict'
 
-import { CAC } from 'cac'
+import { cac, CAC } from 'cac'
 import { Parser } from './parser'
+import { Command } from './command'
 import { ConsoleInput } from './input'
-import { Command as CommandInstance } from './command'
-import { Command, ConsoleApplication as ConsoleApplicationContract, Application as App } from '@supercharge/contracts'
+import { ConsoleApplication as ConsoleApplicationContract, Application as App } from '@supercharge/contracts'
 
 export class Application implements ConsoleApplicationContract {
   /**
@@ -12,12 +12,7 @@ export class Application implements ConsoleApplicationContract {
    * underlying CLI framework. All Supercharge and app commands
    * will be translated and registered to the CAC instance.
    */
-  private readonly cli: CAC
-
-  /**
-   * The list of commands.
-   */
-  public static commands: Command[] = []
+  private cli: CAC = cac()
 
   /**
    * Create a new console application instance.
@@ -25,35 +20,23 @@ export class Application implements ConsoleApplicationContract {
    * @param app
    */
   constructor (app: App) {
-    this.cli = new CAC('Supercharge Craft')
-      .version(app.version())
-      .help()
-
+    this.createCli(app)
     app.markAsRunningInConsole()
   }
 
   /**
-   * Runs the incoming console command for the given `input`.
+   * Create a CAC CLI instance.
    *
-   * @param {Array} input - command line arguments (process.argv)
+   * @param {App} app
    *
-   * @returns {Promise}
+   * @returns {CAC}
    */
-  async run (input: string[]): Promise<any> {
-    await this.registerCommands()
+  createCli (app: App): void {
+    this.cli = cac('node craft')
+      .version(app.version())
+      .help()
 
-    return this.cli.parse(input)
-  }
-
-  /**
-   * Register
-   */
-  async registerCommands (): Promise<void> {
     this.registerDefaultCommand()
-
-    Application.commands.forEach((command: Command) => {
-      this.registerCommand(command)
-    })
   }
 
   /**
@@ -64,19 +47,29 @@ export class Application implements ConsoleApplicationContract {
   private registerDefaultCommand (): void {
     this.cli
       .command('')
+      .usage('{command} {...options}')
       .action(() => {
         this.cli.outputHelp()
       })
   }
 
   /**
+   * Runs the incoming console command for the given `input`.
+   *
+   * @param {Array} input - command line arguments (process.argv)
+   *
+   * @returns {Promise}
+   */
+  async run (input: string[]): Promise<any> {
+    await this.cli.parse(input)
+  }
+
+  /**
    * Register the given console command.
    *
-   * @param {Command} candidate
+   * @param {Command} command
    */
-  registerCommand (candidate: Command): void {
-    const command = this.resolve(candidate)
-
+  registerCommand (command: Command): void {
     const { name, parameters, options } = this.parse(command.signature())
 
     const cliCommand = this.cli
@@ -90,17 +83,6 @@ export class Application implements ConsoleApplicationContract {
         default: option.getDefaultValue()
       })
     })
-  }
-
-  /**
-   * Create a new instance of the given command.
-   *
-   * @param CommandConstructor
-   *
-   * @returns {CommandInstance}
-   */
-  resolve (CommandConstructor: Command): CommandInstance {
-    return new CommandConstructor()
   }
 
   /**
