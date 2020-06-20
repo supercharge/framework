@@ -184,9 +184,7 @@ export class Application implements ApplicationContract {
    * @param {Array} bootstrappers
    */
   async bootstrapWith (bootstrappers: BootstrapperContstructor[]): Promise<void> {
-    await Collect(
-      bootstrappers
-    ).forEach(async (bootstrapper: BootstrapperContstructor) => {
+    await Collect(bootstrappers).forEach(async (bootstrapper: BootstrapperContstructor) => {
       return this.make(bootstrapper).bootstrap(this)
     })
   }
