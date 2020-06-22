@@ -19,7 +19,13 @@
             "path": "../contracts"
         },
         {
+            "path": "../env"
+        },
+        {
             "path": "../foundation"
+        },
+        {
+            "path": "../logging"
         }
     ]
 }
