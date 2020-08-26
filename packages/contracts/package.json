@@ -23,9 +23,8 @@
     "url": "git+https://github.com/supercharge/framework.git"
   },
   "scripts": {
-    "build": "tsc -b tsconfig.json"
+    "build": "tsc -b tsconfig.json",
+    "watch": "tsc --build tsconfig.json --watch"
   },
-  "devDependencies": {
-    "typescript": "~3.8.3"
-  }
+  "devDependencies": {}
 }

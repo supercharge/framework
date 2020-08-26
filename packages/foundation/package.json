@@ -16,11 +16,7 @@
     "youch": "~2.0.10",
     "youch-terminal": "~1.0.0"
   },
-  "devDependencies": {
-    "@hapi/code": "~8.0.1",
-    "@hapi/lab": "~22.0.4",
-    "typescript": "~3.9.5"
-  },
+  "devDependencies": {},
   "engines": {
     "node": ">=8"
   },
@@ -46,12 +42,11 @@
   },
   "scripts": {
     "build": "tsc -b tsconfig.json",
+    "watch": "tsc --build tsconfig.json --watch",
     "lint": "eslint src --ext .js,.ts",
-    "lint:fix": "eslint src --fix",
-    "list:tests": "lab --assert @hapi/code --dry --verbose",
+    "lint:fix": "npm run lint -- --fix",
     "test": "npm run build && npm run lint && npm run test:run",
-    "test:run": "lab --assert @hapi/code --leaks --coverage --reporter console --output stdout --reporter html --output ./coverage/coverage.html",
-    "test:single": "lab --assert @hapi/code --leaks --lint --id"
+    "test:run": "jest --config ../../jest.config.js --rootDir ."
   },
   "types": "dist"
 }

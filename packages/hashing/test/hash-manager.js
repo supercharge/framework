@@ -1,20 +1,15 @@
 'use strict'
 
 const Hash = require('..')
-const Lab = require('@hapi/lab')
-const { expect } = require('@hapi/code')
-
-const { describe, it, before } = (exports.lab = Lab.script())
-
 describe('HashManager', () => {
-  before(() => {
+  beforeAll(() => {
     Hash.setApp(new App())
   })
 
   it('makes a hash', async () => {
     expect(
       await Hash.make('Supercharge')
-    ).to.exist()
+    ).toBeDefined()
   })
 
   it('verifies a hash', async () => {
@@ -22,31 +17,25 @@ describe('HashManager', () => {
 
     expect(
       await Hash.check('Supercharge', hash)
-    ).to.be.true()
+    ).toBeTrue()
   })
 
   it('creates an MD5 hash', () => {
-    expect(
-      Hash.md5('Supercharge')
-    )
-      .to.exist()
-      .and.not.equal('Supercharge')
+    const md5 = Hash.md5('Supercharge')
+    expect(md5).toBeDefined()
+    expect(md5).not.toEqual('Supercharge')
   })
 
   it('creates a SHA256 hash', () => {
-    expect(
-      Hash.sha256('Supercharge')
-    )
-      .to.exist()
-      .and.not.equal('Supercharge')
+    const sha256 = Hash.sha256('Supercharge')
+    expect(sha256).toBeDefined()
+    expect(sha256).not.toEqual('Supercharge')
   })
 
   it('creates a SHA512 hash', () => {
-    expect(
-      Hash.sha512('Supercharge')
-    )
-      .to.exist()
-      .and.not.equal('Supercharge')
+    const sha512 = Hash.sha512('Supercharge')
+    expect(sha512).toBeDefined()
+    expect(sha512).not.toEqual('Supercharge')
   })
 
   it('can change the hash driver', async () => {
@@ -54,11 +43,11 @@ describe('HashManager', () => {
 
     expect(
       await Hash.driver('argon').check('Supercharge', hash)
-    ).to.be.true()
+    ).toBeTrue()
 
     expect(
       await Hash.driver('bcrypt').check('Supercharge', hash)
-    ).to.be.false()
+    ).toBeFalse()
   })
 
   it('configures the bcrypt rounds', async () => {
@@ -68,7 +57,7 @@ describe('HashManager', () => {
       .setApp(new BcryptConfigurationApp())
       .make('Super')
 
-    expect(hash).to.exist()
+    expect(hash).toBeDefined()
   })
 
   it('configures the argon2id driver', async () => {
@@ -78,7 +67,7 @@ describe('HashManager', () => {
       .setApp(new Argon2idConfigurationApp())
       .make('Super')
 
-    expect(hash).to.exist()
+    expect(hash).toBeDefined()
   })
 
   it('configures the argon2i driver', async () => {
@@ -87,10 +76,10 @@ describe('HashManager', () => {
 
     const hash = await Hash.make('Super')
 
-    expect(hash).to.exist()
+    expect(hash).toBeDefined()
     expect(
       await Hash.driver('argon').check('Super', hash)
-    ).to.exist()
+    ).toBeDefined()
   })
 })
 

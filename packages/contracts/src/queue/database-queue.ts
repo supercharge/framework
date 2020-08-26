@@ -2,7 +2,19 @@
 
 import { Job } from './job'
 
-export interface Queue {
+export interface DatabaseQueuePayload {
+  job: Job
+
+  payload: any
+
+  queue: string
+
+  attempts: number
+
+  notBefore: Date
+}
+
+export interface DatabaseQueue {
   /**
    * Push a new job onto the queue.
    *
@@ -12,7 +24,7 @@ export interface Queue {
    *
    * @returns {String} the job ID
    */
-  push (jobName: string, payload: any, queue?: string): Promise<string>
+  push (data: DatabaseQueuePayload): Promise<number>
 
   /**
    * Retrieve the next job from the queue.
@@ -21,7 +33,7 @@ export interface Queue {
    *
    * @returns {Job}
    */
-  pop (queue?: string): Promise<Job>
+  pop (queue: string): Promise<Job | null>
 
   /**
    * Returns number of jobs on the given `queue`.
@@ -30,12 +42,12 @@ export interface Queue {
    *
    * @returns {Number}
    */
-  size (queue?: string): Promise<number>
+  size (queue: string): Promise<number>
 
   /**
    * Clear all jobs from the given `queue`.
    *
    * @param {String|Array} queue
    */
-  clear (queue?: string): Promise<void>
+  clear (queue: string): Promise<void>
 }

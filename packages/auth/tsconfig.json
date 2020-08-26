@@ -1,7 +1,7 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "rootDir": ".",
+        "rootDir": "src",
         "outDir": "./dist",
         "lib": [
             "es2020"
@@ -17,15 +17,6 @@
     "references": [
         {
             "path": "../contracts"
-        },
-        {
-            "path": "../env"
-        },
-        {
-            "path": "../foundation"
-        },
-        {
-            "path": "../logging"
         }
     ]
 }

@@ -1,14 +1,10 @@
 'use strict'
 
 const Logger = require('..')
-const Lab = require('@hapi/lab')
 const MockStd = require('mock-stdio')
-const { expect } = require('@hapi/code')
-
-const { describe, it, before } = (exports.lab = Lab.script())
 
 describe('Console Logger', () => {
-  before(() => {
+  beforeAll(() => {
     Logger.setApp(new App())
   })
 
@@ -17,7 +13,7 @@ describe('Console Logger', () => {
     Logger.debug('debug message')
 
     const { stdout } = MockStd.end()
-    expect(stdout).to.include('debug message')
+    expect(stdout).toInclude('debug message')
   })
 
   it('logs info message to file', async () => {
@@ -25,7 +21,7 @@ describe('Console Logger', () => {
     Logger.info('info message')
 
     const { stdout } = MockStd.end()
-    expect(stdout).to.include('info message')
+    expect(stdout).toInclude('info message')
   })
 
   it('logs notice message to file', async () => {
@@ -33,7 +29,7 @@ describe('Console Logger', () => {
     Logger.notice('notice message')
 
     const { stdout } = MockStd.end()
-    expect(stdout).to.include('notice message')
+    expect(stdout).toInclude('notice message')
   })
 
   it('logs warning message to file', async () => {
@@ -41,7 +37,7 @@ describe('Console Logger', () => {
     Logger.warning('warning message')
 
     const { stdout } = MockStd.end()
-    expect(stdout).to.include('warning message')
+    expect(stdout).toInclude('warning message')
   })
 
   it('logs error message to file', async () => {
@@ -49,7 +45,7 @@ describe('Console Logger', () => {
     Logger.error('error message')
 
     const { stdout } = MockStd.end()
-    expect(stdout).to.include('error message')
+    expect(stdout).toInclude('error message')
   })
 
   it('logs critical message to file', async () => {
@@ -57,7 +53,7 @@ describe('Console Logger', () => {
     Logger.critical('critical message')
 
     const { stdout } = MockStd.end()
-    expect(stdout).to.include('critical message')
+    expect(stdout).toInclude('critical message')
   })
 
   it('logs alert message to file', async () => {
@@ -65,7 +61,7 @@ describe('Console Logger', () => {
     Logger.alert('alert message')
 
     const { stdout } = MockStd.end()
-    expect(stdout).to.include('alert message')
+    expect(stdout).toInclude('alert message')
   })
 
   it('logs emergency message to file', async () => {
@@ -73,7 +69,7 @@ describe('Console Logger', () => {
     Logger.emergency('emergency message')
 
     const { stdout } = MockStd.end()
-    expect(stdout).to.include('emergency message')
+    expect(stdout).toInclude('emergency message')
   })
 
   it('logs message with context data (object)', async () => {
@@ -81,7 +77,7 @@ describe('Console Logger', () => {
     Logger.info('custom message', { name: 'Marcus', app: 'Supercharge' })
 
     const { stdout } = MockStd.end()
-    expect(stdout).to.include('"name":"Marcus"')
+    expect(stdout).toInclude('"name":"Marcus"')
   })
 
   it('handles errors and shows stacktraces', async () => {
@@ -89,7 +85,7 @@ describe('Console Logger', () => {
     Logger.alert(new Error('Logging failed'))
 
     const { stdout } = MockStd.end()
-    expect(stdout).to.include('Logging failed')
+    expect(stdout).toInclude('Logging failed')
   })
 
   it('honors the log level', async () => {
@@ -101,10 +97,9 @@ describe('Console Logger', () => {
     Logger.emergency('this message should appear')
     const { stdout } = MockStd.end()
 
-    expect(stdout)
-      .to.include('emerg')
-      .and.to.include('this message should appear')
-      .and.to.not.include('should not appear')
+    expect(stdout).toInclude('emerg')
+    expect(stdout).toInclude('this message should appear')
+    expect(stdout).not.toInclude('should not appear')
   })
 })
 

@@ -1,11 +1,7 @@
 'use strict'
 
 const Sinon = require('sinon')
-const Lab = require('@hapi/lab')
 const { Manager } = require('..')
-const { expect } = require('@hapi/code')
-
-const { describe, it } = (exports.lab = Lab.script())
 
 describe('Manager', () => {
   it('fails for missing createDriver function', () => {
@@ -21,7 +17,7 @@ describe('Manager', () => {
 
     const manager = new TestManager(null).setApp(new App())
 
-    expect(() => manager.handle()).to.throw('Unsupported driver "test".')
+    expect(() => manager.handle()).toThrow('Unsupported driver "test".')
   })
 
   it('fails to access the config for missing app instance', () => {
@@ -43,7 +39,7 @@ describe('Manager', () => {
 
     const manager = new TestManager(null)
 
-    expect(() => manager.handle()).to.throw()
+    expect(() => manager.handle()).toThrow()
   })
 
   it('keeps the app instance', () => {
@@ -54,7 +50,7 @@ describe('Manager', () => {
     }
 
     const manager = new TestManager(new App())
-    expect(manager.app).to.exist()
+    expect(manager.app).toBeDefined()
   })
 
   it('creates a driver instance', () => {
@@ -75,7 +71,7 @@ describe('Manager', () => {
     }
 
     const manager = new TestManager(new App())
-    expect(manager.driver().handle()).to.equal('works')
+    expect(manager.driver().handle()).toEqual('works')
   })
 
   it('creates a driver instance by name', () => {
@@ -96,7 +92,7 @@ describe('Manager', () => {
     }
 
     const manager = new TestManager(new App())
-    expect(manager.driver('supercharge').handle()).to.equal('Supercharged!')
+    expect(manager.driver('supercharge').handle()).toEqual('Supercharged!')
   })
 
   it('reuses created driver instance', () => {
@@ -119,11 +115,11 @@ describe('Manager', () => {
     const manager = new TestManager(new App())
     const spy = Sinon.spy(manager, 'createDriver')
 
-    expect(manager.has('test')).to.be.false()
-    expect(manager.driver().handle()).to.equal('works')
-    expect(manager.has('test')).to.be.true()
-    expect(manager.driver().handle()).to.equal('works')
-    expect(spy.calledOnce).to.be.true()
+    expect(manager.has('test')).toBeFalse()
+    expect(manager.driver().handle()).toEqual('works')
+    expect(manager.has('test')).toBeTrue()
+    expect(manager.driver().handle()).toEqual('works')
+    expect(spy.calledOnce).toBeTrue()
   })
 })
 

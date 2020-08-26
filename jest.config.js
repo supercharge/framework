@@ -3,12 +3,10 @@
 module.exports = {
   collectCoverage: true,
   coverageReporters: ['text', 'html'],
+  collectCoverageFrom: ['<rootDir>/dist/**/*.js'],
+
   setupFilesAfterEnv: ['jest-extended'],
-  collectCoverageFrom: [
-    'packages/**/*.[jt]s',
-    '!**/node_modules/**'
-  ],
-  projects: ['packages/*'],
-  testMatch: ['packages/**/test/**/*.[jt]s'],
-  testPathIgnorePatterns: ['packages/**/test/fixtures/*']
+
+  testMatch: ['<rootDir>/test/**/*.[jt]s'],
+  testPathIgnorePatterns: ['<rootDir>/test/fixtures']
 }

@@ -14,11 +14,8 @@
     "winston": "~3.2.1"
   },
   "devDependencies": {
-    "@hapi/code": "~7.0.0",
-    "@hapi/lab": "~21.0.0",
     "@supercharge/filesystem": "~2.0.0",
-    "@types/bcryptjs": "~2.4.2",
-    "typescript": "~3.9.3"
+    "@types/bcryptjs": "~2.4.2"
   },
   "engines": {
     "node": ">=8"
@@ -45,12 +42,10 @@
   },
   "scripts": {
     "build": "tsc -b tsconfig.json",
+    "watch": "tsc --build tsconfig.json --watch",
     "lint": "eslint src --ext .js,.ts",
-    "lint:fix": "eslint . --fix",
-    "list:tests": "lab --assert @hapi/code --dry --verbose",
+    "lint:fix": "npm run lint -- --fix",
     "test": "npm run build && npm run lint && npm run test:run",
-    "test:run": "lab --assert @hapi/code --leaks --coverage --reporter console --output stdout --reporter html --output ./coverage/coverage.html",
-    "test:run:single": "lab --assert @hapi/code --leaks --id",
-    "test:single": "npm run build && npm run test:run:single"
+    "test:run": "jest --config ../../jest.config.js --rootDir ."
   }
 }

@@ -15,11 +15,6 @@
     "@supercharge/strings": "~1.9.0",
     "cac": "~6.5.10"
   },
-  "devDependencies": {
-    "@hapi/code": "~7.0.0",
-    "@hapi/lab": "~21.0.0",
-    "typescript": "~3.9.3"
-  },
   "engines": {
     "node": ">=10"
   },
@@ -45,14 +40,12 @@
     "url": "git+https://github.com/supercharge/framework.git"
   },
   "scripts": {
-    "build": "tsc --build tsconfig.json",
+    "build": "tsc -b tsconfig.json",
     "watch": "tsc --build tsconfig.json --watch",
     "lint": "eslint src --ext .js,.ts",
-    "lint:fix": "eslint src --fix",
-    "list:tests": "lab --assert @hapi/code --dry --verbose",
+    "lint:fix": "npm run lint -- --fix",
     "test": "npm run build && npm run lint && npm run test:run",
-    "test:run": "lab --assert @hapi/code --leaks --coverage --reporter console --output stdout --reporter html --output ./coverage/coverage.html",
-    "test:single": "lab --assert @hapi/code --leaks --lint --id"
+    "test:run": "jest --config ../../jest.config.js --rootDir ."
   },
   "types": "dist"
 }

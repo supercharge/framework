@@ -14,10 +14,7 @@
     "dotenv-expand": "~5.1.0"
   },
   "devDependencies": {
-    "@hapi/code": "~7.0.0",
-    "@hapi/lab": "~21.0.0",
-    "@types/lodash": "~4.14.155",
-    "typescript": "~3.9.5"
+    "@types/lodash": "~4.14.155"
   },
   "engines": {
     "node": ">=10"
@@ -46,12 +43,11 @@
   },
   "scripts": {
     "build": "tsc -b tsconfig.json",
+    "watch": "tsc --build tsconfig.json --watch",
     "lint": "eslint src --ext .js,.ts",
-    "lint:fix": "eslint . --fix",
-    "list:tests": "lab --assert @hapi/code --dry --verbose",
+    "lint:fix": "npm run lint -- --fix",
     "test": "npm run build && npm run lint && npm run test:run",
-    "test:run": "lab --assert @hapi/code --leaks --coverage --reporter console --output stdout --reporter html --output ./coverage/coverage.html",
-    "test:single": "lab --assert @hapi/code --leaks --lint --id"
+    "test:run": "jest --config ../../jest.config.js --rootDir ."
   },
   "types": "dist"
 }

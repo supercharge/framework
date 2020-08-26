@@ -1,6 +1,29 @@
 'use strict'
 
 export interface Job {
+
+  /**
+   * Returns the job ID.
+   *
+   * @returns {String}
+   */
+  id (): string
+
+  /**
+   * Returns the queue job class name.
+   */
+  jobName(): string
+
+  /**
+   * Returns the queue job payload.
+   */
+  payload(): any
+
+  /**
+   * Returns the number of attempts for this job.
+   */
+  attempts (): number
+
   /**
    * Delete the job from the queue.
    */
@@ -56,9 +79,4 @@ export interface Job {
    * `failed` method if existing on the job instance.
    */
   fail (error: Error): Promise<void>
-
-  payload(): any
-  jobName(): string
-  attempts(): number
-  maxAttempts(): number|undefined
 }
