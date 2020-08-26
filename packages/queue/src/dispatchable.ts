@@ -1,8 +1,9 @@
 'use strict'
 
 import { PendingDispatch } from './pending-dispatch'
+import { InteractsWithQueue } from './interacts-with-queue'
 
-export abstract class Dispatchable {
+export class Dispatchable extends InteractsWithQueue {
   /**
    * Set the queue name for the job.
    */
