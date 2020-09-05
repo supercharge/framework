@@ -8,7 +8,7 @@ export class Bootstrapper implements BootstrapperContract {
    *
    * @param {Application} app - the application instance
    */
-  async bootstrap (_app: Application): Promise<void> {
+  async bootstrap (app: Application): Promise<void> {
     //
   }
 }
