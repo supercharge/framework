@@ -52,6 +52,7 @@
     "require-all": "~3.0.0",
     "simple-encryptor": "~3.0.0",
     "sinon": "~9.0.2",
+    "type-fest": "~0.16.0",
     "winston": "~3.2.1",
     "youch": "~2.0.10",
     "youch-terminal": "~1.0.0"

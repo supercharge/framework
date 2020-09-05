@@ -2,6 +2,7 @@
 
 import Fs from 'fs'
 import Path from 'path'
+import { PackageJson } from 'type-fest'
 import Config from '@supercharge/config'
 import Collect from '@supercharge/collections'
 import { tap, upon } from '@supercharge/goodies'
@@ -64,7 +65,7 @@ export class Application implements ApplicationContract {
    *
    * @returns {String}
    */
-  readPackageJson () {
+  readPackageJson (): PackageJson {
     return JSON.parse(
       Fs.readFileSync(
         this.resolvePathTo('package.json')
@@ -161,8 +162,6 @@ export class Application implements ApplicationContract {
    * Returns the path to directory of the environment file.
    * By default, this is the application's base path.
    *
-   * @param {String} path - an optional path appended to the config path
-   *
    * @returns {String}
    */
   environmentPath (): string {
@@ -172,7 +171,6 @@ export class Application implements ApplicationContract {
   /**
    * Bootstrap the application with the given array of `boostrappers`.
    *
-   * @param {BootstrapperContstructor} bootstrappers
    */
   async boot (): Promise<void> {
     await this.bootstrapWith(this.bootstrappers)
@@ -184,7 +182,9 @@ export class Application implements ApplicationContract {
    * @param {Array} bootstrappers
    */
   async bootstrapWith (bootstrappers: BootstrapperContstructor[]): Promise<void> {
-    await Collect(bootstrappers).forEach(async (bootstrapper: BootstrapperContstructor) => {
+    await Collect(
+      bootstrappers
+    ).forEach(async (bootstrapper: BootstrapperContstructor) => {
       return this.make(bootstrapper).bootstrap(this)
     })
   }
@@ -208,7 +208,7 @@ export class Application implements ApplicationContract {
    * @returns {Bootstrapper}
    */
   make (Candidate: BootstrapperContstructor): Bootstrapper {
-    return new Candidate()
+    return new Candidate(this)
   }
 
   /**
