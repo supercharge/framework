@@ -2,7 +2,13 @@
 
 import { Application } from './application'
 
-export type BootstrapperContstructor = new() => Bootstrapper
+export type BootstrapperContstructor =
+  /**
+   * Create a new bootstrapper instance.
+   *
+   * @param {Application} app - the application instance
+   */
+  new(app: Application) => Bootstrapper
 
 export interface Bootstrapper {
   /**
