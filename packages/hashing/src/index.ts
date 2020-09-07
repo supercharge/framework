@@ -1,5 +1,8 @@
 'use strict'
 
 import { HashManager } from './hash-manager'
+import { HashingBootstrapper } from './bootstrapper'
 
-export = new HashManager()
+const Hash: HashManager = new HashManager()
+
+export { Hash, HashingBootstrapper }

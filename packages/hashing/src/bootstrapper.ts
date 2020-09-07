@@ -1,15 +1,15 @@
 'use strict'
 
-import Hash from './index'
-import { Application } from '@supercharge/contracts'
+import { Hash } from './index'
+import { Application, Bootstrapper } from '@supercharge/contracts'
 
-export class ConfigBootstrapper {
+export class HashingBootstrapper implements Bootstrapper {
   /**
    * Run the app bootstrapping.
    *
    * @param {Application} app
    */
-  async boot (app: Application): Promise<void> {
+  async bootstrap (app: Application): Promise<void> {
     Hash.setApp(app)
   }
 }

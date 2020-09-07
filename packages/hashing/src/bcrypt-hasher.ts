@@ -1,9 +1,9 @@
 'use strict'
 
 import Bcrypt from 'bcryptjs'
-import { Hasher as HashContract } from '@supercharge/contracts'
+import { Hasher } from '@supercharge/contracts'
 
-export class BcryptHasher implements HashContract {
+export class BcryptHasher implements Hasher {
   /**
    * The default number of rounds to generate a salt.
    */
@@ -24,7 +24,7 @@ export class BcryptHasher implements HashContract {
    * @returns {String}
    */
   async make (value: string): Promise<string> {
-    return Bcrypt.hash(value, this.rounds)
+    return await Bcrypt.hash(value, this.rounds)
   }
 
   /**
@@ -37,6 +37,6 @@ export class BcryptHasher implements HashContract {
    * @returns {Boolean}
    */
   async check (value: string, hash: string): Promise<boolean> {
-    return Bcrypt.compare(value, hash)
+    return await Bcrypt.compare(value, hash)
   }
 }

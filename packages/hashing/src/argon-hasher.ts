@@ -1,28 +1,33 @@
 'use strict'
 
 import Argon from 'argon2'
-import { Hasher as HashContract } from '@supercharge/contracts/src'
+import { Hasher } from '@supercharge/contracts'
 
-export class ArgonHasher implements HashContract {
+export class ArgonHasher implements Hasher {
   /**
-   * The argon memory factor.
+   * The argon hashing configuration.
    */
-  private readonly _memory: number = 1024
+  private readonly config: {
+    /**
+     * The argon memory factor.
+     */
+    memory: number
 
-  /**
-   * The argon threads factor.
-   */
-  private readonly _threads: number = 2
+    /**
+     * The argon threads factor.
+     */
+    threads: number
 
-  /**
-   * The argon time factor.
-   */
-  private readonly _time: number = 2
+    /**
+     * The argon time factor.
+     */
+    time: number
 
-  /**
-   * The argon hashing algorithm.
-   */
-  private readonly _algorithm: string = 'argon2i'
+    /**
+     * The argon hashing algorithm.
+     */
+    algorithm: string
+  }
 
   /**
    * Create a new Argon hasher instance.
@@ -30,10 +35,12 @@ export class ArgonHasher implements HashContract {
    * @param {Object} options
    */
   constructor (options: any) {
-    this._algorithm = options.type || this._algorithm
-    this._threads = options.threads || this._threads
-    this._memory = options.memory || this._memory
-    this._time = options.time || this._time
+    this.config = Object.assign({
+      time: 2,
+      threads: 2,
+      memory: 1024,
+      algorithm: 'argon2i'
+    }, options)
   }
 
   /**
@@ -44,7 +51,7 @@ export class ArgonHasher implements HashContract {
    * @returns {String}
    */
   async make (value: string): Promise<string> {
-    return Argon.hash(value, {
+    return await Argon.hash(value, {
       type: this.algorithm(),
       timeCost: this.time(),
       memoryCost: this.memory(),
@@ -61,7 +68,7 @@ export class ArgonHasher implements HashContract {
    * @returns {Boolean}
    */
   async check (value: string, hash: string): Promise<boolean> {
-    return Argon.verify(hash, value)
+    return await Argon.verify(hash, value)
   }
 
   /**
@@ -70,15 +77,16 @@ export class ArgonHasher implements HashContract {
    * @returns {Number}
    */
   algorithm (): 0 | 1 | 2 {
-    if (this._algorithm === 'argon2d') {
-      return Argon.argon2d
-    }
+    switch (this.config.algorithm) {
+      case 'argon2d':
+        return Argon.argon2d
 
-    if (this._algorithm === 'argon2id') {
-      return Argon.argon2id
-    }
+      case 'argon2id':
+        return Argon.argon2id
 
-    return Argon.argon2i
+      default:
+        return Argon.argon2i
+    }
   }
 
   /**
@@ -87,7 +95,7 @@ export class ArgonHasher implements HashContract {
    * @returns {Number}
    */
   threads (): number {
-    return this._threads
+    return this.config.threads
   }
 
   /**
@@ -96,7 +104,7 @@ export class ArgonHasher implements HashContract {
    * @returns {Number}
    */
   memory (): number {
-    return this._memory
+    return this.config.memory
   }
 
   /**
@@ -105,6 +113,6 @@ export class ArgonHasher implements HashContract {
    * @returns {Number}
    */
   time (): number {
-    return this._time
+    return this.config.time
   }
 }

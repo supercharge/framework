@@ -1,6 +1,7 @@
 'use strict'
 
-const Hash = require('..')
+const { Hash, HashingBootstrapper } = require('../dist')
+
 describe('HashManager', () => {
   beforeAll(() => {
     Hash.setApp(new App())
@@ -81,6 +82,14 @@ describe('HashManager', () => {
       await Hash.driver('argon').check('Super', hash)
     ).toBeDefined()
   })
+
+  it('get nested', async () => {
+    const app = new BootstrappedApp()
+    await new HashingBootstrapper().bootstrap(app)
+    expect(
+      app.config().get('hashing.driver')
+    ).toEqual('bootstrapped-bcrypt')
+  })
 })
 
 class App {
@@ -88,6 +97,18 @@ class App {
     return {
       get () {
         return 'bcrypt'
+      }
+    }
+  }
+}
+
+class BootstrappedApp {
+  config () {
+    return {
+      get (key) {
+        return key === 'hashing.driver'
+          ? 'bootstrapped-bcrypt'
+          : 'bcrypt'
       }
     }
   }
@@ -111,7 +132,7 @@ class Argon2idConfigurationApp {
       get (configItem) {
         return configItem === 'hashing.driver'
           ? 'argon'
-          : { time: 2, threads: 2, memory: 512, type: 'argon2id' }
+          : { time: 2, threads: 2, memory: 512, algorithm: 'argon2id' }
       }
     }
   }
@@ -123,7 +144,7 @@ class Argon2dConfigurationApp {
       get (configItem) {
         return configItem === 'hashing.driver'
           ? 'argon'
-          : { type: 'argon2d' }
+          : { algorithm: 'argon2d' }
       }
     }
   }
