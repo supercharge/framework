@@ -3,7 +3,6 @@
 import { Server } from '@hapi/hapi'
 import Fs from '@supercharge/filesystem'
 import Collect from '@supercharge/collections'
-import { CollectionProxy } from '@supercharge/collections/dist/collection-proxy'
 import { BootApplication, HandleExceptions, LoadBootstrappers } from '@supercharge/foundation'
 import { HttpKernel as HttpKernelContract, Application, BootstrapperContstructor } from '@supercharge/contracts'
 
@@ -72,7 +71,7 @@ export class Kernel implements HttpKernelContract {
    * @returns {String}
    */
   routesDirectory (): string {
-    return ''
+    return '' // this.app.routePath()
   }
 
   /**
@@ -132,10 +131,12 @@ export class Kernel implements HttpKernelContract {
    */
   async middleware (): Promise<void> {
     await Collect(
-      await this.loadAndResolveFilesFrom(this.middlewareDirectory())
+      await this.loadAndResolveFilesFrom(
+        this.middlewareDirectory()
+      )
     ).forEach(async (middleware: any) => {
       // TODO remove the line below
-      // @ts-ignore
+      // @ts-expect-error
       await this.server.extClass(middleware)
     })
   }
@@ -145,7 +146,9 @@ export class Kernel implements HttpKernelContract {
    */
   async routes (): Promise<void> {
     await Collect(
-      await this.loadAndResolveFilesFrom(this.routesDirectory())
+      await this.loadAndResolveFilesFrom(
+        this.routesDirectory()
+      )
     ).forEach(async (route: any) => {
       await this.server.route(route)
     })
@@ -162,7 +165,7 @@ export class Kernel implements HttpKernelContract {
     }
 
     return await Fs.exists(directory)
-      ? Fs.allFiles(directory)
+      ? await Fs.allFiles(directory)
       : []
   }
 
@@ -173,7 +176,7 @@ export class Kernel implements HttpKernelContract {
    *
    * @returns {*}
    */
-  private resolve (path: string) {
+  private resolve (path: string): any {
     return require(path)
   }
 
@@ -184,7 +187,7 @@ export class Kernel implements HttpKernelContract {
    *
    * @returns {CollectionProxy}
    */
-  private async loadAndResolveFilesFrom (directory: string = ''): Promise<CollectionProxy> {
+  private async loadAndResolveFilesFrom (directory: string = ''): Promise<any> {
     return Collect(
       await this.loadFilesFrom(directory)
     ).map((file: string) => {

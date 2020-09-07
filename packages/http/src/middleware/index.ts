@@ -1,7 +1,3 @@
 'use strict'
 
-import { VerifyCsrfToken } from './verify-csrf-token'
-
-export const Middleware = {
-  VerifyCsrfToken
-}
+export * from './verify-csrf-token'

@@ -1,9 +1,9 @@
 'use strict'
 
 import Boom from '@hapi/boom'
-import Env from '@supercharge/env'
+import { Env } from '@supercharge/env'
 import { parse, match } from 'matchit'
-import Logger from '@supercharge/logging'
+import { Logger } from '@supercharge/logging'
 import { Request, ResponseToolkit } from '@hapi/hapi'
 
 export class VerifyCsrfToken {
@@ -12,7 +12,7 @@ export class VerifyCsrfToken {
    *
    * @returns {Array}
    */
-  exclude () {
+  exclude (): string[] {
     return []
   }
 
@@ -23,7 +23,7 @@ export class VerifyCsrfToken {
    * @param {Request} request
    * @param {Toolkit} h
    */
-  async onPostAuth (request: Request, h: ResponseToolkit) {
+  async onPostAuth (request: Request, h: ResponseToolkit): Promise<any> {
     if (this.shouldSkip(request)) {
       return h.continue
     }
@@ -43,7 +43,7 @@ export class VerifyCsrfToken {
    * @param {Request} request
    * @param {Toolkit} h
    */
-  onPreResponse (request: Request, h: ResponseToolkit) {
+  onPreResponse (request: Request, h: ResponseToolkit): symbol {
     if (this.hasNoSession(request)) {
       return h.continue
     }
@@ -62,7 +62,7 @@ export class VerifyCsrfToken {
    *
    * @returns {Boolean}
    */
-  shouldSkip (request: Request) {
+  shouldSkip (request: Request): boolean {
     return this.isReading(request) || this.isTesting() || this.hasNoSession(request) || this.isExcluded(request)
   }
 
@@ -74,7 +74,7 @@ export class VerifyCsrfToken {
    *
    * @returns {Boolean}
    */
-  isReading (request: Request) {
+  isReading (request: Request): boolean {
     return ['GET', 'HEAD', 'OPTIONS'].includes(request.method.toUpperCase())
   }
 
@@ -83,7 +83,7 @@ export class VerifyCsrfToken {
    *
    * @returns {Boolean}
    */
-  isTesting () {
+  isTesting (): boolean {
     return Env.isTesting()
   }
 
@@ -94,7 +94,7 @@ export class VerifyCsrfToken {
    *
    * @returns {Boolean}
    */
-  hasNoSession (request: any) {
+  hasNoSession (request: any): boolean {
     return !request.session
   }
 
@@ -106,8 +106,8 @@ export class VerifyCsrfToken {
    *
    * @returns {Boolean}
    */
-  isExcluded (request: Request) {
-    const excludes = [].concat(this.exclude()).map(parse)
+  isExcluded (request: Request): boolean {
+    const excludes = ([] as string[]).concat(this.exclude()).map(parse)
     const matches = match(request.path, excludes)
 
     return matches.length > 0
@@ -121,7 +121,7 @@ export class VerifyCsrfToken {
    *
    * @returns {Boolean}
    */
-  async tokensMatch (request: any) {
+  tokensMatch (request: any): boolean {
     const token = this.getTokenFrom(request)
 
     return token === request.session.token()
@@ -134,7 +134,7 @@ export class VerifyCsrfToken {
    *
    * @returns {String}
    */
-  getTokenFrom (request: any) {
+  getTokenFrom (request: any): string | undefined {
     return request.input('_csrfToken') || request.header('x-csrf-token')
   }
 
@@ -143,7 +143,7 @@ export class VerifyCsrfToken {
    *
    * @param {Request} request
    */
-  rotateToken (request: any) {
+  rotateToken (request: any): void {
     request.session.rotateToken()
   }
 
@@ -154,7 +154,7 @@ export class VerifyCsrfToken {
    * @param {Request} request
    * @param {Toolkit} h
    */
-  addCookieToResponse (request: any, h: any) {
+  addCookieToResponse (request: any, h: any): void {
     return h.cookie('XSRF-TOKEN', request.session.token())
   }
 
@@ -164,7 +164,7 @@ export class VerifyCsrfToken {
    *
    * @param {Request} request
    */
-  addTokenToViewContext (request: any) {
+  addTokenToViewContext (request: any): void {
     const response: any = request.response
 
     if (this.isBoomError(response)) {
@@ -184,7 +184,7 @@ export class VerifyCsrfToken {
    *
    * @returns {Boolean}
    */
-  isBoomError (response: any) {
+  isBoomError (response: any): boolean {
     return response.isBoom
   }
 
@@ -195,15 +195,16 @@ export class VerifyCsrfToken {
    *
    * @returns {Boolean}
    */
-  isView (response: any) {
+  isView (response: any): boolean {
     return response.variety === 'view'
   }
 
   /**
    * Logs a debug message and throws an HTTP forbidden error.
    */
-  forbidden () {
+  forbidden (): void {
     Logger.debug('CSRF token verification failed')
+
     throw Boom.forbidden()
   }
 }
