@@ -1,11 +1,11 @@
 'use strict'
 
 import Dotenv from 'dotenv'
-import DotenvExpand from 'dotenv-expand'
 import Fs from '@supercharge/filesystem'
+import DotenvExpand from 'dotenv-expand'
 import { Application } from '@supercharge/contracts'
 
-export = class ConfigBootstrapper {
+export class EnvBootstrapper {
   /**
    * Bootstrap the given application.
    *

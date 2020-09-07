@@ -9,15 +9,27 @@
   "dependencies": {
     "@supercharge/contracts": "~0.0.0",
     "@supercharge/filesystem": "~2.1.0",
-    "@supercharge/strings": "~1.9.0",
+    "@supercharge/strings": "~1.11.0",
     "dotenv": "~8.2.0",
     "dotenv-expand": "~5.1.0"
   },
   "devDependencies": {
-    "@types/lodash": "~4.14.155"
+    "@types/jest": "~26.0.13",
+    "@types/lodash": "~4.14.161",
+    "@typescript-eslint/eslint-plugin": "~4.0.1",
+    "eslint": "~7.8.1",
+    "eslint-config-standard": "~14.1.1",
+    "eslint-config-standard-with-typescript": "~19.0.1",
+    "eslint-plugin-import": "~2.22.0",
+    "eslint-plugin-node": "~11.1.0",
+    "eslint-plugin-promise": "~4.2.1",
+    "eslint-plugin-standard": "~4.0.1",
+    "jest": "~26.4.2",
+    "jest-extended": "~0.11.5",
+    "typescript": "~4.0.2"
   },
   "engines": {
-    "node": ">=10"
+    "node": ">=12"
   },
   "files": [
     "dist",
@@ -47,7 +59,7 @@
     "lint": "eslint src --ext .js,.ts",
     "lint:fix": "npm run lint -- --fix",
     "test": "npm run build && npm run lint && npm run test:run",
-    "test:run": "jest --config ../../jest.config.js --rootDir ."
+    "test:run": "jest"
   },
   "types": "dist"
 }

@@ -1,5 +1,9 @@
 'use strict'
 
-import { Env } from './env'
+import { Env as EnvRepository } from './env'
+import { EnvBootstrapper } from './bootstrapper'
+import { EnvStore } from '@supercharge/contracts'
 
-export = new Env()
+const Env: EnvStore = new EnvRepository()
+
+export { Env, EnvBootstrapper }

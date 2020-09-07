@@ -1,17 +1,16 @@
 'use strict'
 
-const Env = require('..')
 const Path = require('path')
-const Bootstrapper = require('../bootstrapper')
+const { Env, EnvBootstrapper } = require('../dist')
 
 describe('Env', () => {
   beforeAll(async () => {
-    await new Bootstrapper().boot(new App())
+    await new EnvBootstrapper().boot(new App())
   })
 
   it('throws for non-existent .env file', async () => {
     await expect(
-      new Bootstrapper().boot(new NoEnvironmentFileApp())
+      new EnvBootstrapper().boot(new NoEnvironmentFileApp())
     ).toReject()
   })
 
