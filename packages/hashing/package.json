@@ -29,7 +29,7 @@
     "typescript": "~4.0.2"
   },
   "engines": {
-    "node": ">=10"
+    "node": ">=12"
   },
   "keywords": [
     "supercharge",
@@ -39,11 +39,9 @@
   ],
   "license": "MIT",
   "files": [
-    "dist",
-    "index.js"
+    "dist"
   ],
-  "main": "index.js",
-  "types": "dist",
+  "main": "dist",
   "publishConfig": {
     "access": "public"
   },
@@ -58,5 +56,6 @@
     "lint:fix": "npm run lint -- --fix",
     "test": "npm run build && npm run lint && npm run test:run",
     "test:run": "jest"
-  }
+  },
+  "types": "dist"
 }
