@@ -85,13 +85,13 @@ export class Kernel implements ConsoleKernelContract {
     await Collect(paths)
       .unique()
       .filter(async (path: string) => {
-        return Fs.exists(path)
+        return await Fs.exists(path)
       })
       .flatMap(async (path: string) => {
-        return Fs.allFiles(path)
+        return await Fs.allFiles(path)
       })
       .map((commandFile: string) => {
-        return this.resolve(commandFile)
+        return [this.resolve(commandFile)]
       })
       .filter((command: Command) => {
         return command instanceof Command && this.isNotExcluded(command)

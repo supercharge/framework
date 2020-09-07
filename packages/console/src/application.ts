@@ -1,9 +1,9 @@
 'use strict'
 
 import { cac, CAC } from 'cac'
-import { Parser } from './parser'
 import { Command } from './command'
 import { ConsoleInput } from './input'
+import { Parser, ParsedSignature } from './parser'
 import { ConsoleApplication as ConsoleApplicationContract, Application as App } from '@supercharge/contracts'
 
 export class Application implements ConsoleApplicationContract {
@@ -92,7 +92,7 @@ export class Application implements ConsoleApplicationContract {
    *
    * @returns {Object}
    */
-  parse (signature: string) {
+  parse (signature: string): ParsedSignature {
     return Parser.parse(signature)
   }
 }

@@ -1,8 +1,9 @@
 'use strict'
 
+import Set from '@supercharge/set'
 import { ConsoleInput } from './input'
 
-export class InputSet extends Set {
+export class InputSet extends Set<ConsoleInput> {
   /**
    * Translate this console input to a CAC command or option input.
    *
@@ -10,29 +11,12 @@ export class InputSet extends Set {
    */
   translateToCacInput (): string {
     return this
-      .map((input: ConsoleInput) => {
+      .map(input => {
         return input.isRequired()
           ? `<${input.getName()}>`
           : `[${input.getName()}]`
       })
+      .toArray()
       .join(' ')
-  }
-
-  /**
-   * Calls the given `callback` function on each input item in the set, and
-   * returns an array that contains the results.
-   *
-   * @param {Function} callback
-   *
-   * @returns {Array}
-   */
-  map (callback: (value: any) => any): any[] {
-    const results: any[] = []
-
-    for (const input of this.values()) {
-      results.push(callback(input))
-    }
-
-    return results
   }
 }
