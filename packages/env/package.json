@@ -32,9 +32,7 @@
     "node": ">=12"
   },
   "files": [
-    "dist",
-    "index.js",
-    "bootstrapper.js"
+    "dist"
   ],
   "homepage": "https://superchargejs.com",
   "keywords": [
@@ -45,7 +43,7 @@
     "nodejs"
   ],
   "license": "MIT",
-  "main": "index.js",
+  "main": "dist",
   "publishConfig": {
     "access": "public"
   },
