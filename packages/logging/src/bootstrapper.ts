@@ -1,15 +1,15 @@
 'use strict'
 
-import Logger from './index'
-import { Application } from '@supercharge/contracts'
+import { Logger } from './index'
+import { Application, Bootstrapper } from '@supercharge/contracts'
 
-export class ConfigBootstrapper {
+export class LoggingBootstrapper implements Bootstrapper {
   /**
    * Run the app bootstrapping.
    *
    * @param {Application} app
    */
-  async boot (app: Application): Promise<void> {
+  async bootstrap (app: Application): Promise<void> {
     Logger.setApp(app)
   }
 }

@@ -1,22 +1,21 @@
 'use strict'
 
 const Path = require('path')
-const Logger = require('..')
+const { Logger } = require('../dist')
 const Fs = require('@supercharge/filesystem')
 
 const logFile = Path.resolve(__dirname, 'test.log')
 
-describe('File Logger', () => {
-  beforeAll(() => {
+describe.only('File Logger', () => {
+  beforeAll(async () => {
+    await Fs.ensureFile(logFile)
+
     Logger.setApp(new App())
     Logger.info('starting tests')
+    await new Promise(resolve => setTimeout(resolve, 50)) // wait for the first log flushing down to the file
   })
 
-  beforeEach(async () => {
-    await Fs.ensureFile(logFile)
-  })
-
-  afterEach(async () => {
+  afterAll(async () => {
     await Fs.removeFile(logFile)
   })
 

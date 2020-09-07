@@ -1,7 +1,8 @@
 'use strict'
 
 import { LogManager } from './log-manager'
+import { LoggingBootstrapper } from './bootstrapper'
 
-const logger: LogManager = new LogManager()
+const Logger = new LogManager()
 
-export = logger
+export { Logger, LoggingBootstrapper }
