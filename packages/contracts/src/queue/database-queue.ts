@@ -3,15 +3,31 @@
 import { Job } from './job'
 
 export interface DatabaseQueuePayload {
-  job: Job
+  /**
+   * The job class name. This job name is used to identify a job class which
+   * then be used to create a job instance once it’s due for processing will.
+   */
+  jobClassName: string
 
+  /**
+   * The job payload.
+   */
   payload: any
 
+  /**
+   * The queue name on which the job will be dispatched.
+   */
   queue: string
 
-  attempts: number
+  /**
+   * The number of attempts a job has already been handled.
+   */
+  attempts?: number
 
-  notBefore: Date
+  /**
+   * The date when the job becomes due for processing.
+   */
+  notBefore?: Date
 }
 
 export interface DatabaseQueue {
@@ -24,7 +40,7 @@ export interface DatabaseQueue {
    *
    * @returns {String} the job ID
    */
-  push (data: DatabaseQueuePayload): Promise<number>
+  push (data: DatabaseQueuePayload): Promise<number|string>
 
   /**
    * Retrieve the next job from the queue.
@@ -33,7 +49,7 @@ export interface DatabaseQueue {
    *
    * @returns {Job}
    */
-  pop (queue: string): Promise<Job | null>
+  pop (queue: string): Promise<Job | undefined>
 
   /**
    * Returns number of jobs on the given `queue`.
@@ -50,4 +66,11 @@ export interface DatabaseQueue {
    * @param {String|Array} queue
    */
   clear (queue: string): Promise<void>
+
+  /**
+   * Deletes the job with the given `id` from the queue.
+   *
+   * @param  {String|Number} id
+   */
+  delete (id: string|number): Promise<void>
 }

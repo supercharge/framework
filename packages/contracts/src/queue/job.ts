@@ -1,13 +1,12 @@
 'use strict'
 
 export interface Job {
-
   /**
    * Returns the job ID.
    *
    * @returns {String}
    */
-  id (): string
+  id (): string | number | undefined
 
   /**
    * Returns the queue job class name.

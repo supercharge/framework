@@ -12,7 +12,7 @@ export interface Queue {
    *
    * @returns {String} the job ID
    */
-  push (jobName: string, payload: any, queue?: string): Promise<string>
+  push (jobName: string, payload: any, queue?: string): Promise<string | number>
 
   /**
    * Retrieve the next job from the queue.
@@ -21,7 +21,7 @@ export interface Queue {
    *
    * @returns {Job}
    */
-  pop (queue?: string): Promise<Job>
+  pop (queue?: string): Promise<Job | undefined>
 
   /**
    * Returns number of jobs on the given `queue`.
