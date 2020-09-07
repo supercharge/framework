@@ -7,15 +7,29 @@
     "url": "https://github.com/supercharge/framework/issues"
   },
   "dependencies": {
+    "@supercharge/collections": "^2.4.0",
     "@supercharge/config": "~0.0.0",
     "@supercharge/contracts": "~0.0.0",
-    "@supercharge/goodies": "~1.4.0",
+    "@supercharge/goodies": "~1.5.1",
     "@supercharge/manager": "~0.0.0",
+    "@supercharge/strings": "^1.11.0",
     "aws-sdk": "~2.683.0",
     "faktory-worker": "~3.3.2"
   },
   "devDependencies": {
-    "@types/mongoose": "~5.7.31"
+    "@types/jest": "~26.0.13",
+    "@types/mongoose": "~5.7.31",
+    "@typescript-eslint/eslint-plugin": "~4.0.1",
+    "eslint": "~7.8.1",
+    "eslint-config-standard-with-typescript": "~19.0.1",
+    "eslint-plugin-import": "~2.22.0",
+    "eslint-plugin-node": "~11.1.0",
+    "eslint-plugin-promise": "~4.2.1",
+    "eslint-plugin-standard": "~4.0.1",
+    "jest": "~26.4.2",
+    "jest-extended": "~0.11.5",
+    "sinon": "~9.0.3",
+    "typescript": "~4.0.2"
   },
   "engines": {
     "node": ">=8"
@@ -43,10 +57,10 @@
   },
   "scripts": {
     "build": "tsc -b tsconfig.json",
-    "watch": "tsc --build tsconfig.json --watch",
+    "watch": "npm run build -- --watch",
     "lint": "eslint src --ext .js,.ts",
     "lint:fix": "npm run lint -- --fix",
     "test": "npm run build && npm run lint && npm run test:run",
-    "test:run": "jest --config ../../jest.config.js --rootDir ."
+    "test:run": "jest --config ../../jest.config.js"
   }
 }
