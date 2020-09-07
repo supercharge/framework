@@ -28,7 +28,7 @@ export abstract class Manager {
    *
    * @returns {String}
    */
-  protected abstract defaultDriver(): string
+  protected abstract defaultDriver (): string
 
   /**
    * Set the app instance.
