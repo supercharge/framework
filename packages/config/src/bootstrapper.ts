@@ -1,16 +1,16 @@
 'use strict'
 
-import Config from './index'
+import { Config } from './index'
 import RequireAll from 'require-all'
-import { Application } from '@supercharge/contracts'
+import { Application, Bootstrapper as BootstrapperContract } from '@supercharge/contracts'
 
-export = class ConfigBootstrapper {
+export class ConfigBootstrapper implements BootstrapperContract {
   /**
    * Bootstrap the given application.
    *
    * @param {Application} app
    */
-  async boot (app: Application): Promise<void> {
+  async bootstrap (app: Application): Promise<void> {
     Object.entries(
       this.loadConfigurationFiles(app)
     ).forEach(([key, value]) => {

@@ -1,8 +1,7 @@
 'use strict'
 
 const Path = require('path')
-const Config = require('..')
-const Bootstrapper = require('../bootstrapper')
+const { Config, ConfigBootstrapper } = require('../dist')
 
 describe('Config', () => {
   afterEach(() => {
@@ -22,7 +21,7 @@ describe('Config', () => {
   })
 
   it('get nested', async () => {
-    await new Bootstrapper().boot(new App())
+    await new ConfigBootstrapper().bootstrap(new App())
     expect(Config.get('app.nested.key')).toEqual('nested-value')
   })
 
