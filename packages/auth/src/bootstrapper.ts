@@ -2,20 +2,23 @@
 
 import { Application, Bootstrapper } from '@supercharge/contracts'
 
-export = class AuthBootstrapper implements Bootstrapper {
+export class AuthBootstrapper implements Bootstrapper {
   /**
    * Theh application instance.
    */
   protected app: Application
 
+  /**
+   * Create a new bootstrapper instance.
+   *
+   * @param {Application} app
+   */
   constructor (app: Application) {
     this.app = app
   }
 
   /**
-   * Bootstrap the given application.
-   *
-   * @param {Application} app
+   * Bootstrap the application.
    */
   async bootstrap (): Promise<void> {
     await this.loadAuthSchemes()
