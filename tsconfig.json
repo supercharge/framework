@@ -2,9 +2,15 @@
     "extends": "@supercharge/tsconfig",
     "compilerOptions": {
         "lib": [
-            "es2020"
+            "es2019",
+            "es2020.promise",
+            "es2020.bigint",
+            "es2020.string"
         ],
-        "composite": true
+        "composite": true,
+        "target": "es2019",
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true
     },
     "exclude": [
         "node_modules",
