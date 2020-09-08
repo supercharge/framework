@@ -15,6 +15,6 @@ module.exports = {
   rules: {
     '@typescript-eslint/require-await': 0,
     '@typescript-eslint/strict-boolean-expressions': 0,
-
+    '@typescript-eslint/method-signature-style': ['error', 'method']
   }
 }
