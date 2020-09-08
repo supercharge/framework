@@ -83,7 +83,7 @@ export class Env implements EnvStore {
    * @returns {Boolean}
    */
   isTesting (): boolean {
-    return this.is('testing')
+    return this.is('test') || this.is('testing')
   }
 
   /**
