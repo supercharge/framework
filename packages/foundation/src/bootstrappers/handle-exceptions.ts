@@ -15,7 +15,7 @@ export class HandleExceptions implements Bootstrapper {
    */
   async bootstrap () {
     process
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       .on('uncaughtException', async (error: Error) => {
         await this.handle(error)
       })
