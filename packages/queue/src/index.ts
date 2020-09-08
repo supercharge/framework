@@ -1,5 +1,8 @@
 'use strict'
 
 import { QueueManager } from './queue-manager'
+import { QueueBootstrapper } from './bootstrapper'
 
-export = new QueueManager()
+const Queue = new QueueManager()
+
+export { Queue, QueueBootstrapper }
