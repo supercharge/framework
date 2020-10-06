@@ -1,32 +1,30 @@
 'use strict'
 
-const QueueManager = require('../')
+import { Job as JobContract } from '@supercharge/contracts'
+import { Dispatchable } from '../dispatchable'
 
-export class Job {
-  constructor (job) {
-    this._job = job
+export abstract class Job<T = any> implements JobContract {
+  protected job: T
+  private _failed: boolean
+  private _released: boolean
+  private _deleted: boolean
+  private _instance: Dispatchable | null
+  private readonly _manager: any
+
+  constructor (job: T) {
+    this.job = job
     this._failed = false
     this._deleted = false
     this._released = false
     this._instance = null
-    this._manager = QueueManager
-  }
-
-  /**
-   * Returns the raw job.
-   *
-   * @returns {Job}
-   */
-  get job () {
-    return this._job
   }
 
   /**
    * Returns the job instance.
    *
-   * @returns {Object}
+   * @returns {Dispatchable}
    */
-  get instance () {
+  get instance (): Dispatchable {
     return this._instance
   }
 
@@ -49,11 +47,39 @@ export class Job {
   }
 
   /**
+   * Returns the job ID.
+   *
+   * @returns {String}
+   */
+  abstract id (): string | number | undefined
+
+  /**
+   * Returns the queue job class name.
+   *
+   * @returns {String}
+   */
+  abstract jobName (): string
+
+  /**
+   * Returns the queue job payload.
+   *
+   * @returns {Object}
+   */
+  abstract payload (): any
+
+  /**
+   * Returns the number of attempts for this job.
+   *
+   * @returns {Number}
+   */
+  abstract attempts (): number
+
+  /**
    * Returns the maximum number of attempts to process a job before marking it failed.
    *
    * @returns {Number|undefined}
    */
-  maxAttempts () {
+  maxAttempts (): number | undefined {
     return this.resolveInstance().maxAttempts()
   }
 
@@ -62,7 +88,7 @@ export class Job {
    * the job from the queue must be part of the `delete`
    * method implemented by the individual job class.
    */
-  delete () {
+  async delete (): Promise<void> {
     this._deleted = true
   }
 
@@ -71,7 +97,7 @@ export class Job {
    *
    * @returns {Boolean}
    */
-  isDeleted () {
+  isDeleted (): boolean {
     return this._deleted
   }
 
@@ -80,14 +106,14 @@ export class Job {
    *
    * @returns {Boolean}
    */
-  isNotDeleted () {
+  isNotDeleted (): boolean {
     return !this.isDeleted()
   }
 
   /**
    * Set a job as released back to the queue.
    */
-  releaseBack () {
+  async releaseBack (_delay: number): Promise<void> {
     this._released = true
   }
 
@@ -97,7 +123,7 @@ export class Job {
    *
    * @returns {Boolean}
    */
-  isReleased () {
+  isReleased (): boolean {
     return this._released
   }
 
@@ -107,14 +133,14 @@ export class Job {
    *
    * @returns {Boolean}
    */
-  isNotReleased () {
+  isNotReleased (): boolean {
     return !this.isReleased()
   }
 
   /**
    * Mark this job as failed.
    */
-  markAsFailed () {
+  async markAsFailed (): Promise<void> {
     this._failed = true
   }
 
@@ -123,7 +149,7 @@ export class Job {
    *
    * @returns {Boolean}
    */
-  hasFailed () {
+  hasFailed (): boolean {
     return this._failed
   }
 
@@ -132,15 +158,15 @@ export class Job {
    *
    * @returns {Boolean}
    */
-  hasNotFailed () {
+  hasNotFailed (): boolean {
     return !this.hasFailed()
   }
 
   /**
    * Fire the job.
    */
-  async fire () {
-    return this.resolveInstance().handle()
+  async fire (): Promise<void> {
+    return await this.resolveInstance().handle()
   }
 
   /**
@@ -148,7 +174,7 @@ export class Job {
    *
    * @returns {Object}
    */
-  resolveInstance () {
+  resolveInstance (): Dispatchable {
     if (!this.instance) {
       const JobClass = this.manager.getJob(this.jobName())
 
@@ -164,8 +190,8 @@ export class Job {
    *
    * @param {Error} error
    */
-  async fail (error) {
-    this.markAsFailed()
+  async fail (error: Error): Promise<void> {
+    await this.markAsFailed()
 
     try {
       await this.delete()
@@ -178,11 +204,10 @@ export class Job {
    *
    * @param {Error} error
    */
-  async failed (error) {
+  async failed (error: Error): Promise<void> {
     this.instance = this.resolveInstance()
 
     if (typeof this.instance.failed === 'function') {
-      error.job = this
       await this.instance.failed(error)
     }
   }

@@ -2,12 +2,12 @@
 
 import Mongoose from 'mongoose'
 import { MongooseJob } from './jobs/mongoose-job'
-import { Job } from '@supercharge/contracts/src'
+import { Job, DatabaseQueue, DatabaseQueuePayload } from '@supercharge/contracts'
 
 // const { Mongoose } = require('../../database')
 // const MongooseJob = require('../jobs/mongoose-job')
 
-class DatabaseQueueMongooseClient {
+class DatabaseQueueMongooseClient implements DatabaseQueue {
   /**
    * Push a new job into the MongoDB queue.
    *
@@ -15,13 +15,14 @@ class DatabaseQueueMongooseClient {
    *
    * @returns {String} job ID
    */
-  static async push ({ job, payload, queue, attempts = 0, notBefore = new Date() }) {
+  static async push ({ jobClassName, payload, queue, attempts = 0, notBefore = new Date() }: DatabaseQueuePayload) {
+    // @ts-ignore
     const doc = await this.create({
       queue,
       payload,
       attempts,
       notBefore,
-      jobClassName: job.name
+      jobClassName
     })
 
     return doc.id
@@ -34,11 +35,11 @@ class DatabaseQueueMongooseClient {
    *
    * @returns {Job}
    */
-  static async pop (queue: string|string[]): Promise<Job> {
+  static async pop (queue: string): Promise<Job | undefined> {
     const query = {
       startTime: null,
       notBefore: { $lte: new Date() },
-      queue: { $in: [].concat(queue) }
+      queue: { $in: ([] as string[]).concat(queue) }
     }
 
     const update = {
@@ -50,11 +51,12 @@ class DatabaseQueueMongooseClient {
       sort: { createdOn: 1 } // sort by oldest creation date (ensures FIFO)
     }
 
+    // @ts-ignore
     const job = await this.findOneAndUpdate(query, update, options)
 
-    return job
-      ? new MongooseJob(job, this, queue)
-      : null
+    if (job) {
+      return new MongooseJob(job, this)
+    }
   }
 
   /**
@@ -64,11 +66,9 @@ class DatabaseQueueMongooseClient {
    *
    * @returns {Number}
    */
-  static async size (queue: string|string[]): Promise<number> {
-    return this.countDocuments({
-      startTime: null,
-      queue: { $in: [].concat(queue) }
-    })
+  static async size (queue: string): Promise<number> {
+    // @ts-ignore
+    return this.countDocuments({ queue, startTime: null })
   }
 
   /**
@@ -76,10 +76,9 @@ class DatabaseQueueMongooseClient {
    *
    * @param {String|Array} queue
    */
-  static async clear (queue: string|string[]): Promise<void> {
-    await this.deleteMany({
-      queue: { $in: [].concat(queue) }
-    })
+  static async clear (queue: string): Promise<void> {
+    // @ts-ignore
+    await this.deleteMany({ queue })
   }
 
   /**
@@ -90,6 +89,7 @@ class DatabaseQueueMongooseClient {
    * @returns {Number}
    */
   static async delete (id: string): Promise<number> {
+    // @ts-ignore
     return this.findByIdAndDelete(id)
   }
 }

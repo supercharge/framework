@@ -1,8 +1,13 @@
 'use strict'
 
 import { Manager } from '@supercharge/manager'
-import { Queue as QueueContract, Job } from '@supercharge/contracts'
 import { MongooseQueueClientFactory as MongooseClientFactory } from './database-queue-mongoose-client'
+import {
+  Job,
+  // Config as QueueConfig,
+  Queue as QueueContract,
+  DatabaseQueue as DatabaseQueueContract
+} from '@supercharge/contracts'
 
 export class DatabaseQueue extends Manager implements QueueContract {
   /**
@@ -14,8 +19,12 @@ export class DatabaseQueue extends Manager implements QueueContract {
    *
    * @returns {String} the job ID
    */
-  async push (jobName: string, payload: any, queue: string|string[]): Promise<string> {
-    return this.driver().push(jobName, payload, queue)
+  async push (jobName: string, payload: any, queue?: string): Promise<string | number> {
+    return this.driver().push({
+      jobClassName: jobName,
+      payload,
+      queue: this.getQueue(queue)
+    })
   }
 
   /**
@@ -25,8 +34,10 @@ export class DatabaseQueue extends Manager implements QueueContract {
    *
    * @returns {Job}
    */
-  async pop (queue: string|string[]): Promise<Job> {
-    return this.driver().pop(queue)
+  async pop (queue?: string): Promise<Job | undefined> {
+    return this.driver().pop(
+      this.getQueue(queue)
+    )
   }
 
   /**
@@ -36,8 +47,10 @@ export class DatabaseQueue extends Manager implements QueueContract {
    *
    * @returns {Number}
    */
-  async size (queue: string|string[]): Promise<number> {
-    return this.driver().size(queue)
+  async size (queue?: string): Promise<number> {
+    return this.driver().size(
+      this.getQueue(queue)
+    )
   }
 
   /**
@@ -45,8 +58,22 @@ export class DatabaseQueue extends Manager implements QueueContract {
    *
    * @param {String|Array} queue
    */
-  async clear (queue: string|string[]): Promise<void> {
-    return this.driver().clear(queue)
+  async clear (queue?: string): Promise<void> {
+    return this.driver().clear(
+      this.getQueue(queue)
+    )
+  }
+
+  /**
+   * Returns the configuration for the given `queue`.
+   *
+   * @param queue
+   */
+  protected getQueue (queue?: string): string {
+    return queue ?? this
+      .config()
+      .get(`queue.connections.${queue}`, {})
+      .queue
   }
 
   /**
@@ -58,7 +85,7 @@ export class DatabaseQueue extends Manager implements QueueContract {
    *
    * @throws
    */
-  protected driver (name: string = this.defaultDriver()): QueueContract {
+  protected driver (name: string = this.defaultDriver()): DatabaseQueueContract {
     return super.driver(name)
   }
 
@@ -76,7 +103,7 @@ export class DatabaseQueue extends Manager implements QueueContract {
    *
    * @returns {DatabaseQueue}
    */
-  protected createMongooseDriver (): QueueContract {
+  protected createMongooseDriver (): DatabaseQueueContract {
     return MongooseClientFactory(
       this.config().get('queue.connections.mongoose', {})
     )

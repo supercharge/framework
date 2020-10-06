@@ -1,10 +1,11 @@
 'use strict'
 
+import { Dispatchable } from './dispatchable'
 import { Manager } from '@supercharge/manager'
 import { DatabaseQueue } from './database-queue'
 import { Queue as QueueContract, Job } from '@supercharge/contracts'
 
-export class QueueManager extends Manager implements QueueContract {
+export class QueueManager extends Manager {
   /**
    * An in-memory key-value store for available queue jobs.
    */
@@ -25,39 +26,10 @@ export class QueueManager extends Manager implements QueueContract {
   *
   * @returns {String} the job ID
   */
-  async push (jobName: string, payload: any, queue: string|string[]): Promise<string> {
-    return this.driver().push(jobName, payload, queue)
-  }
-
-  /**
-  * Retrieve the next job from the queue.
-  *
-  * @param  {String|Array} queue
-  *
-  * @returns {Job}
-  */
-  async pop (queue: string|string[]): Promise<Job> {
-    return this.driver().pop(queue)
-  }
-
-  /**
-  * Returns number of jobs on the given `queue`.
-  *
-  * @param  {String|Array} queue
-  *
-  * @returns {Number}
-  */
-  async size (queue: string|string[]): Promise<number> {
-    return this.driver().size(queue)
-  }
-
-  /**
-  * Clear all jobs from the given `queue`.
-  *
-  * @param {String|Array} queue
-  */
-  async clear (queue: string|string[]): Promise<void> {
-    return this.driver().clear(queue)
+  async dispatch (job: typeof Dispatchable, payload: any, connectionName?: string, queue?: string): Promise<string | number> {
+    return this.driver(connectionName).push(
+      job.name, payload, queue
+    )
   }
 
   /**

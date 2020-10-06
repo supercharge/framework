@@ -1,9 +1,13 @@
 'use strict'
 
 import { Job } from './job'
+import { tap } from '@supercharge/goodies'
+import { DatabaseQueue, Job as JobContract } from '@supercharge/contracts'
 
 export class MongooseJob extends Job {
-  constructor (job, client) {
+  private readonly client: DatabaseQueue
+
+  constructor (job: JobContract, client: DatabaseQueue) {
     super(job)
 
     this.client = client
@@ -28,21 +32,11 @@ export class MongooseJob extends Job {
   }
 
   /**
-   * Returns the job’s queue.
+   * Returns the job’s class name identifying the job that handles the payload.
    *
    * @returns {String}
    */
-  queue (): string {
-    return this.job.queue
-  }
-
-  /**
-   * Returns the job’s class name identifying
-   * the job that handles the payload.
-   *
-   * @returns {*}
-   */
-  jobName (): string {
+  jobName () {
     return this.job.jobClassName
   }
 
@@ -52,7 +46,16 @@ export class MongooseJob extends Job {
    * @returns {Number}
    */
   attempts (): number {
-    return this.job.attempts
+    return this.job.attempts || 0
+  }
+
+  /**
+   * Returns the job’s queue.
+   *
+   * @returns {String}
+   */
+  queue (): string {
+    return this.job.queue
   }
 
   /**
@@ -69,14 +72,14 @@ export class MongooseJob extends Job {
    * @param {Number} delay in seconds
    */
   async releaseBack (delay: number = 0): Promise<void> {
-    await super.releaseBack()
+    await super.releaseBack(delay)
 
     await this.client.delete(this.id())
 
     await this.client.push({
       queue: this.queue(),
       payload: this.payload(),
-      job: { name: this.jobName() },
+      jobClassName: this.jobName(),
       attempts: this.attempts() + 1,
       notBefore: this.dateWith(delay)
     })
@@ -90,17 +93,16 @@ export class MongooseJob extends Job {
    * @returns {Date}
    */
   dateWith (delay: number): Date {
-    const date = new Date()
-    date.setSeconds(date.getSeconds() + delay)
-
-    return date
+    return tap(new Date(), date => {
+      date.setSeconds(date.getSeconds() + delay)
+    })
   }
 
   /**
    * Delete the job from the queue.
    */
   async delete (): Promise<void> {
-    super.delete()
+    await super.delete()
     await this.client.delete(this.id())
   }
 

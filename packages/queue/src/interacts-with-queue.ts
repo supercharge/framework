@@ -22,7 +22,7 @@ export class InteractsWithQueue {
    *
    * @param {Dispatchable} job
    */
-  setJob (job: JobContract) {
+  setJob (job: JobContract): this {
     return tap(this, () => {
       this.job = job
     })
@@ -34,7 +34,7 @@ export class InteractsWithQueue {
    *
    * @throws
    */
-  async handle () {
+  async handle (): Promise<void> {
     throw new Error(`${this.constructor.name} must implement a handle() function.`)
   }
 
@@ -43,7 +43,7 @@ export class InteractsWithQueue {
    *
    * @returns {Number}
    */
-  attempts () {
+  attempts (): number {
     if (this.job) {
       return this.job.attempts()
     }
@@ -54,9 +54,9 @@ export class InteractsWithQueue {
    *
    * @param {Number} delay in seconds
    */
-  async releaseBack (delay: number) {
+  async releaseBack (delay: number): Promise<void> {
     if (this.job) {
-      return this.job.releaseBack(delay)
+      return await this.job.releaseBack(delay)
     }
   }
 
@@ -67,15 +67,15 @@ export class InteractsWithQueue {
    * @param {Number} delay in seconds
    */
   async tryAgainIn (delay: number): Promise<void> {
-    return this.releaseBack(delay)
+    return await this.releaseBack(delay)
   }
 
   /**
    * Delete the job from the queue.
    */
-  async delete () {
+  async delete (): Promise<void> {
     if (this.job) {
-      return this.job.delete()
+      return await this.job.delete()
     }
   }
 
@@ -86,9 +86,9 @@ export class InteractsWithQueue {
    * @param {Error} error
    * @param {Job} job
    */
-  async fail (error: Error) {
+  async fail (error: Error): Promise<void> {
     if (this.job) {
-      return this.job.fail(error)
+      return await this.job.fail(error)
     }
   }
 }

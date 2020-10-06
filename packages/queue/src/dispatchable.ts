@@ -25,7 +25,7 @@ export class Dispatchable extends InteractsWithQueue {
   /**
    * Dispatch the job with the given `data`.
    */
-  static async dispatch (data: any): Promise<void> {
-    return new PendingDispatch(this).dispatch(data)
+  static async dispatch (data: any): Promise<string | number> {
+    return await new PendingDispatch(this).dispatch(data)
   }
 }
