@@ -205,7 +205,7 @@ export class VerifyCsrfToken {
   forbidden (): void {
     Logger.debug('CSRF token verification failed')
 
-    throw Boom.forbidden()
+    throw Boom.forbidden('CSRF token verification failed')
   }
 }
 
