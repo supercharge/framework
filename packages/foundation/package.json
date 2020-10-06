@@ -13,6 +13,7 @@
     "@supercharge/env": "~0.0.0",
     "@supercharge/goodies": "~1.4.0",
     "@supercharge/logging": "~0.0.0",
+    "type-fest": "~0.16.0",
     "youch": "~2.0.10",
     "youch-terminal": "~1.0.0"
   },
