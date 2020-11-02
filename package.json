@@ -34,7 +34,7 @@
     "hapi-pulse": "~2.4.0",
     "hapi-request-utilities": "~3.0.0",
     "hapi-response-utilities": "~1.6.0",
-    "html-to-text": "~5.1.1",
+    "html-to-text": "~6.0.0",
     "laabr": "~5.1.6",
     "listr": "~0.14.3",
     "lockfile": "~1.0.4",
