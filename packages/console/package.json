@@ -10,7 +10,7 @@
     "@supercharge/collections": "~3.0.0",
     "@supercharge/contracts": "~0.0.0",
     "@supercharge/filesystem": "~2.1.0",
-    "@supercharge/foundation": "~0.0.0",
+    "@supercharge/core": "~0.0.0",
     "@supercharge/goodies": "~1.5.1",
     "@supercharge/set": "~1.3.0",
     "@supercharge/strings": "~1.11.0",

@@ -5,7 +5,7 @@ import Fs from '@supercharge/filesystem'
 import { upon } from '@supercharge/goodies'
 import Collect from '@supercharge/collections'
 import { Application as Craft } from './application'
-import { BootApplication, HandleExceptions, LoadBootstrappers } from '@supercharge/foundation'
+import { BootApplication, HandleExceptions, LoadBootstrappers } from '@supercharge/core'
 import { ConsoleKernel as ConsoleKernelContract, Application, BootstrapperContstructor } from '@supercharge/contracts'
 
 export class Kernel implements ConsoleKernelContract {
