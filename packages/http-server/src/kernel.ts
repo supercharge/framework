@@ -3,7 +3,7 @@
 import { Server } from '@hapi/hapi'
 import Fs from '@supercharge/filesystem'
 import Collect from '@supercharge/collections'
-import { BootApplication, HandleExceptions, LoadBootstrappers } from '@supercharge/foundation'
+import { BootApplication, HandleExceptions, LoadBootstrappers } from '@supercharge/core'
 import { HttpKernel as HttpKernelContract, Application, BootstrapperContstructor } from '@supercharge/contracts'
 
 export class Kernel implements HttpKernelContract {

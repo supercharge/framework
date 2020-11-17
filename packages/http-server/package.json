@@ -12,7 +12,7 @@
     "@supercharge/contracts": "~0.0.0",
     "@supercharge/env": "~0.0.0",
     "@supercharge/filesystem": "~2.1.0",
-    "@supercharge/foundation": "~0.0.0",
+    "@supercharge/core": "~0.0.0",
     "@supercharge/logging": "~0.0.0",
     "@supercharge/goodies": "~1.5.1",
     "@types/hapi__hapi": "~20.0.0",

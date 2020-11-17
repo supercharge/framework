@@ -19,10 +19,10 @@
             "path": "../contracts"
         },
         {
-            "path": "../env"
+            "path": "../core"
         },
         {
-            "path": "../foundation"
+            "path": "../env"
         },
         {
             "path": "../logging"

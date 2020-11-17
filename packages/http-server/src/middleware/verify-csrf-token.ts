@@ -1,7 +1,7 @@
 'use strict'
 
 import Boom from '@hapi/boom'
-import { Env } from '@supercharge/env'
+import Env from '@ioc:supercharge/env'
 import { parse, match } from 'matchit'
 import { Logger } from '@supercharge/logging'
 import { Request, ResponseToolkit } from '@hapi/hapi'
