@@ -1,13 +1,8 @@
 'use strict'
 
 import { Manager } from '@supercharge/manager'
-import { MongooseQueueClientFactory as MongooseClientFactory } from './database-queue-mongoose-client'
-import {
-  Job,
-  // Config as QueueConfig,
-  Queue as QueueContract,
-  DatabaseQueue as DatabaseQueueContract
-} from '@supercharge/contracts'
+import { MongooseQueueClientFactory } from './database-queue-mongoose-client'
+import { Job, Queue as QueueContract, DatabaseQueue as DatabaseQueueContract } from '@supercharge/contracts'
 
 export class DatabaseQueue extends Manager implements QueueContract {
   /**
@@ -20,7 +15,7 @@ export class DatabaseQueue extends Manager implements QueueContract {
    * @returns {String} the job ID
    */
   async push (jobName: string, payload: any, queue?: string): Promise<string | number> {
-    return this.driver().push({
+    return await this.driver().push({
       jobClassName: jobName,
       payload,
       queue: this.getQueue(queue)
@@ -35,7 +30,7 @@ export class DatabaseQueue extends Manager implements QueueContract {
    * @returns {Job}
    */
   async pop (queue?: string): Promise<Job | undefined> {
-    return this.driver().pop(
+    return await this.driver().pop(
       this.getQueue(queue)
     )
   }
@@ -48,7 +43,7 @@ export class DatabaseQueue extends Manager implements QueueContract {
    * @returns {Number}
    */
   async size (queue?: string): Promise<number> {
-    return this.driver().size(
+    return await this.driver().size(
       this.getQueue(queue)
     )
   }
@@ -59,7 +54,7 @@ export class DatabaseQueue extends Manager implements QueueContract {
    * @param {String|Array} queue
    */
   async clear (queue?: string): Promise<void> {
-    return this.driver().clear(
+    return await this.driver().clear(
       this.getQueue(queue)
     )
   }
@@ -70,10 +65,7 @@ export class DatabaseQueue extends Manager implements QueueContract {
    * @param queue
    */
   protected getQueue (queue?: string): string {
-    return queue ?? this
-      .config()
-      .get(`queue.connections.${queue}`, {})
-      .queue
+    return queue ?? 'default'
   }
 
   /**
@@ -104,7 +96,7 @@ export class DatabaseQueue extends Manager implements QueueContract {
    * @returns {DatabaseQueue}
    */
   protected createMongooseDriver (): DatabaseQueueContract {
-    return MongooseClientFactory(
+    return MongooseQueueClientFactory(
       this.config().get('queue.connections.mongoose', {})
     )
   }

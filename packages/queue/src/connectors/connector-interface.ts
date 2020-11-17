@@ -10,5 +10,5 @@ export interface ConnectorInterface {
    *
    * @returns {Queue}
    */
-  connect (config: any): Queue
+  connect (config: any): Queue | Promise<Queue>
 }

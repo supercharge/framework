@@ -2,12 +2,13 @@
 
 import { Job } from './job'
 import { tap } from '@supercharge/goodies'
-import { DatabaseQueue, Job as JobContract } from '@supercharge/contracts'
+import { Job as JobContract } from '@supercharge/contracts'
+import { DatabaseQueueMongooseClient } from '../database-queue-mongoose-client'
 
 export class MongooseJob extends Job {
-  private readonly client: DatabaseQueue
+  private readonly client: typeof DatabaseQueueMongooseClient
 
-  constructor (job: JobContract, client: DatabaseQueue) {
+  constructor (job: JobContract, client: typeof DatabaseQueueMongooseClient) {
     super(job)
 
     this.client = client
@@ -36,7 +37,7 @@ export class MongooseJob extends Job {
    *
    * @returns {String}
    */
-  jobName () {
+  jobName (): string {
     return this.job.jobClassName
   }
 

@@ -1,13 +1,10 @@
 'use strict'
 
-import Mongoose from 'mongoose'
+import Mongoose, { Model } from 'mongoose'
 import { MongooseJob } from './jobs/mongoose-job'
-import { Job, DatabaseQueue, DatabaseQueuePayload } from '@supercharge/contracts'
+import { Job, DatabaseQueuePayload } from '@supercharge/contracts'
 
-// const { Mongoose } = require('../../database')
-// const MongooseJob = require('../jobs/mongoose-job')
-
-class DatabaseQueueMongooseClient implements DatabaseQueue {
+export class DatabaseQueueMongooseClient extends Model {
   /**
    * Push a new job into the MongoDB queue.
    *
@@ -15,8 +12,7 @@ class DatabaseQueueMongooseClient implements DatabaseQueue {
    *
    * @returns {String} job ID
    */
-  static async push ({ jobClassName, payload, queue, attempts = 0, notBefore = new Date() }: DatabaseQueuePayload) {
-    // @ts-ignore
+  static async push ({ jobClassName, payload, queue, attempts = 0, notBefore = new Date() }: DatabaseQueuePayload): Promise<string | number> {
     const doc = await this.create({
       queue,
       payload,
@@ -51,7 +47,6 @@ class DatabaseQueueMongooseClient implements DatabaseQueue {
       sort: { createdOn: 1 } // sort by oldest creation date (ensures FIFO)
     }
 
-    // @ts-ignore
     const job = await this.findOneAndUpdate(query, update, options)
 
     if (job) {
@@ -67,8 +62,7 @@ class DatabaseQueueMongooseClient implements DatabaseQueue {
    * @returns {Number}
    */
   static async size (queue: string): Promise<number> {
-    // @ts-ignore
-    return this.countDocuments({ queue, startTime: null })
+    return await this.countDocuments({ queue, startTime: null })
   }
 
   /**
@@ -77,7 +71,6 @@ class DatabaseQueueMongooseClient implements DatabaseQueue {
    * @param {String|Array} queue
    */
   static async clear (queue: string): Promise<void> {
-    // @ts-ignore
     await this.deleteMany({ queue })
   }
 
@@ -89,8 +82,7 @@ class DatabaseQueueMongooseClient implements DatabaseQueue {
    * @returns {Number}
    */
   static async delete (id: string): Promise<number> {
-    // @ts-ignore
-    return this.findByIdAndDelete(id)
+    return await this.findByIdAndDelete(id)
   }
 }
 

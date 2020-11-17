@@ -3,13 +3,15 @@
 import { Dispatchable } from './dispatchable'
 import { Manager } from '@supercharge/manager'
 import { DatabaseQueue } from './database-queue'
-import { Queue as QueueContract, Job } from '@supercharge/contracts'
+import { Queue as QueueContract } from '@supercharge/contracts'
 
 export class QueueManager extends Manager {
   /**
    * An in-memory key-value store for available queue jobs.
    */
   private readonly jobs: Map<string, string>
+
+  private readonly connections: Map<string, string>
 
   constructor () {
     super()
@@ -27,7 +29,7 @@ export class QueueManager extends Manager {
   * @returns {String} the job ID
   */
   async dispatch (job: typeof Dispatchable, payload: any, connectionName?: string, queue?: string): Promise<string | number> {
-    return this.driver(connectionName).push(
+    return await this.driver(connectionName).push(
       job.name, payload, queue
     )
   }
