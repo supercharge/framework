@@ -2,7 +2,7 @@
 
 import { Application } from './application'
 
-export type BootstrapperContstructor =
+export type BootstrapperCtor =
   /**
    * Create a new bootstrapper instance.
    *

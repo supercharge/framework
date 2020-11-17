@@ -1,15 +1,24 @@
 'use strict'
 
+import { Ioc } from './container'
+import { EnvStore } from '../env'
 import { ConfigStore } from '../config'
-import { BootstrapperContstructor } from './bootstrapper'
+import { BootstrapperCtor } from './bootstrapper'
 
 export interface Application {
   /**
+   * Returns the container instance.
+   *
+   * @returns {Ioc}
+   */
+  container (): Ioc
+
+    /**
    * Returns the app version.
    *
    * @returns {String}
    */
-  version(): string
+  version(): string | undefined
 
   /**
    * Returns the root path of the application directory.
@@ -19,7 +28,7 @@ export interface Application {
   basePath(): string
 
   /**
-   * Returns the app config store instance.
+   * Returns the config store instance.
    *
    * @returns {ConfigStore}
    */
@@ -53,13 +62,11 @@ export interface Application {
   storagePath (path: string): string
 
   /**
-   * Set the environment file to be loaded while bootstrapping the application.
+   * The env store instance.
    *
-   * @param {String} file
-   *
-   * @returns {Application}
+   * @returns {EnvStore}
    */
-  loadEnvironmentFrom(file: string): this
+  env(): EnvStore
 
   /**
    * Returns the environment file of the application. By default, this is `.env`.
@@ -67,6 +74,15 @@ export interface Application {
    * @returns {String}
    */
   environmentFile(): string
+
+  /**
+   * Set the environment file to be loaded while bootstrapping the application.
+   *
+   * @param {String} file
+   *
+   * @returns {Application}
+   */
+  loadEnvironmentFrom(file: string): this
 
   /**
    * Returns the path to directory of the environment file.
@@ -83,7 +99,7 @@ export interface Application {
    *
    * @param {Array} bootstrappers
    */
-  bootstrapWith(bootstrappers: BootstrapperContstructor[]): Promise<void>
+  bootstrapWith(bootstrappers: BootstrapperCtor[]): Promise<void>
 
   /**
    * Boot the application.
@@ -95,7 +111,7 @@ export interface Application {
    *
    * @returns {Boolean}
    */
-  runningInConsole (): boolean
+  isRunningInConsole (): boolean
 
   /**
    * Mark the application as running in the console.
@@ -103,9 +119,4 @@ export interface Application {
    * @returns {Application}
    */
   markAsRunningInConsole (): this
-
-  /**
-   * Load the configured applications bootstrappers.
-   */
-  loadConfiguredBootstrappers (): Promise<void>
 }
