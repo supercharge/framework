@@ -6,10 +6,14 @@
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
   },
+  "files": [
+    "dist/src",
+    "dist/types"
+  ],
+  "main": "dist/src",
   "dependencies": {
     "@supercharge/contracts": "~0.0.0",
-    "lodash": "~4.17.20",
-    "require-all": "~3.0.0"
+    "lodash": "~4.17.20"
   },
   "devDependencies": {
     "@types/jest": "~26.0.13",
@@ -29,10 +33,6 @@
   "engines": {
     "node": ">=12"
   },
-  "files": [
-    "dist",
-    "types"
-  ],
   "homepage": "https://superchargejs.com",
   "keywords": [
     "config",
@@ -41,7 +41,6 @@
     "nodejs"
   ],
   "license": "MIT",
-  "main": "dist",
   "publishConfig": {
     "access": "public"
   },
@@ -56,6 +55,5 @@
     "lint:fix": "npm run lint -- --fix",
     "test": "npm run build && npm run lint && npm run test:run",
     "test:run": "jest"
-  },
-  "types": "dist"
+  }
 }

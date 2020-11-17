@@ -1,7 +1,7 @@
 'use strict'
 
 const Path = require('path')
-const { Config, ConfigBootstrapper } = require('../dist')
+const { Config } = require('../dist')
 
 describe('Config', () => {
   afterEach(() => {
