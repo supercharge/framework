@@ -10,7 +10,6 @@
         "composite": true,
         "target": "es2019",
         "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true
     },
     "exclude": [
         "node_modules",
