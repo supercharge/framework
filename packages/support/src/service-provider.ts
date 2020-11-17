@@ -1,12 +1,14 @@
 'use strict'
 
-import { Application } from '@supercharge/contracts'
+import { Application, ServiceProvider as ServiceProviderContract } from '@supercharge/contracts'
 
-export class ServiceProvider {
+export class ServiceProvider implements ServiceProviderContract {
   /**
    * Stores service provider meta data.
    */
-  private readonly meta: ServiceProviderMeta
+  private readonly meta: {
+    app: Application
+  }
 
   /**
    * Create a new service provider instance.
@@ -22,7 +24,7 @@ export class ServiceProvider {
    *
    * @returns {Application}
    */
-  protected app (): Application {
+  app (): Application {
     return this.meta.app
   }
 
@@ -39,8 +41,4 @@ export class ServiceProvider {
   async boot (): Promise<void> {
     //
   }
-}
-
-interface ServiceProviderMeta {
-  app: Application
 }
