@@ -1,16 +1,23 @@
 'use strict'
 
 const Path = require('path')
-const { Env, EnvBootstrapper } = require('../dist')
+const { Env: EnvStore, EnvServiceProvider } = require('../dist/src')
+
+const Env = new EnvStore()
+
+async function bootProviderFor (app) {
+  const provider = new EnvServiceProvider(app)
+  await provider.boot()
+}
 
 describe('Env', () => {
   beforeAll(async () => {
-    await new EnvBootstrapper().boot(new App())
+    await bootProviderFor(new App())
   })
 
   it('throws for non-existent .env file', async () => {
     await expect(
-      new EnvBootstrapper().boot(new NoEnvironmentFileApp())
+      bootProviderFor(new NoEnvironmentFileApp())
     ).toReject()
   })
 

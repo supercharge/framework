@@ -94,8 +94,8 @@ export class Env implements EnvStore {
    * @returns {Boolean}
    */
   is (environment: string): boolean {
-    return Str(this.get('NODE_ENV'))
-      .lower()
-      .equals(environment)
+    return Str(
+      this.get('NODE_ENV')
+    ).lower().equals(environment)
   }
 }
