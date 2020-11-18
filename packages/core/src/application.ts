@@ -6,6 +6,7 @@ import Module from 'module'
 import { Ioc } from '@adonisjs/fold'
 import { Env } from '@supercharge/env'
 import { PackageJson } from 'type-fest'
+import { HttpKernel } from './http/kernel'
 import { Config } from '@supercharge/config'
 import Collect from '@supercharge/collections'
 import { tap, upon } from '@supercharge/goodies'
@@ -237,10 +238,21 @@ export class Application implements ApplicationContract {
   }
 
   /**
+   * Register the configured user-land providers.
+   */
+  async registerConfiguredProviders (): Promise<void> {
+    // TODO
+  }
+
+  /**
    * Boot the application’s service providers.
    */
   async boot (): Promise<void> {
-    await Collect(this.serviceProviders()).forEach(async provider => {
+    // TODO
+
+    await Collect(
+      this.serviceProviders()
+    ).forEach(async provider => {
       await this.bootProvider(provider)
     })
   }
@@ -262,9 +274,11 @@ export class Application implements ApplicationContract {
    * @param {Array} bootstrappers
    */
   async bootstrapWith (bootstrappers: BootstrapperCtor[]): Promise<void> {
-    await Collect(bootstrappers).forEach(async (bootstrapper: BootstrapperCtor) => {
-      return await this.make(bootstrapper).bootstrap(this)
-    })
+    await Collect(bootstrappers).forEach(
+      async (bootstrapper: BootstrapperCtor) => {
+        return await this.make(bootstrapper).bootstrap(this)
+      }
+    )
   }
 
   /**
@@ -296,6 +310,13 @@ export class Application implements ApplicationContract {
     return tap(this, () => {
       this.meta.isRunningInConsole = true
     })
+  }
+
+  /**
+   * Create and start the HTTP server.
+   */
+  async startHttpServer (): Promise<void> {
+    return await new HttpKernel(this).startServer()
   }
 }
 
