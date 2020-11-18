@@ -4,7 +4,7 @@ import Dotenv from 'dotenv'
 import Fs from '@supercharge/filesystem'
 import { Application, Bootstrapper } from '@supercharge/contracts'
 
-export class EnvBootstrapper implements Bootstrapper {
+export class LoadEnvironmentVariables implements Bootstrapper {
   /**
    * Boot application services.
    */

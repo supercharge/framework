@@ -3,7 +3,7 @@
 import RequireAll from 'require-all'
 import { Application, Bootstrapper } from '@supercharge/contracts'
 
-export class ConfigBootstrapper implements Bootstrapper {
+export class LoadConfiguration implements Bootstrapper {
   /**
    * Bootstrap the given application.
    *
