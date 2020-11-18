@@ -102,6 +102,11 @@ export interface Application {
   bootstrapWith(bootstrappers: BootstrapperCtor[]): Promise<void>
 
   /**
+   * Register the configured user-land providers.
+   */
+  registerConfiguredProviders(): Promise<void>
+
+  /**
    * Boot the application.
    */
   boot(): Promise<void>
