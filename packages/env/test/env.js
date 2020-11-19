@@ -1,28 +1,12 @@
 'use strict'
 
-const Path = require('path')
-const { Env: EnvStore, EnvServiceProvider } = require('../dist/src')
+const { Env: EnvStore } = require('../dist')
 
 const Env = new EnvStore()
 
-async function bootProviderFor (app) {
-  const provider = new EnvServiceProvider(app)
-  await provider.boot()
-}
-
 describe('Env', () => {
-  beforeAll(async () => {
-    await bootProviderFor(new App())
-  })
-
-  it('throws for non-existent .env file', async () => {
-    await expect(
-      bootProviderFor(new NoEnvironmentFileApp())
-    ).toReject()
-  })
-
   it('has environment variables after bootstrapper loaded', async () => {
-    expect(Env.get('NAME')).toBeDefined()
+    expect(Env.get('NODE_ENV')).toEqual('test')
   })
 
   it('get', async () => {
@@ -85,37 +69,3 @@ describe('Env', () => {
     expect(Env.is('local')).toBeTrue()
   })
 })
-
-class App {
-  environmentFile () {
-    return Path.resolve(__dirname, 'fixtures/secrets.env')
-  }
-}
-
-class NoEnvironmentFileApp {
-  environmentFile () {
-    return Path.resolve(__dirname, 'fixtures/not-existent-file.env')
-  }
-}
-
-// async getOrFail (t) {
-//   const env = new Env.constructor()
-//   t.throws(() => env.getOrFail())
-//   const error = t.throws(() => env.getOrFail(null))
-//   t.true(error.message.includes('Missing environment variable'))
-
-//   env.set('UNDEFINED', undefined)
-//   t.throws(() => env.getOrFail('UNDEFINED'))
-
-//   env.set('DB', null)
-//   t.throws(() => env.getOrFail('DB'))
-
-//   env.set('TIMEOUT', 20)
-//   t.is(env.getOrFail('TIMEOUT'), '20')
-
-//   env.set('FALSE', false)
-//   t.is(env.getOrFail('FALSE'), 'false')
-
-//   env.set('USER', 'Marcus')
-//   t.is(env.getOrFail('USER'), 'Marcus')
-// }
