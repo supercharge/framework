@@ -6,6 +6,12 @@
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
   },
+  "files": [
+    "dist/src",
+    "dist/types"
+  ],
+  "main": "dist/src",
+  "types": "dist/types/index.d.ts",
   "dependencies": {
     "@adonisjs/fold": "~7.0.8",
     "@supercharge/collections": "~3.0.0",
@@ -38,9 +44,6 @@
   "engines": {
     "node": ">=12"
   },
-  "files": [
-    "dist"
-  ],
   "homepage": "https://superchargejs.com",
   "keywords": [
     "foundation",
@@ -49,7 +52,6 @@
     "nodejs"
   ],
   "license": "MIT",
-  "main": "dist",
   "publishConfig": {
     "access": "public"
   },
@@ -64,6 +66,5 @@
     "lint:fix": "npm run lint -- --fix",
     "test": "npm run build && npm run lint && npm run test:run",
     "test:run": "jest --config ../../jest.config.js --rootDir ."
-  },
-  "types": "dist"
+  }
 }
