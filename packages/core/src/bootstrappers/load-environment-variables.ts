@@ -10,6 +10,7 @@ export class LoadEnvironmentVariables implements Bootstrapper {
    */
   async bootstrap (app: Application): Promise<void> {
     await this.loadEnvironment(app)
+    this.registerEnvBinding(app)
   }
 
   /**
@@ -41,5 +42,14 @@ export class LoadEnvironmentVariables implements Bootstrapper {
    */
   environmentFile (app: Application): string {
     return app.environmentFile()
+  }
+
+  /**
+   * Register the env store instance to the container.
+   *
+   * @param app
+   */
+  registerEnvBinding (app: Application): void {
+    app.container().singleton('supercharge/env', () => app.env())
   }
 }
