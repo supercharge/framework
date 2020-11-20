@@ -38,7 +38,15 @@ export class HttpKernel implements HttpKernelContract {
    * Returns the HTTP server instance.
    */
   server (): any {
-    return this.meta.server
+    // return this.meta.server
+
+    // TODO
+
+    return {
+      start () {
+        console.log('This method will start the HTTP server, when implemented :)')
+      }
+    }
   }
 
   /**
@@ -54,9 +62,9 @@ export class HttpKernel implements HttpKernelContract {
    */
   protected bootstrappers (): BootstrapperCtor[] {
     return [
+      HandleExceptions,
       LoadEnvironmentVariables,
       LoadConfiguration,
-      HandleExceptions,
       RegisterServiceProviders,
       BootServiceProviders
     ]
