@@ -1,30 +1,37 @@
 'use strict'
 
-import { Server } from '@hapi/hapi'
-import Fs from '@supercharge/filesystem'
-import Collect from '@supercharge/collections'
-import { BootApplication, HandleExceptions, LoadBootstrappers } from '@supercharge/core'
-import { HttpKernel as HttpKernelContract, Application, BootstrapperContstructor } from '@supercharge/contracts'
+import Koa from 'koa'
+import Glob from 'globby'
+import { Router } from './router'
+import KoaRouter from '@koa/router'
+import { Request } from './request'
+import { Response } from './response'
+import {
+  HandleExceptions,
+  LoadConfiguration,
+  LoadEnvironmentVariables,
+  RegisterServiceProviders,
+  BootServiceProviders
+} from '@supercharge/core/dist/src'
+import { Application, BootstrapperCtor, HttpKernel as HttpKernelContract, Middleware } from '@supercharge/contracts'
 
-export class Kernel implements HttpKernelContract {
-  /**
-   * The application instance.
-   */
-  private readonly app: Application
+export class HttpKernel implements HttpKernelContract {
+  private readonly meta: {
+    /**
+     * The application instance.
+     */
+    app: Application
 
-  /**
-   * The hapi HTTP server instance.
-   */
-  private readonly server: Server
+    /**
+     * The HTTP server instance.
+     */
+    server: Koa
 
-  /**
-   * The list of bootstrappers.
-   */
-  protected bootstrappers: BootstrapperContstructor[] = [
-    HandleExceptions,
-    LoadBootstrappers,
-    BootApplication
-  ]
+    /**
+     * The HTTP router instance.
+     */
+    router: Router
+  }
 
   /**
    * Create a new console kernel instance.
@@ -32,46 +39,128 @@ export class Kernel implements HttpKernelContract {
    * @param {Application} app
    */
   constructor (app: Application) {
-    this.app = app
-    this.server = this.createHttpServer()
+    this.meta = { app, server: new Koa(), router: new Router() }
   }
 
   /**
-   * Create an HTTP server instance.
-   *
-   * @returns {Server}
+   * Returns the app instance.
    */
-  createHttpServer (): Server {
-    return new Server(
-      this.app.config().get('server', {})
+  app (): Application {
+    return this.meta.app
+  }
+
+  /**
+   * Returns the local port on which the server listens for connections.
+   *
+   * @returns {}
+   */
+  port (): number {
+    return this.app().config().get('app.port')
+  }
+
+  /**
+   * Returns the hostname on which the server listens for connections.
+   *
+   * @returns {}
+   */
+  hostname (): string {
+    return this.app().config().get('app.host')
+  }
+
+  /**
+   * Returns the HTTP server instance.
+   */
+  server (): Koa {
+    return this.meta.server
+  }
+
+  /**
+   * Returns the HTTP router instance.
+   */
+  router (): Router {
+    return this.meta.router
+  }
+
+  /**
+   * Returns the application’s middleware stack. Every middleware runs on
+   * every request to the application.
+   */
+  protected middleware (): Middleware[] {
+    return []
+  }
+
+  /**
+   * Returns the list of application bootstrappers.
+   */
+  protected bootstrappers (): BootstrapperCtor[] {
+    return [
+      HandleExceptions,
+      LoadEnvironmentVariables,
+      LoadConfiguration,
+      RegisterServiceProviders,
+      BootServiceProviders
+    ]
+  }
+
+  /**
+   * Bootstrap the application by loading environment variables, load the
+   * configuration, register service providers into the IoC container
+   * and ultimately boot the registered providers.
+   */
+  async bootstrap (): Promise<void> {
+    await this.app().bootstrapWith(
+      this.bootstrappers()
     )
   }
 
-  /**
-   * Returns the absolute path to the app plugins directory.
-   *
-   * @returns {String}
-   */
-  pluginsDirectory (): string {
+  loadRoutesFrom (_?: string): string {
     return ''
   }
 
   /**
-   * Returns the absolute path to the app middlware directory.
-   *
-   * @returns {String}
+   * Register the HTTP bindings into the container.
    */
-  middlewareDirectory (): string {
-    return ''
+  registerBindings (): void {
+    this.app().container().bind('supercharge/route', () => {
+      return this.router()
+    })
   }
 
   /**
-   * Returns the absolute path to the app routes directory.
-   *
-   * @returns {String}
+   * Register routes to the HTTP server.
    */
-  routesDirectory (): string {
-    return '' // this.app.routePath()
+  private async registerRoutes (): Promise<void> {
+    ([] as string[]).concat(
+      await Glob(this.loadRoutesFrom())
+    ).forEach(file => {
+      require(file)
+    })
+
+    const koaRouter = new KoaRouter()
+
+    // console.log(
+    //   this.router().routes().all()
+    // )
+
+    this.router().routes().all().forEach(route => {
+      koaRouter[route.method()](route.path(), async (ctx: any, next: Function) => {
+        await route.handler()({
+          request: new Request(ctx),
+          response: new Response(ctx.response)
+        })
+
+        await next()
+      })
+    })
+
+    this.server().use(koaRouter.routes())
+  }
+
+  /**
+   * Register middlware to the HTTP server.
+   */
+  private async registerMiddleware (): Promise<void> {
+    //
   }
 
   /**
@@ -80,118 +169,21 @@ export class Kernel implements HttpKernelContract {
    * @returns {Promise}
    */
   async startServer (): Promise<void> {
+    this.registerBindings()
+
     await this.bootstrap()
-    await this.server.start()
+    await this.registerRoutes()
+    await this.registerMiddleware()
+
+    await this.listen()
   }
 
   /**
-   * Bootstrap the console application for Craft commands.
+   * Start the HTTP server.
    */
-  async bootstrap (): Promise<void> {
-    await this.app.bootstrapWith(this.bootstrappers)
+  private async listen (): Promise<void> {
+    await this.server().listen(this.port(), this.hostname())
 
-    await this.plugins()
-    await this.middleware()
-    await this.routes()
-  }
-
-  /**
-   * Register plugins to the HTTP server.
-   */
-  async plugins (): Promise<void> {
-    await this.registerBasePlugins()
-    await this.registerAppPlugins()
-  }
-
-  /**
-   * Register the base plugins extending the HTTP request
-   * and response instances with useful helper methods.
-   */
-  private async registerBasePlugins (): Promise<void> {
-    await this.server.register([
-      require('hapi-request-utilities'),
-      require('hapi-response-utilities'),
-      require('hapi-class-extension-points')
-    ])
-  }
-
-  /**
-   * Register all HTTP plugins in the application.
-   */
-  private async registerAppPlugins (): Promise<void> {
-    await Collect(
-      await this.loadAndResolveFilesFrom(this.pluginsDirectory())
-    ).forEach(async (plugin: any) => {
-      await this.server.register(plugin)
-    })
-  }
-
-  /**
-   * Register server and request lifecycle extensions (middleware) to the server.
-   */
-  async middleware (): Promise<void> {
-    await Collect(
-      await this.loadAndResolveFilesFrom(
-        this.middlewareDirectory()
-      )
-    ).forEach(async (middleware: any) => {
-      // TODO remove the line below
-      // @ts-expect-error
-      await this.server.extClass(middleware)
-    })
-  }
-
-  /**
-   * Register routes to the server.
-   */
-  async routes (): Promise<void> {
-    await Collect(
-      await this.loadAndResolveFilesFrom(
-        this.routesDirectory()
-      )
-    ).forEach(async (route: any) => {
-      await this.server.route(route)
-    })
-  }
-
-  /**
-   * Load recursively all files from the given `directory`.
-   *
-   * @param {String} directory
-   */
-  private async loadFilesFrom (directory: string = ''): Promise<string[]> {
-    if (!directory) {
-      return []
-    }
-
-    return await Fs.exists(directory)
-      ? await Fs.allFiles(directory)
-      : []
-  }
-
-  /**
-   * Require and return the result of the given `path`.
-   *
-   * @param {String} path
-   *
-   * @returns {*}
-   */
-  private resolve (path: string): any {
-    return require(path)
-  }
-
-  /**
-   * Returns a collection instance of the loaded files in the given `directory`.
-   *
-   * @param {String} directory
-   *
-   * @returns {CollectionProxy}
-   */
-  private async loadAndResolveFilesFrom (directory: string = ''): Promise<any> {
-    return Collect(
-      await this.loadFilesFrom(directory)
-    ).map((file: string) => {
-      return this.resolve(file)
-    })
+    console.log(`Started the server on http://${this.hostname()}:${this.port()}`)
   }
 }
