@@ -16,7 +16,7 @@ export interface PendingRoute {
   /**
    * Create a route group
    */
-  group(callback: () => void): void
+  group (callback: () => void): void
 
   /**
    * Create a GET route.

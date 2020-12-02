@@ -8,8 +8,38 @@ export type RouteHandler = (ctx: HttpContext) => unknown | Promise<unknown>
 export type HttpMethod = 'get' | 'head' | 'post' | 'put' | 'delete' | 'patch' | 'options'
 
 export interface RouteAttributes {
-  prefix: string
-  middleware: string[]
+  /**
+   * A prefix that will be applied to all routes defined within the group callback.
+   *
+   * @example
+   * ```
+   * Route.group({ prefix: '/admin' }, () => {
+   *   Route.get('/dashboard', () => {})
+   *   Route.get('/analytics', () => {})
+   * })
+   *
+   * // the route group from above creates the following two routes:
+   * GET /admin/dashboard
+   * GET /admin/analytics
+   * ```
+   */
+  prefix?: string
+
+  /**
+   * A middleware stack (array) that will run for all routes defined in the group callback.
+   *
+   * @example
+   * ```
+   * Route.group({ middleware: 'redirectIfAuthenticated' }, () => {
+   *   Route.get('/login', () => {})
+   *   Route.get('/register', () => {})
+   * })
+   *
+   * // the route group from above runs the 'redirectIfAuthenticated' middleware
+   * // for the GET /login and GET /register routes
+   * ```
+   */
+  middleware?: string[]
 }
 
 export interface HttpRouter {
@@ -44,18 +74,18 @@ export interface HttpRouter {
   options(path: string, handler: RouteHandler): void
 
   /**
-   * Create a GET route.
+   * Create a route group.
    */
   group (callback: () => void): void
   group (attributes: RouteAttributes, callback: () => void): void
 
   /**
-   * Create a GET route.
+   * Set a route prefix.
    */
   prefix(prefix: string): PendingRoute
 
   /**
-   * Create a GET route.
+   * Set a middlware stack.
    */
   middleware(middleware: string | string[]): PendingRoute
 }
