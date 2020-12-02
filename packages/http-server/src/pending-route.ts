@@ -3,8 +3,7 @@
 import { Router } from './router'
 import Str from '@supercharge/strings'
 import { tap } from '@supercharge/goodies'
-import { RouteAttributes } from './route-attributes'
-import { PendingRoute as PendingRouteContract, RouteHandler } from '@supercharge/contracts'
+import { PendingRoute as PendingRouteContract, RouteHandler, RouteAttributes } from '@supercharge/contracts'
 
 export class PendingRoute implements PendingRouteContract {
   /**
@@ -24,7 +23,7 @@ export class PendingRoute implements PendingRouteContract {
    */
   constructor (router: Router) {
     this.router = router
-    this.attributes = new RouteAttributes()
+    this.attributes = { prefix: '', middleware: [] }
   }
 
   /**
@@ -36,9 +35,7 @@ export class PendingRoute implements PendingRouteContract {
    */
   public prefix (prefix: string): PendingRoute {
     return tap(this, () => {
-      this.attributes.setPrefix(
-        Str(prefix).start('/').get()
-      )
+      this.attributes.prefix = Str(prefix).start('/').get()
     })
   }
 
@@ -51,7 +48,7 @@ export class PendingRoute implements PendingRouteContract {
    */
   public middleware (middleware: string | string[]): PendingRoute {
     return tap(this, () => {
-      this.attributes.setMiddleware(middleware)
+      this.attributes.middleware = this.attributes.middleware?.concat(middleware)
     })
   }
 
@@ -60,8 +57,8 @@ export class PendingRoute implements PendingRouteContract {
    *
    * @param callback Function
    */
-  public group (callback: () => void): void {
-    this.router.group(callback, this.attributes)
+  group (callback: () => void): void {
+    return this.router.group(this.attributes, callback)
   }
 
   /**
@@ -70,9 +67,7 @@ export class PendingRoute implements PendingRouteContract {
    * @param path
    */
   private createPathFor (path: string): string {
-    return Str(
-      this.attributes.prefix()
-    ).concat(path).get()
+    return Str(this.attributes.prefix).concat(path).get()
   }
 
   /**
@@ -92,7 +87,7 @@ export class PendingRoute implements PendingRouteContract {
    * @param handler RouteHandler
    */
   post (path: string, handler: RouteHandler): void {
-    this.router.post(path, handler)
+    this.router.post(this.createPathFor(path), handler)
   }
 
   /**
@@ -102,7 +97,7 @@ export class PendingRoute implements PendingRouteContract {
    * @param handler RouteHandler
    */
   put (path: string, handler: RouteHandler): void {
-    this.router.put(path, handler)
+    this.router.put(this.createPathFor(path), handler)
   }
 
   /**
@@ -112,7 +107,7 @@ export class PendingRoute implements PendingRouteContract {
    * @param handler RouteHandler
    */
   delete (path: string, handler: RouteHandler): void {
-    this.router.delete(path, handler)
+    this.router.delete(this.createPathFor(path), handler)
   }
 
   /**
@@ -122,7 +117,7 @@ export class PendingRoute implements PendingRouteContract {
    * @param handler RouteHandler
    */
   patch (path: string, handler: RouteHandler): void {
-    this.router.patch(path, handler)
+    this.router.patch(this.createPathFor(path), handler)
   }
 
   /**
@@ -132,6 +127,6 @@ export class PendingRoute implements PendingRouteContract {
    * @param handler RouteHandler
    */
   options (path: string, handler: RouteHandler): void {
-    this.router.options(path, handler)
+    this.router.options(this.createPathFor(path), handler)
   }
 }

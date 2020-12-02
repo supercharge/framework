@@ -2,9 +2,7 @@
 
 import Str from '@supercharge/strings'
 import { tap } from '@supercharge/goodies'
-import { HttpRoute, RouteHandler } from '@supercharge/contracts'
-
-export type HttpMethod = 'get' | 'head' | 'post' | 'put' | 'delete' | 'patch' | 'options'
+import { HttpRoute, RouteHandler, HttpMethod } from '@supercharge/contracts'
 
 interface RouteAttributes {
   path: string

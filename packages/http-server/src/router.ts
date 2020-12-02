@@ -1,12 +1,12 @@
 'use strict'
 
+import { Route } from './route'
 import { RouteGroup } from './group'
-import { HttpMethod, Route } from './route'
 import Collect from '@supercharge/collections'
 import { PendingRoute } from './pending-route'
-import { RouteAttributes } from './route-attributes'
+import { isFunction } from '@supercharge/classes'
 import { RouteCollection } from './route-collection'
-import { HttpRouter, RouteHandler } from '@supercharge/contracts'
+import { HttpRouter, RouteHandler, RouteAttributes, HttpMethod } from '@supercharge/contracts'
 
 export class Router implements HttpRouter {
   private readonly meta: {
@@ -184,8 +184,8 @@ export class Router implements HttpRouter {
 
     if (group) {
       route
-        .prefix(group.attributes().prefix())
-        .middleware(group.attributes().middleware())
+        .prefix(group.prefix())
+        .middleware(group.middleware())
     }
   }
 
@@ -196,8 +196,19 @@ export class Router implements HttpRouter {
    *
    * @returns {RouteGroup}
    */
-  group (callback: () => void, attributes?: RouteAttributes): void {
-    const group = new RouteGroup([], attributes)
+  group (callback: () => void): void
+  group (attributes: RouteAttributes, callback: () => void): void
+  group (attributes: any, callback?: any): void {
+    /**
+     * If only a single argument is provided by the user, we expect it to be the
+     * callback function. That’s the reason we’re reassigning the variables here.
+     */
+    if (isFunction(attributes)) {
+      callback = attributes
+      attributes = undefined
+    }
+
+    const group = new RouteGroup(attributes)
 
     /**
      * Keep track of the route group so that routes defined in the callback will
