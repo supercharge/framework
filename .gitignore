@@ -33,3 +33,5 @@ coverage
 .vagrant
 
 tsconfig.tsbuildinfo
+
+packages/app
