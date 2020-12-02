@@ -2,12 +2,12 @@
 
 export interface HttpRouteGroup {
   /**
-   * Create a GET route.
+   * Returns the route group prefix.
    */
-  prefix(prefix: string): this
+  prefix(): string
 
   /**
-   * Append a single middleware or an array of middleware to this route group.
+   * Returns the route group middleware stack.
    */
-  middleware(middleware: string): this
+  middleware(): string[]
 }

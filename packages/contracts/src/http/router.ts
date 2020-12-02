@@ -5,6 +5,13 @@ import { PendingRoute } from './pending-route'
 
 export type RouteHandler = (ctx: HttpContext) => unknown | Promise<unknown>
 
+export type HttpMethod = 'get' | 'head' | 'post' | 'put' | 'delete' | 'patch' | 'options'
+
+export interface RouteAttributes {
+  prefix: string
+  middleware: string[]
+}
+
 export interface HttpRouter {
   /**
    * Create a GET route.
@@ -39,7 +46,8 @@ export interface HttpRouter {
   /**
    * Create a GET route.
    */
-  group(callback: () => void): void
+  group (callback: () => void): void
+  group (attributes: RouteAttributes, callback: () => void): void
 
   /**
    * Create a GET route.
