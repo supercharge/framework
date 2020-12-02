@@ -6,7 +6,6 @@ import Module from 'module'
 import { Ioc } from '@adonisjs/fold'
 import { Env } from '@supercharge/env'
 import { PackageJson } from 'type-fest'
-import { HttpKernel } from './http/kernel'
 import { Config } from '@supercharge/config'
 import Collect from '@supercharge/collections'
 import { tap, upon } from '@supercharge/goodies'
@@ -310,13 +309,6 @@ export class Application implements ApplicationContract {
     return tap(this, () => {
       this.meta.isRunningInConsole = true
     })
-  }
-
-  /**
-   * Create and start the HTTP server.
-   */
-  async startHttpServer (): Promise<void> {
-    return await new HttpKernel(this).startServer()
   }
 }
 
