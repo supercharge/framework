@@ -67,7 +67,7 @@ export class Router implements HttpRouter {
    * @returns {Route}
    */
   post (path: string, handler: RouteHandler): void {
-    this.addRoute('post', path, handler)
+    this.addRoute(['post'], path, handler)
   }
 
   /**
@@ -79,7 +79,7 @@ export class Router implements HttpRouter {
    * @returns {Route}
    */
   put (path: string, handler: RouteHandler): void {
-    this.addRoute('put', path, handler)
+    this.addRoute(['put'], path, handler)
   }
 
   /**
@@ -91,7 +91,7 @@ export class Router implements HttpRouter {
    * @returns {Route}
    */
   delete (path: string, handler: RouteHandler): void {
-    this.addRoute('delete', path, handler)
+    this.addRoute(['delete'], path, handler)
   }
 
   /**
@@ -103,7 +103,7 @@ export class Router implements HttpRouter {
    * @returns {Route}
    */
   patch (path: string, handler: RouteHandler): void {
-    this.addRoute('patch', path, handler)
+    this.addRoute(['patch'], path, handler)
   }
 
   /**
@@ -115,7 +115,7 @@ export class Router implements HttpRouter {
    * @returns {Route}
    */
   options (path: string, handler: RouteHandler): void {
-    this.addRoute('options', path, handler)
+    this.addRoute(['options'], path, handler)
   }
 
   /**
@@ -127,9 +127,9 @@ export class Router implements HttpRouter {
    *
    * @returns {Route}
    */
-  addRoute (method: HttpMethod | HttpMethod[], path: string, handler: RouteHandler): void {
+  addRoute (methods: HttpMethod[], path: string, handler: RouteHandler): void {
     this.routes().add(
-      this.createRoute(method, path, handler)
+      this.createRoute(methods, path, handler)
     )
   }
 
@@ -142,18 +142,14 @@ export class Router implements HttpRouter {
    *
    * @returns {Route}
    */
-  createRoute (method: HttpMethod | HttpMethod[], path: string, handler: RouteHandler): Route[] {
-    const methods = ([] as HttpMethod[]).concat(method)
+  createRoute (methods: HttpMethod[], path: string, handler: RouteHandler): Route {
+    const route = new Route(methods, path, handler)
 
-    return methods.map(method => {
-      const route = new Route(method, path, handler)
+    if (this.hasGroupStack()) {
+      this.mergeGroupAttributesIntoRoute(route)
+    }
 
-      if (this.hasGroupStack()) {
-        this.mergeGroupAttributesIntoRoute(route)
-      }
-
-      return route
-    })
+    return route
   }
 
   /**

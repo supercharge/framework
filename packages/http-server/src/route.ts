@@ -6,7 +6,7 @@ import { HttpRoute, RouteHandler, HttpMethod } from '@supercharge/contracts'
 
 interface RouteAttributes {
   path: string
-  method: HttpMethod
+  methods: HttpMethod[]
   handler: RouteHandler
   middleware: string[]
 }
@@ -24,8 +24,8 @@ export class Route implements HttpRoute {
    * @param path string
    * @param handler RouteHandler
    */
-  constructor (method: HttpMethod, path: string, handler: RouteHandler) {
-    this.attributes = { method, path, handler, middleware: [] }
+  constructor (methods: HttpMethod[], path: string, handler: RouteHandler) {
+    this.attributes = { methods, path, handler, middleware: [] }
   }
 
   /**
@@ -38,12 +38,12 @@ export class Route implements HttpRoute {
   }
 
   /**
-   * Returns the HTTP method.
+   * Returns the HTTP methods.
    *
    * @returns string
    */
-  public method (): HttpMethod {
-    return this.attributes.method
+  public methods (): HttpMethod[] {
+    return this.attributes.methods
   }
 
   /**
