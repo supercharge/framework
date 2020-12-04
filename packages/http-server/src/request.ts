@@ -20,6 +20,13 @@ export class Request implements HttpRequest {
   }
 
   /**
+   * Returns the request’s URL path.
+   */
+  path (): string {
+    return this.ctx.request.path
+  }
+
+  /**
    * Returns the query parameter object.
    */
   query (): { [key: string]: unknown } {
