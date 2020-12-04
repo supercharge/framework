@@ -138,19 +138,22 @@ export class HttpKernel implements HttpKernelContract {
 
     const koaRouter = new KoaRouter()
 
-    // console.log(
-    //   this.router().routes().all()
-    // )
-
     this.router().routes().all().forEach(route => {
-      koaRouter[route.method()](route.path(), async (ctx: any, next: Function) => {
-        await route.handler()({
-          request: new Request(ctx),
-          response: new Response(ctx.response)
-        })
+      koaRouter.register(route.path(), route.methods(), [
+        // TODO: register route-level middleware here
+        // async (ctx: any, next: Function) => {
+        //   await next()
+        // },
 
-        await next()
-      })
+        async (ctx: any, next: Function) => {
+          await route.handler()({
+            request: new Request(ctx),
+            response: new Response(ctx.response)
+          })
+
+          await next()
+        }
+      ], { name: route.path() })
     })
 
     this.server().use(koaRouter.routes())
