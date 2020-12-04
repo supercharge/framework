@@ -2,6 +2,11 @@
 
 export interface HttpRequest {
   /**
+   * Returns the request’s URL path.
+   */
+  path (): string
+
+  /**
    * Returns the query parameter object.
    */
   query(): { [key: string]: unknown }
