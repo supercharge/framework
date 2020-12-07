@@ -3,16 +3,29 @@
 // import Env from '@ioc:supercharge/env'
 // import { parse, match } from 'matchit'
 // import { Logger } from '@ioc:supercharge/logger'
+import { HttpContext, Middleware, NextHandler } from '@supercharge/contracts'
 
-export class VerifyCsrfToken {
-  // /**
-  //  * Returns an array of URIs that should be excluded from CSRF verfication.
-  //  *
-  //  * @returns {Array}
-  //  */
-  // exclude (): string[] {
-  //   return []
-  // }
+export class VerifyCsrfToken implements Middleware {
+  /**
+   * Returns an array of URIs that should be excluded from CSRF verfication.
+   *
+   * @returns {Array}
+   */
+  exclude (): string[] {
+    return []
+  }
+
+  /**
+   * Handle the incoming request.
+   *
+   * @param ctx HttpContext
+   * @param next NextHandler
+   */
+  async handle (_: HttpContext, next: NextHandler): Promise<void> {
+    // await this.onPostAuth(ctx.request)
+    await next()
+    // await this.onPreResponse(ctx.request)
+  }
 
   // /**
   //  * Request lifecycle extension point to verify the CSRF token.
@@ -20,15 +33,15 @@ export class VerifyCsrfToken {
   //  * @param {Request} request
   //  * @param {Toolkit} h
   //  */
-  // async onPostAuth (request: Request, h: ResponseToolkit): Promise<any> {
+  // async onPostAuth (request: HttpRequest): Promise<any> {
   //   if (this.shouldSkip(request)) {
-  //     return h.continue
+  //     return
   //   }
 
   //   if (await this.tokensMatch(request)) {
   //     this.rotateToken(request)
 
-  //     return h.continue
+  //     return
   //   }
 
   //   return this.forbidden()
@@ -40,15 +53,13 @@ export class VerifyCsrfToken {
   //  * @param {Request} request
   //  * @param {Toolkit} h
   //  */
-  // onPreResponse (request: Request, h: ResponseToolkit): symbol {
+  // onPreResponse (request: HttpRequest): void {
   //   if (this.hasNoSession(request)) {
-  //     return h.continue
+  //     return
   //   }
 
-  //   this.addCookieToResponse(request, h)
+  //   this.addCookieToResponse(request)
   //   this.addTokenToViewContext(request)
-
-  //   return h.continue
   // }
 
   // /**
@@ -59,7 +70,7 @@ export class VerifyCsrfToken {
   //  *
   //  * @returns {Boolean}
   //  */
-  // shouldSkip (request: Request): boolean {
+  // shouldSkip (request: HttpRequest): boolean {
   //   return this.isReading(request) || this.isTesting() || this.hasNoSession(request) || this.isExcluded(request)
   // }
 
@@ -71,7 +82,7 @@ export class VerifyCsrfToken {
   //  *
   //  * @returns {Boolean}
   //  */
-  // isReading (request: Request): boolean {
+  // isReading (request: HttpRequest): boolean {
   //   return ['GET', 'HEAD', 'OPTIONS'].includes(request.method.toUpperCase())
   // }
 
@@ -101,7 +112,7 @@ export class VerifyCsrfToken {
   //  *
   //  * @returns {Boolean}
   //  */
-  // isExcluded (request: Request): boolean {
+  // isExcluded (request: HttpRequest): boolean {
   //   const excludes = ([] as string[]).concat(this.exclude()).map(parse)
   //   const matches = match(request.path, excludes)
 
@@ -147,7 +158,7 @@ export class VerifyCsrfToken {
   //  * @param {Request} request
   //  * @param {Toolkit} h
   //  */
-  // addCookieToResponse (request: any, h: any): void {
+  // addCookieToResponse (request: any): void {
   //   return h.cookie('XSRF-TOKEN', request.session.token())
   // }
 
@@ -195,7 +206,7 @@ export class VerifyCsrfToken {
   //  * Logs a debug message and throws an HTTP forbidden error.
   //  */
   // forbidden (): void {
-  //   Logger.debug('CSRF token verification failed')
+  //   // Logger.debug('CSRF token verification failed')
 
   //   throw Boom.forbidden('CSRF token verification failed')
   // }
