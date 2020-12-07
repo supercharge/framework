@@ -6,6 +6,7 @@ import { Router } from './router'
 import KoaRouter from '@koa/router'
 import { Request } from './request'
 import { Response } from './response'
+import bodyParser from 'koa-bodyparser'
 import {
   HandleExceptions,
   LoadConfiguration,
@@ -13,7 +14,8 @@ import {
   RegisterServiceProviders,
   BootServiceProviders
 } from '@supercharge/core/dist/src'
-import { Application, BootstrapperCtor, HttpKernel as HttpKernelContract, Middleware } from '@supercharge/contracts'
+import Collect from '@supercharge/collections'
+import { Application, BootstrapperCtor, HttpKernel as HttpKernelContract, MiddlewareCtor } from '@supercharge/contracts'
 
 export class HttpKernel implements HttpKernelContract {
   private readonly meta: {
@@ -82,10 +84,12 @@ export class HttpKernel implements HttpKernelContract {
   }
 
   /**
-   * Returns the application’s middleware stack. Every middleware runs on
-   * every request to the application.
+   * Returns the application’s global middleware stack. Every middleware
+   * listed here runs on every request to the application.
+   *
+   * @returns {MiddlewareCtor[]}
    */
-  protected middleware (): Middleware[] {
+  protected middleware (): MiddlewareCtor[] {
     return []
   }
 
@@ -113,7 +117,7 @@ export class HttpKernel implements HttpKernelContract {
     )
   }
 
-  loadRoutesFrom (_?: string): string {
+  loadRoutesFrom (_: string): string {
     return ''
   }
 
@@ -131,7 +135,7 @@ export class HttpKernel implements HttpKernelContract {
    */
   private async registerRoutes (): Promise<void> {
     ([] as string[]).concat(
-      await Glob(this.loadRoutesFrom())
+      await Glob(this.loadRoutesFrom(''))
     ).forEach(file => {
       require(file)
     })
@@ -147,6 +151,7 @@ export class HttpKernel implements HttpKernelContract {
 
         async (ctx: any, next: Function) => {
           await route.handler()({
+            raw: ctx,
             request: new Request(ctx),
             response: new Response(ctx.response)
           })
@@ -163,7 +168,34 @@ export class HttpKernel implements HttpKernelContract {
    * Register middlware to the HTTP server.
    */
   private async registerMiddleware (): Promise<void> {
-    //
+    await this.registerCoreMiddleware()
+    await this.registerAppMiddleware()
+  }
+
+  /**
+   * Register the core middleware stack. This is basically global middleware
+   * stack, but it’s not configurable by the user. Instead, the provided
+   * functionality will be available out of the box.
+   */
+  async registerCoreMiddleware (): Promise<void> {
+    this.server().use(bodyParser())
+  }
+
+  /**
+   * Register the global application middleware stack.
+   */
+  async registerAppMiddleware (): Promise<void> {
+    await Collect(
+      this.middleware()
+    ).forEach(async (Middleware: MiddlewareCtor) => {
+      this.server().use(async (ctx, next) => {
+        return new Middleware().handle({
+          raw: ctx,
+          request: new Request(ctx),
+          response: new Response(ctx.response)
+        }, next)
+      })
+    })
   }
 
   /**
@@ -175,9 +207,8 @@ export class HttpKernel implements HttpKernelContract {
     this.registerBindings()
 
     await this.bootstrap()
-    await this.registerRoutes()
     await this.registerMiddleware()
-
+    await this.registerRoutes()
     await this.listen()
   }
 
