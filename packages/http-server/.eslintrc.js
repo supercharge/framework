@@ -13,6 +13,7 @@ module.exports = {
     project: './tsconfig.json'
   },
   rules: {
+    '@typescript-eslint/return-await': 0,
     '@typescript-eslint/triple-slash-reference': 0,
     '@typescript-eslint/strict-boolean-expressions': 0
   }
