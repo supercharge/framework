@@ -15,7 +15,7 @@ import {
   BootServiceProviders
 } from '@supercharge/core/dist/src'
 import Collect from '@supercharge/collections'
-import { Application, BootstrapperCtor, HttpKernel as HttpKernelContract, MiddlewareCtor } from '@supercharge/contracts'
+import { Application, BootstrapperCtor, HttpContext, HttpKernel as HttpKernelContract, MiddlewareCtor } from '@supercharge/contracts'
 
 export class HttpKernel implements HttpKernelContract {
   private readonly meta: {
@@ -150,11 +150,9 @@ export class HttpKernel implements HttpKernelContract {
         // },
 
         async (ctx: any, next: Function) => {
-          await route.handler()({
-            raw: ctx,
-            request: new Request(ctx),
-            response: new Response(ctx.response)
-          })
+          await route.handler()(
+            this.createContext(ctx)
+          )
 
           await next()
         }
@@ -162,6 +160,19 @@ export class HttpKernel implements HttpKernelContract {
     })
 
     this.server().use(koaRouter.routes())
+  }
+
+  /**
+   * Wrap the given Koa `ctx` into a Supercharge ctx.
+   *
+   * @param ctx
+   */
+  createContext (ctx: any): HttpContext {
+    return {
+      raw: ctx,
+      request: new Request(ctx),
+      response: new Response(ctx.response)
+    }
   }
 
   /**
@@ -189,11 +200,9 @@ export class HttpKernel implements HttpKernelContract {
       this.middleware()
     ).forEach(async (Middleware: MiddlewareCtor) => {
       this.server().use(async (ctx, next) => {
-        return new Middleware().handle({
-          raw: ctx,
-          request: new Request(ctx),
-          response: new Response(ctx.response)
-        }, next)
+        return new Middleware().handle(
+          this.createContext(ctx), next
+        )
       })
     })
   }
