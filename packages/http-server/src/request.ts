@@ -8,14 +8,14 @@ export class Request implements HttpRequest {
   /**
    * Stores the route context object from Koa.
    */
-  private readonly ctx: Context & RouterContext
+  private readonly ctx: Context | Context & RouterContext
 
   /**
    * Create a new request instance.
    *
    * @param ctx
    */
-  constructor (ctx: Context & RouterContext) {
+  constructor (ctx: Context | Context & RouterContext) {
     this.ctx = ctx
   }
 
@@ -44,7 +44,7 @@ export class Request implements HttpRequest {
    * Returns the request payload.
    */
   payload (): any {
-    return { still: 'in progress' }
+    return this.ctx.request.body
   }
 
   /**
