@@ -13,7 +13,7 @@
     "@supercharge/core": "~0.0.0",
     "@supercharge/goodies": "~1.5.1",
     "@supercharge/set": "~1.3.0",
-    "@supercharge/strings": "~1.11.0",
+    "@supercharge/strings": "~1.16.0",
     "cac": "~6.6.1"
   },
   "devDependencies": {

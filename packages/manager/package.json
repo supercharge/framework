@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@supercharge/contracts": "~0.0.0",
-    "@supercharge/strings": "~1.11.0"
+    "@supercharge/strings": "~1.16.0"
   },
   "devDependencies": {
     "@types/jest": "~26.0.13",

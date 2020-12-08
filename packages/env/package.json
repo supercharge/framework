@@ -16,7 +16,7 @@
   "dependencies": {
     "@supercharge/contracts": "~0.0.0",
     "@supercharge/filesystem": "~2.1.0",
-    "@supercharge/strings": "~1.15.1",
+    "@supercharge/strings": "~1.16.0",
     "dotenv": "~8.2.0",
     "dotenv-expand": "~5.1.0"
   },

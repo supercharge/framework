@@ -12,7 +12,7 @@
     "@supercharge/contracts": "~0.0.0",
     "@supercharge/goodies": "~1.5.1",
     "@supercharge/manager": "~0.0.0",
-    "@supercharge/strings": "~1.12.0",
+    "@supercharge/strings": "~1.16.0",
     "aws-sdk": "~2.771.0",
     "faktory-worker": "~4.0.1"
   },
