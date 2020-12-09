@@ -6,7 +6,10 @@
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@supercharge/core": "~0.0.0",
+    "@supercharge/routing": "~0.0.0"
+  },
   "devDependencies": {
     "@supercharge/tsconfig": "~1.0.0",
     "cross-env": "~7.0.2",
