@@ -1,0 +1,67 @@
+{
+	"name": "@supercharge/routing",
+	"description": "The Supercharge routing package",
+	"version": "0.0.0",
+	"author": "Marcus Pöhls <marcus@superchargejs.com>",
+	"bugs": {
+		"url": "https://github.com/supercharge/framework/issues"
+	},
+	"files": [
+		"dist/src",
+		"dist/types"
+	],
+	"main": "dist/src",
+	"types": "dist/types/index.d.ts",
+	"dependencies": {
+		"@koa/router": "~10.0.0",
+		"@supercharge/classes": "~1.3.0",
+		"@supercharge/collections": "~3.1.0",
+		"@supercharge/contracts": "~0.0.0",
+		"@supercharge/goodies": "~1.5.1",
+		"@supercharge/http": "~0.0.0",
+		"@supercharge/strings": "~1.16.0",
+		"@supercharge/support": "~0.0.0",
+		"globby": "~11.0.1"
+	},
+	"devDependencies": {
+		"@types/jest": "~26.0.13",
+		"@types/koa__router": "~8.0.3",
+		"@typescript-eslint/eslint-plugin": "~4.0.1",
+		"eslint": "~7.8.1",
+		"eslint-config-standard": "~14.1.1",
+		"eslint-config-standard-with-typescript": "~19.0.1",
+		"eslint-plugin-import": "~2.22.0",
+		"eslint-plugin-node": "~11.1.0",
+		"eslint-plugin-promise": "~4.2.1",
+		"eslint-plugin-standard": "~4.0.1",
+		"jest": "~26.4.2",
+		"jest-extended": "~0.11.5",
+		"typescript": "~4.0.2"
+	},
+	"engines": {
+		"node": ">=12"
+	},
+	"homepage": "https://superchargejs.com",
+	"keywords": [
+		"routing",
+		"supercharge",
+		"superchargejs",
+		"nodejs"
+	],
+	"license": "MIT",
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/supercharge/framework.git"
+	},
+	"scripts": {
+		"build": "tsc -b tsconfig.json",
+		"watch": "tsc --build tsconfig.json --watch",
+		"lint": "eslint src --ext .js,.ts",
+		"lint:fix": "npm run lint -- --fix",
+		"test": "npm run build && npm run lint && npm run test:run",
+		"test:run": "jest"
+	}
+}
