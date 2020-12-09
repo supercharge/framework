@@ -2,6 +2,7 @@
 
 import Fs from 'fs'
 import Path from 'path'
+import Glob from 'globby'
 import Module from 'module'
 import { Ioc } from '@adonisjs/fold'
 import { Env } from '@supercharge/env'
@@ -15,8 +16,10 @@ import {
   Bootstrapper,
   BootstrapperCtor,
   ServiceProvider,
+  ServiceProviderCtor,
   Application as ApplicationContract
 } from '@supercharge/contracts'
+import { RoutingServiceProvider } from '@supercharge/routing/dist/src/routing-service-provider'
 
 export class Application implements ApplicationContract {
   /**
@@ -45,6 +48,7 @@ export class Application implements ApplicationContract {
     }
 
     this.registerBaseBindings()
+    this.registerBaseServiceProviders()
     this.registerIocRequireTransformation()
   }
 
@@ -64,6 +68,13 @@ export class Application implements ApplicationContract {
    */
   private registerBaseBindings (): void {
     this.container().singleton('supercharge/app', () => this)
+  }
+
+  /**
+   * Register the base service provider into the container.
+   */
+  private registerBaseServiceProviders (): void {
+    this.register(new RoutingServiceProvider(this))
   }
 
   /**
@@ -120,7 +131,7 @@ export class Application implements ApplicationContract {
   readPackageJson (): PackageJson {
     return JSON.parse(
       Fs.readFileSync(
-        this.resolvePathTo('package.json')
+        this.resolveFromBasePath('package.json')
       ).toString()
     )
   }
@@ -133,8 +144,14 @@ export class Application implements ApplicationContract {
    *
    * @returns {String}
    */
-  resolvePathTo (...destination: string[]): string {
+  resolveFromBasePath (...destination: string[]): string {
     return Path.resolve(this.basePath(), ...destination)
+  }
+
+  resolveGlobFromBasePath (...destination: string[]): string {
+    return Glob.sync(
+      this.resolveFromBasePath(...destination)
+    )[0]
   }
 
   /**
@@ -163,7 +180,7 @@ export class Application implements ApplicationContract {
    * @returns {String}
    */
   configPath (path: string): string {
-    return this.resolvePathTo('config', path)
+    return this.resolveFromBasePath('config', path)
   }
 
   /**
@@ -174,7 +191,7 @@ export class Application implements ApplicationContract {
    * @returns {String}
    */
   resourcePath (path: string): string {
-    return this.resolvePathTo('resources', path)
+    return this.resolveFromBasePath('resources', path)
   }
 
   /**
@@ -185,7 +202,7 @@ export class Application implements ApplicationContract {
    * @returns {String}
    */
   storagePath (path: string): string {
-    return this.resolvePathTo('sotrage', path)
+    return this.resolveFromBasePath('storage', path)
   }
 
   /**
@@ -240,15 +257,57 @@ export class Application implements ApplicationContract {
    * Register the configured user-land providers.
    */
   async registerConfiguredProviders (): Promise<void> {
-    // TODO
+    this.loadConfiguredProviders()
+    this.registerServiceProviders()
+  }
+
+  loadConfiguredProviders (): void {
+    const { providers } = this.require(
+      this.resolveGlobFromBasePath('bootstrap/providers.**')
+    )
+
+    Collect(
+      ([] as ServiceProviderCtor[]).concat(providers)
+    ).forEach(Provider => {
+      this.serviceProviders().push(
+        new Provider(this)
+      )
+    })
+  }
+
+  /**
+   * Register the configured service providers.
+   */
+  registerServiceProviders (): void {
+    this.serviceProviders().forEach(provider => {
+      this.register(provider)
+    })
+  }
+
+  /**
+   * Call the `register` method on the given service `provider`.
+   */
+  register (provider: ServiceProvider): ServiceProvider {
+    return tap(provider, () => {
+      provider.register(this)
+    })
+  }
+
+  /**
+   * Returns the content of the required `path`.
+   *
+   * @param path
+   *
+   * @returns {*}
+   */
+  require (path: string): any {
+    return require(path)
   }
 
   /**
    * Boot the application’s service providers.
    */
   async boot (): Promise<void> {
-    // TODO
-
     await Collect(
       this.serviceProviders()
     ).forEach(async provider => {
@@ -262,9 +321,13 @@ export class Application implements ApplicationContract {
    * @param provider
    */
   private async bootProvider (provider: ServiceProvider): Promise<void> {
+    await provider.callBootingCallbacks()
+
     if (typeof provider.boot === 'function') {
       await provider.boot(this)
     }
+
+    await provider.callBootedCallbacks()
   }
 
   /**
