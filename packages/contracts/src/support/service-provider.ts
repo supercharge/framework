@@ -10,7 +10,6 @@ export type ServiceProviderCtor =
    */
   new(app: Application) => ServiceProvider
 
-
 export interface ServiceProvider {
   /**
    * Returns the application instance.
@@ -24,7 +23,7 @@ export interface ServiceProvider {
    *
    * @param {Application} app - the application instance
    */
-  register? (app: Application): void
+  register (app: Application): void
 
   /**
    * Boot application services.
@@ -32,4 +31,29 @@ export interface ServiceProvider {
    * @param {Application} app - the application instance
    */
   boot? (app: Application): void | Promise<void>
+
+  /**
+   * Register a booting callback that runs before the `boot` method is called.
+   *
+   * @param callback Function
+   */
+  booting (callback: () => void): this
+
+  /**
+   * Register a booted callback that runs after the `boot` method was called.
+   *
+   * @param callback Function
+   */
+  booted (callback: () => void): this
+
+  /**
+   * Call the registered booting callbacks.
+   */
+  callBootingCallbacks (): void
+
+  /**
+   * Call the registered booted callbacks.
+   */
+  callBootedCallbacks (): void
+
 }

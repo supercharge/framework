@@ -8,29 +8,31 @@ import { BootstrapperCtor } from './bootstrapper'
 export interface Application {
   /**
    * Returns the container instance.
-   *
-   * @returns {Ioc}
    */
   container (): Ioc
 
-    /**
+  /**
    * Returns the app version.
-   *
-   * @returns {String}
    */
   version(): string | undefined
 
   /**
    * Returns the root path of the application directory.
-   *
-   * @returns {String}
    */
   basePath(): string
 
   /**
+   * Returns the resolved path to `path` starting at the application’s base path.
+   */
+  resolveFromBasePath(path: string): string
+
+  /**
+   * Returns the resolved path to `path` starting at the application’s base path.
+   */
+  resolveGlobFromBasePath(path: string): string
+
+  /**
    * Returns the config store instance.
-   *
-   * @returns {ConfigStore}
    */
   config (): ConfigStore
 
@@ -38,8 +40,6 @@ export interface Application {
    * Returns an absolute path into the application’s config directory.
    *
    * @param {String} path
-   *
-   * @returns {String}
    */
   configPath (path: string): string
 
@@ -47,8 +47,6 @@ export interface Application {
    * Returns an absolute path into the application’s resources directory.
    *
    * @param {String} path
-   *
-   * @returns {String}
    */
   resourcePath (path: string): string
 
@@ -56,22 +54,16 @@ export interface Application {
    * Returns an absolute path into the application’s storage directory.
    *
    * @param {String} path
-   *
-   * @returns {String}
    */
   storagePath (path: string): string
 
   /**
    * The env store instance.
-   *
-   * @returns {EnvStore}
    */
   env(): EnvStore
 
   /**
    * Returns the environment file of the application. By default, this is `.env`.
-   *
-   * @returns {String}
    */
   environmentFile(): string
 
@@ -79,8 +71,6 @@ export interface Application {
    * Set the environment file to be loaded while bootstrapping the application.
    *
    * @param {String} file
-   *
-   * @returns {Application}
    */
   loadEnvironmentFrom(file: string): this
 
@@ -89,8 +79,6 @@ export interface Application {
    * By default, this is the application's base path.
    *
    * @param {String} path - an optional path appended to the config path
-   *
-   * @returns {String}
    */
   environmentPath(): string
 
@@ -113,15 +101,11 @@ export interface Application {
 
   /**
    * Determine whether the application is running in the console.
-   *
-   * @returns {Boolean}
    */
   isRunningInConsole (): boolean
 
   /**
    * Mark the application as running in the console.
-   *
-   * @returns {Application}
    */
   markAsRunningInConsole (): this
 }

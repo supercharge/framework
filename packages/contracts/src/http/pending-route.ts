@@ -1,5 +1,6 @@
 'use strict'
 
+import { HttpRoute } from './route'
 import { RouteHandler } from './router'
 
 export interface PendingRoute {
@@ -21,25 +22,25 @@ export interface PendingRoute {
   /**
    * Create a GET route.
    */
-  get(path: string, handler: RouteHandler): void
+  get(path: string, handler: RouteHandler): HttpRoute
 
   /**
    * Create a POST route.
    */
-  post(path: string, handler: RouteHandler): void
+  post(path: string, handler: RouteHandler): HttpRoute
 
   /**
    * Create a PUT route.
    */
-  put(path: string, handler: RouteHandler): void
+  put(path: string, handler: RouteHandler): HttpRoute
 
   /**
    * Create a DELETE route.
    */
-  delete(path: string, handler: RouteHandler): void
+  delete(path: string, handler: RouteHandler): HttpRoute
 
   /**
    * Create a PATCH route.
    */
-  patch(path: string, handler: RouteHandler): void
+  patch(path: string, handler: RouteHandler): HttpRoute
 }

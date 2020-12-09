@@ -17,9 +17,4 @@ export interface HttpKernel {
    * Start an HTTP Server instance handling incoming requests.
    */
   startServer(): Promise<void>
-
-  /**
-   * Load HTTP routes from the given `location`.
-   */
-  loadRoutesFrom(location: string): string
 }

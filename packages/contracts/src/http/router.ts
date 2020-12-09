@@ -1,5 +1,6 @@
 'use strict'
 
+import { HttpRoute } from './route'
 import { HttpContext } from './context'
 import { PendingRoute } from './pending-route'
 
@@ -46,36 +47,37 @@ export interface HttpRouter {
   /**
    * Create a GET route.
    */
-  get(path: string, handler: RouteHandler): void
+  get(path: string, handler: RouteHandler, middleware?: string[]): HttpRoute
 
   /**
    * Create a POST route.
    */
-  post(path: string, handler: RouteHandler): void
+  post(path: string, handler: RouteHandler, middleware?: string[]): HttpRoute
 
   /**
    * Create a PUT route.
    */
-  put(path: string, handler: RouteHandler): void
+  put(path: string, handler: RouteHandler, middleware?: string[]): HttpRoute
 
   /**
    * Create a DELETE route.
    */
-  delete(path: string, handler: RouteHandler): void
+  delete(path: string, handler: RouteHandler, middleware?: string[]): HttpRoute
 
   /**
    * Create a PATCH route.
    */
-  patch(path: string, handler: RouteHandler): void
+  patch(path: string, handler: RouteHandler, middleware?: string[]): HttpRoute
 
   /**
    * Create an OPTIONS route.
    */
-  options(path: string, handler: RouteHandler): void
+  options(path: string, handler: RouteHandler): HttpRoute
 
   /**
    * Create a route group.
    */
+  group (path: string): void
   group (callback: () => void): void
   group (attributes: RouteAttributes, callback: () => void): void
 

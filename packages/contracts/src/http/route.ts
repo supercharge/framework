@@ -9,5 +9,5 @@ export interface HttpRoute {
   /**
    * Assign a middleware to the route.
    */
-  middleware(middleware: string): this
+  middleware(middleware: string | string[]): this
 }
