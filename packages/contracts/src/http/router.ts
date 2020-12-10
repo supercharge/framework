@@ -4,7 +4,10 @@ import { HttpRoute } from './route'
 import { HttpContext } from './context'
 import { PendingRoute } from './pending-route'
 
-export type RouteHandler = (ctx: HttpContext) => unknown | Promise<unknown>
+type ControllerAction = string
+type InlineRouteHandler = (ctx: HttpContext) => any | Promise<any>
+
+export type RouteHandler = ControllerAction | InlineRouteHandler
 
 export type HttpMethod = 'get' | 'head' | 'post' | 'put' | 'delete' | 'patch' | 'options'
 
@@ -51,6 +54,17 @@ export interface HttpRouter {
 
   /**
    * Create a POST route.
+   *
+   * @example
+   * ```
+   * // use a controller method to handle the request
+   * Route.post('/login', 'AuthController.login')
+   *
+   * // use an inline route handler callback to handle the request
+   * Route.post('/signup', async (ctx: HttpContext) => {
+   *   // process the request
+   * })
+   * ```
    */
   post(path: string, handler: RouteHandler, middleware?: string[]): HttpRoute
 
@@ -83,11 +97,32 @@ export interface HttpRouter {
 
   /**
    * Set a route prefix.
+   *
+   * @example
+   * ```
+   * Route.prefix('/user').group(() => {
+   *   Route.get('/profile', 'UserProfileController.index')
+   *   Route.get('/settings', 'UserSettingsController.index')
+   * })
+   *
+   * // the prefixed route group creates the following two routes:
+   * // GET /user/profile
+   * // GET /user/settings
+   * ```
    */
   prefix(prefix: string): PendingRoute
 
   /**
    * Set a middlware stack.
+   *
+   * @example
+   * ```
+   * // use the 'auth' middleware to require authentication for all requests in this group
+   * Route.middleware('auth').group(() => {
+   *   Route.get('/user/profile', 'UserProfileController.index')
+   *   Route.get('/user/settings', 'UserSettingsController.index')
+   * })
+   * ```
    */
   middleware(middleware: string | string[]): PendingRoute
 }
