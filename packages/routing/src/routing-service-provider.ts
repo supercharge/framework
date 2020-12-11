@@ -9,7 +9,7 @@ export class RoutingServiceProvider extends ServiceProvider {
    */
   register (): void {
     this.app().container().singleton('supercharge/route', () => {
-      return new Router()
+      return new Router(this.app())
     })
   }
 }
