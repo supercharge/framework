@@ -9,10 +9,15 @@ import { tap, upon } from '@supercharge/goodies'
 import { isFunction } from '@supercharge/classes'
 import { RouteCollection } from './route-collection'
 import { Request, Response } from '@supercharge/http'
-import { HttpRouter, RouteHandler, RouteAttributes, HttpMethod, MiddlewareCtor, NextHandler, HttpContext, Middleware } from '@supercharge/contracts'
+import { HttpRouter, RouteHandler, RouteAttributes, HttpMethod, MiddlewareCtor, NextHandler, HttpContext, Middleware, Application } from '@supercharge/contracts'
 
 export class Router implements HttpRouter {
   private readonly meta: {
+    /**
+     * Stores the app instance.
+     */
+    app: Application
+
     /**
      * Stores the list of routes.
      */
@@ -37,8 +42,9 @@ export class Router implements HttpRouter {
   /**
    * Create a new router instance.
    */
-  constructor () {
+  constructor (app: Application) {
     this.meta = {
+      app,
       groupStack: [],
       middleware: {},
       instance: new KoaRouter(),
@@ -47,7 +53,18 @@ export class Router implements HttpRouter {
   }
 
   /**
+   * Returns the app instance.
+   *
+   * @returns {Application}
+   */
+  private app (): Application {
+    return this.meta.app
+  }
+
+  /**
    * Returns the Koa router instance.
+   *
+   * @returns {KoaRouter}
    */
   private router (): KoaRouter {
     return this.meta.instance
@@ -150,7 +167,11 @@ export class Router implements HttpRouter {
    * @returns {Middleware}
    */
   private getMiddleware (name: string): Middleware {
-    return new (this.meta.middleware[name])()
+    if (this.meta.middleware[name]) {
+      return new (this.meta.middleware[name])()
+    }
+
+    throw new Error(`Missing middleware "${name}". Configure it in your HTTP kernel`)
   }
 
   routeMiddleware (): string[] {
@@ -278,7 +299,7 @@ export class Router implements HttpRouter {
    * @returns {Route}
    */
   createRoute (methods: HttpMethod[], path: string, handler: RouteHandler, middleware?: string[]): Route {
-    const route = new Route(methods, path, handler).middleware(middleware)
+    const route = new Route(methods, path, handler, this.app()).middleware(middleware)
 
     if (this.hasGroupStack()) {
       this.mergeGroupAttributesIntoRoute(route)
