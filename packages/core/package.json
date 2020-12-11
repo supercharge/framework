@@ -19,7 +19,7 @@
     "@supercharge/contracts": "~0.0.0",
     "@supercharge/env": "~0.0.0",
     "@supercharge/filesystem": "~2.1.0",
-    "@supercharge/goodies": "~1.5.1",
+    "@supercharge/goodies": "~1.6.2",
     "@supercharge/http": "~0.0.0",
     "@supercharge/logging": "~0.0.0",
     "@supercharge/routing": "~0.0.0",
