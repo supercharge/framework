@@ -2,7 +2,8 @@
 
 import Str from '@supercharge/strings'
 import { tap } from '@supercharge/goodies'
-import { HttpRoute, RouteHandler, HttpMethod, HttpContext } from '@supercharge/contracts'
+import { ControllerDispatcher } from './controller-dispatcher'
+import { HttpRoute, RouteHandler, HttpMethod, HttpContext, Application } from '@supercharge/contracts'
 
 interface RouteAttributes {
   path: string
@@ -18,13 +19,19 @@ export class Route implements HttpRoute {
   private readonly attributes: RouteAttributes
 
   /**
+   * Stores the app instance.
+   */
+  private readonly app: Application
+
+  /**
    * Create a new route instance.
    *
    * @param method string
    * @param path string
    * @param handler RouteHandler
    */
-  constructor (methods: HttpMethod[], path: string, handler: RouteHandler) {
+  constructor (methods: HttpMethod[], path: string, handler: RouteHandler, app: Application) {
+    this.app = app
     this.attributes = { methods, path, handler, middleware: [] }
   }
 
@@ -98,6 +105,86 @@ export class Route implements HttpRoute {
    * @param ctx HttpContext
    */
   async run (ctx: HttpContext): Promise<void> {
-    await this.handler()(ctx)
+    if (this.isInlineHandler()) {
+      return this.runCallable(ctx)
+    }
+
+    if (this.isControllerAction()) {
+      return this.runController(ctx)
+    }
+
+    throw new Error('Invalid route handler. Only controller actions and inline handlers are allowed')
+  }
+
+  /**
+   * Determine whether the assigned handler for this route is a controller action.
+   *
+   * @returns {Boolean}
+   */
+  isInlineHandler (): boolean {
+    return typeof this.handler() === 'function'
+  }
+
+  /**
+   * Run the route handler
+   *
+   * @param ctx HttpContext
+   */
+  async runCallable (ctx: HttpContext): Promise<void> {
+    await (this.handler() as Function)(ctx)
+  }
+
+  /**
+   * Determine whether the assigned handler for this route is a controller action.
+   *
+   * @returns {Boolean}
+   */
+  isControllerAction (): boolean {
+    return typeof this.handler() === 'string'
+  }
+
+  /**
+   * Resolve and run the route controller method.
+   *
+   * @param ctx HttpContext
+   */
+  async runController (ctx: HttpContext): Promise<void> {
+    return this.controllerDispatcher().dispatch(this, ctx)
+  }
+
+  /**
+   * Returns the controller name.
+   *
+   * @returns {String}
+   */
+  getControllerName (): string {
+    return this.parseControllerCallback()[0]
+  }
+
+  /**
+   * Returns the controller method.
+   *
+   * @returns {String}
+   */
+  getControllerMethod (): string | undefined {
+    return this.parseControllerCallback()[1]
+  }
+
+  /**
+   * Returns the parsed controller.
+   *
+   * @returns {String[]}
+   */
+  parseControllerCallback (): [ string, string | undefined] {
+    return Str(this.handler() as string).parseCallback()
+  }
+
+  /**
+   * Returns a controller dispatcher instance.
+   *
+   * @returns {ControllerDispatcher}
+   */
+  controllerDispatcher (): ControllerDispatcher {
+    return new ControllerDispatcher(this.app)
   }
 }
