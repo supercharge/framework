@@ -1,7 +1,11 @@
 'use strict'
 
 import Koa from 'koa'
+import { Class } from 'type-fest'
 import bodyParser from 'koa-bodyparser'
+import Fs from '@supercharge/filesystem'
+import Collect from '@supercharge/collections'
+import { esmResolve } from '@supercharge/goodies'
 import { Request, Response } from '@supercharge/http'
 import { Router } from '@supercharge/routing/dist/src'
 import {
@@ -11,7 +15,7 @@ import {
   RegisterServiceProviders,
   BootServiceProviders
 } from '../bootstrappers'
-import Collect from '@supercharge/collections'
+
 import { Application, BootstrapperCtor, HttpContext, HttpKernel as HttpKernelContract, MiddlewareCtor } from '@supercharge/contracts'
 
 // type ObjectKeys<T> =
@@ -75,6 +79,18 @@ export class HttpKernel implements HttpKernelContract {
     return {}
   }
 
+  /**
+   * Returns the path to the HTTP controllers.
+   *
+   * @returns {String}
+   */
+  protected controllersLocation (): string {
+    return this.app().resolveFromBasePath('app/http/controllers')
+  }
+
+  /**
+   * Sync the available middleware to the router.
+   */
   private syncMiddlewareToRouter (): void {
     // this.syncRouteGroupsToRouter()
     this.syncRouteMiddlewareToRouter()
@@ -119,6 +135,8 @@ export class HttpKernel implements HttpKernelContract {
     await this.app().bootstrapWith(
       this.bootstrappers()
     )
+
+    await this.registerHttpControllers()
   }
 
   /**
@@ -132,6 +150,50 @@ export class HttpKernel implements HttpKernelContract {
       RegisterServiceProviders,
       BootServiceProviders
     ]
+  }
+
+  /**
+   * Register all available HTTP controllers.
+   */
+  private async registerHttpControllers (): Promise<void> {
+    const controllerPaths = await this.controllerPaths()
+
+    controllerPaths.forEach(controllerPath => {
+      this.resolveAndBindController(controllerPath)
+    })
+  }
+
+  /**
+   * Returns an array of file paths to all controllers.
+   *
+   * @returns {String[]}
+   */
+  private async controllerPaths (): Promise<string[]> {
+    return await Fs.allFiles(
+      this.controllersLocation()
+    )
+  }
+
+  /**
+   * Bind the resolved HTTP controller into the container.
+   */
+  private resolveAndBindController (controllerPath: string): void {
+    const Controller: Class = esmResolve(require(controllerPath))
+
+    this.app().container().bind(this.controllerNamespaceFor(Controller), () => {
+      return new Controller(this.app())
+    })
+  }
+
+  /**
+   * Returns the prefixed controller namespace used to bind an instance in the IoC container.
+   *
+   * @param Controller
+   *
+   * @returns {String}
+   */
+  private controllerNamespaceFor (Controller: Class): string {
+    return `http/controllers/${Controller.name}`
   }
 
   /**
