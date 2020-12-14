@@ -43,7 +43,7 @@
     "md5": "~2.2.1",
     "mock-stdio": "~1.0.3",
     "moment": "~2.24.0",
-    "mongoose": "~5.8.5",
+    "mongoose": "~5.11.7",
     "ms": "~2.1.2",
     "nodemailer": "~6.4.2",
     "nodemailer-mailgun-transport": "~2.0.0",
