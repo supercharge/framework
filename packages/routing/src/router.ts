@@ -174,10 +174,6 @@ export class Router implements HttpRouter {
     throw new Error(`Missing middleware "${name}". Configure it in your HTTP kernel`)
   }
 
-  routeMiddleware (): string[] {
-    return Object.keys(this.meta.middleware)
-  }
-
   /**
    * Wrap the given Koa `ctx` into a Supercharge ctx.
    *
