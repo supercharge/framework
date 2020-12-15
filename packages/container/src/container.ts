@@ -5,12 +5,10 @@ import Str from '@supercharge/strings'
 import { tap, upon, isFunction } from '@supercharge/goodies'
 import { Container as ContainerContract } from '@supercharge/contracts'
 
-type BindingFactory<ReturnValue extends any> = (
-  container: Container
-) => ReturnValue
+type BindingFactory = (container: Container) => unknown
 
-interface Binding<ReturnValue extends any> {
-  factory: BindingFactory<ReturnValue>
+interface Binding {
+  factory: BindingFactory
   isSingleton: boolean
 }
 
@@ -18,7 +16,7 @@ export class Container implements ContainerContract {
   /**
    * Stores the container bindings.
    */
-  private bindings: Map<string, Binding<unknown>>
+  private bindings: Map<string, Binding>
 
   /**
    * Stores the singleton instances.
@@ -41,7 +39,7 @@ export class Container implements ContainerContract {
    *
    * @returns {Container}
    */
-  bind (namespace: string, factory: BindingFactory<unknown>, isSingleton: boolean = false): this {
+  bind (namespace: string, factory: BindingFactory, isSingleton: boolean = false): this {
     this.ensureNamespace(namespace)
 
     if (this.isNotFunction(factory)) {
@@ -61,7 +59,7 @@ export class Container implements ContainerContract {
    *
    * @returns {Container}
    */
-  singleton (namespace: string, factory: BindingFactory<unknown>): this {
+  singleton (namespace: string, factory: BindingFactory): this {
     return this.bind(namespace, factory, true)
   }
 
