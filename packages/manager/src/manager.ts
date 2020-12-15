@@ -7,7 +7,7 @@ export abstract class Manager {
   /**
    * Theh application instance used to access the app configuration.
    */
-  protected app: Application | undefined
+  protected app: Application
 
   /**
    * Returns the cached database clients.
@@ -19,7 +19,7 @@ export abstract class Manager {
    *
    * @param app
    */
-  constructor (app?: Application) {
+  constructor (app: Application) {
     this.app = app
   }
 
@@ -31,27 +31,12 @@ export abstract class Manager {
   protected abstract defaultDriver (): string
 
   /**
-   * Set the app instance.
-   *
-   * @param app - the application instance
-   */
-  setApp (app: Application): this {
-    this.app = app
-
-    return this
-  }
-
-  /**
    * Returns an instance of the app configuration.
    *
    * @returns {ConfigStore}
    */
   protected config (): ConfigStore {
-    if (this.app) {
-      return this.app.config()
-    }
-
-    throw new Error(`Missing "app" instance on ${this.constructor.name}. Use ".setApp(app)" to set it on your manager.`)
+    return this.app.config()
   }
 
   /**
