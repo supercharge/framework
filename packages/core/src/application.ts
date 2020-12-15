@@ -11,7 +11,8 @@ import Collect from '@supercharge/collections'
 import { tap, upon } from '@supercharge/goodies'
 import { Container } from '@supercharge/container'
 import { RoutingServiceProvider } from '@supercharge/routing/dist/src/routing-service-provider'
-import { EnvStore, ConfigStore, BootstrapperCtor, ServiceProvider, ServiceProviderCtor, Application as ApplicationContract } from '@supercharge/contracts'
+import { LoggingServiceProvider } from '@supercharge/logging/dist/src/logging-service-provider'
+import { EnvStore, ConfigStore, BootstrapperCtor, ServiceProvider, ServiceProviderCtor, Application as ApplicationContract, Logger } from '@supercharge/contracts'
 
 export class Application extends Container implements ApplicationContract {
   /**
@@ -68,6 +69,7 @@ export class Application extends Container implements ApplicationContract {
    */
   private registerBaseServiceProviders (): void {
     this.register(new RoutingServiceProvider(this))
+    this.register(new LoggingServiceProvider(this))
   }
 
   /**
@@ -94,6 +96,15 @@ export class Application extends Container implements ApplicationContract {
 
       return _require(this, path)
     }
+  }
+
+  /**
+   * Returns the application logger instance.
+   *
+   * @returns {Logger}
+   */
+  logger (): Logger {
+    return this.make('supercharge/logger')
   }
 
   /**

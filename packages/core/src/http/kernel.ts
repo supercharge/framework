@@ -137,8 +137,6 @@ export class HttpKernel implements HttpKernelContract {
     )
 
     await this.registerHttpControllers()
-
-    console.log(this.app())
   }
 
   /**
@@ -247,7 +245,7 @@ export class HttpKernel implements HttpKernelContract {
   private async listen (): Promise<void> {
     await this.server.listen(this.port(), this.hostname())
 
-    console.log(`Started the server on http://${this.hostname()}:${this.port()}`)
+    this.app().logger().info(`Started the server on http://${this.hostname()}:${this.port()}`)
   }
 
   /**
