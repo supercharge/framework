@@ -1,11 +1,17 @@
 'use strict'
 
 import { EnvStore } from '../env'
+import { Logger } from '../logging'
 import { ConfigStore } from '../config'
 import { Container } from '../container'
 import { BootstrapperCtor } from './bootstrapper'
 
 export interface Application extends Container {
+  /**
+   * Returns the logger instance.
+   */
+  logger(): Logger
+
   /**
    * Returns the app version.
    */
