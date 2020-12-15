@@ -5,12 +5,7 @@ import { ConfigStore } from '../config'
 import { Container } from '../container'
 import { BootstrapperCtor } from './bootstrapper'
 
-export interface Application {
-  /**
-   * Returns the container instance.
-   */
-  container (): Container
-
+export interface Application extends Container {
   /**
    * Returns the app version.
    */
