@@ -4,24 +4,16 @@ import Fs from 'fs'
 import Path from 'path'
 import Glob from 'globby'
 import Module from 'module'
-import { Ioc } from '@adonisjs/fold'
 import { Env } from '@supercharge/env'
 import { PackageJson } from 'type-fest'
 import { Config } from '@supercharge/config'
 import Collect from '@supercharge/collections'
 import { tap, upon } from '@supercharge/goodies'
-import {
-  EnvStore,
-  ConfigStore,
-  Bootstrapper,
-  BootstrapperCtor,
-  ServiceProvider,
-  ServiceProviderCtor,
-  Application as ApplicationContract
-} from '@supercharge/contracts'
+import { Container } from '@supercharge/container'
 import { RoutingServiceProvider } from '@supercharge/routing/dist/src/routing-service-provider'
+import { EnvStore, ConfigStore, BootstrapperCtor, ServiceProvider, ServiceProviderCtor, Application as ApplicationContract } from '@supercharge/contracts'
 
-export class Application implements ApplicationContract {
+export class Application extends Container implements ApplicationContract {
   /**
    * Stores the application’s meta data, like the application’s root directory,
    * name of the environment file or whether the app is running in the console.
@@ -34,17 +26,17 @@ export class Application implements ApplicationContract {
    * @param basePath - the application root path
    */
   constructor (basePath: string) {
+    super()
+
     this.meta = {
       appRoot: basePath,
       serviceProviders: [],
+      isRunningInConsole: false,
 
       env: new Env(),
       environmentFile: '.env',
 
-      config: new Config(),
-      container: new Ioc(),
-
-      isRunningInConsole: false
+      config: new Config()
     }
 
     this.registerBaseBindings()
@@ -67,7 +59,8 @@ export class Application implements ApplicationContract {
    * Register the base bindings into the container.
    */
   private registerBaseBindings (): void {
-    this.container().singleton('supercharge/app', () => this)
+    this.singleton('supercharge/app', () => this)
+    this.singleton('supercharge/container', () => this)
   }
 
   /**
@@ -94,22 +87,13 @@ export class Application implements ApplicationContract {
     // @ts-expect-error
     Module.prototype.require = function (path) {
       if (path.startsWith('@ioc:')) {
-        return app.container().make(
+        return app.make(
           path.slice(5) // remove the '@ioc:' prefix and resolve dependency
         )
       }
 
       return _require(this, path)
     }
-  }
-
-  /**
-   * Returns the container instance.
-   *
-   * @returns {Ioc}
-   */
-  public container (): Ioc {
-    return this.meta.container
   }
 
   /**
@@ -336,22 +320,10 @@ export class Application implements ApplicationContract {
    * @param {Array} bootstrappers
    */
   async bootstrapWith (bootstrappers: BootstrapperCtor[]): Promise<void> {
-    await Collect(bootstrappers).forEach(
-      async (bootstrapper: BootstrapperCtor) => {
-        return await this.make(bootstrapper).bootstrap(this)
-      }
-    )
-  }
-
-  /**
-   * Returns a bootstrapper instance.
-   *
-   * @param Candidate
-   *
-   * @returns {Bootstrapper}
-   */
-  make (Candidate: BootstrapperCtor): Bootstrapper {
-    return new Candidate(this)
+    await Collect(bootstrappers).forEach(async (Bootstrapper: BootstrapperCtor) => {
+      // TODO: resolve the instance through the container?
+      return await new Bootstrapper(this).bootstrap(this)
+    })
   }
 
   /**
@@ -385,11 +357,6 @@ interface ApplicationMeta {
    * The config store instance.
    */
   config: ConfigStore
-
-  /**
-   * The IoC container instance.
-   */
-  container: Ioc
 
   /**
    * The env store instance.

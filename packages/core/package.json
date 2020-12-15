@@ -13,9 +13,9 @@
   "main": "dist/src",
   "types": "dist/types/index.d.ts",
   "dependencies": {
-    "@adonisjs/fold": "~7.0.8",
     "@supercharge/collections": "~3.0.0",
     "@supercharge/config": "~0.0.0",
+    "@supercharge/container": "~0.0.0",
     "@supercharge/contracts": "~0.0.0",
     "@supercharge/env": "~0.0.0",
     "@supercharge/filesystem": "~2.1.0",

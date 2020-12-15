@@ -54,7 +54,7 @@ export class HttpKernel implements HttpKernelContract {
   constructor (app: Application) {
     this.meta = { app }
     this.server = new Koa()
-    this.router = this.app().container().make('supercharge/route')
+    this.router = this.app().make('supercharge/route')
 
     this.syncMiddlewareToRouter()
   }
@@ -137,6 +137,8 @@ export class HttpKernel implements HttpKernelContract {
     )
 
     await this.registerHttpControllers()
+
+    console.log(this.app())
   }
 
   /**
@@ -180,20 +182,9 @@ export class HttpKernel implements HttpKernelContract {
   private resolveAndBindController (controllerPath: string): void {
     const Controller: Class = esmResolve(require(controllerPath))
 
-    this.app().container().bind(this.controllerNamespaceFor(Controller), () => {
+    this.app().bind(Controller.name, () => {
       return new Controller(this.app())
     })
-  }
-
-  /**
-   * Returns the prefixed controller namespace used to bind an instance in the IoC container.
-   *
-   * @param Controller
-   *
-   * @returns {String}
-   */
-  private controllerNamespaceFor (Controller: Class): string {
-    return `http/controllers/${Controller.name}`
   }
 
   /**

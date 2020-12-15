@@ -87,6 +87,6 @@ export class LoadConfiguration implements Bootstrapper {
    * @param app
    */
   registerConfigBindings (app: Application): void {
-    app.container().singleton('supercharge/config', () => app.config())
+    app.singleton('supercharge/config', () => app.config())
   }
 }
