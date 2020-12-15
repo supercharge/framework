@@ -143,9 +143,20 @@ export class Router implements HttpRouter {
    * @throws
    */
   ensureMiddlewareExists (name: string): void {
-    if (!this.hasMiddleware(name)) {
+    if (this.isMissingMiddleware(name)) {
       throw new Error(`Route-level middleware "${name}" is not registered in your HTTP kernel`)
     }
+  }
+
+  /**
+   * Determine whether the given middleware is not registered.
+   *
+   * @param name String
+   *
+   * @returns {Boolean}
+   */
+  isMissingMiddleware (name: string): boolean {
+    return !this.hasMiddleware(name)
   }
 
   /**

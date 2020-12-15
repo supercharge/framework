@@ -1,8 +1,7 @@
 'use strict'
 
 import Str from '@supercharge/strings'
-import { tap } from '@supercharge/goodies'
-import { ControllerDispatcher } from './controller-dispatcher'
+import { tap, isNullish } from '@supercharge/goodies'
 import { HttpRoute, RouteHandler, HttpMethod, HttpContext, Application } from '@supercharge/contracts'
 
 interface RouteAttributes {
@@ -22,6 +21,11 @@ export class Route implements HttpRoute {
    * Stores the app instance.
    */
   private readonly app: Application
+
+  /**
+   * The route’s contorller.
+   */
+  private controller: any
 
   /**
    * Create a new route instance.
@@ -149,7 +153,26 @@ export class Route implements HttpRoute {
    * @param ctx HttpContext
    */
   async runController (ctx: HttpContext): Promise<void> {
-    return this.controllerDispatcher().dispatch(this, ctx)
+    const method = this.getControllerMethod()
+
+    if (isNullish(method)) {
+      throw new Error(`Missing controller method for route ${this.methods().toString()} ${this.path()}`)
+    }
+
+    return this.getController()[method as string](ctx)
+  }
+
+  /**
+   * Returns the controller for this route.
+   *
+   * @returns {*}
+   */
+  getController (): any {
+    if (!this.controller) {
+      this.controller = this.app.make(this.getControllerName())
+    }
+
+    return this.controller
   }
 
   /**
@@ -176,15 +199,6 @@ export class Route implements HttpRoute {
    * @returns {String[]}
    */
   parseControllerCallback (): [ string, string | undefined] {
-    return Str(this.handler() as string).parseCallback()
-  }
-
-  /**
-   * Returns a controller dispatcher instance.
-   *
-   * @returns {ControllerDispatcher}
-   */
-  controllerDispatcher (): ControllerDispatcher {
-    return new ControllerDispatcher(this.app)
+    return Str(this.handler() as string).parseCallback('.')
   }
 }
