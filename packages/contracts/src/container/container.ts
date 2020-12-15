@@ -15,7 +15,7 @@ export interface Container {
    * @param {String} namespace
    * @param {Function} factory
    */
-  singleton (namespace: string, factory: () => any): this
+  singleton (namespace: string, factory: (container: Container) => any): this
 
   /**
    * Determine whether the given namespace is bound in the container.
