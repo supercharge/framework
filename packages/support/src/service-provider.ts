@@ -115,8 +115,6 @@ export class ServiceProvider implements ServiceProviderContract {
    * Call the registered booted callbacks.
    */
   callBootedCallbacks (): void {
-    console.log('calling booted callbacks')
-
     this.bootedCallbacks().forEach(callback => {
       callback()
     })
