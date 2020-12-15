@@ -6,10 +6,17 @@
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
   },
+  "files": [
+    "dist/src",
+    "dist/types"
+  ],
+  "main": "dist/src",
+  "types": "dist/types/index.d.ts",
   "dependencies": {
     "@supercharge/contracts": "~0.0.0",
-    "@supercharge/goodies": "~1.5.1",
+    "@supercharge/goodies": "~1.7.0",
     "@supercharge/manager": "~0.0.0",
+    "@supercharge/support": "~0.0.0",
     "chalk": "~4.1.0",
     "winston": "~3.3.3"
   },
@@ -39,10 +46,6 @@
     "nodejs"
   ],
   "license": "MIT",
-  "files": [
-    "dist"
-  ],
-  "main": "dist",
   "publishConfig": {
     "access": "public"
   },
@@ -57,6 +60,5 @@
     "lint:fix": "npm run lint -- --fix",
     "test": "npm run build && npm run lint && npm run test:run",
     "test:run": "jest"
-  },
-  "types": "dist"
+  }
 }

@@ -79,19 +79,6 @@ export class LogManager extends Manager implements LoggingContract {
   }
 
   /**
-   * Returns the logging driver instance.
-   *
-   * @param name
-   *
-   * @returns {LoggingContract}
-   *
-   * @throws
-   */
-  protected driver (name = this.defaultDriver()): LoggingContract {
-    return super.driver(name)
-  }
-
-  /**
    * Returns the default logging driver name.
    *
    * @returns {String}
