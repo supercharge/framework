@@ -1,15 +1,15 @@
 'use strict'
 
-import { Ioc } from './container'
 import { EnvStore } from '../env'
 import { ConfigStore } from '../config'
+import { Container } from '../container'
 import { BootstrapperCtor } from './bootstrapper'
 
 export interface Application {
   /**
    * Returns the container instance.
    */
-  container (): Ioc
+  container (): Container
 
   /**
    * Returns the app version.

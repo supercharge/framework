@@ -27,7 +27,6 @@
     "watch": "tsc --build tsconfig.json --watch"
   },
   "devDependencies": {
-    "@adonisjs/fold": "~7.0.8",
     "@typescript-eslint/eslint-plugin": "~4.7.0",
     "eslint": "~7.13.0",
     "eslint-config-standard": "~16.0.1",
