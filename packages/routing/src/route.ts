@@ -107,14 +107,16 @@ export class Route implements HttpRoute {
    * Run the route handler.
    *
    * @param ctx HttpContext
+   *
+   * @returns {*}
    */
-  async run (ctx: HttpContext): Promise<void> {
+  async run (ctx: HttpContext): Promise<any> {
     if (this.isInlineHandler()) {
-      return this.runCallable(ctx)
+      return await this.runCallable(ctx)
     }
 
     if (this.isControllerAction()) {
-      return this.runController(ctx)
+      return await this.runController(ctx)
     }
 
     throw new Error('Invalid route handler. Only controller actions and inline handlers are allowed')
@@ -135,7 +137,7 @@ export class Route implements HttpRoute {
    * @param ctx HttpContext
    */
   async runCallable (ctx: HttpContext): Promise<void> {
-    await (this.handler() as Function)(ctx)
+    return await (this.handler() as Function)(ctx)
   }
 
   /**
@@ -159,7 +161,7 @@ export class Route implements HttpRoute {
       throw new Error(`Missing controller method for route ${this.methods().toString()} ${this.path()}`)
     }
 
-    return this.getController()[method as string](ctx)
+    return await this.getController()[method as string](ctx)
   }
 
   /**
