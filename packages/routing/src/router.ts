@@ -5,10 +5,10 @@ import KoaRouter from '@koa/router'
 import { RouteGroup } from './group'
 import Collect from '@supercharge/collections'
 import { PendingRoute } from './pending-route'
-import { tap, upon } from '@supercharge/goodies'
 import { isFunction } from '@supercharge/classes'
 import { RouteCollection } from './route-collection'
 import { Request, Response } from '@supercharge/http'
+import { isNullish, tap, upon } from '@supercharge/goodies'
 import { HttpRouter, RouteHandler, RouteAttributes, HttpMethod, MiddlewareCtor, NextHandler, HttpContext, Middleware, Application } from '@supercharge/contracts'
 
 export class Router implements HttpRouter {
@@ -108,11 +108,7 @@ export class Router implements HttpRouter {
   private register (route: Route): void {
     this.router().register(route.path(), route.methods(), [
       ...this.createRouteMiddleware(route),
-
-      async (ctx: any, next: NextHandler) => {
-        await route.run(this.createContext(ctx))
-        await next()
-      }
+      this.createRouteHandler(route)
     ], { name: route.path() })
   }
 
@@ -183,6 +179,59 @@ export class Router implements HttpRouter {
     }
 
     throw new Error(`Missing middleware "${name}". Configure it in your HTTP kernel`)
+  }
+
+  /**
+   * Returns a Koa-compatible route handler.
+   *
+   * @param route Route
+   *
+   * @returns {Function}
+   */
+  private createRouteHandler (route: Route): Function {
+    return async (ctx: any, next: NextHandler) => {
+      await this.handleRequest(route, this.createContext(ctx))
+      await next()
+    }
+  }
+
+  /**
+   * Handle the given request context for the related route.
+   *
+   * @param route Route
+   * @param ctx Koa Context
+   */
+  async handleRequest (route: Route, ctx: HttpContext): Promise<void> {
+    const response = await route.run(ctx)
+
+    /**
+     * Not returning a value from the route handler is an option because the context contains
+     * a response instance and this has a reference to the underlying Koa response. Yet,
+     * for consistency reasons we force users to return a value from route handlers.
+     */
+    if (isNullish(response)) {
+      throw new Error(
+        `Missing return value in route handler for route "${route.methods().toString().toUpperCase()} ${route.path()}"`
+      )
+    }
+
+    /**
+     * The returned response from the route handler is an instance of the `Response` class
+     * if the developer uses and returns the fluent response interface. The interface
+     * assigns the values to the underlying response. No extra work needed here.
+     */
+    if (response instanceof Response) {
+      return
+    }
+
+    /**
+     * When a developer returns a plain value, like a string/object/array/etc., we’ll
+     * assign the returned value as the response value. In case the response value
+     * is an empty string, we’ll also set the response status to 204 (No Content).
+     */
+    response === ''
+      ? ctx.response.payload(response).status(204)
+      : ctx.response.payload(response)
   }
 
   /**
