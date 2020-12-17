@@ -35,7 +35,8 @@
     "url": "git+https://github.com/supercharge/framework.git"
   },
   "scripts": {
-    "build": "lerna run --stream build --no-private",
+    "build": "lerna run build --stream --no-private",
+    "watch": "lerna run watch --stream --no-private",
     "lint": "lerna run lint",
     "test": "lerna run test"
   }
