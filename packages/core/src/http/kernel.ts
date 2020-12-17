@@ -5,28 +5,11 @@ import { Class } from 'type-fest'
 import bodyParser from 'koa-bodyparser'
 import Fs from '@supercharge/filesystem'
 import Collect from '@supercharge/collections'
-import { esmResolve } from '@supercharge/goodies'
 import { Request, Response } from '@supercharge/http'
 import { Router } from '@supercharge/routing/dist/src'
-import {
-  HandleExceptions,
-  LoadConfiguration,
-  LoadEnvironmentVariables,
-  RegisterServiceProviders,
-  BootServiceProviders
-} from '../bootstrappers'
-
+import { esmResolve, tap } from '@supercharge/goodies'
 import { Application, BootstrapperCtor, HttpContext, HttpKernel as HttpKernelContract, MiddlewareCtor } from '@supercharge/contracts'
-
-// type ObjectKeys<T> =
-//   T extends object ? Array<keyof T> :
-//     T extends number ? [] :
-//       T extends any[] | string ? string[] :
-//         never
-
-// interface ObjectConstructor {
-//   keys: <T>(o: T) => ObjectKeys<T>
-// }
+import { HandleExceptions, LoadConfiguration, LoadEnvironmentVariables, RegisterServiceProviders, BootServiceProviders } from '../bootstrappers'
 
 export class HttpKernel implements HttpKernelContract {
   private readonly meta: {
@@ -53,10 +36,21 @@ export class HttpKernel implements HttpKernelContract {
    */
   constructor (app: Application) {
     this.meta = { app }
-    this.server = new Koa()
+    this.server = this.createServer()
     this.router = this.app().make('supercharge/route')
 
     this.syncMiddlewareToRouter()
+  }
+
+  /**
+   * Create a Koa server instance.
+   *
+   * @returns {Koa}
+   */
+  createServer (): Koa {
+    return tap(new Koa(), server => {
+      server.keys = [this.app().key()]
+    })
   }
 
   /**
@@ -92,7 +86,6 @@ export class HttpKernel implements HttpKernelContract {
    * Sync the available middleware to the router.
    */
   private syncMiddlewareToRouter (): void {
-    // this.syncRouteGroupsToRouter()
     this.syncRouteMiddlewareToRouter()
   }
 
@@ -226,7 +219,7 @@ export class HttpKernel implements HttpKernelContract {
     return {
       raw: ctx,
       request: new Request(ctx),
-      response: new Response(ctx.response)
+      response: new Response(ctx)
     }
   }
 
