@@ -1,6 +1,7 @@
 'use strict'
 
 export * from './context'
+export * from './cookie-options'
 export * from './kernel'
 export * from './middleware'
 export * from './pending-route'
