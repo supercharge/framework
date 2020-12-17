@@ -108,6 +108,21 @@ export class Application extends Container implements ApplicationContract {
   }
 
   /**
+   * Returns the application key.
+   *
+   * @returns {String}
+   *
+   * @throws
+   */
+  key (): string {
+    if (this.config().has('app.key')) {
+      return this.config().get('app.key')
+    }
+
+    throw new Error('Missing app key. Please set the APP_KEY environment variable.')
+  }
+
+  /**
    * Returns the application version defined in the `package.json` file.
    *
    * @returns {String}

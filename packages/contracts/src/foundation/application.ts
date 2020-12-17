@@ -13,6 +13,11 @@ export interface Application extends Container {
   logger(): Logger
 
   /**
+   * Returns the app key.
+   */
+  key(): string
+
+  /**
    * Returns the app version.
    */
   version(): string | undefined
