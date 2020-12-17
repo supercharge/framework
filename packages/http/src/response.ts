@@ -1,22 +1,22 @@
 'use strict'
 
-import { BaseResponse } from 'koa'
+import { Context } from 'koa'
 import { tap } from '@supercharge/goodies'
 import { HttpResponse } from '@supercharge/contracts'
 
 export class Response implements HttpResponse {
   /**
-   * Stores the response data.
+   * Stores the route context object from Koa.
    */
-  private readonly response: BaseResponse
+  private readonly ctx: Context
 
   /**
    * Create a new response instance.
    *
-   * @param response
+   * @param ctx
    */
-  constructor (response: BaseResponse) {
-    this.response = response
+  constructor (ctx: Context) {
+    this.ctx = ctx
   }
 
   /**
@@ -24,7 +24,7 @@ export class Response implements HttpResponse {
    */
   payload (payload: any): this {
     return tap(this, () => {
-      this.response.body = payload
+      this.ctx.response.body = payload
     })
   }
 
@@ -33,7 +33,7 @@ export class Response implements HttpResponse {
    */
   header (key: string, value: string): this {
     return tap(this, () => {
-      this.response.set(key, value)
+      this.ctx.response.set(key, value)
     })
   }
 
@@ -42,7 +42,7 @@ export class Response implements HttpResponse {
    */
   status (status: number): this {
     return tap(this, () => {
-      this.response.status = status
+      this.ctx.response.status = status
     })
   }
 }
