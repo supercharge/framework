@@ -7,9 +7,9 @@ import Collect from '@supercharge/collections'
 import { PendingRoute } from './pending-route'
 import { isFunction } from '@supercharge/classes'
 import { RouteCollection } from './route-collection'
-import { Request, Response } from '@supercharge/http'
+import { HttpContext, Response } from '@supercharge/http'
 import { isNullish, tap, upon } from '@supercharge/goodies'
-import { HttpRouter, RouteHandler, RouteAttributes, HttpMethod, MiddlewareCtor, NextHandler, HttpContext, Middleware, Application } from '@supercharge/contracts'
+import { HttpRouter, RouteHandler, RouteAttributes, HttpMethod, MiddlewareCtor, NextHandler, Middleware, Application } from '@supercharge/contracts'
 
 export class Router implements HttpRouter {
   private readonly meta: {
@@ -80,7 +80,7 @@ export class Router implements HttpRouter {
   }
 
   /**
-   * Returns a middleware-function for the HTTP server which handles
+   * Returns a middleware-function for the HTTP server handling
    * the route-matching for an incoming request to the server.
    *
    * @returns {Function}
@@ -242,11 +242,7 @@ export class Router implements HttpRouter {
    * @returns {HttpContext}
    */
   private createContext (ctx: any): HttpContext {
-    return {
-      raw: ctx,
-      request: new Request(ctx),
-      response: new Response(ctx.response)
-    }
+    return HttpContext.wrap(ctx, this.app())
   }
 
   /**
