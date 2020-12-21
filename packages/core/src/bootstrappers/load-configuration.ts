@@ -2,6 +2,7 @@
 
 import { extname } from 'path'
 import RequireAll from 'require-all'
+import { esmResolve } from '@supercharge/goodies'
 import { Application, Bootstrapper } from '@supercharge/contracts'
 
 export class LoadConfiguration implements Bootstrapper {
@@ -50,7 +51,7 @@ export class LoadConfiguration implements Bootstrapper {
          * in the result. Example:
          *   `{ app: { default: {…} }` -> `{ app: { {…} }`
          */
-        return this.esmResolve(file)
+        return esmResolve(file)
       }
     })
   }
@@ -66,19 +67,6 @@ export class LoadConfiguration implements Bootstrapper {
     return file.endsWith('.d.ts')
       ? false
       : ['.js', '.ts'].includes(extname(file))
-  }
-
-  /**
-   * Resolves default exports and returns the file’s content.
-   *
-   * @param file
-   *
-   * @returns {*}
-   */
-  esmResolve (file: any): object {
-    return file?.__esModule && file.default
-      ? file.default
-      : file
   }
 
   /**
