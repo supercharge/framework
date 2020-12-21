@@ -14,9 +14,6 @@
     "references": [
         {
             "path": "../contracts"
-        },
-        {
-            "path": "../core"
         }
     ]
 }
