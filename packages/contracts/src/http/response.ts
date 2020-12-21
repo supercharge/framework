@@ -6,7 +6,7 @@ export interface HttpRedirect {
   /**
    * Redirect the request back to the previous path.
    */
-  back(options: { fallback: string }): void
+  back(options?: { fallback: string }): void
 
   /**
    * Redirects the request with HTTP status 307. This keeps the request payload
@@ -44,7 +44,7 @@ export interface HttpResponse {
    * // { 'Content-Type': 'application/json' }
    * ```
    */
-  headers(): object
+  headers(): { [key: string]: unknown }
 
   /**
    * Assign the object’s key-value pairs as response headers.

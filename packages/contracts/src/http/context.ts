@@ -12,12 +12,12 @@ export interface HttpContext {
   raw: any
 
   /**
-   * Returns the request instance.
+   * Returns the HTTP request instance.
    */
   request: HttpRequest
 
   /**
-   * Returns the response instance.
+   * Returns the HTTP response instance.
    */
   response: HttpResponse
 }

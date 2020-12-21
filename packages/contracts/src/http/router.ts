@@ -3,6 +3,7 @@
 import { HttpRoute } from './route'
 import { HttpContext } from './context'
 import { PendingRoute } from './pending-route'
+import { MiddlewareCtor } from './middleware'
 
 type ControllerAction = string
 type InlineRouteHandler = (ctx: HttpContext) => any | Promise<any>
@@ -125,4 +126,15 @@ export interface HttpRouter {
    * ```
    */
   middleware(middleware: string | string[]): PendingRoute
+
+  /**
+   * Register a named middleware.
+   */
+  registerAliasMiddleware(name: string, Middleware: MiddlewareCtor): HttpRouter
+
+  /**
+   * Returns a middleware-function for the HTTP server handling
+   * the route-matching for an incoming request to the server.
+   */
+  createRoutingMiddleware(): any
 }
