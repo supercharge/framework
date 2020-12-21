@@ -12,8 +12,8 @@ export class Config implements ConfigStore {
   /**
    * Create a new config store instance.
    */
-  constructor () {
-    this.config = {}
+  constructor (config: object) {
+    this.config = config || {}
   }
 
   /**
