@@ -9,27 +9,31 @@
 	"files": [
 		"dist"
 	],
-	"main": "dist",
 	"types": "dist",
+	"main": "dist",
 	"dependencies": {
+		"@supercharge/collections": "~3.1.0",
 		"@supercharge/contracts": "~0.0.0",
-		"@supercharge/goodies": "~1.5.1"
+		"@supercharge/goodies": "~1.7.0",
+		"koa": "~2.13.0",
+		"koa-bodyparser": "~4.3.0",
+		"type-fest": "~0.20.2"
 	},
 	"devDependencies": {
+		"@types/jest": "~26.0.19",
 		"@types/koa": "~2.11.6",
 		"@types/koa-bodyparser": "~4.3.0",
 		"@types/koa__router": "~8.0.3",
-		"@types/jest": "~26.0.13",
-		"@typescript-eslint/eslint-plugin": "~4.0.1",
-		"eslint": "~7.8.1",
-		"eslint-config-standard": "~14.1.1",
+		"@typescript-eslint/eslint-plugin": "~4.10.0",
+		"eslint": "~7.16.0",
+		"eslint-config-standard": "~16.0.2",
 		"eslint-config-standard-with-typescript": "~19.0.1",
-		"eslint-plugin-import": "~2.22.0",
+		"eslint-plugin-import": "~2.22.1",
 		"eslint-plugin-node": "~11.1.0",
 		"eslint-plugin-promise": "~4.2.1",
-		"eslint-plugin-standard": "~4.0.1",
-		"jest": "~26.4.2",
-		"typescript": "~4.0.2"
+		"eslint-plugin-standard": "~4.1.0",
+		"jest": "~26.6.3",
+		"typescript": "~4.1.3"
 	},
 	"engines": {
 		"node": ">=12"
@@ -37,9 +41,9 @@
 	"homepage": "https://superchargejs.com",
 	"keywords": [
 		"http",
+		"nodejs",
 		"supercharge",
-		"superchargejs",
-		"nodejs"
+		"superchargejs"
 	],
 	"license": "MIT",
 	"publishConfig": {
@@ -51,10 +55,10 @@
 	},
 	"scripts": {
 		"build": "tsc -b tsconfig.json",
-		"watch": "tsc --build tsconfig.json --watch",
 		"lint": "eslint src --ext .js,.ts",
 		"lint:fix": "npm run lint -- --fix",
 		"test": "npm run build && npm run lint && npm run test:run",
-		"test:run": "jest"
+		"test:run": "jest",
+		"watch": "tsc --build tsconfig.json --watch"
 	}
 }
