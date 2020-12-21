@@ -26,11 +26,11 @@ jobs:
     - name: Install lerna
       run: npm install --global lerna@3
 
-    - name: Build packages
-      run: lerna run build
-
     - name: Bootstrap dependencies in packages
       run: lerna bootstrap
+
+    - name: Build packages
+      run: lerna run build
 
     - name: Run tests
       run: npm test
