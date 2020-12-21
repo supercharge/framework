@@ -35,6 +35,8 @@ export class HttpRedirect implements HttpRedirectContract {
    * which is useful for POST/PUT requests containing content.
    *
    * More details: Details: https://developer.mozilla.org/de/docs/Web/HTTP/Status
+   *
+   * @returns {HttpRedirect}
    */
   withPayload (): this {
     return tap(this, () => {
