@@ -19,7 +19,7 @@ export class Logger {
    *
    * @param options
    */
-  constructor (options: any) {
+  constructor (options: any = {}) {
     this.level = options.level || this.level
 
     this.logger = this.createLogger()
