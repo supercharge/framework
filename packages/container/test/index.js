@@ -7,6 +7,8 @@ describe('Container', () => {
     const container = new Container()
 
     expect(() => container.bind()).toThrow()
+    expect(() => container.bind('')).toThrow()
+    expect(() => container.bind(null)).toThrow()
   })
 
   it('throws for missing the factory function when binding an instance', () => {
@@ -19,9 +21,17 @@ describe('Container', () => {
     const container = new Container()
 
     container.bind('namespace', () => 1)
+    container.bind('namespace/with/slash', () => 2)
 
     expect(container.hasBinding('namespace')).toBeTrue()
-    expect(container.hasSingletonBinding('namespace')).toBeFalse()
+    expect(container.hasBinding('namespace/with/slash')).toBeTrue()
+
+    expect(container.isSingleton('namespace')).toBeFalse()
+
+    container.singleton('singleton', () => 1)
+    container.singleton('singleton/with/slash', () => 2)
+
+    expect(container.isSingleton('singleton')).toBeTrue()
   })
 
   it('make', () => {
