@@ -1,32 +1,24 @@
 'use strict'
 
-import { Command } from './command'
 import Fs from '@supercharge/filesystem'
 import { upon } from '@supercharge/goodies'
 import Collect from '@supercharge/collections'
-import { Application as Craft } from './application'
-import { BootApplication, HandleExceptions, LoadBootstrappers } from '@supercharge/core'
-import { ConsoleKernel as ConsoleKernelContract, Application, BootstrapperCtor } from '@supercharge/contracts'
+import { Command, Application as Craft } from '@supercharge/console'
+import { Application, BootstrapperCtor, ConsoleKernel as ConsoleKernelContract } from '@supercharge/contracts'
+import { HandleExceptions, LoadConfiguration, LoadEnvironmentVariables, RegisterServiceProviders, BootServiceProviders } from '../bootstrappers'
 
-export class Kernel implements ConsoleKernelContract {
-  /**
-   * The application instance.
-   */
-  private readonly app: Application
+export class ConsoleKernel implements ConsoleKernelContract {
+  private readonly meta: {
+    /**
+     * The application instance.
+     */
+    app: Application
 
-  /**
+    /**
    * The console application instance.
    */
-  private craft: undefined | Craft
-
-  /**
-   * The list of bootstrappers.
-   */
-  protected bootstrappers: BootstrapperCtor[] = [
-    HandleExceptions,
-    LoadBootstrappers,
-    BootApplication
-  ]
+    craft?: Craft
+  }
 
   /**
    * Create a new console kernel instance.
@@ -34,7 +26,29 @@ export class Kernel implements ConsoleKernelContract {
    * @param {Application} app
    */
   constructor (app: Application) {
-    this.app = app
+    this.meta = { app }
+  }
+
+  /**
+   * Returns the application instance.
+   *
+   * @returns {Application}
+   */
+  app (): Application {
+    return this.meta.app
+  }
+
+  /**
+   * Returns the list of application bootstrappers.
+   */
+  protected bootstrappers (): BootstrapperCtor[] {
+    return [
+      HandleExceptions,
+      LoadEnvironmentVariables,
+      LoadConfiguration,
+      RegisterServiceProviders,
+      BootServiceProviders
+    ]
   }
 
   /**
@@ -46,14 +60,16 @@ export class Kernel implements ConsoleKernelContract {
    */
   async handle (input: string[]): Promise<any> {
     await this.bootstrap()
-    await this.getCraft().run(input)
+    await this.craft().run(input)
   }
 
   /**
    * Bootstrap the console application for Craft commands.
    */
   async bootstrap (): Promise<void> {
-    await this.app.bootstrapWith(this.bootstrappers)
+    await this.app().bootstrapWith(
+      this.bootstrappers()
+    )
 
     await this.commands()
   }
@@ -97,7 +113,7 @@ export class Kernel implements ConsoleKernelContract {
         return command instanceof Command && this.isNotExcluded(command)
       })
       .forEach((command: Command) => {
-        this.getCraft().registerCommand(command)
+        this.craft().registerCommand(command)
       })
   }
 
@@ -145,11 +161,11 @@ export class Kernel implements ConsoleKernelContract {
    *
    * @returns {Craft}
    */
-  getCraft (): Craft {
-    if (!this.craft) {
-      this.craft = new Craft(this.app)
+  craft (): Craft {
+    if (!this.meta.craft) {
+      this.meta.craft = new Craft(this.app())
     }
 
-    return this.craft
+    return this.meta.craft
   }
 }
