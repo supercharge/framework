@@ -15,6 +15,7 @@
   "dependencies": {
     "@supercharge/collections": "~3.1.0",
     "@supercharge/config": "~0.0.0",
+    "@supercharge/console": "~0.0.0",
     "@supercharge/container": "~0.0.0",
     "@supercharge/contracts": "~0.0.0",
     "@supercharge/env": "~0.0.0",
