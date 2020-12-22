@@ -21,8 +21,23 @@ export class FileLogger extends Logger implements LoggingContract {
   constructor (options: any) {
     super(options)
 
+    this.ensureLogFilePath(options)
+
     this.path = options.path
     this.addFileTransportToLogger()
+  }
+
+  /**
+   * Ensure the given file logger `options` contain a log file path.
+   *
+   * @param {Object} options
+   *
+   * @throws
+   */
+  ensureLogFilePath (options: any): void {
+    if (!options?.path) {
+      throw new Error('Missing log file path when logging to a file')
+    }
   }
 
   /**
