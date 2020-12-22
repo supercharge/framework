@@ -28,7 +28,7 @@ export class Command implements CommandContract {
    *
    * @returns {Promise}
    */
-  async handle (..._inputs: any[]): Promise<any> {
+  handle (..._inputs: any[]): any {
     throw new Error(`You must implement the "handle" method in your "${this.constructor.name}" command`)
   }
 }
