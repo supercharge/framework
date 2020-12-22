@@ -1,7 +1,7 @@
 'use strict'
 
 const Sinon = require('sinon')
-const { Manager } = require('..')
+const { Manager } = require('../dist')
 
 describe('Manager', () => {
   it('fails for missing createDriver function', () => {
@@ -15,7 +15,7 @@ describe('Manager', () => {
       }
     }
 
-    const manager = new TestManager(null).setApp(new App())
+    const manager = new TestManager(new App())
 
     expect(() => manager.handle()).toThrow('Unsupported driver "test".')
   })
