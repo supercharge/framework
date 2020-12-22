@@ -122,4 +122,10 @@ describe.only('File Logger', () => {
     expect(content).toInclude('"message":"this warning should appear"')
     expect(content).toInclude('"level":"warning"')
   })
+
+  it('throws for missing log file path', async () => {
+    expect(() => new FileLogger()).toThrow('Missing log file path')
+    expect(() => new FileLogger({ path: '' })).toThrow('Missing log file path')
+    expect(() => new FileLogger({ path: null })).toThrow('Missing log file path')
+  })
 })
