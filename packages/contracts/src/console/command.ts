@@ -19,5 +19,5 @@ export interface Command {
    * @param {*} parameters
    * @param {*} options
    */
-  handle(...args: any[]): Promise<any>
+  handle(...args: any[]): any
 }
