@@ -1,8 +1,8 @@
 'use strict'
 
 import Fs from '@supercharge/filesystem'
-import { upon } from '@supercharge/goodies'
 import Collect from '@supercharge/collections'
+import { upon, esmResolve } from '@supercharge/goodies'
 import { Command, Application as Craft } from '@supercharge/console'
 import { Application, BootstrapperCtor, ConsoleKernel as ConsoleKernelContract } from '@supercharge/contracts'
 import { HandleExceptions, LoadConfiguration, LoadEnvironmentVariables, RegisterServiceProviders, BootServiceProviders } from '../bootstrappers'
@@ -107,7 +107,7 @@ export class ConsoleKernel implements ConsoleKernelContract {
         return await Fs.allFiles(path)
       })
       .map((commandFile: string) => {
-        return [this.resolve(commandFile)]
+        return this.resolve(commandFile) as any // TODO fix this typing issue in @supercharge/collections
       })
       .filter((command: Command) => {
         return command instanceof Command && this.isNotExcluded(command)
@@ -125,7 +125,7 @@ export class ConsoleKernel implements ConsoleKernelContract {
    * @returns {Command}
    */
   resolve (commandFile: string): Command {
-    return upon(require(commandFile), (Candidate) => {
+    return upon(esmResolve(require(commandFile)), (Candidate) => {
       return new Candidate()
     })
   }
