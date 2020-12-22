@@ -32,7 +32,7 @@
     "url": "git+https://github.com/supercharge/framework.git"
   },
   "scripts": {
-    "bootstrap": "lerna bootstrap",
+    "bootstrap": "lerna bootstrap --no-ci",
     "build": "lerna run build --stream --no-private",
     "watch": "lerna run watch --stream --no-private",
     "lint": "lerna run lint",
