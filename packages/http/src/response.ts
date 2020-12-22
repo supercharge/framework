@@ -137,7 +137,7 @@ export class Response implements HttpResponse {
    *
    * @returns {Response}
    */
-  type (contentType: string): this{
+  type (contentType: string): this {
     return tap(this, () => {
       this.ctx.response.type = contentType
     })
@@ -148,7 +148,7 @@ export class Response implements HttpResponse {
    *
    * @returns {Response}
    */
-  etag (etag: string): this{
+  etag (etag: string): this {
     return tap(this, () => {
       this.ctx.response.etag = etag
     })
