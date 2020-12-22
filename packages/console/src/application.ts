@@ -33,7 +33,7 @@ export class Application implements ConsoleApplicationContract {
    */
   createCli (app: App): void {
     this.cli = cac('node craft')
-      .version(app.version())
+      .version(app.version() ?? '')
       .help()
 
     this.registerDefaultCommand()

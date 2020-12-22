@@ -6,7 +6,7 @@ import { upon } from '@supercharge/goodies'
 import Collect from '@supercharge/collections'
 import { Application as Craft } from './application'
 import { BootApplication, HandleExceptions, LoadBootstrappers } from '@supercharge/core'
-import { ConsoleKernel as ConsoleKernelContract, Application, BootstrapperContstructor } from '@supercharge/contracts'
+import { ConsoleKernel as ConsoleKernelContract, Application, BootstrapperCtor } from '@supercharge/contracts'
 
 export class Kernel implements ConsoleKernelContract {
   /**
@@ -17,12 +17,12 @@ export class Kernel implements ConsoleKernelContract {
   /**
    * The console application instance.
    */
-  private craft: Craft | undefined
+  private craft: undefined | Craft
 
   /**
    * The list of bootstrappers.
    */
-  protected bootstrappers: BootstrapperContstructor[] = [
+  protected bootstrappers: BootstrapperCtor[] = [
     HandleExceptions,
     LoadBootstrappers,
     BootApplication
@@ -109,7 +109,6 @@ export class Kernel implements ConsoleKernelContract {
    * @returns {Command}
    */
   resolve (commandFile: string): Command {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     return upon(require(commandFile), (Candidate) => {
       return new Candidate()
     })
@@ -136,7 +135,9 @@ export class Kernel implements ConsoleKernelContract {
    * @returns {Boolean}
    */
   shouldExclude (command: Command): boolean {
-    return this.excludedCommands().includes(command.constructor.name)
+    return this.excludedCommands().includes(
+      command.constructor.name
+    )
   }
 
   /**
