@@ -22,17 +22,6 @@ export class Server {
   }
 
   /**
-   * Create a Koa server instance.
-   *
-   * @returns {Koa}
-   */
-  createServerInstance (): Koa {
-    return tap(new Koa(), server => {
-      server.keys = [this.app().key()]
-    })
-  }
-
-  /**
    * Returns the HTTP server instance.
    *
    * @returns {HttpRouter}
@@ -93,6 +82,17 @@ export class Server {
   }
 
   /**
+   * Create a Koa server instance.
+   *
+   * @returns {Koa}
+   */
+  createServerInstance (): Koa {
+    return tap(new Koa(), server => {
+      server.keys = [this.app().key()]
+    })
+  }
+
+  /**
    * Sync the available middleware to the router.
    */
   syncMiddlewareToRouter (): void {
@@ -107,28 +107,6 @@ export class Server {
       this.kernel().routeMiddleware()
     ).forEach(([name, middleware]) => {
       this.router().registerAliasMiddleware(name, middleware)
-    })
-  }
-
-  /**
-   * Register all available HTTP controllers.
-   */
-  private async registerHttpControllers (): Promise<void> {
-    const controllerPaths = await this.kernel().controllerPaths()
-
-    controllerPaths.forEach(controllerPath => {
-      this.resolveAndBindController(controllerPath)
-    })
-  }
-
-  /**
-   * Bind the resolved HTTP controller into the container.
-   */
-  private resolveAndBindController (controllerPath: string): void {
-    const Controller: Class = esmResolve(require(controllerPath))
-
-    this.app().bind(Controller.name, () => {
-      return new Controller(this.app())
     })
   }
 
@@ -183,6 +161,28 @@ export class Server {
   }
 
   /**
+   * Register all available HTTP controllers.
+   */
+  private async registerHttpControllers (): Promise<void> {
+    const controllerPaths = await this.kernel().controllerPaths()
+
+    controllerPaths.forEach(controllerPath => {
+      this.resolveAndBindController(controllerPath)
+    })
+  }
+
+  /**
+   * Bind the resolved HTTP controller into the container.
+   */
+  private resolveAndBindController (controllerPath: string): void {
+    const Controller: Class = esmResolve(require(controllerPath))
+
+    this.app().bind(Controller.name, () => {
+      return new Controller(this.app())
+    })
+  }
+
+  /**
    * Start the HTTP server.
    */
   async start (): Promise<void> {
@@ -212,14 +212,14 @@ export class Server {
 
 interface ServerMeta {
   /**
+   * The HTTP kernel instance.
+   */
+  kernel: HttpKernel
+
+  /**
    * The Koa server instance.
    */
   instance?: Koa
-
-  /**
-   * The app instance.
-   */
-  kernel: HttpKernel
 
   /**
    * The HTTP router instance.
