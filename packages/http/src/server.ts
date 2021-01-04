@@ -2,9 +2,9 @@
 
 import Koa from 'koa'
 import { Class } from 'type-fest'
-import serveStaticFilesFrom from 'koa-static'
 import bodyParser from 'koa-bodyparser'
 import { HttpContext } from './http-context'
+import serveStaticFilesFrom from 'koa-static'
 import Collect from '@supercharge/collections'
 import { esmResolve, tap } from '@supercharge/goodies'
 import { Application, HttpKernel, MiddlewareCtor, HttpRouter } from '@supercharge/contracts'
