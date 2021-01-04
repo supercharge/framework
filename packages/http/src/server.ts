@@ -2,6 +2,7 @@
 
 import Koa from 'koa'
 import { Class } from 'type-fest'
+import serveStaticFilesFrom from 'koa-static'
 import bodyParser from 'koa-bodyparser'
 import { HttpContext } from './http-context'
 import Collect from '@supercharge/collections'
@@ -125,6 +126,9 @@ export class Server {
    */
   async registerCoreMiddleware (): Promise<void> {
     this.instance().use(bodyParser())
+    this.instance().use(
+      serveStaticFilesFrom(this.app().publicPath())
+    )
   }
 
   /**
