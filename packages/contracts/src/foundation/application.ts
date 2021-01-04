@@ -50,6 +50,13 @@ export interface Application extends Container {
   configPath (path: string): string
 
   /**
+   * Returns an absolute path into the application’s public directory.
+   *
+   * @param {String} path
+   */
+  publicPath (path?: string): string
+
+  /**
    * Returns an absolute path into the application’s resources directory.
    *
    * @param {String} path

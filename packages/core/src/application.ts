@@ -158,6 +158,15 @@ export class Application extends Container implements ApplicationContract {
     return Path.resolve(this.basePath(), ...destination)
   }
 
+  /**
+   * Resolves the absolute path from the given `destination` in the
+   * application directory, starting from the application root.
+   * The destination supports a glob format, like 'providers/**'.
+   *
+   * @param destination
+   *
+   * @returns {String}
+   */
   resolveGlobFromBasePath (...destination: string[]): string {
     return Glob.sync(
       this.resolveFromBasePath(...destination)
@@ -191,6 +200,17 @@ export class Application extends Container implements ApplicationContract {
    */
   configPath (path: string): string {
     return this.resolveFromBasePath('config', path)
+  }
+
+  /**
+   * Returns an absolute path into the application’s public directory.
+   *
+   * @param {String} path
+   *
+   * @returns {String}
+   */
+  publicPath (path?: string): string {
+    return this.resolveFromBasePath('public', path ?? '')
   }
 
   /**
