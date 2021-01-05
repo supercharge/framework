@@ -1,0 +1,67 @@
+{
+  "name": "@supercharge/view",
+  "nscription": "The Supercharge view package",
+  "version": "0.0.0",
+  "author": "Marcus Pöhls <marcus@superchargejs.com>",
+  "bugs": {
+    "url": "https://github.com/supercharge/framework/issues"
+  },
+  "main": "dist/src",
+  "types": "dist/types",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@supercharge/collections": "~3.1.1",
+    "@supercharge/contracts": "~0.0.0",
+    "@supercharge/filesystem": "~2.1.0",
+    "@supercharge/goodies": "~1.7.0",
+    "@supercharge/manager": "~0.0.0",
+    "@supercharge/strings": "~1.17.1",
+    "@supercharge/support": "~0.0.0",
+    "handlebars": "~4.7.6"
+  },
+  "devDependencies": {
+    "@types/handlebars": "^4.1.0",
+    "@types/jest": "~26.0.19",
+    "@typescript-eslint/eslint-plugin": "~4.11.1",
+    "eslint": "~7.17.0",
+    "eslint-config-standard": "~16.0.2",
+    "eslint-config-standard-with-typescript": "~19.0.1",
+    "eslint-plugin-import": "~2.22.1",
+    "eslint-plugin-node": "~11.1.0",
+    "eslint-plugin-promise": "~4.2.1",
+    "eslint-plugin-standard": "~4.1.0",
+    "jest": "~26.6.3",
+    "jest-extended": "~0.11.5",
+    "typescript": "~4.1.3"
+  },
+  "engines": {
+    "node": ">=12"
+  },
+  "homepage": "https://superchargejs.com",
+  "keywords": [
+    "supercharge",
+    "superchargejs",
+    "view",
+    "render",
+    "view-rendering",
+    "nodejs"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/supercharge/framework.git"
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.json",
+    "watch": "npm run build -- --watch",
+    "lint": "eslint src --ext .js,.ts",
+    "lint:fix": "npm run lint -- --fix",
+    "test": "npm run build && npm run lint && npm run test:run",
+    "test:run": "jest"
+  }
+}
