@@ -56,4 +56,9 @@ export interface ServiceProvider {
    */
   callBootedCallbacks (): void
 
+  /**
+   * Merge the content of the configuration file located at the
+   * given `path` with the existing app configuration.
+   */
+  mergeConfigFrom (path: string, key: string): this
 }

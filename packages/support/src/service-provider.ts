@@ -1,7 +1,7 @@
 'use strict'
 
-import { tap } from '@supercharge/goodies'
-import { Application, ServiceProvider as ServiceProviderContract } from '@supercharge/contracts'
+import { tap, esmRequire } from '@supercharge/goodies'
+import { Application, ConfigStore, ServiceProvider as ServiceProviderContract } from '@supercharge/contracts'
 
 type Callback = () => void
 
@@ -42,6 +42,15 @@ export class ServiceProvider implements ServiceProviderContract {
    */
   app (): Application {
     return this.meta.app
+  }
+
+  /**
+   * Returns the config instance.
+   *
+   * @returns {ConfigStore}
+   */
+  config (): ConfigStore {
+    return this.app().config()
   }
 
   /**
@@ -118,5 +127,22 @@ export class ServiceProvider implements ServiceProviderContract {
     this.bootedCallbacks().forEach(callback => {
       callback()
     })
+  }
+
+  /**
+   * Merge the content of the configuration file located at the
+   * given `path` with the existing app configuration.
+   *
+   * @param {String} path
+   * @param {String} key
+   *
+   * @returns {ServiceProvider}
+   */
+  mergeConfigFrom (path: string, key: string): this {
+    this.config().set(key, Object.assign(
+      esmRequire(path), this.config().get(key)
+    ))
+
+    return this
   }
 }
