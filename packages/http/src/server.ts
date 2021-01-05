@@ -4,7 +4,6 @@ import Koa from 'koa'
 import { Class } from 'type-fest'
 import bodyParser from 'koa-bodyparser'
 import { HttpContext } from './http-context'
-import serveStaticFilesFrom from 'koa-static'
 import Collect from '@supercharge/collections'
 import { esmResolve, tap } from '@supercharge/goodies'
 import { Application, HttpKernel, MiddlewareCtor, HttpRouter } from '@supercharge/contracts'
@@ -126,9 +125,6 @@ export class Server {
    */
   async registerCoreMiddleware (): Promise<void> {
     this.instance().use(bodyParser())
-    this.instance().use(
-      serveStaticFilesFrom(this.app().publicPath())
-    )
   }
 
   /**
@@ -139,7 +135,7 @@ export class Server {
       this.kernel().middleware()
     ).forEach(async (Middleware: MiddlewareCtor) => {
       this.instance().use(async (ctx, next) => {
-        return new Middleware().handle(
+        return new Middleware(this.app()).handle(
           this.createContext(ctx), next
         )
       })
