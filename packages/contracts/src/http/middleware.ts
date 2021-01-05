@@ -1,8 +1,9 @@
 'use strict'
 
+import { Application } from '../foundation'
 import { HttpContext, NextHandler } from './context'
 
-export type MiddlewareCtor = new () => Middleware
+export type MiddlewareCtor = new (app: Application) => Middleware
 
 export interface Middleware {
   /**
