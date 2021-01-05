@@ -167,4 +167,15 @@ export interface HttpResponse {
    * ```
    */
   etag (etag: string): this
+
+  /**
+   * Render a view template as the response.
+   *
+   * @example
+   * ```
+   * response.view('welcome')
+   * response.view('user/dashboard', { user: { id: 1, name: 'Marcus' } })
+   * ```
+   */
+  view (template: string, data?: any): Promise<this>
 }

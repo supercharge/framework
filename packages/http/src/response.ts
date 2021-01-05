@@ -3,9 +3,14 @@
 import { Context } from 'koa'
 import { tap } from '@supercharge/goodies'
 import { HttpRedirect } from './http-redirect'
-import { CookieOptions, HttpResponse } from '@supercharge/contracts'
+import { Application, CookieOptions, HttpResponse, ViewEngine } from '@supercharge/contracts'
 
 export class Response implements HttpResponse {
+  /**
+   * The application instance.
+   */
+  private readonly app: Application
+
   /**
    * The route context object from Koa.
    */
@@ -22,7 +27,8 @@ export class Response implements HttpResponse {
    * @param ctx
    * @param cookieOptions
    */
-  constructor (ctx: Context, cookieOptions: CookieOptions) {
+  constructor (ctx: Context, app: Application, cookieOptions: CookieOptions) {
+    this.app = app
     this.ctx = ctx
     this.cookieOptions = cookieOptions
   }
@@ -181,5 +187,21 @@ export class Response implements HttpResponse {
   permanentRedirect (url: string): void
   permanentRedirect (url?: any): any {
     return this.status(301).redirect(url)
+  }
+
+  /**
+   * Render a view template as the response.
+   *
+   * @param {String} template
+   * @param {*} data
+   *
+   * @returns {String}
+   */
+  async view (template: string, data?: any): Promise<this> {
+    this.payload(
+      await this.app.make<ViewEngine>('supercharge/view').render(template, data)
+    )
+
+    return this
   }
 }

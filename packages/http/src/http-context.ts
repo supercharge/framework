@@ -61,7 +61,7 @@ export class HttpContext implements HttpContextContract {
    * @returns {Response}
    */
   get response (): Response {
-    return new Response(this.ctx, this.cookieOptions())
+    return new Response(this.ctx, this.app, this.cookieOptions())
   }
 
   /**
