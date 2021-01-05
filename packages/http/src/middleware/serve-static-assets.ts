@@ -10,7 +10,7 @@ export class ServeStaticAssets implements Middleware {
   protected readonly app: Application
 
   /**
-   * The application instance.
+   * The asset handler serving static files for an incoming request.
    */
   private readonly handleAssets: any
 
