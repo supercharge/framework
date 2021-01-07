@@ -12,13 +12,13 @@
 	"main": "dist",
 	"types": "dist",
 	"dependencies": {
-		"@koa/cors": "^3.1.0",
+		"@koa/cors": "~3.1.0",
 		"@supercharge/collections": "~3.1.1",
 		"@supercharge/contracts": "~0.0.0",
 		"@supercharge/goodies": "~1.8.0",
 		"koa": "~2.13.1",
 		"koa-bodyparser": "~4.3.0",
-		"koa-static": "^5.0.0",
+		"koa-static": "~5.0.0",
 		"type-fest": "~0.20.2"
 	},
 	"devDependencies": {
