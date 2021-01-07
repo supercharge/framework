@@ -1,5 +1,8 @@
 'use strict'
 
+import { Class } from '../support'
+import { Application } from '../foundation'
+
 export interface Container {
   /**
    * Register a binding in the container.
@@ -29,7 +32,7 @@ export interface Container {
    *
    * @param {String} namespace
    */
-  make<T> (namespace: string): T
+  make<T> (namespace: string | Class<T, [Application]>): T
 
   /**
    * Flush all bindings and resolved instances from the containter.
