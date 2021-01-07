@@ -4,7 +4,7 @@ import { Context } from 'koa'
 import { Request } from './request'
 import { Response } from './response'
 import { ShareState } from './share-state'
-import { Application, HttpContext as HttpContextContract, CookieOptions } from '@supercharge/contracts'
+import { Application, HttpContext as HttpContextContract, CookieOptions, ViewEngine } from '@supercharge/contracts'
 
 export class HttpContext extends ShareState implements HttpContextContract {
   /**
@@ -58,7 +58,7 @@ export class HttpContext extends ShareState implements HttpContextContract {
    * @returns {Response}
    */
   get response (): Response {
-    return new Response(this.ctx, this.app, this.cookieOptions())
+    return new Response(this.ctx, this.app.make<ViewEngine>('supercharge/view'), this.cookieOptions())
   }
 
   /**

@@ -4,13 +4,13 @@ import { Context } from 'koa'
 import { tap } from '@supercharge/goodies'
 import { ShareState } from './share-state'
 import { HttpRedirect } from './http-redirect'
-import { Application, CookieOptions, HttpResponse, ViewEngine } from '@supercharge/contracts'
+import { CookieOptions, HttpResponse, ViewEngine } from '@supercharge/contracts'
 
 export class Response extends ShareState implements HttpResponse {
   /**
    * The application instance.
    */
-  private readonly app: Application
+  private readonly viewEngine: ViewEngine
 
   /**
    * The cookie options.
@@ -23,10 +23,10 @@ export class Response extends ShareState implements HttpResponse {
    * @param ctx
    * @param cookieOptions
    */
-  constructor (ctx: Context, app: Application, cookieOptions: CookieOptions) {
+  constructor (ctx: Context, viewEngine: ViewEngine, cookieOptions: CookieOptions) {
     super(ctx)
 
-    this.app = app
+    this.viewEngine = viewEngine
     this.cookieOptions = cookieOptions
   }
 
@@ -195,10 +195,10 @@ export class Response extends ShareState implements HttpResponse {
    * @returns {String}
    */
   async view (template: string, data?: any): Promise<this> {
-    this.payload(
-      await this.app.make<ViewEngine>('supercharge/view').render(template, data)
-    )
+    const payload = await this.viewEngine.render(template, {
+      ...this.state(), ...data
+    })
 
-    return this
+    return this.payload(payload)
   }
 }
