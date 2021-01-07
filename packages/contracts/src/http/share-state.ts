@@ -10,7 +10,7 @@ export interface ShareState {
    * response.share({ user: { id: 1, name: 'Marcus' } })
    * ```
    */
-  share (state: any): this
+  share (key: string | any, value?: any): this
 
   /**
    * Returns the shared HTTP context state.

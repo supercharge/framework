@@ -1,6 +1,7 @@
 'use strict'
 
 import { Context } from 'koa'
+import { tap } from '@supercharge/goodies'
 import { ShareState as ShareStateContract } from '@supercharge/contracts'
 
 export class ShareState implements ShareStateContract {
@@ -34,11 +35,22 @@ export class ShareState implements ShareStateContract {
    *
    * @returns {ThisType}
    */
-  share (state: any): this {
-    typeof state === 'object'
-      ? Object.assign(this.ctx.state, state)
-      : this.ctx.state = state
+  share (key: string | any, value?: any): this {
+    return tap(this, () => {
+      const state = this.isObject(key) ? key : { [key]: value }
 
-    return this
+      Object.assign(this.ctx.state, state)
+    })
+  }
+
+  /**
+   * Determine whether the given `input` is an object.
+   *
+   * @param input
+   *
+   * @returns {Boolean}
+   */
+  private isObject (input: any): boolean {
+    return typeof input === 'object' && !Array.isArray(input) && input !== null
   }
 }
