@@ -2,10 +2,11 @@
 
 import { HttpRequest } from './request'
 import { HttpResponse } from './response'
+import { ShareState } from './share-state'
 
 export type NextHandler = () => any | Promise<any>
 
-export interface HttpContext {
+export interface HttpContext extends ShareState {
   /**
    * Returns the raw Koa context.
    */

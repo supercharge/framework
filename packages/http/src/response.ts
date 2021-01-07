@@ -2,19 +2,15 @@
 
 import { Context } from 'koa'
 import { tap } from '@supercharge/goodies'
+import { ShareState } from './share-state'
 import { HttpRedirect } from './http-redirect'
 import { Application, CookieOptions, HttpResponse, ViewEngine } from '@supercharge/contracts'
 
-export class Response implements HttpResponse {
+export class Response extends ShareState implements HttpResponse {
   /**
    * The application instance.
    */
   private readonly app: Application
-
-  /**
-   * The route context object from Koa.
-   */
-  private readonly ctx: Context
 
   /**
    * The cookie options.
@@ -28,8 +24,9 @@ export class Response implements HttpResponse {
    * @param cookieOptions
    */
   constructor (ctx: Context, app: Application, cookieOptions: CookieOptions) {
+    super(ctx)
+
     this.app = app
-    this.ctx = ctx
     this.cookieOptions = cookieOptions
   }
 

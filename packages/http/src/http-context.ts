@@ -3,14 +3,10 @@
 import { Context } from 'koa'
 import { Request } from './request'
 import { Response } from './response'
+import { ShareState } from './share-state'
 import { Application, HttpContext as HttpContextContract, CookieOptions } from '@supercharge/contracts'
 
-export class HttpContext implements HttpContextContract {
-  /**
-   * The raw Koa context instance.
-   */
-  private readonly ctx: Context
-
+export class HttpContext extends ShareState implements HttpContextContract {
   /**
    * The application instance.
    */
@@ -22,7 +18,8 @@ export class HttpContext implements HttpContextContract {
    * @param ctx
    */
   constructor (ctx: Context, app: Application) {
-    this.ctx = ctx
+    super(ctx)
+
     this.app = app
   }
 

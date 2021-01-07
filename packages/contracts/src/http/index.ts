@@ -2,6 +2,7 @@
 
 export * from './context'
 export * from './cookie-options'
+export * from './cors-options'
 export * from './kernel'
 export * from './middleware'
 export * from './pending-route'
@@ -10,4 +11,5 @@ export * from './response'
 export * from './route-group'
 export * from './route'
 export * from './router'
+export * from './share-state'
 export * from './static-assets-options'

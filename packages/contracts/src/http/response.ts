@@ -1,5 +1,6 @@
 'use strict'
 
+import { ShareState } from './share-state'
 import { CookieOptions } from './cookie-options'
 
 export interface HttpRedirect {
@@ -24,7 +25,7 @@ export interface HttpRedirect {
   to(path: string): void
 }
 
-export interface HttpResponse {
+export interface HttpResponse extends ShareState {
   /**
    * Set a response header.
    *
