@@ -1,12 +1,10 @@
 'use strict'
 
 import Koa from 'koa'
-import { Class } from 'type-fest'
 import bodyParser from 'koa-bodyparser'
 import { HttpContext } from './http-context'
-import Collect from '@supercharge/collections'
-import { esmResolve, tap } from '@supercharge/goodies'
-import { Application, HttpKernel, MiddlewareCtor, HttpRouter } from '@supercharge/contracts'
+import { esmRequire, tap } from '@supercharge/goodies'
+import { Application, Class, HttpKernel, MiddlewareCtor, HttpRouter } from '@supercharge/contracts'
 
 export class Server {
   /**
@@ -130,15 +128,26 @@ export class Server {
   /**
    * Register the global application middleware stack.
    */
-  async registerAppMiddleware (): Promise<void> {
-    await Collect(
-      this.kernel().middleware()
-    ).forEach(async (Middleware: MiddlewareCtor) => {
-      this.instance().use(async (ctx, next) => {
-        return new Middleware(this.app()).handle(
-          this.createContext(ctx), next
-        )
-      })
+  registerAppMiddleware (): void {
+    this.kernel().middleware().forEach((Middleware: MiddlewareCtor) => {
+      this.bindAndRegisterMiddleware(Middleware)
+    })
+  }
+
+  /**
+   * Register the given HTTP middleware to the IoC container and HTTP server instance.
+   *
+   * @param {MiddlewareCtor} Middleware
+   */
+  private bindAndRegisterMiddleware (Middleware: MiddlewareCtor): void {
+    this.app().singleton(Middleware.name, () => {
+      return new Middleware(this.app())
+    })
+
+    this.instance().use(async (ctx, next) => {
+      return this.app().make(Middleware).handle(
+        this.createContext(ctx), next
+      )
     })
   }
 
@@ -175,7 +184,7 @@ export class Server {
    * Bind the resolved HTTP controller into the container.
    */
   private resolveAndBindController (controllerPath: string): void {
-    const Controller: Class = esmResolve(require(controllerPath))
+    const Controller: Class = esmRequire(controllerPath)
 
     this.app().bind(Controller.name, () => {
       return new Controller(this.app())
