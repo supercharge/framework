@@ -51,6 +51,6 @@ export class ShareState implements ShareStateContract {
    * @returns {Boolean}
    */
   private isObject (input: any): boolean {
-    return typeof input === 'object' && !Array.isArray(input) && input !== null
+    return !!input && input.constructor.name === 'Object'
   }
 }
