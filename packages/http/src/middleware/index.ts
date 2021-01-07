@@ -1,4 +1,5 @@
 'use strict'
 
-export * from './verify-csrf-token'
+export * from './handle-cors'
 export * from './serve-static-assets'
+export * from './verify-csrf-token'
