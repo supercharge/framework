@@ -53,6 +53,20 @@ describe('Container', () => {
     expect(container.make('singleton')).toBe(container.make('singleton'))
   })
 
+  it('make class', () => {
+    const container = new Container()
+    class User {
+      constructor (app) {
+        this.app = app
+      }
+    }
+
+    const user = container.make(User)
+
+    expect(user instanceof User).toBeTrue()
+    expect(user.app).toEqual(container)
+  })
+
   it('throws for missing namespace when binding a singleton', () => {
     const container = new Container()
 
