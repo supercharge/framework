@@ -175,7 +175,7 @@ export class Router implements HttpRouter {
    */
   private getMiddleware (name: string): Middleware {
     if (this.meta.middleware[name]) {
-      return new (this.meta.middleware[name])()
+      return new (this.meta.middleware[name])(this.app())
     }
 
     throw new Error(`Missing middleware "${name}". Configure it in your HTTP kernel`)
