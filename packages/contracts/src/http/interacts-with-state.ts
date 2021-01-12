@@ -1,6 +1,6 @@
 'use strict'
 
-export interface ShareState {
+export interface InteractsWithState {
   /**
    * Share a given `state` across HTTP requests. Any previously
    * set state will be merged with the given `state`.
