@@ -2,9 +2,9 @@
 
 import { Context } from 'koa'
 import { tap } from '@supercharge/goodies'
-import { ShareState as ShareStateContract } from '@supercharge/contracts'
+import { InteractsWithState as InteractsWithStateContract } from '@supercharge/contracts'
 
-export class ShareState implements ShareStateContract {
+export class InteractsWithState implements InteractsWithStateContract {
   /**
    * The route context object from Koa.
    */
