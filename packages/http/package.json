@@ -15,6 +15,7 @@
 		"@koa/cors": "~3.1.0",
 		"@supercharge/contracts": "~0.0.0",
 		"@supercharge/goodies": "~1.8.0",
+		"@supercharge/strings": "~1.17.1",
 		"koa": "~2.13.1",
 		"koa-bodyparser": "~4.3.0",
 		"koa-static": "~5.0.0"
