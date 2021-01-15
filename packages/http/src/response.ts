@@ -2,11 +2,11 @@
 
 import { Context } from 'koa'
 import { tap } from '@supercharge/goodies'
-import { ShareState } from './share-state'
 import { HttpRedirect } from './http-redirect'
+import { InteractsWithState } from './interacts-with-state'
 import { CookieOptions, HttpResponse, ViewEngine } from '@supercharge/contracts'
 
-export class Response extends ShareState implements HttpResponse {
+export class Response extends InteractsWithState implements HttpResponse {
   /**
    * The application instance.
    */

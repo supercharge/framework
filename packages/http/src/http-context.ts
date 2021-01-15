@@ -3,10 +3,10 @@
 import { Context } from 'koa'
 import { Request } from './request'
 import { Response } from './response'
-import { ShareState } from './share-state'
+import { InteractsWithState } from './interacts-with-state'
 import { Application, HttpContext as HttpContextContract, CookieOptions, ViewEngine } from '@supercharge/contracts'
 
-export class HttpContext extends ShareState implements HttpContextContract {
+export class HttpContext extends InteractsWithState implements HttpContextContract {
   /**
    * The application instance.
    */
