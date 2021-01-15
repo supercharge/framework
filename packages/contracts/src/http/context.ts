@@ -2,7 +2,7 @@
 
 import { HttpRequest } from './request'
 import { HttpResponse } from './response'
-import { InteractsWithState } from './interacts-with-state'
+import { InteractsWithState } from './concerns/interacts-with-state'
 
 export type NextHandler = () => any | Promise<any>
 

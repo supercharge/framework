@@ -1,7 +1,7 @@
 'use strict'
 
 import { CookieOptions } from './cookie-options'
-import { InteractsWithState } from './interacts-with-state'
+import { InteractsWithState } from './concerns/interacts-with-state'
 
 export interface HttpRedirect {
   /**
