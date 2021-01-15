@@ -4,7 +4,7 @@ import Koa from 'koa'
 import bodyParser from 'koa-bodyparser'
 import { HttpContext } from './http-context'
 import { esmRequire, tap } from '@supercharge/goodies'
-import { Application, Class, HttpKernel, MiddlewareCtor, HttpRouter } from '@supercharge/contracts'
+import { Application, Class, HttpKernel, MiddlewareCtor, HttpRouter, ErrorHandler } from '@supercharge/contracts'
 
 export class Server {
   /**
@@ -111,9 +111,33 @@ export class Server {
   /**
    * Register middlware to the HTTP server.
    */
-  async registerMiddleware (): Promise<void> {
-    await this.registerCoreMiddleware()
-    await this.registerAppMiddleware()
+  registerMiddleware (): void {
+    this.registerErrorHandler()
+    this.registerCoreMiddleware()
+    this.registerAppMiddleware()
+  }
+
+  /**
+   * Register an exception handler to process and respond for a given error.
+   */
+  registerErrorHandler (): void {
+    this.instance().use(async (ctx, next) => {
+      try {
+        await next()
+      } catch (error) {
+        await this.handleErrorFor(this.createContext(ctx), error)
+      }
+    })
+  }
+
+  /**
+   * Process the given `error` and HTTP `ctx` using the error handler.
+   *
+   * @param error
+   * @param ctx
+   */
+  private async handleErrorFor (ctx: HttpContext, error: Error): Promise<void> {
+    await this.app().make<ErrorHandler>('supercharge/error-handler').handle(ctx, error)
   }
 
   /**
@@ -121,7 +145,7 @@ export class Server {
    * stack, but it’s not configurable by the user. Instead, all middleware
    * registered here will be available out of the box.
    */
-  async registerCoreMiddleware (): Promise<void> {
+  registerCoreMiddleware (): void {
     this.instance().use(bodyParser())
   }
 
