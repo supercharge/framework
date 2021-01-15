@@ -1,6 +1,13 @@
 'use strict'
 
-export interface HttpRequest {
+import { InteractsWithContentTypes } from './concerns'
+
+export interface HttpRequest extends InteractsWithContentTypes {
+  /**
+   * Returns the request method.
+   */
+  method (): string
+
   /**
    * Returns the request’s URL path.
    */
@@ -9,25 +16,31 @@ export interface HttpRequest {
   /**
    * Returns the query parameter object.
    */
-  query(): { [key: string]: unknown }
-
-  /**
-   * Set a new query parameter object.
-   */
-  // setQuery(query: { [key: string]: unknown }): this
+  query: { [key: string]: unknown }
 
   /**
    * Returns the path parameter object.
    */
-  params(): { [key: string]: unknown }
+  params: { [key: string]: unknown }
 
   /**
    * Returns the request payload.
    */
-  payload(): any
+  payload: any
 
   /**
    * Returns the request headers.
    */
-  headers(): any
+  headers: any
+
+  /**
+   * Returns the request header identified by the given `key`. The default
+   * value will be returned if no header is present for the given key.
+   */
+  header(key: string, defaultValue?: any): string | undefined
+
+  /**
+   * Determine whether the request contains a header with the given `key`.
+   */
+  hasHeader(key: string): boolean
 }
