@@ -1,22 +1,31 @@
 'use strict'
 
 import { Context } from 'koa'
+import Str from '@supercharge/strings'
 import { RouterContext } from 'koa__router'
-import { HttpRequest } from '@supercharge/contracts'
+import { HttpRequest, InteractsWithContentTypes } from '@supercharge/contracts'
 
-export class Request implements HttpRequest {
+export class Request implements HttpRequest, InteractsWithContentTypes {
   /**
-   * Stores the route context object from Koa.
+   * The route context object from Koa.
    */
-  private readonly ctx: Context | Context & RouterContext
+  protected readonly ctx: Context | Context & RouterContext
 
   /**
-   * Create a new request instance.
+   * Create a new response instance.
    *
    * @param ctx
+   * @param cookieOptions
    */
   constructor (ctx: Context | Context & RouterContext) {
     this.ctx = ctx
+  }
+
+  /**
+   * Returns the request method.
+   */
+  method (): string {
+    return this.ctx.request.method
   }
 
   /**
@@ -29,28 +38,83 @@ export class Request implements HttpRequest {
   /**
    * Returns the query parameter object.
    */
-  query (): { [key: string]: unknown } {
+  get query (): { [key: string]: unknown } {
     return this.ctx.query
   }
 
   /**
    * Returns the path parameter object.
    */
-  params (): { [key: string]: unknown } {
+  get params (): { [key: string]: unknown } {
     return this.ctx.params
   }
 
   /**
    * Returns the request payload.
    */
-  payload (): any {
+  get payload (): any {
     return this.ctx.request.body
   }
 
   /**
    * Returns the request headers.
    */
-  headers (): { [key: string]: unknown } {
+  get headers (): { [key: string]: unknown } {
     return this.ctx.headers
+  }
+
+  /**
+   * Returns the request header identified by the given `key`. The default
+   * value will be returned if no header is present for the given key.
+   *
+   * @param {String} key
+   * @param {*} defaultValue
+   *
+   * @returns {String}
+   */
+  header (key: string, defaultValue?: any): string | undefined {
+    return this.headers[key] || defaultValue
+  }
+
+  /**
+   * Determine whether the request contains a header with the given `key`.
+   *
+   * @returns {Boolean}
+   */
+  hasHeader (key: string): boolean {
+    return !!this.header(key)
+  }
+
+  /**
+   * Determine whether the request is sending JSON payload.
+   *
+   * @returns {Boolean}
+   */
+  isJson (): boolean {
+    return Str(
+      this.header('content-type')
+    ).contains('/json', '+json')
+  }
+
+  /**
+   * Determine whether the request is asking for a JSON response.
+   *
+   * @returns {Boolean}
+   */
+  wantsJson (): boolean {
+    return Str(
+      this.header('accept')
+    ).contains('/json', '+json')
+  }
+
+  /**
+   * Determine whether the request is asking for an HTML response.
+   *
+   * @returns {Boolean}
+   */
+  wantsHtml (): boolean {
+    return Str(
+      this.header('accept')
+    ).contains('text/html')
   }
 }
