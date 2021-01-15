@@ -12,7 +12,7 @@ import { tap, upon } from '@supercharge/goodies'
 import { Container } from '@supercharge/container'
 import { RoutingServiceProvider } from '@supercharge/routing/dist/src/routing-service-provider'
 import { LoggingServiceProvider } from '@supercharge/logging/dist/src/logging-service-provider'
-import { EnvStore, ConfigStore, BootstrapperCtor, ServiceProvider, ServiceProviderCtor, Application as ApplicationContract, Logger } from '@supercharge/contracts'
+import { EnvStore, ConfigStore, BootstrapperCtor, ServiceProvider, ServiceProviderCtor, Application as ApplicationContract, Logger, ErrorHandlerCtor } from '@supercharge/contracts'
 
 export class Application extends Container implements ApplicationContract {
   /**
@@ -54,6 +54,23 @@ export class Application extends Container implements ApplicationContract {
    */
   public static createWithAppRoot (basePath: string): Application {
     return new Application(basePath)
+  }
+
+  /**
+   * Assign the given error handler to this application instance. The error
+   * handler is used to report errors on the default logging channel and
+   * also to create responses for requests throwing errors.
+   *
+   * @param Handler
+   *
+   * @returns {Application}
+   */
+  withErrorHandler (Handler: ErrorHandlerCtor): Application {
+    return tap(this, () => {
+      this.singleton('supercharge/error-handler', () => {
+        return new Handler(this)
+      })
+    })
   }
 
   /**
