@@ -1,8 +1,27 @@
 'use strict'
 
-import { ErrorHandler as ErrorHandlerContract, HttpContext } from '@supercharge/contracts'
+import { Application, ErrorHandler as ErrorHandlerContract, HttpContext, Logger } from '@supercharge/contracts'
 
 export class ErrorHandler implements ErrorHandlerContract {
+  /**
+   * The application instance.
+   */
+  private readonly app: Application
+
+  /**
+   * Create a new error handler instance.
+   */
+  constructor (app: Application) {
+    this.app = app
+  }
+
+  /**
+   * The application’s logger instance.
+   */
+  logger (): Logger {
+    return this.app.logger()
+  }
+
   /**
    * Handle the given error.
    */
@@ -14,9 +33,8 @@ export class ErrorHandler implements ErrorHandlerContract {
   /**
    * Report an error.
    */
-
-  report (_ctx: HttpContext, _error: Error): void | Promise<void> {
-    // TODO send error to logger?
+  report (_ctx: HttpContext, error: Error): void | Promise<void> {
+    this.logger().error(error.message, error)
   }
 
   /**
