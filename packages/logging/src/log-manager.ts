@@ -88,11 +88,23 @@ export class LogManager extends Manager implements LoggingContract {
   }
 
   /**
+   * Returns the driver instance. This method exists to retrieve
+   * IntelliSense because of the method’s specific return value.
+   *
+   * @param {String} name
+   *
+   * @returns {ViewEngine}
+   */
+  driver (name?: string): LoggingContract {
+    return super.driver(name)
+  }
+
+  /**
    * Create a file logging driver.
    *
    * @returns {FileLogger}
    */
-  protected createFileDriver (): FileLogger {
+  protected createFileDriver (): LoggingContract {
     return new FileLogger(
       this.config().get('logging.channels.file', {})
     )
@@ -101,9 +113,9 @@ export class LogManager extends Manager implements LoggingContract {
   /**
    * Create a a console logging driver.
    *
-   * @returns {ConsoleLogger}
+   * @returns {Logger}
    */
-  protected createConsoleDriver (): ConsoleLogger {
+  protected createConsoleDriver (): LoggingContract {
     return new ConsoleLogger(
       this.config().get('logging.channels.console', {})
     )
