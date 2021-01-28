@@ -53,13 +53,13 @@ export class ConsoleLogger extends Logger implements LoggingContract {
    * @returns {String}
    */
   createLogMessage (logItem: any): string {
-    const { level, message, timestamp, [Symbol.for('splat')]: meta } = logItem
+    const { level, message, [Symbol.for('splat')]: meta } = logItem
 
     const color = this.getColorForLevel(level)
-    const time = new Date(timestamp).getTime()
+    const time = this.retrieveLogTimeFrom(logItem)
 
-    return `${Chalk.gray(time)} ${color(level)} ${message}`.concat(
-      meta ? JSON.stringify(meta) : ''
+    return `${Chalk.gray(time)} ${color(level)} ${message} `.concat(
+      meta ? JSON.stringify(meta[0]) : ''
     )
   }
 
@@ -96,5 +96,16 @@ export class ConsoleLogger extends Logger implements LoggingContract {
       info: Chalk.green,
       debug: Chalk.blue
     }
+  }
+
+  /**
+   * Returns the time of the log item in milliseconds.
+   *
+   * @param {Object} logItem
+   *
+   * @returns {Number}
+   */
+  private retrieveLogTimeFrom (logItem: any): number {
+    return new Date(logItem.timestamp).getTime()
   }
 }
