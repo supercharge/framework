@@ -1,6 +1,6 @@
 'use strict'
 
-describe('Foundation', () => {
+describe('Core', () => {
   it.skip('TODO', () => {
     expect(true).toBeFalse()
   })
