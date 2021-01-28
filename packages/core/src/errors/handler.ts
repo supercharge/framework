@@ -1,5 +1,6 @@
 'use strict'
 
+import { HttpError } from './http-error'
 import { Application, ErrorHandler as ErrorHandlerContract, HttpContext, Logger } from '@supercharge/contracts'
 
 export class ErrorHandler implements ErrorHandlerContract {
@@ -23,36 +24,65 @@ export class ErrorHandler implements ErrorHandlerContract {
   }
 
   /**
+   * Returns the default logging context.
+   *
+   * @param {HttpContext} ctx
+   *
+   * @returns {*}
+   */
+  context (_ctx: HttpContext): any {
+    return {}
+  }
+
+  /**
    * Handle the given error.
    */
-  async handle (ctx: HttpContext, error: Error): Promise<void> {
-    await this.report(ctx, error)
-    await this.render(ctx, error)
+  async handle (ctx: HttpContext, error: any): Promise<void> {
+    const httpError = HttpError.wrap(error)
+
+    await this.report(ctx, httpError)
+    await this.render(ctx, httpError)
   }
 
   /**
    * Report an error.
    */
-  report (_ctx: HttpContext, error: Error): void | Promise<void> {
-    this.logger().error(error.message, error)
+  report (ctx: HttpContext, error: HttpError): void | Promise<void> {
+    this.logger().error(error.message, { ...this.context(ctx), error })
   }
 
   /**
    * Render an error into an HTTP response.
    */
-  async render (ctx: HttpContext, error: Error): Promise<any> {
-    // TODO
-
+  async render (ctx: HttpContext, error: HttpError): Promise<any> {
     return ctx.request.wantsJson()
       ? this.renderJsonResponse(ctx, error)
-      : this.renderViewResponse(ctx, error)
+      : await this.renderViewResponse(ctx, error)
   }
 
-  renderJsonResponse (_ctx: HttpContext, _error: Error): void {
-    // TODO
+  /**
+   * Creates a JSON response depending on the app’s environment.
+   *
+   * @param {HttpContext} ctx
+   * @param {*} error
+   */
+  renderJsonResponse (ctx: HttpContext, error: HttpError): void {
+    const { message, stack, statusCode } = error
+
+    this.app.env().isProduction()
+      ? ctx.response.status(statusCode).payload({ message })
+      : ctx.response.status(statusCode).payload({ message, stack, statusCode })
   }
 
-  renderViewResponse (_ctx: HttpContext, _error: Error): void {
-    // TODO
+  /**
+   * Creates an HTML response depending on the app’s environment.
+   *
+   * @param {HttpContext} ctx
+   * @param {*} error
+   */
+  async renderViewResponse (ctx: HttpContext, error: HttpError): Promise<void> {
+    const { statusCode } = error
+
+    await ctx.response.status(statusCode).view(`errors/${statusCode}`, { error })
   }
 }
