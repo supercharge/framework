@@ -59,6 +59,30 @@ export class Config implements ConfigStore {
   }
 
   /**
+   * Ensure the given config `key` in the application’s configuration.
+   *
+   * @param {String} key
+   * @param {Function} callback
+   *
+   * @example
+   * ```
+   * config.ensure('view')
+   * config.ensure('app.port')
+   * ```
+   */
+  ensure (key: string, callback?: () => void): void {
+    if (this.has(key)) {
+      return
+    }
+
+    if (typeof callback === 'function') {
+      callback()
+    }
+
+    throw new Error(`Missing configuration for "${key}".`)
+  }
+
+  /**
    * Clear all values from the config store.
    */
   clear (): void {
