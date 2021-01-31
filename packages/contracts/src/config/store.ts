@@ -16,7 +16,7 @@ export interface ConfigStore {
   /**
    * Set a config value.
    */
-  set (key: string, value: any): void
+  set (key: string, value: any): ConfigStore
 
   /**
    * Determine whether the config store contains an item for the given `key`.

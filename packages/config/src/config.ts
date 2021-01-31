@@ -43,8 +43,10 @@ export class Config implements ConfigStore {
    * @param {String} key
    * @param {String} value
    */
-  set (key: string, value: any): void {
+  set (key: string, value: any): Config {
     _.set(this.config, key, value)
+
+    return this
   }
 
   /**
