@@ -1,17 +1,41 @@
 'use strict'
 
 import { Manager } from '@supercharge/manager'
-import { ViewEngine } from '@supercharge/contracts'
 import { HandlebarsCompiler } from './engines/handlebars'
+import { Application, ViewEngine } from '@supercharge/contracts'
 
 export class ViewManager extends Manager {
+  /**
+   * Create a new view manager instance.
+   *
+   * @param {Application} app
+   */
+  constructor (app: Application) {
+    super(app)
+
+    this.validateConfig()
+  }
+
+  /**
+   * Validate the view config.
+   *
+   * @throws
+   */
+  validateConfig (): void {
+    this.ensureConfig('view', () => {
+      throw new Error('Missing view configuration file. Make sure the "config/view.ts" file exists.')
+    })
+
+    this.ensureConfig('view.driver')
+  }
+
   /**
    * Returns the default driver name.
    *
    * @returns {String}
    */
   defaultDriver (): string {
-    return this.app.config().get('view.driver')
+    return this.config().get('view.driver')
   }
 
   /**
