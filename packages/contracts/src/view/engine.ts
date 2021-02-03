@@ -12,4 +12,9 @@ export interface ViewEngine {
    * Returns the rendered HTML view.
    */
   render(view: string, data?: any): Promise<string>
+
+  /**
+   * Determine whether the given `view` exists.
+   */
+  exists(view: string): Promise<boolean>
 }

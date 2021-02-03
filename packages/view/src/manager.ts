@@ -4,7 +4,7 @@ import { Manager } from '@supercharge/manager'
 import { HandlebarsCompiler } from './engines/handlebars'
 import { Application, ViewEngine } from '@supercharge/contracts'
 
-export class ViewManager extends Manager {
+export class ViewManager extends Manager implements ViewEngine {
   /**
    * Create a new view manager instance.
    *
@@ -21,7 +21,7 @@ export class ViewManager extends Manager {
    *
    * @throws
    */
-  validateConfig (): void {
+  private validateConfig (): void {
     this.ensureConfig('view', () => {
       throw new Error('Missing view configuration file. Make sure the "config/view.ts" file exists.')
     })
@@ -46,7 +46,7 @@ export class ViewManager extends Manager {
    *
    * @returns {ViewEngine}
    */
-  driver (name?: string): ViewEngine {
+  protected driver (name?: string): ViewEngine {
     return super.driver(name)
   }
 
@@ -55,7 +55,7 @@ export class ViewManager extends Manager {
    *
    * @returns {ViewEngine}
    */
-  createHandlebarsDriver (): ViewEngine {
+  protected createHandlebarsDriver (): ViewEngine {
     return new HandlebarsCompiler(this.app)
   }
 
@@ -69,6 +69,18 @@ export class ViewManager extends Manager {
    */
   async render (view: string, data?: any): Promise<string> {
     return await this.driver().render(view, data)
+  }
+
+  /**
+   * Render the given view.
+   *
+   * @param {String} view
+   * @param {*} data
+   *
+   * @returns {String} the rendered view
+   */
+  async exists (view: string): Promise<boolean> {
+    return this.driver().exists(view)
   }
 
   /**

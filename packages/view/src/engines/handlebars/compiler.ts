@@ -276,6 +276,19 @@ export class HandlebarsCompiler implements ViewEngine {
   }
 
   /**
+   * Determine whether the given `view` exists.
+   *
+   * @param {String} view
+   *
+   * @returns {Boolean}
+   */
+  async exists (view: string): Promise<boolean> {
+    return await Fs.exists(
+      Path.resolve(await this.viewsLocation(), view)
+    )
+  }
+
+  /**
    * Returns the rendered HTML view.
    *
    * @param {string} view
