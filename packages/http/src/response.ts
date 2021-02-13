@@ -201,4 +201,18 @@ export class Response extends InteractsWithState implements HttpResponse {
 
     return this.payload(payload)
   }
+
+  /**
+   * Abort the request and throw an error with the given `status`. The status defaults
+   * to 500. You may pass an error message or error instance as the second argument.
+   * Use the third, optional argument for properties in the error response.
+   *
+   * @returns {Response}
+   */
+  throw (status: number, message?: string | Error, properties?: {}): void
+  throw (status: number | string | Error): void
+  throw (status: number): void
+  throw (...properties: any[]): void {
+    this.ctx.throw(...properties)
+  }
 }
