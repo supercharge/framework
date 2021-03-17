@@ -34,7 +34,7 @@ export class ErrorHandler implements ErrorHandlerContract {
   /**
    * The application’s view renderer.
    */
-  viewRenderer (): ViewEngine {
+  view (): ViewEngine {
     return this.app.make('supercharge/view')
   }
 
@@ -122,7 +122,7 @@ export class ErrorHandler implements ErrorHandlerContract {
    */
   async renderViewResponse (ctx: HttpContext, error: HttpError): Promise<void> {
     if (await this.isMissingTemplateFor(error)) {
-      this.logger().debug(`No error template found at ${this.viewTemplateFor(error)}. Falling back to JSON response.`)
+      this.logger().debug(`No error view template found at "${this.viewTemplateFor(error)}". Falling back to JSON response.`)
 
       return this.renderJsonResponse(ctx, error)
     }
@@ -153,7 +153,7 @@ export class ErrorHandler implements ErrorHandlerContract {
    * @returns {Boolean}
    */
   private async templateExistsFor (error: HttpError): Promise<boolean> {
-    return this.viewRenderer().exists(
+    return this.view().exists(
       this.viewTemplateFor(error)
     )
   }
