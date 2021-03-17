@@ -15,25 +15,24 @@
   "main": "dist/index.js",
   "dependencies": {
     "@supercharge/contracts": "~0.0.0",
-    "@supercharge/filesystem": "~2.1.0",
-    "@supercharge/strings": "~1.16.0",
+    "@supercharge/filesystem": "~2.3.0",
+    "@supercharge/strings": "~1.18.0",
     "dotenv": "~8.2.0",
     "dotenv-expand": "~5.1.0"
   },
   "devDependencies": {
-    "@types/jest": "~26.0.15",
-    "@types/lodash": "~4.14.165",
-    "@typescript-eslint/eslint-plugin": "~4.7.0",
-    "eslint": "~7.13.0",
-    "eslint-config-standard": "~16.0.1",
-    "eslint-config-standard-with-typescript": "~19.0.1",
+    "@types/jest": "~26.0.20",
+    "@types/lodash": "~4.14.168",
+    "@typescript-eslint/eslint-plugin": "~4.18.0",
+    "eslint": "~7.22.0",
+    "eslint-config-standard": "~16.0.2",
+    "eslint-config-standard-with-typescript": "~20.0.0",
     "eslint-plugin-import": "~2.22.1",
     "eslint-plugin-node": "~11.1.0",
-    "eslint-plugin-promise": "~4.2.1",
-    "eslint-plugin-standard": "~4.1.0",
+    "eslint-plugin-promise": "~4.3.1",
     "jest": "~26.6.3",
     "jest-extended": "~0.11.5",
-    "typescript": "~4.0.5"
+    "typescript": "~4.2.3"
   },
   "engines": {
     "node": ">=12"
