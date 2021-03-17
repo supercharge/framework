@@ -14,7 +14,7 @@ export interface ViewEngine {
   render(view: string, data?: any): Promise<string>
 
   /**
-   * Determine whether the given `view` exists.
+   * Determine whether the given `view` template file exists.
    */
   exists(view: string): Promise<boolean>
 }
