@@ -6,6 +6,9 @@ import { Application, BootstrapperCtor, HttpKernel as HttpKernelContract, Middle
 import { HandleExceptions, LoadConfiguration, LoadEnvironmentVariables, RegisterServiceProviders, BootServiceProviders } from '../bootstrappers'
 
 export class HttpKernel implements HttpKernelContract {
+  /**
+   * Stores the HTTP kernel’s meta data.
+   */
   private readonly meta: {
     /**
      * The application instance.
