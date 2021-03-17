@@ -80,7 +80,7 @@ export class ViewManager extends Manager implements ViewEngine {
    * @returns {String} the rendered view
    */
   async exists (view: string): Promise<boolean> {
-    return this.driver().exists(view)
+    return await this.driver().exists(view)
   }
 
   /**
