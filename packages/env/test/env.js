@@ -46,7 +46,7 @@ describe('Env', () => {
     delete process.env.Supercharge_TEMP
   })
 
-  it('is production', async () => {
+  it('isProduction', async () => {
     process.env.NODE_ENV = 'not-production'
     expect(Env.isProduction()).toBeFalse()
 
@@ -54,7 +54,15 @@ describe('Env', () => {
     expect(Env.isProduction()).toBeTrue()
   })
 
-  it('is testing', async () => {
+  it('isNotProduction', async () => {
+    process.env.NODE_ENV = 'not-production'
+    expect(Env.isNotProduction()).toBeTrue()
+
+    process.env.NODE_ENV = 'production'
+    expect(Env.isNotProduction()).toBeFalse()
+  })
+
+  it('isTesting', async () => {
     process.env.NODE_ENV = 'not-testing'
     expect(Env.isTesting()).toBeFalse()
 
@@ -62,7 +70,7 @@ describe('Env', () => {
     expect(Env.isTesting()).toBeTrue()
   })
 
-  it('is environment', async () => {
+  it('is', async () => {
     expect(Env.is('local')).toBeFalse()
 
     process.env.NODE_ENV = 'LOCAL'
