@@ -1,7 +1,9 @@
 'use strict'
 
 import { HttpError } from './http-error'
-import { Application, ErrorHandler as ErrorHandlerContract, HttpContext, Logger } from '@supercharge/contracts'
+import { tap } from '@supercharge/goodies'
+import Collect from '@supercharge/collections'
+import { Application, ErrorHandler as ErrorHandlerContract, HttpContext, Logger, ViewEngine } from '@supercharge/contracts'
 
 export class ErrorHandler implements ErrorHandlerContract {
   /**
@@ -10,10 +12,16 @@ export class ErrorHandler implements ErrorHandlerContract {
   private readonly app: Application
 
   /**
+   * Stores the list of report callbacks.
+   */
+  private readonly reportCallbacks: Array<(ctx: HttpContext, error: HttpError) => void | Promise<void>>
+
+  /**
    * Create a new error handler instance.
    */
   constructor (app: Application) {
     this.app = app
+    this.reportCallbacks = []
   }
 
   /**
@@ -21,6 +29,34 @@ export class ErrorHandler implements ErrorHandlerContract {
    */
   logger (): Logger {
     return this.app.logger()
+  }
+
+  /**
+   * The application’s view renderer.
+   */
+  viewRenderer (): ViewEngine {
+    return this.app.make('supercharge/view')
+  }
+
+  /**
+   * Register the error handling callbacks. For example, to report error
+   * upstream to an error tracking service, like Sentry or Bugsnag.
+   */
+  register (): void {
+    //
+  }
+
+  /**
+   * Register a reportable callback.
+   *
+   * @param  {Function} reportUsing
+   *
+   * @returns {ErrorHandler}
+   */
+  reportable (reportUsing: (ctx: HttpContext, error: HttpError) => void | Promise<void>): ErrorHandler {
+    return tap(this, () => {
+      this.reportCallbacks.push(reportUsing)
+    })
   }
 
   /**
@@ -47,7 +83,11 @@ export class ErrorHandler implements ErrorHandlerContract {
   /**
    * Report an error.
    */
-  report (ctx: HttpContext, error: HttpError): void | Promise<void> {
+  async report (ctx: HttpContext, error: HttpError): Promise<void> {
+    await Collect(this.reportCallbacks).forEach(async reportCallback => {
+      await reportCallback(ctx, error)
+    })
+
     this.logger().error(error.message, { ...this.context(ctx), error })
   }
 
@@ -81,8 +121,51 @@ export class ErrorHandler implements ErrorHandlerContract {
    * @param {*} error
    */
   async renderViewResponse (ctx: HttpContext, error: HttpError): Promise<void> {
-    const { statusCode } = error
+    if (await this.isMissingTemplateFor(error)) {
+      this.logger().debug(`No error template found at ${this.viewTemplateFor(error)}. Falling back to JSON response.`)
 
-    await ctx.response.status(statusCode).view(`errors/${statusCode}`, { error })
+      return this.renderJsonResponse(ctx, error)
+    }
+
+    await ctx.response
+      .status(error.statusCode)
+      .view(
+        this.viewTemplateFor(error), { error }
+      )
+  }
+
+  /**
+   * Determine whether a view template file is missing for the given `error`.
+   *
+   * @param {HttpError} error
+   *
+   * @returns {Boolean}
+   */
+  private async isMissingTemplateFor (error: HttpError): Promise<boolean> {
+    return !await this.templateExistsFor(error)
+  }
+
+  /**
+   * Determine whether a view template file exists for the given `error`.
+   *
+   * @param {HttpError} error
+   *
+   * @returns {Boolean}
+   */
+  private async templateExistsFor (error: HttpError): Promise<boolean> {
+    return this.viewRenderer().exists(
+      this.viewTemplateFor(error)
+    )
+  }
+
+  /**
+   * Returns the view template file for the given `error`.
+   *
+   * @param {HttpError} error
+   *
+   * @returns {String}
+   */
+  private viewTemplateFor (error: HttpError): string {
+    return `errors/${error.statusCode}`
   }
 }
