@@ -96,18 +96,19 @@ export class Application extends Container implements ApplicationContract {
    */
   private registerIocRequireTransformation (): void {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const app: Application = this
+    const app = this
 
-    const origRequire = Module.prototype.require
+    const originalRequire = Module.prototype.require
+
     const _require = function (context: any, path: string): any {
-      return origRequire.call(context, path)
+      return originalRequire.call(context, path)
     }
 
     // @ts-expect-error
     Module.prototype.require = function (path) {
       if (path.startsWith('@ioc:')) {
         return app.make(
-          path.slice(5) // remove the '@ioc:' prefix and resolve dependency
+          path.slice(5) // remove the '@ioc:' prefix and resolve the dependency
         )
       }
 
