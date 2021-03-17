@@ -21,7 +21,8 @@
     "superchargejs",
     "node",
     "node.js",
-    "framework"
+    "framework",
+    "javascript"
   ],
   "license": "MIT",
   "publishConfig": {
