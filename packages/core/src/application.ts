@@ -177,6 +177,15 @@ export class Application extends Container implements ApplicationContract {
   }
 
   /**
+   * Determine whether the application is in debug mode.
+   *
+   * @returns {Boolean}
+   */
+  debug (): boolean {
+    return !!this.config().get('app.debug')
+  }
+
+  /**
    * Resolves the absolute path from the given `destination` in the
    * application directory, starting from the application root.
    * The destination supports a glob format, like 'providers/**'.

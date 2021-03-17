@@ -23,6 +23,11 @@ export interface Application extends Container {
   version(): string | undefined
 
   /**
+   * Determine whether the application is in debug mode.
+   */
+  debug(): boolean
+
+  /**
    * Returns the root path of the application directory.
    */
   basePath(): string
