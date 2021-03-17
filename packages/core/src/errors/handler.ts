@@ -153,7 +153,7 @@ export class ErrorHandler implements ErrorHandlerContract {
    * @returns {Boolean}
    */
   private async templateExistsFor (error: HttpError): Promise<boolean> {
-    return this.view().exists(
+    return await this.view().exists(
       this.viewTemplateFor(error)
     )
   }
