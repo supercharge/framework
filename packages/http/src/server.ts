@@ -60,7 +60,7 @@ export class Server {
       return this.meta.router
     }
 
-    const router = this.app().make<HttpRouter>('supercharge/route')
+    const router = this.app().make<HttpRouter>('route')
 
     return tap(router, () => {
       this.meta.router = router
@@ -137,7 +137,7 @@ export class Server {
    * @param ctx
    */
   private async handleErrorFor (ctx: HttpContext, error: Error): Promise<void> {
-    await this.app().make<ErrorHandler>('supercharge/error-handler').handle(ctx, error)
+    await this.app().make<ErrorHandler>('error.handler').handle(ctx, error)
   }
 
   /**

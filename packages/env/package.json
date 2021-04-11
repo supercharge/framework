@@ -7,12 +7,10 @@
     "url": "https://github.com/supercharge/framework/issues"
   },
   "files": [
-    "dist/index.js",
-    "dist/index.d.ts",
-    "dist/src",
-    "dist/types"
+    "dist"
   ],
-  "main": "dist/index.js",
+  "main": "dist",
+  "types": "dist",
   "dependencies": {
     "@supercharge/contracts": "~0.0.0",
     "@supercharge/filesystem": "~2.3.0",
@@ -54,8 +52,9 @@
     "url": "git+https://github.com/supercharge/framework.git"
   },
   "scripts": {
-    "build": "tsc -b tsconfig.json",
-    "watch": "npm run build -- --watch",
+    "build": "tsc --build tsconfig.json",
+    "dev": "npm run build -- --watch",
+    "watch": "npm run dev",
     "lint": "eslint src --ext .js,.ts",
     "lint:fix": "npm run lint -- --fix",
     "test": "npm run build && npm run lint && npm run test:run",

@@ -8,7 +8,7 @@ export class ViewServiceProvider extends ServiceProvider {
    * Register application services to the container.
    */
   register (): void {
-    this.app().singleton('supercharge/view', () => {
+    this.app().singleton('view', () => {
       return new ViewManager(this.app())
     })
   }
@@ -17,6 +17,6 @@ export class ViewServiceProvider extends ServiceProvider {
    * Boot application services.
    */
   async boot (): Promise<void> {
-    await this.app().make<ViewManager>('supercharge/view').boot()
+    await this.app().make<ViewManager>('view').boot()
   }
 }

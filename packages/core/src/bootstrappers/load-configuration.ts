@@ -17,8 +17,6 @@ export class LoadConfiguration implements Bootstrapper {
     ).forEach(([key, value]) => {
       app.config().set(key, value)
     })
-
-    this.registerConfigBindings(app)
   }
 
   /**
@@ -67,14 +65,5 @@ export class LoadConfiguration implements Bootstrapper {
     return file.endsWith('.d.ts')
       ? false
       : ['.js', '.ts'].includes(extname(file))
-  }
-
-  /**
-   * Register the config store instance to the container.
-   *
-   * @param app
-   */
-  registerConfigBindings (app: Application): void {
-    app.singleton('supercharge/config', () => app.config())
   }
 }

@@ -1,2 +1,0 @@
-
-/// <reference path="./route.ts" />

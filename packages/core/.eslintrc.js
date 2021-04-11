@@ -13,6 +13,7 @@ module.exports = {
     project: './tsconfig.json'
   },
   rules: {
+    'node/no-callback-literal': 0,
     '@typescript-eslint/no-var-requires': 0,
     '@typescript-eslint/method-signature-style': 0,
     '@typescript-eslint/triple-slash-reference': 0,

@@ -3,15 +3,14 @@
 import Fs from 'fs'
 import Path from 'path'
 import Glob from 'globby'
-import Module from 'module'
 import { Env } from '@supercharge/env'
 import { PackageJson } from 'type-fest'
 import { Config } from '@supercharge/config'
 import Collect from '@supercharge/collections'
 import { tap, upon } from '@supercharge/goodies'
 import { Container } from '@supercharge/container'
-import { RoutingServiceProvider } from '@supercharge/routing/dist/src/routing-service-provider'
-import { LoggingServiceProvider } from '@supercharge/logging/dist/src/logging-service-provider'
+import { LoggingServiceProvider } from '@supercharge/logging'
+import { RoutingServiceProvider } from '@supercharge/routing'
 import { EnvStore, ConfigStore, BootstrapperCtor, ServiceProvider, ServiceProviderCtor, Application as ApplicationContract, Logger, ErrorHandlerCtor } from '@supercharge/contracts'
 
 export class Application extends Container implements ApplicationContract {
@@ -32,6 +31,8 @@ export class Application extends Container implements ApplicationContract {
     this.meta = {
       appRoot: basePath,
       serviceProviders: [],
+      bootingCallbacks: [],
+
       isRunningInConsole: false,
 
       env: new Env(),
@@ -42,7 +43,6 @@ export class Application extends Container implements ApplicationContract {
 
     this.registerBaseBindings()
     this.registerBaseServiceProviders()
-    this.registerIocRequireTransformation()
   }
 
   /**
@@ -67,7 +67,7 @@ export class Application extends Container implements ApplicationContract {
    */
   withErrorHandler (Handler: ErrorHandlerCtor): Application {
     return tap(this, () => {
-      this.singleton('supercharge/error-handler', () => {
+      this.singleton('error.handler', () => {
         return new Handler(this)
       })
     })
@@ -77,8 +77,11 @@ export class Application extends Container implements ApplicationContract {
    * Register the base bindings into the container.
    */
   private registerBaseBindings (): void {
-    this.singleton('supercharge/app', () => this)
-    this.singleton('supercharge/container', () => this)
+    this.singleton('app', () => this)
+    this.singleton('container', () => this)
+
+    this.singleton('env', () => this.env())
+    this.singleton('config', () => this.config())
   }
 
   /**
@@ -90,39 +93,12 @@ export class Application extends Container implements ApplicationContract {
   }
 
   /**
-   * TODO move this part to a separate package or file. Needs some rework as well.
-   * Maybe us a package like https://github.com/ariporad/pirates or
-   * https://github.com/bahmutov/node-hook to intercep “require” calls
-   */
-  private registerIocRequireTransformation (): void {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const app = this
-
-    const originalRequire = Module.prototype.require
-
-    const _require = function (context: any, path: string): any {
-      return originalRequire.call(context, path)
-    }
-
-    // @ts-expect-error
-    Module.prototype.require = function (path) {
-      if (path.startsWith('@ioc:')) {
-        return app.make(
-          path.slice(5) // remove the '@ioc:' prefix and resolve the dependency
-        )
-      }
-
-      return _require(this, path)
-    }
-  }
-
-  /**
    * Returns the application logger instance.
    *
    * @returns {Logger}
    */
   logger (): Logger {
-    return this.make('supercharge/logger')
+    return this.make('logger')
   }
 
   /**
@@ -311,6 +287,24 @@ export class Application extends Container implements ApplicationContract {
   }
 
   /**
+   * Returns the registered booting callbacks.
+   */
+  bootingCallbacks (): Callback[] {
+    return this.meta.bootingCallbacks
+  }
+
+  /**
+   * Register a booting callback that runs at the beginning of the app boot.
+   *
+   * @param {Function} callback
+   */
+  booting (callback: Callback): this {
+    return tap(this, () => {
+      this.meta.bootingCallbacks.push(callback)
+    })
+  }
+
+  /**
    * Register the configured user-land providers.
    */
   async registerConfiguredProviders (): Promise<void> {
@@ -318,6 +312,10 @@ export class Application extends Container implements ApplicationContract {
     this.registerServiceProviders()
   }
 
+  /**
+   * Resolve all registered user-land service providers from disk
+   * and store them locally to registering and booting them.
+   */
   loadConfiguredProviders (): void {
     const { providers } = this.require(
       this.resolveGlobFromBasePath('bootstrap/providers.**')
@@ -393,9 +391,22 @@ export class Application extends Container implements ApplicationContract {
    * @param {Array} bootstrappers
    */
   async bootstrapWith (bootstrappers: BootstrapperCtor[]): Promise<void> {
+    await this.runAppCallbacks(this.bootingCallbacks())
+
     await Collect(bootstrappers).forEach(async (Bootstrapper: BootstrapperCtor) => {
       // TODO: resolve the instance through the container?
       return await new Bootstrapper(this).bootstrap(this)
+    })
+  }
+
+  /**
+     * Call the given booting `callbacks` for this application.
+     *
+     * @param {Callback[]} callbacks
+     */
+  async runAppCallbacks (callbacks: Callback[]): Promise<void> {
+    await Collect(callbacks).forEach(async callback => {
+      await callback(this)
     })
   }
 
@@ -450,4 +461,11 @@ interface ApplicationMeta {
    * All registered service providers.
    */
   serviceProviders: ServiceProvider[]
+
+  /**
+   * All booting callbacks.
+   */
+  bootingCallbacks: Callback[]
 }
+
+type Callback = (app: Application) => void | Promise<void>

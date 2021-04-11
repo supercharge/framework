@@ -2,7 +2,6 @@
 
 import Dotenv from 'dotenv'
 import Fs from '@supercharge/filesystem'
-import { tap } from '@supercharge/goodies'
 import { Application, Bootstrapper } from '@supercharge/contracts'
 
 export class LoadEnvironmentVariables implements Bootstrapper {
@@ -24,9 +23,7 @@ export class LoadEnvironmentVariables implements Bootstrapper {
    * Boot application services.
    */
   async bootstrap (): Promise<void> {
-    await tap(this.loadEnvironment(), () => {
-      this.registerEnvBinding()
-    })
+    await this.loadEnvironment()
   }
 
   /**
@@ -57,12 +54,5 @@ export class LoadEnvironmentVariables implements Bootstrapper {
    */
   environmentFile (): string {
     return this.app.environmentFile()
-  }
-
-  /**
-   * Register the env store instance to the container.
-   */
-  registerEnvBinding (): void {
-    this.app.singleton('supercharge/env', () => this.app.env())
   }
 }

@@ -32,6 +32,15 @@ export class HttpKernel implements HttpKernelContract {
   }
 
   /**
+   * Creates a new HTTP kernel instance for the given `app`.
+   *
+   * @param {Application} app
+   */
+  static for (app: Application): HttpKernel {
+    return new this(app)
+  }
+
+  /**
    * Returns the application’s global middleware stack. Every middleware
    * listed here runs on every request to the application.
    *

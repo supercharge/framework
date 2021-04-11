@@ -35,7 +35,7 @@ export class ErrorHandler implements ErrorHandlerContract {
    * The application’s view renderer.
    */
   view (): ViewEngine {
-    return this.app.make('supercharge/view')
+    return this.app.make('view')
   }
 
   /**
