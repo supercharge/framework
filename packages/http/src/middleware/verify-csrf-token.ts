@@ -208,5 +208,3 @@ export class VerifyCsrfToken implements Middleware {
   //   throw Boom.forbidden('CSRF token verification failed')
   // }
 }
-
-module.exports = VerifyCsrfToken
