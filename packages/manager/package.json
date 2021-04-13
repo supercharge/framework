@@ -46,7 +46,8 @@
   },
   "scripts": {
     "build": "tsc -b tsconfig.json",
-    "watch": "tsc --build tsconfig.json --watch",
+    "dev": "npm run build -- --watch",
+    "watch": "npm run dev",
     "lint": "eslint src --ext .js,.ts",
     "lint:fix": "npm run lint -- --fix",
     "test": "npm run build && npm run lint && npm run test:run",
