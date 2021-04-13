@@ -1,6 +1,7 @@
 {
     "extends": "@supercharge/tsconfig",
     "compilerOptions": {
+        "target": "es2019",
         "lib": [
             "es2019",
             "es2020.promise",
@@ -8,7 +9,6 @@
             "es2020.string"
         ],
         "composite": true,
-        "target": "es2019",
         "skipLibCheck": true,
     },
     "exclude": [
