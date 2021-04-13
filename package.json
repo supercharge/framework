@@ -35,7 +35,8 @@
   "scripts": {
     "bootstrap": "lerna bootstrap --no-ci",
     "build": "lerna run build --stream --no-private",
-    "watch": "lerna run watch --stream --no-private",
+    "watch": "npm run dev",
+    "dev": "lerna run dev --stream --no-private",
     "lint": "lerna run lint",
     "test": "lerna run test"
   }
