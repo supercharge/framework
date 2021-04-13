@@ -52,7 +52,7 @@ export interface Application extends Container {
    *
    * @param {String} path
    */
-  configPath (path: string): string
+  configPath (path?: string): string
 
   /**
    * Returns an absolute path into the application’s public directory.
