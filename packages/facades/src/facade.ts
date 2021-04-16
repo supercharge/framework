@@ -59,9 +59,15 @@ export class Facade extends MethodMissing {
    * @returns {*}
    */
   getFacadeInstance (): any {
-    return this.resolveFacadeInstance(
+    const facade = this.resolveFacadeInstance(
       this.getContainerNamespace()
     )
+
+    if (!facade) {
+      throw new Error(`Failed to retrieve facade instance for binding "${this.getContainerNamespace()}"`)
+    }
+
+    return facade
   }
 
   /**
@@ -73,6 +79,10 @@ export class Facade extends MethodMissing {
    * @returns {*}
    */
   __call (methodName: string, args: unknown[]): unknown {
-    return this.getFacadeInstance()[methodName](...args)
+    if (this.getFacadeInstance()[methodName]) {
+      return this.getFacadeInstance()[methodName](...args)
+    }
+
+    throw new Error(`Missing method "${methodName}" on facade ${this.getContainerNamespace()}`)
   }
 }
