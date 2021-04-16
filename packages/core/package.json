@@ -11,10 +11,7 @@
   ],
   "main": "dist",
   "types": "dist",
-  "exports": {
-    ".": "./dist/index.js",
-    "./bootstrappers": "./dist/bootstrappers/index.js"
-  },
+  "type": "module",
   "dependencies": {
     "@supercharge/collections": "~3.1.4",
     "@supercharge/config": "~0.0.0",
