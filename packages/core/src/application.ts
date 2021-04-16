@@ -201,8 +201,8 @@ export class Application extends Container implements ApplicationContract {
    *
    * @returns {String}
    */
-  configPath (path: string): string {
-    return this.resolveFromBasePath('config', path)
+  configPath (path?: string): string {
+    return this.resolveFromBasePath('config', path ?? '')
   }
 
   /**
@@ -308,7 +308,7 @@ export class Application extends Container implements ApplicationContract {
    * Register the configured user-land providers.
    */
   async registerConfiguredProviders (): Promise<void> {
-    this.loadConfiguredProviders()
+    await this.loadConfiguredProviders()
     this.registerServiceProviders()
   }
 
@@ -316,8 +316,8 @@ export class Application extends Container implements ApplicationContract {
    * Resolve all registered user-land service providers from disk
    * and store them locally to registering and booting them.
    */
-  loadConfiguredProviders (): void {
-    const { providers } = this.require(
+  async loadConfiguredProviders (): Promise<void> {
+    const { providers } = await this.require(
       this.resolveGlobFromBasePath('bootstrap/providers.**')
     )
 
@@ -355,8 +355,8 @@ export class Application extends Container implements ApplicationContract {
    *
    * @returns {*}
    */
-  require (path: string): any {
-    return require(path)
+  async require (path: string): Promise<any> {
+    return await import(path)
   }
 
   /**
