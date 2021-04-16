@@ -2,7 +2,7 @@
 
 import Fs from '@supercharge/filesystem'
 import Collect from '@supercharge/collections'
-import { upon, esmResolve } from '@supercharge/goodies'
+import { esmResolve } from '@supercharge/goodies'
 import { Command, Application as Craft } from '@supercharge/console'
 import { Application, BootstrapperCtor, ConsoleKernel as ConsoleKernelContract } from '@supercharge/contracts'
 import { HandleExceptions, LoadConfiguration, LoadEnvironmentVariables, RegisterServiceProviders, BootServiceProviders } from '../bootstrappers'
@@ -124,10 +124,12 @@ export class ConsoleKernel implements ConsoleKernelContract {
    *
    * @returns {Command}
    */
-  resolve (commandFile: string): Command {
-    return upon(esmResolve(require(commandFile)), (Candidate) => {
-      return new Candidate()
-    })
+  async resolve (commandFile: string): Promise<Command> {
+    const Command = esmResolve(
+      await import(commandFile)
+    )
+
+    return new Command(this.app())
   }
 
   /**
