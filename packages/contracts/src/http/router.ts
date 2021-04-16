@@ -92,7 +92,6 @@ export interface HttpRouter {
   /**
    * Create a route group.
    */
-  group (path: string): void
   group (callback: () => void): void
   group (attributes: RouteAttributes, callback: () => void): void
 
