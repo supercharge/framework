@@ -223,8 +223,8 @@ export class Application extends Container implements ApplicationContract {
    *
    * @returns {String}
    */
-  resourcePath (path: string): string {
-    return this.resolveFromBasePath('resources', path)
+  resourcePath (path?: string): string {
+    return this.resolveFromBasePath('resources', path ?? '')
   }
 
   /**
@@ -234,8 +234,19 @@ export class Application extends Container implements ApplicationContract {
    *
    * @returns {String}
    */
-  storagePath (path: string): string {
-    return this.resolveFromBasePath('storage', path)
+  storagePath (path?: string): string {
+    return this.resolveFromBasePath('storage', path ?? '')
+  }
+
+  /**
+   * Returns an absolute path into the application’s database directory.
+   *
+   * @param {String} path
+   *
+   * @returns {String}
+   */
+  databasePath (path?: string): string {
+    return this.resolveFromBasePath('database', path ?? '')
   }
 
   /**

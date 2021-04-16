@@ -66,14 +66,21 @@ export interface Application extends Container {
    *
    * @param {String} path
    */
-  resourcePath (path: string): string
+  resourcePath (path?: string): string
 
   /**
    * Returns an absolute path into the application’s storage directory.
    *
    * @param {String} path
    */
-  storagePath (path: string): string
+  storagePath (path?: string): string
+
+  /**
+   * Returns an absolute path into the application’s database directory.
+   *
+   * @param {String} path
+   */
+  databasePath (path?: string): string
 
   /**
    * The env store instance.
