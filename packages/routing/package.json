@@ -6,6 +6,7 @@
 	"bugs": {
 		"url": "https://github.com/supercharge/framework/issues"
 	},
+	"type": "module",
 	"files": [
 		"dist"
 	],

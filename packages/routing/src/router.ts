@@ -366,7 +366,9 @@ export class Router implements HttpRouter {
    * @returns {Boolean}
    */
   hasGroupStack (): boolean {
-    return Collect(this.getLastGroup()).isNotEmpty()
+    return Collect(
+      this.getLastGroup()
+    ).isNotEmpty()
   }
 
   /**
@@ -375,7 +377,9 @@ export class Router implements HttpRouter {
    * @returns {RouteGroup | undefined}
    */
   getLastGroup (): RouteGroup | undefined {
-    return Collect(this.groupStack()).last()
+    return Collect(
+      this.groupStack()
+    ).last()
   }
 
   /**
@@ -400,7 +404,6 @@ export class Router implements HttpRouter {
    *
    * @returns {RouteGroup}
    */
-  group (path: string): void
   group (callback: () => void): void
   group (attributes: RouteAttributes, callback: () => void): void
   group (attributes: any, callback?: any): void {
@@ -425,6 +428,8 @@ export class Router implements HttpRouter {
      * Process the path to a routes file or the callback to register routes or nested route groups to the router.
      */
     if (typeof attributes === 'string') {
+      // TODO
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.loadRoutesFrom(attributes)
     } else {
       callback()
@@ -441,8 +446,8 @@ export class Router implements HttpRouter {
    *
    * @param path
    */
-  private loadRoutesFrom (path: string): void {
-    require(path)
+  private async loadRoutesFrom (path: string): Promise<void> {
+    await import(path)
   }
 
   /**

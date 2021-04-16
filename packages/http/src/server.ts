@@ -3,7 +3,8 @@
 import Koa from 'koa'
 import bodyParser from 'koa-bodyparser'
 import { HttpContext } from './http-context'
-import { esmRequire, tap } from '@supercharge/goodies'
+import Collect from '@supercharge/collections'
+import { esmResolve, tap } from '@supercharge/goodies'
 import { Application, Class, HttpKernel, MiddlewareCtor, HttpRouter, ErrorHandler } from '@supercharge/contracts'
 
 export class Server {
@@ -197,18 +198,20 @@ export class Server {
    * Register all available HTTP controllers.
    */
   private async registerHttpControllers (): Promise<void> {
-    const controllerPaths = await this.kernel().controllerPaths()
-
-    controllerPaths.forEach(controllerPath => {
-      this.resolveAndBindController(controllerPath)
+    await Collect(
+      await this.kernel().controllerPaths()
+    ).forEach(async controllerPath => {
+      await this.resolveAndBindController(controllerPath)
     })
   }
 
   /**
    * Bind the resolved HTTP controller into the container.
    */
-  private resolveAndBindController (controllerPath: string): void {
-    const Controller: Class = esmRequire(controllerPath)
+  private async resolveAndBindController (controllerPath: string): Promise<void> {
+    const Controller: Class = esmResolve(
+      await import(controllerPath)
+    )
 
     this.app().bind(Controller.name, () => {
       return new Controller(this.app())

@@ -9,10 +9,12 @@
 	"files": [
 		"dist"
 	],
+	"type": "module",
 	"main": "dist",
 	"types": "dist",
 	"dependencies": {
 		"@koa/cors": "~3.1.0",
+		"@supercharge/collections": "~3.1.4",
 		"@supercharge/contracts": "~0.0.0",
 		"@supercharge/goodies": "~1.8.0",
 		"@supercharge/strings": "~1.18.0",
@@ -57,10 +59,11 @@
 	},
 	"scripts": {
 		"build": "tsc -b tsconfig.json",
+		"dev": "npm run build -- --watch",
+		"watch": "npm run dev",
 		"lint": "eslint src --ext .js,.ts",
 		"lint:fix": "npm run lint -- --fix",
 		"test": "npm run build && npm run lint && npm run test:run",
-		"test:run": "jest",
-		"watch": "tsc --build tsconfig.json --watch"
+		"test:run": "jest"
 	}
 }
