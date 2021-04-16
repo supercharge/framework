@@ -1,0 +1,64 @@
+{
+  "name": "@supercharge/database",
+  "nscription": "The Supercharge database package",
+  "version": "0.0.0",
+  "author": "Marcus Pöhls <marcus@superchargejs.com>",
+  "bugs": {
+    "url": "https://github.com/supercharge/framework/issues"
+  },
+  "main": "dist",
+  "types": "dist",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@supercharge/contracts": "~0.0.0",
+    "@supercharge/manager": "~0.0.0",
+    "@supercharge/support": "~0.0.0",
+    "knex": "~0.21.17 ",
+    "objection": "~2.2.15"
+  },
+  "devDependencies": {
+    "@types/jest": "~26.0.20",
+    "@typescript-eslint/eslint-plugin": "~4.18.0",
+    "eslint": "~7.22.0",
+    "eslint-config-standard": "~16.0.2",
+    "eslint-config-standard-with-typescript": "~20.0.0",
+    "eslint-plugin-import": "~2.22.1",
+    "eslint-plugin-node": "~11.1.0",
+    "eslint-plugin-promise": "~4.3.1",
+    "jest": "~26.6.3",
+    "jest-extended": "~0.11.5",
+    "typescript": "~4.2.3"
+  },
+  "engines": {
+    "node": ">=12"
+  },
+  "homepage": "https://superchargejs.com",
+  "keywords": [
+    "supercharge",
+    "superchargejs",
+    "nodejs",
+    "database",
+    "orm",
+    "knex",
+    "objection"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/supercharge/framework.git"
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.json",
+    "dev": "npm run build -- --watch",
+    "watch": "npm run dev",
+    "lint": "eslint src --ext .js,.ts",
+    "lint:fix": "npm run lint -- --fix",
+    "test": "npm run build && npm run lint && npm run test:run",
+    "test:run": "jest"
+  }
+}
