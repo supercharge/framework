@@ -32,7 +32,9 @@ export class Application extends CedarApplication implements ConsoleApplicationC
    * @returns {Application}
    */
   add (command: Command): this {
-    command.setSupercharge(this.supercharge)
+    if (typeof command.setSupercharge === 'function') {
+      command.setSupercharge(this.supercharge)
+    }
 
     return super.add(command)
   }
