@@ -7,13 +7,12 @@
     "url": "https://github.com/supercharge/framework/issues"
   },
   "dependencies": {
+    "@supercharge/cedar": "~1.0.0",
     "@supercharge/collections": "~3.1.4",
     "@supercharge/contracts": "~0.0.0",
-    "@supercharge/filesystem": "~2.3.0",
     "@supercharge/goodies": "~1.8.0",
     "@supercharge/set": "~1.6.0",
-    "@supercharge/strings": "~1.18.0",
-    "cac": "~6.7.2"
+    "@supercharge/strings": "~1.18.0"
   },
   "devDependencies": {
     "@types/jest": "~26.0.20",
