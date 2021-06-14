@@ -61,14 +61,14 @@ export class Application extends Container implements ApplicationContract {
    * handler is used to report errors on the default logging channel and
    * also to create responses for requests throwing errors.
    *
-   * @param Handler
+   * @param ErrorHandler
    *
    * @returns {Application}
    */
-  withErrorHandler (Handler: ErrorHandlerCtor): Application {
+  withErrorHandler (ErrorHandler: ErrorHandlerCtor): Application {
     return tap(this, () => {
       this.singleton('error.handler', () => {
-        return new Handler(this)
+        return new ErrorHandler(this)
       })
     })
   }
@@ -387,13 +387,13 @@ export class Application extends Container implements ApplicationContract {
    * @param provider
    */
   private async bootProvider (provider: ServiceProvider): Promise<void> {
-    await provider.callBootingCallbacks()
+    provider.callBootingCallbacks()
 
     if (typeof provider.boot === 'function') {
       await provider.boot(this)
     }
 
-    await provider.callBootedCallbacks()
+    provider.callBootedCallbacks()
   }
 
   /**
@@ -406,7 +406,7 @@ export class Application extends Container implements ApplicationContract {
 
     await Collect(bootstrappers).forEach(async (Bootstrapper: BootstrapperCtor) => {
       // TODO: resolve the instance through the container?
-      return await new Bootstrapper(this).bootstrap(this)
+      await new Bootstrapper(this).bootstrap(this)
     })
   }
 

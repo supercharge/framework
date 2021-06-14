@@ -113,7 +113,7 @@ export class ConsoleKernel implements ConsoleKernelContract {
         return command instanceof Command && this.isNotExcluded(command)
       })
       .forEach((command: Command) => {
-        this.craft().registerCommand(command)
+        this.craft().add(command)
       })
   }
 
@@ -125,11 +125,11 @@ export class ConsoleKernel implements ConsoleKernelContract {
    * @returns {Command}
    */
   async resolve (commandFile: string): Promise<Command> {
-    const Command = esmResolve(
+    const CommandCtor = esmResolve(
       await import(commandFile)
     )
 
-    return new Command(this.app())
+    return new CommandCtor()
   }
 
   /**
