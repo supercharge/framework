@@ -9,6 +9,7 @@
   "files": [
     "dist"
   ],
+  "exports": "./dist/index.js",
   "main": "dist",
   "types": "dist",
   "type": "module",
