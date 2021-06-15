@@ -58,7 +58,7 @@ export class ConsoleKernel implements ConsoleKernelContract {
    *
    * @returns {Promise}
    */
-  async handle (input: string[]): Promise<any> {
+  async run (input?: string[]): Promise<any> {
     await this.bootstrap()
     await this.craft().run(input)
   }
