@@ -1,8 +1,9 @@
 'use strict'
 
 import Str from '@supercharge/strings'
+import { isClass } from '@supercharge/classes'
 import { tap, isNullish } from '@supercharge/goodies'
-import { HttpRoute, RouteHandler, HttpMethod, HttpContext, Application } from '@supercharge/contracts'
+import { HttpRoute, HttpController, RouteHandler, HttpMethod, HttpContext, Application, Class } from '@supercharge/contracts'
 
 interface RouteAttributes {
   path: string
@@ -111,12 +112,16 @@ export class Route implements HttpRoute {
    * @returns {*}
    */
   async run (ctx: HttpContext): Promise<any> {
-    if (this.isInlineHandler()) {
-      return await this.runCallable(ctx)
+    if (this.isControllerClass()) {
+      return await this.runControllerClass(ctx)
     }
 
-    if (this.isControllerAction()) {
+    if (this.isControllerName()) {
       return await this.runController(ctx)
+    }
+
+    if (this.isInlineHandler()) {
+      return await this.runCallable(ctx)
     }
 
     throw new Error('Invalid route handler. Only controller actions and inline handlers are allowed')
@@ -141,12 +146,38 @@ export class Route implements HttpRoute {
   }
 
   /**
+   * Determine whether the assigned handler is a controller constructor.
+   *
+   * @returns {Boolean}
+   */
+  isControllerClass (): boolean {
+    return isClass(this.handler())
+  }
+
+  /**
    * Determine whether the assigned handler for this route is a controller action.
    *
    * @returns {Boolean}
    */
-  isControllerAction (): boolean {
+  isControllerName (): boolean {
     return typeof this.handler() === 'string'
+  }
+
+  /**
+   * Resolve the route controller instance and run
+   * the `handle` method for the given HTTP `ctx`.
+   *
+   * @param ctx HttpContext
+   */
+  async runControllerClass (ctx: HttpContext): Promise<void> {
+    const Controller = this.handler() as Class<HttpController>
+    const instance = new Controller(this.app)
+
+    if (typeof instance.handle !== 'function') {
+      throw new Error(`You must implement the "handle" method in controller "${String(instance.constructor.name)}"`)
+    }
+
+    return await instance.handle(ctx)
   }
 
   /**
