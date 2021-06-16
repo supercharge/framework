@@ -4,7 +4,7 @@ import Koa from 'koa'
 import bodyParser from 'koa-bodyparser'
 import { HttpContext } from './http-context'
 import Collect from '@supercharge/collections'
-import { esmResolve, tap } from '@supercharge/goodies'
+import { esmRequire, tap } from '@supercharge/goodies'
 import { Application, Class, HttpKernel, MiddlewareCtor, HttpRouter, ErrorHandler } from '@supercharge/contracts'
 
 export class Server {
@@ -209,22 +209,35 @@ export class Server {
    * Bind the resolved HTTP controller into the container.
    */
   private async resolveAndBindController (controllerPath: string): Promise<void> {
-    const Controller: Class = esmResolve(
-      await import(controllerPath)
-    )
-
-    this.app().bind(Controller.name, () => {
-      return new Controller(this.app())
+    this.require(controllerPath).forEach(Controller => {
+      this.app().bind(Controller.name, () => {
+        return new Controller(this.app())
+      })
     })
+  }
+
+  /**
+   * Returns the controller classes exported from the given `controllerFilePath`.
+   *
+   * @param controllerFilePath
+   *
+   * @returns {Class[]}
+   */
+  private require (controllerFilePath: string): Class[] {
+    const controller = esmRequire(controllerFilePath)
+
+    return typeof controller === 'object'
+      ? Object.values(controller) // assuming that every key in the object is a controller
+      : [controller]
   }
 
   /**
    * Start the HTTP server.
    */
   async start (): Promise<void> {
-    await this.instance().listen(this.port(), this.hostname())
-
-    this.app().logger().info(`Started the server on http://${this.hostname()}:${this.port()}`)
+    this.instance().listen(this.port(), this.hostname(), () => {
+      this.app().logger().info(`Started the server on http://${this.hostname()}:${this.port()}`)
+    })
   }
 
   /**

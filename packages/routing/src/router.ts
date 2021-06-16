@@ -428,8 +428,6 @@ export class Router implements HttpRouter {
      * Process the path to a routes file or the callback to register routes or nested route groups to the router.
      */
     if (typeof attributes === 'string') {
-      // TODO
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.loadRoutesFrom(attributes)
     } else {
       callback()
@@ -446,8 +444,8 @@ export class Router implements HttpRouter {
    *
    * @param path
    */
-  private async loadRoutesFrom (path: string): Promise<void> {
-    await import(path)
+  private loadRoutesFrom (path: string): void {
+    require(path)
   }
 
   /**

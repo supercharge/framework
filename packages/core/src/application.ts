@@ -7,8 +7,8 @@ import { Env } from '@supercharge/env'
 import { PackageJson } from 'type-fest'
 import { Config } from '@supercharge/config'
 import Collect from '@supercharge/collections'
-import { tap, upon } from '@supercharge/goodies'
 import { Container } from '@supercharge/container'
+import { esmRequire, tap, upon } from '@supercharge/goodies'
 import { LoggingServiceProvider } from '@supercharge/logging'
 import { RoutingServiceProvider } from '@supercharge/routing'
 import { EnvStore, ConfigStore, BootstrapperCtor, ServiceProvider, ServiceProviderCtor, Application as ApplicationContract, Logger, ErrorHandlerCtor } from '@supercharge/contracts'
@@ -366,8 +366,8 @@ export class Application extends Container implements ApplicationContract {
    *
    * @returns {*}
    */
-  async require (path: string): Promise<any> {
-    return await import(path)
+  require (path: string): any {
+    return esmRequire(path)
   }
 
   /**

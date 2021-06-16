@@ -3,6 +3,7 @@
 import { extname, parse } from 'path'
 import Fs from '@supercharge/filesystem'
 import Collect from '@supercharge/collections'
+import { esmRequire } from '@supercharge/goodies'
 import { Application, Bootstrapper } from '@supercharge/contracts'
 
 export class LoadConfiguration implements Bootstrapper {
@@ -73,7 +74,7 @@ export class LoadConfiguration implements Bootstrapper {
          */
         return {
           name: parse(configFile).name,
-          config: (await import(configFile)).default
+          config: esmRequire(configFile)
 
         }
       })
