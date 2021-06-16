@@ -1,8 +1,8 @@
 'use strict'
 
 import { Model } from './model'
-import { ServiceProvider } from '@supercharge/support'
 import { DatabaseManager } from './database-manager'
+import { ServiceProvider } from '@supercharge/support'
 
 export class DatabaseServiceProvider extends ServiceProvider {
   /**
@@ -13,6 +13,8 @@ export class DatabaseServiceProvider extends ServiceProvider {
       return new DatabaseManager(this.app())
     })
 
-    Model.knex()
+    Model.knex(
+      this.app().make<DatabaseManager>('db').knexInstance()
+    )
   }
 }

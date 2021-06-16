@@ -14,9 +14,11 @@
   "dependencies": {
     "@supercharge/contracts": "~0.0.0",
     "@supercharge/manager": "~0.0.0",
+    "@supercharge/method-missing": "^1.0.0",
     "@supercharge/support": "~0.0.0",
     "knex": "~0.21.17 ",
-    "objection": "~2.2.15"
+    "objection": "~2.2.15",
+    "ts-mixer": "^5.4.1"
   },
   "devDependencies": {
     "@types/jest": "~26.0.23",

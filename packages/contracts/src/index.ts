@@ -3,6 +3,7 @@
 export * from './config'
 export * from './console'
 export * from './container'
+export * from './database'
 export * from './env'
 export * from './foundation'
 export * from './hashing'
