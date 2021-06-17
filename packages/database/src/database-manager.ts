@@ -129,6 +129,6 @@ export class DatabaseManager extends MethodMissing {
    */
   __call (methodName: string, args: unknown[]): unknown {
     // @ts-expect-error
-    return this.knex()[methodName](...args)
+    return this.connection()[methodName](...args)
   }
 }
