@@ -1,59 +1,126 @@
 'use strict'
 
-import * as Knex from 'knex'
+import knex, * as Knex from 'knex'
 import MethodMissing from '@supercharge/method-missing'
-import { Application } from '@supercharge/contracts'
+import { Application, ConfigStore } from '@supercharge/contracts'
+
+interface Connections { [key: string]: Knex }
 
 export class DatabaseManager extends MethodMissing {
   /**
-   * Stores the Knex instance.
+     * The application instance.
+     */
+  private readonly app: Application
+
+  /**
+     * Stores the active database connections, like connections to MySQL or
+     * MySQL or
+     */
+  private readonly connections: Connections
+
+  /**
+   * Create a new database manager instance.
+   *
+   * @param app
    */
-  private readonly meta: {
-    app: Application
-
-    knex?: Knex
-  }
-
   constructor (app: Application) {
     super()
 
-    this.meta = { app }
+    this.app = app
+    this.connections = {}
   }
 
   /**
-   * Returns the container binding name.
+   * Returns the config store.
    *
-   * @returns {String}
+   * @returns {ConfigStore}
    */
-  getContainerNamespace (): string {
-    return 'db'
+  config (): ConfigStore {
+    return this.app.config()
   }
 
-  knex (): Knex {
-    if (!this.meta.knex) {
-      this.createKnexInstance()
+  /**
+   * Assign the given `connection` to the related `name`.
+   *
+   * @param {String} name
+   * @param {Knex} connection
+   *
+   * @returns {DatabaseManager}
+   */
+  setConnection (name: string, connection: Knex): this {
+    this.connections[name] = connection
+
+    return this
+  }
+
+  /**
+   * Determine whether an active connection exists for the given `name`.
+   *
+   * @param {String} name
+   *
+   * @returns {Boolean}
+   */
+  isMissingConnection (name: string = this.defaultConnection()): boolean {
+    return !this.connections[name]
+  }
+
+  /**
+   * Returns an active connection for the given `name`. Returns a connection
+   * for the configured default connection name if the name is not present.
+   *
+   * @param {String} name
+   *
+   * @returns {Knex}
+   */
+  connection (name: string = this.defaultConnection()): Knex {
+    if (!this.isMissingConnection(name)) {
+      this.setConnection(name, this.createConnection(name))
     }
 
-    return this.meta.knex
-  }
-
-  private createKnexInstance (): Knex {
-    return Knex({
-
-    })
+    return this.connections[name]
   }
 
   /**
-   * Returns the default logging driver name.
+   * Creates a new knex instance using the given.
+   *
+   * @returns
+   */
+  protected createConnection (name: string): Knex {
+    return knex(
+      this.configuration(name)
+    )
+  }
+
+  /**
+   * Returns the configuration for the given `connectionName`.
+   *
+   * @param {String} connectionName
+   *
+   * @returns {Object}
+   */
+  protected configuration (connectionName?: string): Knex.Config {
+    connectionName = connectionName ?? this.defaultConnection()
+
+    const connections = this.config().get('database.connections')
+
+    if (!connections[connectionName]) {
+      throw new Error(`Database connection "${connectionName}" is not configured.`)
+    }
+
+    return connections[connectionName]
+  }
+
+  /**
+   * Returns the default database connection name.
    *
    * @returns {String}
    */
-  protected defaultDriver (): string {
-    return this.config().get('database.driver', 'console')
+  protected defaultConnection (): string {
+    return this.config().get('database.connection')
   }
 
   /**
-   * Pass through all calls to the facaded instance.
+   * Pass through all calls to the knex instance.
    *
    * @param {String} methodName
    * @param {Array} args
@@ -61,10 +128,7 @@ export class DatabaseManager extends MethodMissing {
    * @returns {*}
    */
   __call (methodName: string, args: unknown[]): unknown {
-    if (this.getFacadeInstance()[methodName]) {
-      return this.getFacadeInstance()[methodName](...args)
-    }
-
-    throw new Error(`Missing method "${methodName}" on facade ${this.getContainerNamespace()}`)
+    // @ts-expect-error
+    return this.knex()[methodName](...args)
   }
 }

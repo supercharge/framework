@@ -14,7 +14,7 @@ export class DatabaseServiceProvider extends ServiceProvider {
     })
 
     Model.knex(
-      this.app().make<DatabaseManager>('db').knexInstance()
+      this.app().make<DatabaseManager>('db').connection()
     )
   }
 }
