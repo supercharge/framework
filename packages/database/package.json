@@ -20,6 +20,7 @@
     "objection": "~2.2.15"
   },
   "devDependencies": {
+    "@supercharge/core": "~0.0.0",
     "@typescript-eslint/eslint-plugin": "~4.27.0",
     "eslint": "~7.28.0",
     "eslint-config-standard": "~16.0.3",
