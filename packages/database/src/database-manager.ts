@@ -1,12 +1,10 @@
 'use strict'
 
 import knex, * as Knex from 'knex'
-import MethodMissing from '@supercharge/method-missing'
+import { DatabaseManagerProxy } from './database-manager-proxy'
 import { Application, ConfigStore } from '@supercharge/contracts'
 
-interface Connections { [key: string]: Knex }
-
-export class DatabaseManager extends MethodMissing {
+export class DatabaseManager {
   /**
      * The application instance.
      */
@@ -16,7 +14,7 @@ export class DatabaseManager extends MethodMissing {
      * Stores the active database connections, like connections to MySQL or
      * MySQL or
      */
-  private readonly connections: Connections
+  private readonly connections: Map<string, Knex>
 
   /**
    * Create a new database manager instance.
@@ -24,10 +22,10 @@ export class DatabaseManager extends MethodMissing {
    * @param app
    */
   constructor (app: Application) {
-    super()
-
     this.app = app
-    this.connections = {}
+    this.connections = new Map()
+
+    return new Proxy(this, new DatabaseManagerProxy(this))
   }
 
   /**
@@ -48,7 +46,7 @@ export class DatabaseManager extends MethodMissing {
    * @returns {DatabaseManager}
    */
   setConnection (name: string, connection: Knex): this {
-    this.connections[name] = connection
+    this.connections.set(name, connection)
 
     return this
   }
@@ -60,8 +58,10 @@ export class DatabaseManager extends MethodMissing {
    *
    * @returns {Boolean}
    */
-  isMissingConnection (name: string = this.defaultConnection()): boolean {
-    return !this.connections[name]
+  isMissingConnection (name: string): boolean {
+    return !this.connections.has(
+      name || this.defaultConnection()
+    )
   }
 
   /**
@@ -73,11 +73,11 @@ export class DatabaseManager extends MethodMissing {
    * @returns {Knex}
    */
   connection (name: string = this.defaultConnection()): Knex {
-    if (!this.isMissingConnection(name)) {
+    if (this.isMissingConnection(name)) {
       this.setConnection(name, this.createConnection(name))
     }
 
-    return this.connections[name]
+    return this.connections.get(name) as Knex
   }
 
   /**
@@ -85,7 +85,7 @@ export class DatabaseManager extends MethodMissing {
    *
    * @returns
    */
-  protected createConnection (name: string): Knex {
+  protected createConnection (name?: string): Knex {
     return knex(
       this.configuration(name)
     )
@@ -98,16 +98,14 @@ export class DatabaseManager extends MethodMissing {
    *
    * @returns {Object}
    */
-  protected configuration (connectionName?: string): Knex.Config {
-    connectionName = connectionName ?? this.defaultConnection()
+  protected configuration (connectionName: string = this.defaultConnection()): Knex.Config {
+    const connection = this.config().get(`database.connections.${connectionName}`)
 
-    const connections = this.config().get('database.connections')
-
-    if (!connections[connectionName]) {
+    if (!connection) {
       throw new Error(`Database connection "${connectionName}" is not configured.`)
     }
 
-    return connections[connectionName]
+    return connection
   }
 
   /**
@@ -119,16 +117,8 @@ export class DatabaseManager extends MethodMissing {
     return this.config().get('database.connection')
   }
 
-  /**
-   * Pass through all calls to the knex instance.
-   *
-   * @param {String} methodName
-   * @param {Array} args
-   *
-   * @returns {*}
-   */
-  __call (methodName: string, args: unknown[]): unknown {
+  protected __call (methodName: string): unknown {
     // @ts-expect-error
-    return this.connection()[methodName](...args)
+    return this[methodName] || this.connection()[methodName]
   }
 }
