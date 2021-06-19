@@ -14,7 +14,6 @@
   "dependencies": {
     "@supercharge/contracts": "~0.0.0",
     "@supercharge/manager": "~0.0.0",
-    "@supercharge/method-missing": "~1.0.0",
     "@supercharge/support": "~0.0.0",
     "knex": "~0.21.17 ",
     "objection": "~2.2.15"
@@ -28,6 +27,7 @@
     "eslint-plugin-import": "~2.23.4",
     "eslint-plugin-node": "~11.1.0",
     "eslint-plugin-promise": "~4.3.1",
+    "mysql": "~2.18.1",
     "tap": "~15.0.9",
     "typescript": "~4.2.3"
   },
@@ -59,7 +59,7 @@
     "lint": "eslint src --ext .js,.ts",
     "lint:fix": "npm run lint -- --fix",
     "test": "npm run build && npm run lint && npm run test:run",
-    "test:run": "tap --no-check-coverage",
+    "test:run": "tap --no-check-coverage --test-ignore=helpers",
     "posttest": "tap --no-check-coverage --coverage-report=html --no-browser"
   }
 }
