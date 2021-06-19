@@ -1,13 +1,13 @@
 'use strict'
 
 const { test } = require('tap')
-const { Application } = require('@supercharge/core')
-const { DatabaseManager, DatabaseServiceProvider } = require('../dist')
+const { makeApp } = require('./helpers')
+const { DatabaseServiceProvider } = require('../dist')
 
 test('registers DB service provider', async t => {
-  const app = new Application()
+  const app = makeApp()
   app.register(new DatabaseServiceProvider(app))
 
-  const db = app.make('db')
-  t.same(db, new DatabaseManager(app))
+  t.not(app.make('db'), null)
+  t.not(app.make('db'), undefined)
 })
