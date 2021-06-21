@@ -24,7 +24,7 @@ jobs:
     - name: Use MariaDB ${{ matrix.mariadb-version }}
       uses: getong/mariadb-action@v1.1
       with:
-        mariadb version:: ${{ matrix.mariadb-version }}
+        mariadb version: ${{ matrix.mariadb-version }}
         mysql database: 'supercharge_test'
         mysql root password: 'secret'
 
