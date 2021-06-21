@@ -8,6 +8,7 @@ jobs:
     strategy:
       matrix:
         node-version: [12.x, 14.x, 16.x]
+        mariadb-version: [10.6]
 
     name: Node ${{ matrix.node-version }}
 
@@ -19,6 +20,12 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
+
+    - name: Use MariaDB ${{ matrix.mariadb-version}}
+      uses: ankane/setup-mariadb@v1
+      with:
+        mariadb-version: ${{ matrix.mariadb-version }}
+        database: supercharge_test
 
     - name: Install dependencies
       run: npm install
