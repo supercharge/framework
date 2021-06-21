@@ -2,7 +2,7 @@
 
 const { test } = require('tap')
 const { makeApp } = require('./helpers')
-const { DatabaseServiceProvider } = require('../dist')
+const { DatabaseServiceProvider, DatabaseManager } = require('../dist')
 
 test('registers DB service provider', async t => {
   const app = makeApp()
@@ -10,4 +10,5 @@ test('registers DB service provider', async t => {
 
   t.not(app.make('db'), null)
   t.not(app.make('db'), undefined)
+  t.equal(app.make('db') instanceof DatabaseManager, true)
 })
