@@ -59,9 +59,11 @@ export class DatabaseManager {
    * @returns {Boolean}
    */
   isMissingConnection (name: string): boolean {
-    return !this.connections.has(
-      name || this.defaultConnection()
-    )
+    if (!name) {
+      throw new Error('You must provide a connection "name"')
+    }
+
+    return !this.connections.has(name)
   }
 
   /**
@@ -85,7 +87,7 @@ export class DatabaseManager {
    *
    * @returns
    */
-  protected createConnection (name?: string): Knex {
+  protected createConnection (name: string): Knex {
     return knex(
       this.configuration(name)
     )
@@ -98,7 +100,7 @@ export class DatabaseManager {
    *
    * @returns {Object}
    */
-  protected configuration (connectionName: string = this.defaultConnection()): Knex.Config {
+  protected configuration (connectionName: string): Knex.Config {
     const connection = this.config().get(`database.connections.${connectionName}`)
 
     if (!connection) {
