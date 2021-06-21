@@ -50,7 +50,7 @@ test('connects to the database', async t => {
     t.same(users, [{ name: 'Marcus' }])
   }
 
-  db.destroy()
+  await db.destroy()
 })
 
 test('fails to connect to the database', async t => {
