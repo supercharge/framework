@@ -3,12 +3,7 @@
 const { DatabaseManager } = require('../../dist')
 const { Application } = require('@supercharge/core')
 
-const {
-  MYSQL_USER = 'root',
-  MYSQL_PASSWORD = 'secret',
-  POSTGRES_USER = 'root',
-  POSTGRES_PASSWORD = 'secret'
-} = process.env
+const { MYSQL_USER = 'root', MYSQL_PASSWORD = 'secret' } = process.env
 
 exports.makeDb = makeDb
 exports.makeApp = makeApp
@@ -31,9 +26,12 @@ function makeApp (config = {}) {
   const app = new Application()
 
   app.config().set('database', {
-    ...config,
     connection: 'mysql',
-    connections: createMySqlConnectionConfig()
+    connections: {
+      ...createMySqlConnectionConfig(),
+      ...config.connections
+    },
+    ...config
   })
 
   return app
@@ -52,25 +50,6 @@ function createMySqlConnectionConfig () {
         host: '127.0.0.1',
         user: MYSQL_USER,
         password: MYSQL_PASSWORD,
-        database: 'supercharge_test'
-      }
-    }
-  }
-}
-
-/**
- * Returns a PostgreSQL configuration.
- *
- * @returns {Object}
- */
-function createPostgresConnectionConfig () {
-  return {
-    mysql: {
-      client: 'pg',
-      connection: {
-        host: '127.0.0.1',
-        user: POSTGRES_USER,
-        password: POSTGRES_PASSWORD,
         database: 'supercharge_test'
       }
     }
