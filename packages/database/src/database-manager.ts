@@ -119,11 +119,7 @@ export class DatabaseManager {
     return this.config().get('database.connection')
   }
 
-  protected __call (methodName: string): unknown {
-    return {
-      bind: this.connection(),
-      // @ts-expect-error
-      value: this.connection()[methodName]
-    }
+  protected __call (): unknown {
+    return this.connection()
   }
 }
