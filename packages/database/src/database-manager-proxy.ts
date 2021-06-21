@@ -33,11 +33,11 @@ export class DatabaseManagerProxy<T extends object> {
       return Reflect.get(target, property)
     }
 
-    const value = target[this.method].call(this.class, property)
+    const { bind, value } = target[this.method].call(this.class, property)
 
     if (typeof value === 'function') {
       return (...args: any[]) => {
-        return value.call(this.class, property, args)
+        return value.call(bind, property, args)
       }
     }
 

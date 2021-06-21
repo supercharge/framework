@@ -118,7 +118,10 @@ export class DatabaseManager {
   }
 
   protected __call (methodName: string): unknown {
-    // @ts-expect-error
-    return this[methodName] || this.connection()[methodName]
+    return {
+      bind: this.connection(),
+      // @ts-expect-error
+      value: this.connection()[methodName]
+    }
   }
 }
