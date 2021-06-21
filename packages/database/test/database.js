@@ -45,7 +45,7 @@ test('connects to the database', async t => {
       table.string('name')
     })
 
-    await db(tableName).insert({ name: 'Marcus' })
+    await db.insert([{ name: 'Marcus' }]).into(tableName)
     const users = await db.select('*').from(tableName)
     t.same(users, [{ name: 'Marcus' }])
   }
