@@ -9,11 +9,28 @@ const { DatabaseManager } = require('../dist')
 const { makeDb, makeApp } = require('./helpers')
 
 test('throws for missing connection name', async t => {
-  const app = makeApp()
+  const app = makeApp({
+    connection: 'unavailable',
+    connections: { mysql: {} }
+  })
 
   t.throws(() => {
-    new DatabaseManager(app).connection('unavailable connection')
-  }, 'Database connection "postgresql" is not configured')
+    new DatabaseManager(app).connection()
+  }, 'Database connection "unavailable" is not configured')
+
+  t.throws(() => {
+    new DatabaseManager(app).connection('unavailable')
+  }, 'Database connection "unavailable" is not configured')
+
+  t.throws(() => {
+    new DatabaseManager(app).isMissingConnection()
+  })
+})
+
+test('throws when not providing a connection while checking for connections', async t => {
+  t.throws(() => {
+    new DatabaseManager().isMissingConnection()
+  })
 })
 
 test('connects to the database', async t => {
@@ -21,33 +38,23 @@ test('connects to the database', async t => {
    * @type {Database}
    */
   const db = makeDb()
+  const tableName = 'users'
 
-  // await db.raw(`
-  //   CREATE DATABASE ${makeApp().config().get('database.connections.mysql.connection.database')}
-  // `)
-
-  const databaseName = makeApp().config().get('database.connections.mysql.connection.database')
-
-  if (!await db.schema.hasTable(databaseName)) {
-    const createTable = await db.schema.createTableIfNotExists(databaseName, table => {
+  if (!await db.schema.hasTable(tableName)) {
+    await db.schema.createTable(tableName, table => {
       table.string('name')
     })
 
-    console.log(createTable)
+    await db(tableName).insert({ name: 'Marcus' })
+    const users = await db.select('*').from(tableName)
+    t.same(users, [{ name: 'Marcus' }])
   }
 
   db.destroy()
 })
 
 test('fails to connect to the database', async t => {
-  const app = makeApp()
-  app.config().set('database.connection', 'postgresql')
-
-  // await t.rejects(async () => {
-  /**
-     * @type {Database}
-     */
-  const db = makeDb(app)
-  await db.select('*').from('users')
-  // })
+  t.throws(() => {
+    return new DatabaseManager(makeApp()).connection('postgres')
+  })
 })
