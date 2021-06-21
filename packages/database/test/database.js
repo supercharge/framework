@@ -3,10 +3,12 @@
 /**
  * @typedef {import('@supercharge/contracts').Database } Database
  */
-const { test } = require('tap')
+const { test, setTimeout } = require('tap')
 const { DatabaseManager } = require('../dist')
 
 const { makeDb, makeApp } = require('./helpers')
+
+setTimeout(5000)
 
 test('throws for missing connection name', async t => {
   const app = makeApp({
@@ -44,10 +46,14 @@ test('connects to the database', async t => {
     await db.schema.createTable(tableName, table => {
       table.string('name')
     })
+  }
 
-    await db.insert({ name: 'Marcus' }, 'id').into(tableName)
-    const users = await db.select('*').from(tableName)
-    t.same(users, [{ name: 'Marcus' }])
+  await db.transaction(async trx => {
+    await trx(tableName).insert({ name: 'Marcus' })
+  })
+
+  if (await db.schema.hasTable(tableName)) {
+    await db.schema.dropTable(tableName)
   }
 
   await db.destroy()
