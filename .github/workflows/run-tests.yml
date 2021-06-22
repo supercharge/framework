@@ -8,6 +8,7 @@ jobs:
     strategy:
       matrix:
         node-version: [12.x, 14.x, 16.x]
+        mariadb-version: [10.6]
 
     name: Node ${{ matrix.node-version }}
 
@@ -19,6 +20,13 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
+
+    - name: Use MariaDB ${{ matrix.mariadb-version }}
+      uses: getong/mariadb-action@v1.1
+      with:
+        mariadb version: ${{ matrix.mariadb-version }}
+        mysql database: 'supercharge_test'
+        mysql root password: 'secret'
 
     - name: Install dependencies
       run: npm install
@@ -33,3 +41,5 @@ jobs:
       run: npm test
       env:
         CI: true
+        MYSQL_USER: 'root'
+        MYSQL_PASSWORD: 'secret'

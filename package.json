@@ -9,6 +9,7 @@
   "dependencies": {},
   "devDependencies": {
     "@supercharge/tsconfig": "~2.0.0",
+    "@types/node": "~15.12.4",
     "cross-env": "~7.0.3",
     "lerna": "~4.0.0"
   },

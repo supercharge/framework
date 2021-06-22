@@ -29,7 +29,7 @@ export class QueryBuilder<M extends Model, R = M[]> extends BaseQueryBuilder<M, 
         callback()
       }
 
-      throw new Error(`Cannot find model ${String(this.modelClass)}`)
+      throw new Error(`Cannot find instance for "${this.modelClass().name}"`)
     })
   }
 
@@ -41,7 +41,6 @@ export class QueryBuilder<M extends Model, R = M[]> extends BaseQueryBuilder<M, 
    * @returns {Boolean}
    */
   private hasResults (result: any): boolean {
-    return (Array.isArray(result) && result.length > 0) ||
-        (Array.isArray(result.results) && result.results.length > 0)
+    return !!result || (Array.isArray(result) && result.length > 0)
   }
 }

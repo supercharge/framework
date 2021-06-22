@@ -19,7 +19,7 @@
     "objection": "~2.2.15"
   },
   "devDependencies": {
-    "@types/jest": "~26.0.23",
+    "@supercharge/core": "~0.0.0",
     "@typescript-eslint/eslint-plugin": "~4.27.0",
     "eslint": "~7.28.0",
     "eslint-config-standard": "~16.0.3",
@@ -27,8 +27,8 @@
     "eslint-plugin-import": "~2.23.4",
     "eslint-plugin-node": "~11.1.0",
     "eslint-plugin-promise": "~4.3.1",
-    "jest": "~27.0.4",
-    "jest-extended": "~0.11.5",
+    "mysql": "~2.18.1",
+    "tap": "~15.0.9",
     "typescript": "~4.2.3"
   },
   "engines": {
@@ -59,6 +59,7 @@
     "lint": "eslint src --ext .js,.ts",
     "lint:fix": "npm run lint -- --fix",
     "test": "npm run build && npm run lint && npm run test:run",
-    "test:run": "jest"
+    "test:run": "tap --no-check-coverage --test-ignore=helpers --reporter=dot",
+    "posttest": "tap --no-check-coverage --coverage-report=html --no-browser"
   }
 }
