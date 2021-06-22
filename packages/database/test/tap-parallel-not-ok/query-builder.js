@@ -30,10 +30,31 @@ before(async () => {
 
 test('orFail with own error', async t => {
   await t.rejects(async () => {
-    return await UserModel.query().findById(1).orFail(() => {
-      throw new Error('Cannot find user for ID 1')
+    return await UserModel.query().findById(1234).orFail(() => {
+      throw new Error('Cannot find user for ID 1234')
     })
-  }, 'Cannot find user for ID 1')
+  }, 'Cannot find user for ID 1234')
+})
+
+test('findAll', async t => {
+  const names = ['Marcus', 'Norman', 'Christian']
+
+  const inserted = await Promise.all(
+    names.map(async name => {
+      return await UserModel.query().insert({ name })
+    })
+  )
+
+  const users = await UserModel.query().orFail()
+  t.same(users, inserted)
+})
+
+test('orFail with own error', async t => {
+  await t.rejects(async () => {
+    return await UserModel.query().findById(1234).orFail(() => {
+      throw new Error('Cannot find user for ID 1234')
+    })
+  }, 'Cannot find user for ID 1234')
 })
 
 teardown(async () => {

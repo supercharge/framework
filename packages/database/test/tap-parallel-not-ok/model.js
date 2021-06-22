@@ -36,16 +36,15 @@ test('findById', async t => {
 })
 
 test('finds when findByIdOrFail', async t => {
-  await UserModel.query().insert({ name: 'Supercharge' })
+  const user = await UserModel.query().insert({ name: 'Supercharge' })
 
-  const user = await UserModel.findById(1).orFail()
-  t.same(user, { id: 1, name: 'Supercharge' })
+  t.same(await UserModel.findById(user.id).orFail(), user)
 })
 
 test('fails when findByIdOrFail', async t => {
   await t.rejects(async () => {
-    return await UserModel.findByIdOrFail(1111111)
-  }, 'Cannot find model "User"')
+    return await UserModel.findByIdOrFail(12345)
+  }, 'Cannot find instance for "UserModel"')
 })
 
 teardown(async () => {
