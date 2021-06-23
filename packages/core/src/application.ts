@@ -479,4 +479,4 @@ interface ApplicationMeta {
   bootingCallbacks: Callback[]
 }
 
-type Callback = (app: Application) => void | Promise<void>
+type Callback = (app: Application) => unknown | Promise<unknown>
