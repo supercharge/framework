@@ -1,6 +1,13 @@
 {
+  "version": "1.0.0-beta9",
   "packages": [
     "packages/*"
   ],
-  "version": "1.0.0-beta9"
+  "command": {
+    "publish": {
+      "ignoreChanges": [
+        "packages/app"
+      ]
+    }
+  }
 }
