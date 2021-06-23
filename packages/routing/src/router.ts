@@ -404,7 +404,7 @@ export class Router implements HttpRouter {
    *
    * @returns {RouteGroup}
    */
-  group (callback: () => void): void
+  group (pathOrCallback: string | (() => void)): void
   group (attributes: RouteAttributes, callback: () => void): void
   group (attributes: any, callback?: any): void {
     /**
@@ -425,7 +425,8 @@ export class Router implements HttpRouter {
     this.groupStack().push(group)
 
     /*
-     * Process the path to a routes file or the callback to register routes or nested route groups to the router.
+     * Process the path to a routes file or the callback to
+     * register routes or nested route groups to the router.
      */
     if (typeof attributes === 'string') {
       this.loadRoutesFrom(attributes)
