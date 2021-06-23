@@ -6,7 +6,6 @@
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
   },
-  "dependencies": {},
   "devDependencies": {
     "@supercharge/tsconfig": "~2.0.0",
     "@types/node": "~15.12.4",
