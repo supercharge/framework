@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.0.0-alpha.2](https://github.com/supercharge/framework/compare/v2.0.0-alpha.1...v2.0.0-alpha.2) - 2021-06-xx
+
+### Added
+- `@supercharge/http`
+    - created a base controller
+
+### Updated
+- refined lerna configuration to bootstrap without lock files
+- `@supercharge/contracts` and `@supercharge/routing`
+    - refine types for route groups allowing strings (representing the path to a route file)
+- `@supercharge/contracts`
+    - refine types for application booting callbacks allowing `unknown` instead of `void`
+- `@supercharge/http`
+    - refine typings for request properties (moving to `Record<K, V>`)
+
+
 ## [2.0.0-alpha.1](https://github.com/supercharge/framework/compare/v1.0.0-beta1...v2.0.0-alpha.1) - 2021-06-23
 
 ### Updated
