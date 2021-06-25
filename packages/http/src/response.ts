@@ -123,13 +123,15 @@ export class Response extends InteractsWithState implements HttpResponse {
   }
 
   /**
-   * Set a response status.
+   * Set a response status code to the given `code`.
+   *
+   * @param {Number} code
    *
    * @returns {Response}
    */
-  status (status: number): this {
+  status (code: number): this {
     return tap(this, () => {
-      this.ctx.response.status = status
+      this.ctx.response.status = code
     })
   }
 
