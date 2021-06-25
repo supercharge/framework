@@ -15,6 +15,9 @@
 - `@supercharge/http`
     - refine typings for request properties (moving to `Record<K, V>`)
 
+### Removed
+- remove `CHANGELOG.md` files from the individual packages (leaving only this changelog as a central place)
+
 
 ## [2.0.0-alpha.1](https://github.com/supercharge/framework/compare/v1.0.0-beta1...v2.0.0-alpha.1) - 2021-06-23
 
