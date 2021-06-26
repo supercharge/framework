@@ -22,7 +22,7 @@ export interface HttpRedirect {
    *
    * @param url string
    */
-  to(path: string): void
+  to(path: string): this
 }
 
 export interface HttpResponse extends InteractsWithState {
@@ -45,7 +45,7 @@ export interface HttpResponse extends InteractsWithState {
    * // { 'Content-Type': 'application/json' }
    * ```
    */
-  headers(): { [key: string]: unknown }
+  headers(): Record<string, any>
 
   /**
    * Assign the object’s key-value pairs as response headers.
@@ -58,7 +58,7 @@ export interface HttpResponse extends InteractsWithState {
    * })
    * ```
    */
-  withHeaders(headers: { [key: string]: any }): this
+  withHeaders(headers: Record<string, any>): this
 
   /**
    * Append a header to the response. If you want to replance a possibly
