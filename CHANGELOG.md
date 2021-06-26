@@ -3,7 +3,10 @@
 ## [2.0.0-alpha.3](https://github.com/supercharge/framework/compare/v2.0.0-alpha.2...v2.0.0-alpha.3) - 2021-0x-xx
 
 ### Added
-- tba.
+- `@supercharge/http`
+    - the `response.redirect().to(<path>)` method now returns the redirect instance (instead of `void`)
+- `@supercharge/view`
+    - add handlebars helpers: `append` , `prepend`
 
 ### Updated
 - tba.
