@@ -293,11 +293,24 @@ export class HandlebarsCompiler implements ViewEngine {
    *
    * @param {string} view
    * @param {*} data
+   *
+   * @returns {String}
    */
   async render (view: string, data: any, viewConfig: ViewConfig = {}): Promise<string> {
-    return this.hasDefaultLayout()
-      ? await this.renderWithLayout(view, data)
+    return await this.shouldRenderWithLayout(viewConfig)
+      ? await this.renderWithLayout(view, data, viewConfig)
       : await this.renderView(view, data)
+  }
+
+  /**
+   * Determine whether to render a view with a layout.
+   *
+   * @param viewConfig
+   *
+   * @returns {Boolean}
+   */
+  private async shouldRenderWithLayout (viewConfig: ViewConfig): Promise<boolean> {
+    return !!viewConfig.layout || this.hasDefaultLayout()
   }
 
   /**
@@ -309,13 +322,17 @@ export class HandlebarsCompiler implements ViewEngine {
    *
    * @returns {String}
    */
-  async renderWithLayout (view: string, data: any): Promise<string> {
-    const layout = await this.compile(this.defaultLayout(), { isLayout: true })
+  async renderWithLayout (view: string, data: any, viewConfig: ViewConfig): Promise<string> {
+    const layout = await this.compile(this.getLayout(viewConfig), { isLayout: true })
 
     const context: any = data || {}
     context.content = await this.renderView(view, data)
 
     return layout(context)
+  }
+
+  private getLayout (viewConfig: ViewConfig): string {
+    return viewConfig.layout || this.defaultLayout()
   }
 
   /**
