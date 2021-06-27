@@ -7,8 +7,8 @@ import Collect from '@supercharge/collections'
 import { PendingRoute } from './pending-route'
 import { isFunction } from '@supercharge/classes'
 import { RouteCollection } from './route-collection'
-import { HttpContext, Response } from '@supercharge/http'
 import { isNullish, tap, upon } from '@supercharge/goodies'
+import { HttpContext, HttpRedirect, Response } from '@supercharge/http'
 import { HttpRouter, RouteHandler, RouteAttributes, HttpMethod, MiddlewareCtor, NextHandler, Middleware, Application } from '@supercharge/contracts'
 
 export class Router implements HttpRouter {
@@ -221,6 +221,15 @@ export class Router implements HttpRouter {
      * assigns the values to the underlying response. No extra work needed here.
      */
     if (response instanceof Response) {
+      return
+    }
+
+    /**
+     * The returned response is an HTTP redirect composed using the fluent redirect
+     * interface. The HTTP redirect class automatically configured the Koa context.
+     * We can return early here because there’s no need to set an extra payload.
+     */
+    if (response instanceof HttpRedirect) {
       return
     }
 
