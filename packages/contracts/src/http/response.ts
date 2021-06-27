@@ -1,5 +1,6 @@
 'use strict'
 
+import { ViewConfigBuilder } from '../view'
 import { CookieOptions } from './cookie-options'
 import { InteractsWithState } from './concerns/interacts-with-state'
 
@@ -178,7 +179,7 @@ export interface HttpResponse extends InteractsWithState {
    * response.view('user/dashboard', { user: { id: 1, name: 'Marcus' } })
    * ```
    */
-  view (template: string, data?: any): Promise<this>
+  view (template: string, data?: any, callback?: (viewBuilder: ViewConfigBuilder) => unknown): Promise<this>
 
   /**
    * Abort the request and throw an error with the given `status`. The status defaults
