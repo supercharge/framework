@@ -11,6 +11,10 @@
 ### Updated
 - tba.
 
+### Fixed
+- `@supercharge/routing`
+    - handle HTTP redirect responses properly without throwing a response error
+
 
 ## [2.0.0-alpha.2](https://github.com/supercharge/framework/compare/v2.0.0-alpha.1...v2.0.0-alpha.2) - 2021-06-25
 
