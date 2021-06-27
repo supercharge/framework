@@ -4,9 +4,9 @@ import Path from 'path'
 import Handlebars from 'handlebars'
 import Str from '@supercharge/strings'
 import Fs from '@supercharge/filesystem'
-import { esmResolve } from '@supercharge/goodies'
 import Collect from '@supercharge/collections'
-import { Application, ConfigStore, Logger, ViewEngine } from '@supercharge/contracts'
+import { esmResolve } from '@supercharge/goodies'
+import { Application, ConfigStore, Logger, ViewConfig, ViewEngine } from '@supercharge/contracts'
 
 export class HandlebarsCompiler implements ViewEngine {
   /**
@@ -294,7 +294,7 @@ export class HandlebarsCompiler implements ViewEngine {
    * @param {string} view
    * @param {*} data
    */
-  async render (view: string, data?: any): Promise<string> {
+  async render (view: string, data: any, viewConfig: ViewConfig = {}): Promise<string> {
     return this.hasDefaultLayout()
       ? await this.renderWithLayout(view, data)
       : await this.renderView(view, data)

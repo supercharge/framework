@@ -4,7 +4,8 @@ import { Context } from 'koa'
 import { tap } from '@supercharge/goodies'
 import { HttpRedirect } from './http-redirect'
 import { InteractsWithState } from './interacts-with-state'
-import { CookieOptions, HttpResponse, ViewEngine } from '@supercharge/contracts'
+import { ViewConfigBuilder } from './view-config-builder'
+import { CookieOptions, HttpResponse, ViewEngine, ViewConfigBuilder as ViewConfigBuilderContract } from '@supercharge/contracts'
 
 export class Response extends InteractsWithState implements HttpResponse {
   /**
@@ -196,10 +197,17 @@ export class Response extends InteractsWithState implements HttpResponse {
    *
    * @returns {String}
    */
-  async view (template: string, data?: any): Promise<this> {
-    const payload = await this.viewEngine.render(template, {
-      ...this.state(), ...data
-    })
+  async view (template: string, data?: any, callback?: (viewBuilder: ViewConfigBuilderContract) => unknown): Promise<this> {
+    const viewData = { ...this.state(), ...data }
+    const viewConfig = {}
+
+    const builder = new ViewConfigBuilder(viewConfig)
+
+    if (typeof callback === 'function') {
+      callback(builder)
+    }
+
+    const payload = await this.viewEngine.render(template, viewData, viewConfig)
 
     return this.payload(payload)
   }
