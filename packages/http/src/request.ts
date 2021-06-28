@@ -2,6 +2,7 @@
 
 import { Context } from 'koa'
 import Str from '@supercharge/strings'
+import { IncomingHttpHeaders } from 'http'
 import { RouterContext } from 'koa__router'
 import { HttpRequest, InteractsWithContentTypes } from '@supercharge/contracts'
 
@@ -59,7 +60,7 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
   /**
    * Returns the request headers.
    */
-  get headers (): Record<string, any> {
+  get headers (): IncomingHttpHeaders {
     return this.ctx.headers
   }
 
@@ -72,8 +73,8 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    *
    * @returns {String}
    */
-  header <T> (key: string, defaultValue?: T): string | T | undefined {
-    return this.headers[key] || defaultValue
+  header (key: string, defaultValue?: any): string | undefined {
+    return this.headers[key] ?? defaultValue
   }
 
   /**

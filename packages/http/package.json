@@ -17,6 +17,7 @@
 		"@supercharge/contracts": "^2.0.0-alpha.2",
 		"@supercharge/goodies": "~1.9.0",
 		"@supercharge/strings": "~1.18.0",
+		"@types/node": "~15.12.5",
 		"koa": "~2.13.1",
 		"koa-bodyparser": "~4.3.0",
 		"koa-static": "~5.0.0"

@@ -6,6 +6,7 @@
 - `@supercharge/http`
     - the `response.redirect().to(<path>)` method now returns the redirect instance (instead of `void`)
     - support a callback to customize the view config as the second or third argument in `response.view(template, data | viewBuilder)`
+    - refine types of `request.headers` to use the `IncomingHttpHeaders` interface
 - `@supercharge/view`
     - add handlebars helpers: `append` , `prepend`
 - `@supercharge/contracts`
