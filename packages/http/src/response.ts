@@ -200,11 +200,14 @@ export class Response extends InteractsWithState implements HttpResponse {
    */
   async view (template: string, callback?: (viewBuilder: ViewConfigBuilderContract) => unknown): Promise<this>
   async view (template: string, data?: any, callback?: (viewBuilder: ViewConfigBuilderContract) => unknown): Promise<this> {
-    const html = typeof data === 'function'
-      ? this.renderView(template, {}, callback)
-      : this.renderView(template, data, callback)
+    if (typeof data === 'function') {
+      callback = data
+      data = {}
+    }
 
-    return this.payload(html)
+    return this.payload(
+      await this.renderView(template, data, callback)
+    )
   }
 
   /**
@@ -220,10 +223,10 @@ export class Response extends InteractsWithState implements HttpResponse {
     const viewData = { ...this.state(), ...data }
     const viewConfig = {}
 
-    const builder = new ViewConfigBuilder(viewConfig)
-
     if (typeof callback === 'function') {
-      callback(builder)
+      callback(
+        new ViewConfigBuilder(viewConfig)
+      )
     }
 
     return await this.viewEngine.render(template, viewData, viewConfig)
