@@ -104,9 +104,7 @@ export class HandlebarsCompiler implements ViewEngine {
    * @returns {string}
    */
   defaultLayout (): string {
-    return String(
-      this.config().get('view.handlebars.defaultLayout')
-    )
+    return this.config().get('view.handlebars.defaultLayout')
   }
 
   /**
@@ -297,7 +295,7 @@ export class HandlebarsCompiler implements ViewEngine {
    * @returns {String}
    */
   async render (view: string, data: any, viewConfig: ViewConfig = {}): Promise<string> {
-    return await this.shouldRenderWithLayout(viewConfig)
+    return this.hasLayout(viewConfig)
       ? await this.renderWithLayout(view, data, viewConfig)
       : await this.renderView(view, data)
   }
@@ -309,8 +307,20 @@ export class HandlebarsCompiler implements ViewEngine {
    *
    * @returns {Boolean}
    */
-  private async shouldRenderWithLayout (viewConfig: ViewConfig): Promise<boolean> {
-    return !!viewConfig.layout || this.hasDefaultLayout()
+  private hasLayout (viewConfig: ViewConfig): boolean {
+    return !!this.baseLayout(viewConfig)
+  }
+
+  /**
+   * Returns the base layout name. Prefers a configured layout from the
+   * given `viewConfig` over a possibly configured default layout.
+   *
+   * @param viewConfig
+   *
+   * @returns {String}
+   */
+  private baseLayout (viewConfig: ViewConfig): string {
+    return viewConfig.layout ?? this.defaultLayout()
   }
 
   /**
@@ -323,16 +333,12 @@ export class HandlebarsCompiler implements ViewEngine {
    * @returns {String}
    */
   async renderWithLayout (view: string, data: any, viewConfig: ViewConfig): Promise<string> {
-    const layout = await this.compile(this.getLayout(viewConfig), { isLayout: true })
+    const layout = await this.compile(this.baseLayout(viewConfig), { isLayout: true })
 
     const context: any = data || {}
     context.content = await this.renderView(view, data)
 
     return layout(context)
-  }
-
-  private getLayout (viewConfig: ViewConfig): string {
-    return viewConfig.layout || this.defaultLayout()
   }
 
   /**
