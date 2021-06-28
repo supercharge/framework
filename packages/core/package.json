@@ -18,30 +18,30 @@
     "@supercharge/container": "^2.0.0-alpha.3",
     "@supercharge/contracts": "^2.0.0-alpha.3",
     "@supercharge/env": "^2.0.0-alpha.3",
-    "@supercharge/filesystem": "~2.3.0",
+    "@supercharge/fs": "~3.0.1",
     "@supercharge/goodies": "~1.9.0",
     "@supercharge/http": "^2.0.0-alpha.3",
     "@supercharge/logging": "^2.0.0-alpha.3",
     "@supercharge/routing": "^2.0.0-alpha.3",
     "@supercharge/support": "^2.0.0-alpha.3",
     "dotenv": "~10.0.0",
-    "globby": "~11.0.3",
-    "type-fest": "~1.2.0",
+    "globby": "~11.0.4",
+    "type-fest": "~1.2.1",
     "youch": "~2.2.2",
     "youch-terminal": "~1.1.1"
   },
   "devDependencies": {
     "@types/jest": "~26.0.23",
-    "@typescript-eslint/eslint-plugin": "~4.27.0",
-    "eslint": "~7.28.0",
+    "@typescript-eslint/eslint-plugin": "~4.28.0",
+    "eslint": "~7.29.0",
     "eslint-config-standard": "~16.0.3",
     "eslint-config-standard-with-typescript": "~20.0.0",
     "eslint-plugin-import": "~2.23.4",
     "eslint-plugin-node": "~11.1.0",
     "eslint-plugin-promise": "~5.1.0",
-    "jest": "~27.0.4",
+    "jest": "~27.0.5",
     "jest-extended": "~0.11.5",
-    "typescript": "~4.3.2"
+    "typescript": "~4.3.4"
   },
   "engines": {
     "node": ">=12"
