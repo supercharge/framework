@@ -5,11 +5,15 @@
 ### Added
 - `@supercharge/http`
     - the `response.redirect().to(<path>)` method now returns the redirect instance (instead of `void`)
+    - support a callback to customize the view config as the second or third argument in `response.view(template, data | viewBuilder)`
 - `@supercharge/view`
     - add handlebars helpers: `append` , `prepend`
+- `@supercharge/contracts`
+    - add npm script `dev` to watch and compile the contracts
 
 ### Updated
-- tba.
+- `@supercharge/view`
+  - update the `async render(template, data, config?)` method to require the second `data` parameter
 
 ### Fixed
 - `@supercharge/routing`
