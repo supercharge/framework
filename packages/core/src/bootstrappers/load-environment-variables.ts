@@ -1,7 +1,7 @@
 'use strict'
 
 import Dotenv from 'dotenv'
-import Fs from '@supercharge/filesystem'
+import Fs from '@supercharge/fs'
 import { Application, Bootstrapper } from '@supercharge/contracts'
 
 export class LoadEnvironmentVariables implements Bootstrapper {

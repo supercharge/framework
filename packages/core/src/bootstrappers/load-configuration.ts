@@ -1,7 +1,7 @@
 'use strict'
 
+import Fs from '@supercharge/fs'
 import { extname, parse } from 'path'
-import Fs from '@supercharge/filesystem'
 import Collect from '@supercharge/collections'
 import { esmRequire } from '@supercharge/goodies'
 import { Application, Bootstrapper } from '@supercharge/contracts'
@@ -41,7 +41,7 @@ export class LoadConfiguration implements Bootstrapper {
    * @returns {String[]}
    */
   async loadConfigurationFilesFromDisk (app: Application): Promise<string[]> {
-    return await Fs.allFiles(
+    return Fs.allFiles(
       app.configPath()
     )
   }

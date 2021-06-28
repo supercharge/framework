@@ -1,7 +1,7 @@
 'use strict'
 
 const Path = require('path')
-const Fs = require('@supercharge/filesystem')
+const Fs = require('@supercharge/fs')
 const { FileLogger } = require('../dist/file-logger')
 
 const logFile = Path.resolve(__dirname, 'test.log')

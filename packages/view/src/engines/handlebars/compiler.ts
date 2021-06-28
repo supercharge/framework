@@ -1,9 +1,9 @@
 'use strict'
 
 import Path from 'path'
+import Fs from '@supercharge/fs'
 import Handlebars from 'handlebars'
 import Str from '@supercharge/strings'
-import Fs from '@supercharge/filesystem'
 import Collect from '@supercharge/collections'
 import { esmResolve } from '@supercharge/goodies'
 import { Application, ConfigStore, Logger, ViewConfig, ViewEngine } from '@supercharge/contracts'
@@ -142,7 +142,7 @@ export class HandlebarsCompiler implements ViewEngine {
     return await Collect(
       this.config().get('view.handlebars.partials')
     ).filter(async path => {
-      return await Fs.exists(path)
+      return Fs.exists(path)
     })
   }
 
@@ -155,7 +155,7 @@ export class HandlebarsCompiler implements ViewEngine {
     return await Collect(Path.resolve(__dirname, 'helpers'))
       .concat(this.config().get('view.handlebars.helpers'))
       .filter(async path => {
-        return await Fs.exists(path)
+        return Fs.exists(path)
       })
   }
 
@@ -237,7 +237,7 @@ export class HandlebarsCompiler implements ViewEngine {
     await Collect(
       await this.helpersLocations()
     )
-      .flatMap(async helpersPath => await Fs.allFiles(helpersPath))
+      .flatMap(async helpersPath => Fs.allFiles(helpersPath))
       .filter(helper => this.isScriptFile(helper))
       .forEach(async helper => await this.registerHelper(helper))
   }
@@ -281,7 +281,7 @@ export class HandlebarsCompiler implements ViewEngine {
    * @returns {Boolean}
    */
   async exists (view: string): Promise<boolean> {
-    return await Fs.exists(
+    return Fs.exists(
       Path.resolve(await this.viewsLocation(), view)
     )
   }
@@ -382,7 +382,7 @@ export class HandlebarsCompiler implements ViewEngine {
       ? Path.resolve(await this.layoutLocation(), template)
       : Path.resolve(await this.viewsLocation(), template)
 
-    return await Fs.readFile(
+    return Fs.readFile(
       this.ensureHbs(view)
     )
   }

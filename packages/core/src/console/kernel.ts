@@ -1,6 +1,6 @@
 'use strict'
 
-import Fs from '@supercharge/filesystem'
+import Fs from '@supercharge/fs'
 import Collect from '@supercharge/collections'
 import { esmRequire } from '@supercharge/goodies'
 import { Command, Application as Craft } from '@supercharge/console'
@@ -101,10 +101,10 @@ export class ConsoleKernel implements ConsoleKernelContract {
     await Collect(paths)
       .unique()
       .filter(async (path: string) => {
-        return await Fs.exists(path)
+        return Fs.exists(path)
       })
       .flatMap(async (path: string) => {
-        return await Fs.allFiles(path)
+        return Fs.allFiles(path)
       })
       .map((commandFile: string) => {
         return this.resolve(commandFile) as any // TODO fix this typing issue in @supercharge/collections

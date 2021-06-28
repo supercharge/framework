@@ -13,26 +13,26 @@
   "types": "dist",
   "dependencies": {
     "@supercharge/contracts": "^2.0.0-alpha.3",
-    "@supercharge/goodies": "~1.8.0",
+    "@supercharge/goodies": "~1.9.0",
     "@supercharge/manager": "^2.0.0-alpha.3",
     "@supercharge/support": "^2.0.0-alpha.3",
-    "chalk": "~4.1.0",
+    "chalk": "~4.1.1",
     "winston": "~3.3.3"
   },
   "devDependencies": {
-    "@supercharge/filesystem": "~2.3.0",
+    "@supercharge/fs": "~3.0.1",
     "@types/bcryptjs": "~2.4.2",
-    "@types/jest": "~26.0.20",
-    "@typescript-eslint/eslint-plugin": "~4.18.0",
-    "eslint": "~7.22.0",
-    "eslint-config-standard": "~16.0.2",
+    "@types/jest": "~26.0.23",
+    "@typescript-eslint/eslint-plugin": "~4.28.0",
+    "eslint": "~7.29.0",
+    "eslint-config-standard": "~16.0.3",
     "eslint-config-standard-with-typescript": "~20.0.0",
-    "eslint-plugin-import": "~2.22.1",
+    "eslint-plugin-import": "~2.23.4",
     "eslint-plugin-node": "~11.1.0",
-    "eslint-plugin-promise": "~4.3.1",
-    "jest": "~26.6.3",
+    "eslint-plugin-promise": "~5.1.0",
+    "jest": "~27.0.5",
     "jest-extended": "~0.11.5",
-    "typescript": "~4.2.3"
+    "typescript": "~4.3.4"
   },
   "engines": {
     "node": ">=12"

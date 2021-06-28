@@ -1,6 +1,6 @@
 'use strict'
 
-import Fs from '@supercharge/filesystem'
+import Fs from '@supercharge/fs'
 import { Server } from '@supercharge/http'
 import { Application, BootstrapperCtor, HttpKernel as HttpKernelContract, MiddlewareCtor } from '@supercharge/contracts'
 import { HandleExceptions, LoadConfiguration, LoadEnvironmentVariables, RegisterServiceProviders, BootServiceProviders } from '../bootstrappers'
@@ -118,7 +118,7 @@ export class HttpKernel implements HttpKernelContract {
    * @returns {String[]}
    */
   async controllerPaths (): Promise<string[]> {
-    return await Fs.allFiles(
+    return Fs.allFiles(
       this.controllersLocation()
     )
   }
