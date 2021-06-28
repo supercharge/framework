@@ -23,7 +23,7 @@
     "url": "git+https://github.com/supercharge/framework.git"
   },
   "dependencies": {
-    "@types/node": "^15.12.5",
+    "@types/node": "~15.12.5",
     "knex": "~0.21.17"
   },
   "devDependencies": {
