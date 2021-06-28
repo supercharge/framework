@@ -176,9 +176,16 @@ export interface HttpResponse extends InteractsWithState {
    * @example
    * ```
    * response.view('welcome')
+   * response.view('welcome', view => {
+   *   view.layout('landing')
+   * })
    * response.view('user/dashboard', { user: { id: 1, name: 'Marcus' } })
+   * response.view('user/dashboard', { user: { id: 1, name: 'Marcus' } }, view => {
+   *   view.layout('profile')
+   * })
    * ```
    */
+  view (template: string, callback?: (viewBuilder: ViewConfigBuilder) => unknown): Promise<this>
   view (template: string, data?: any, callback?: (viewBuilder: ViewConfigBuilder) => unknown): Promise<this>
 
   /**

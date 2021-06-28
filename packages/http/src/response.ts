@@ -194,10 +194,29 @@ export class Response extends InteractsWithState implements HttpResponse {
    *
    * @param {String} template
    * @param {*} data
+   * @param {Function} callback
    *
    * @returns {String}
    */
+  async view (template: string, callback?: (viewBuilder: ViewConfigBuilderContract) => unknown): Promise<this>
   async view (template: string, data?: any, callback?: (viewBuilder: ViewConfigBuilderContract) => unknown): Promise<this> {
+    const html = typeof data === 'function'
+      ? this.renderView(template, {}, callback)
+      : this.renderView(template, data, callback)
+
+    return this.payload(html)
+  }
+
+  /**
+   * Assigns the rendered HTML of the given `template` as the response payload.
+   *
+   * @param {String} template
+   * @param {*} data
+   * @param {Function} callback
+   *
+   * @returns {String}
+   */
+  private async renderView (template: string, data?: any, callback?: (viewBuilder: ViewConfigBuilderContract) => unknown): Promise<string> {
     const viewData = { ...this.state(), ...data }
     const viewConfig = {}
 
@@ -207,9 +226,7 @@ export class Response extends InteractsWithState implements HttpResponse {
       callback(builder)
     }
 
-    const payload = await this.viewEngine.render(template, viewData, viewConfig)
-
-    return this.payload(payload)
+    return await this.viewEngine.render(template, viewData, viewConfig)
   }
 
   /**
