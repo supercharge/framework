@@ -37,7 +37,7 @@
   },
   "scripts": {
     "build": "tsc -b tsconfig.json",
-    "dev": "npm run watch",
-    "watch": "tsc  --watch --build tsconfig.json"
+    "dev": "npm run build -- --watch",
+    "watch": "npm run dev"
   }
 }
