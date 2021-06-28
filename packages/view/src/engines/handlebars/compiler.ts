@@ -291,6 +291,7 @@ export class HandlebarsCompiler implements ViewEngine {
    *
    * @param {string} view
    * @param {*} data
+   * @param {ViewConfig} viewConfig
    *
    * @returns {String}
    */
