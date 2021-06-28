@@ -4,7 +4,8 @@ import { Context } from 'koa'
 import { tap } from '@supercharge/goodies'
 import { HttpRedirect } from './http-redirect'
 import { InteractsWithState } from './interacts-with-state'
-import { CookieOptions, HttpResponse, ViewEngine } from '@supercharge/contracts'
+import { ViewConfigBuilder } from './view-config-builder'
+import { CookieOptions, HttpResponse, ViewEngine, ViewConfigBuilder as ViewConfigBuilderContract } from '@supercharge/contracts'
 
 export class Response extends InteractsWithState implements HttpResponse {
   /**
@@ -193,15 +194,42 @@ export class Response extends InteractsWithState implements HttpResponse {
    *
    * @param {String} template
    * @param {*} data
+   * @param {Function} callback
    *
    * @returns {String}
    */
-  async view (template: string, data?: any): Promise<this> {
-    const payload = await this.viewEngine.render(template, {
-      ...this.state(), ...data
-    })
+  async view (template: string, callback?: (viewBuilder: ViewConfigBuilderContract) => unknown): Promise<this>
+  async view (template: string, data?: any, callback?: (viewBuilder: ViewConfigBuilderContract) => unknown): Promise<this> {
+    if (typeof data === 'function') {
+      callback = data
+      data = {}
+    }
 
-    return this.payload(payload)
+    return this.payload(
+      await this.renderView(template, data, callback)
+    )
+  }
+
+  /**
+   * Assigns the rendered HTML of the given `template` as the response payload.
+   *
+   * @param {String} template
+   * @param {*} data
+   * @param {Function} callback
+   *
+   * @returns {String}
+   */
+  private async renderView (template: string, data?: any, callback?: (viewBuilder: ViewConfigBuilderContract) => unknown): Promise<string> {
+    const viewData = { ...this.state(), ...data }
+    const viewConfig = {}
+
+    if (typeof callback === 'function') {
+      callback(
+        new ViewConfigBuilder(viewConfig)
+      )
+    }
+
+    return await this.viewEngine.render(template, viewData, viewConfig)
   }
 
   /**

@@ -4,9 +4,9 @@ import Path from 'path'
 import Handlebars from 'handlebars'
 import Str from '@supercharge/strings'
 import Fs from '@supercharge/filesystem'
-import { esmResolve } from '@supercharge/goodies'
 import Collect from '@supercharge/collections'
-import { Application, ConfigStore, Logger, ViewEngine } from '@supercharge/contracts'
+import { esmResolve } from '@supercharge/goodies'
+import { Application, ConfigStore, Logger, ViewConfig, ViewEngine } from '@supercharge/contracts'
 
 export class HandlebarsCompiler implements ViewEngine {
   /**
@@ -104,9 +104,7 @@ export class HandlebarsCompiler implements ViewEngine {
    * @returns {string}
    */
   defaultLayout (): string {
-    return String(
-      this.config().get('view.handlebars.defaultLayout')
-    )
+    return this.config().get('view.handlebars.defaultLayout')
   }
 
   /**
@@ -293,11 +291,37 @@ export class HandlebarsCompiler implements ViewEngine {
    *
    * @param {string} view
    * @param {*} data
+   * @param {ViewConfig} viewConfig
+   *
+   * @returns {String}
    */
-  async render (view: string, data?: any): Promise<string> {
-    return this.hasDefaultLayout()
-      ? await this.renderWithLayout(view, data)
+  async render (view: string, data: any, viewConfig: ViewConfig = {}): Promise<string> {
+    return this.hasLayout(viewConfig)
+      ? await this.renderWithLayout(view, data, viewConfig)
       : await this.renderView(view, data)
+  }
+
+  /**
+   * Determine whether to render a view with a layout.
+   *
+   * @param viewConfig
+   *
+   * @returns {Boolean}
+   */
+  private hasLayout (viewConfig: ViewConfig): boolean {
+    return !!this.baseLayout(viewConfig)
+  }
+
+  /**
+   * Returns the base layout name. Prefers a configured layout from the
+   * given `viewConfig` over a possibly configured default layout.
+   *
+   * @param viewConfig
+   *
+   * @returns {String}
+   */
+  private baseLayout (viewConfig: ViewConfig): string {
+    return viewConfig.layout ?? this.defaultLayout()
   }
 
   /**
@@ -309,8 +333,8 @@ export class HandlebarsCompiler implements ViewEngine {
    *
    * @returns {String}
    */
-  async renderWithLayout (view: string, data: any): Promise<string> {
-    const layout = await this.compile(this.defaultLayout(), { isLayout: true })
+  async renderWithLayout (view: string, data: any, viewConfig: ViewConfig): Promise<string> {
+    const layout = await this.compile(this.baseLayout(viewConfig), { isLayout: true })
 
     const context: any = data || {}
     context.content = await this.renderView(view, data)

@@ -2,7 +2,7 @@
 
 import { Manager } from '@supercharge/manager'
 import { HandlebarsCompiler } from './engines/handlebars'
-import { Application, ViewEngine } from '@supercharge/contracts'
+import { Application, ViewConfig, ViewEngine } from '@supercharge/contracts'
 
 export class ViewManager extends Manager implements ViewEngine {
   /**
@@ -64,11 +64,12 @@ export class ViewManager extends Manager implements ViewEngine {
    *
    * @param {String} view
    * @param {*} data
+   * @param {ViewConfig} config
    *
    * @returns {String} the rendered view
    */
-  async render (view: string, data?: any): Promise<string> {
-    return await this.driver().render(view, data)
+  async render (view: string, data: any, config?: ViewConfig): Promise<string> {
+    return await this.driver().render(view, data, config)
   }
 
   /**
