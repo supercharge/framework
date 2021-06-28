@@ -5,6 +5,7 @@
 ### Added
 - `@supercharge/http`
     - the `response.redirect().to(<path>)` method now returns the redirect instance (instead of `void`)
+    - refine types of `request.headers` to use the `IncomingHttpHeaders` interface
 - `@supercharge/view`
     - add handlebars helpers: `append` , `prepend`
 
