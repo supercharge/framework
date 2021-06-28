@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.0.0-alpha.3](https://github.com/supercharge/framework/compare/v2.0.0-alpha.2...v2.0.0-alpha.3) - 2021-0x-xx
+## [2.0.0-alpha.3](https://github.com/supercharge/framework/compare/v2.0.0-alpha.2...v2.0.0-alpha.3) - 2021-06-28
 
 ### Added
 - `@supercharge/http`
