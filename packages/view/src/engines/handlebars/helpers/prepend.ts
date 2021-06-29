@@ -6,8 +6,6 @@
  *
  * @param {String} stackName
  * @param {Object} context
- *
- * @returns {String} stack content to prepend
  */
 export default function prepend (stackName: string, context: any): void {
   if (!context) {
@@ -20,6 +18,5 @@ export default function prepend (stackName: string, context: any): void {
   // @ts-expect-error
   stack.unshift({ mode: 'prepend', data: context.fn(this) })
 
-  stacks[stackName] = stack
-  context.data.root.stacks = stacks
+  context.data.root.stacks = { ...stacks, [stackName]: stack }
 }

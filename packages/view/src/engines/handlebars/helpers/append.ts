@@ -18,6 +18,5 @@ export default function append (stackName: string, context: any): void {
   // @ts-expect-error
   stack.push({ mode: 'append', data: context.fn(this) })
 
-  stacks[stackName] = stackName
-  context.data.root.stacks = stacks
+  context.data.root.stacks = { ...stacks, [stackName]: stack }
 }
