@@ -142,7 +142,7 @@ export class HandlebarsCompiler implements ViewEngine {
     return await Collect(
       this.config().get('view.handlebars.partials')
     ).filter(async path => {
-      return Fs.exists(path)
+      return await Fs.exists(path)
     })
   }
 
@@ -155,7 +155,7 @@ export class HandlebarsCompiler implements ViewEngine {
     return await Collect(Path.resolve(__dirname, 'helpers'))
       .concat(this.config().get('view.handlebars.helpers'))
       .filter(async path => {
-        return Fs.exists(path)
+        return await Fs.exists(path)
       })
   }
 
@@ -203,7 +203,7 @@ export class HandlebarsCompiler implements ViewEngine {
   async registerPartial (file: string, basePath: string): Promise<void> {
     try {
       this.compiler().registerPartial(
-        this.partialNameFrom(file, basePath), await Fs.readFile(file)
+        this.partialNameFrom(file, basePath), await Fs.content(file)
       )
     } catch (error) {
       this.logger().warning(`WARNING: failed to register partial "${file}": ${String(error.message)}`)
@@ -237,7 +237,7 @@ export class HandlebarsCompiler implements ViewEngine {
     await Collect(
       await this.helpersLocations()
     )
-      .flatMap(async helpersPath => Fs.allFiles(helpersPath))
+      .flatMap(async helpersPath => await Fs.allFiles(helpersPath))
       .filter(helper => this.isScriptFile(helper))
       .forEach(async helper => await this.registerHelper(helper))
   }
@@ -281,7 +281,7 @@ export class HandlebarsCompiler implements ViewEngine {
    * @returns {Boolean}
    */
   async exists (view: string): Promise<boolean> {
-    return Fs.exists(
+    return await Fs.exists(
       Path.resolve(await this.viewsLocation(), view)
     )
   }
@@ -382,7 +382,7 @@ export class HandlebarsCompiler implements ViewEngine {
       ? Path.resolve(await this.layoutLocation(), template)
       : Path.resolve(await this.viewsLocation(), template)
 
-    return Fs.readFile(
+    return Fs.content(
       this.ensureHbs(view)
     )
   }

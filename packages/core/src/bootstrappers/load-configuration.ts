@@ -41,7 +41,7 @@ export class LoadConfiguration implements Bootstrapper {
    * @returns {String[]}
    */
   async loadConfigurationFilesFromDisk (app: Application): Promise<string[]> {
-    return Fs.allFiles(
+    return await Fs.allFiles(
       app.configPath()
     )
   }
