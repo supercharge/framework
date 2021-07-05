@@ -382,7 +382,7 @@ export class HandlebarsCompiler implements ViewEngine {
       ? Path.resolve(await this.layoutLocation(), template)
       : Path.resolve(await this.viewsLocation(), template)
 
-    return Fs.content(
+    return await Fs.content(
       this.ensureHbs(view)
     )
   }
