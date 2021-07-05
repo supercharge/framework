@@ -101,10 +101,10 @@ export class ConsoleKernel implements ConsoleKernelContract {
     await Collect(paths)
       .unique()
       .filter(async (path: string) => {
-        return Fs.exists(path)
+        return await Fs.exists(path)
       })
       .flatMap(async (path: string) => {
-        return Fs.allFiles(path)
+        return await Fs.allFiles(path)
       })
       .map((commandFile: string) => {
         return this.resolve(commandFile) as any // TODO fix this typing issue in @supercharge/collections

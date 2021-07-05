@@ -118,7 +118,7 @@ export class HttpKernel implements HttpKernelContract {
    * @returns {String[]}
    */
   async controllerPaths (): Promise<string[]> {
-    return Fs.allFiles(
+    return await Fs.allFiles(
       this.controllersLocation()
     )
   }
