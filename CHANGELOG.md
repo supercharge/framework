@@ -6,7 +6,6 @@
 
 ### Updated
 - bump dependencies
-- update the `async render(template, data, config?)` method to require the second `data` parameter
 
 ### Fixed
 - `@supercharge/view`
