@@ -11,8 +11,8 @@ export class DatabaseManager {
   private readonly app: Application
 
   /**
-     * Stores the active database connections, like connections to MySQL or
-     * MySQL or
+     * Stores the active database connections, like connections to
+     * SQLite, MySQL, MariaDB, PostgreSQL, and so on.
      */
   private readonly connections: Map<string, Knex>
 

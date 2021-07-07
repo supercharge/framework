@@ -3,56 +3,61 @@
 /**
  * @typedef {import('@supercharge/contracts').Database } Database
  */
+const { test } = require('tap')
 const { makeApp } = require('../helpers')
 const UserModel = require('../helpers/user-model')
 const { DatabaseServiceProvider } = require('../../dist')
-const { test, setTimeout, before, teardown } = require('tap')
 
-const app = makeApp()
+let app
 
-setTimeout(3000)
+test('Model', async t => {
+  t.setTimeout(3000)
 
-before(async () => {
-  app.register(new DatabaseServiceProvider(app))
+  t.before(async () => {
+    const dbDirectory = t.testdir()
+    app = makeApp(undefined, dbDirectory)
 
-  const db = app.make('db')
-  const tableName = UserModel.tableName
+    app.register(new DatabaseServiceProvider(app))
 
-  if (await db.schema.hasTable(tableName)) {
-    await db.schema.dropTable(tableName)
-  }
+    const db = app.make('db')
+    const tableName = UserModel.tableName
 
-  await db.schema.createTable(tableName, table => {
-    table.increments('id')
-    table.string('name')
+    if (await db.schema.hasTable(tableName)) {
+      await db.schema.dropTable(tableName)
+    }
+
+    await db.schema.createTable(tableName, table => {
+      table.increments('id')
+      table.string('name')
+    })
   })
-})
 
-test('findById', async t => {
-  await UserModel.query().insert({ name: 'Supercharge' })
+  t.test('findById', async t => {
+    await UserModel.query().insert({ name: 'Supercharge' })
 
-  const user = await UserModel.findById(1)
-  t.same(user, { id: 1, name: 'Supercharge' })
-})
+    const user = await UserModel.findById(1)
+    t.same(user, { id: 1, name: 'Supercharge' })
+  })
 
-test('finds when findByIdOrFail', async t => {
-  const user = await UserModel.query().insert({ name: 'Supercharge' })
+  t.test('finds when findByIdOrFail', async t => {
+    const user = await UserModel.query().insert({ name: 'Supercharge' })
 
-  t.same(await UserModel.findById(user.id).orFail(), user)
-})
+    t.same(await UserModel.findById(user.id).orFail(), user)
+  })
 
-test('fails when findByIdOrFail', async t => {
-  await t.rejects(async () => {
-    return await UserModel.findByIdOrFail(12345)
-  }, 'Cannot find instance for "UserModel"')
-})
+  t.test('fails when findByIdOrFail', async t => {
+    await t.rejects(async () => {
+      return await UserModel.findByIdOrFail(12345)
+    }, 'Cannot find instance for "UserModel"')
+  })
 
-teardown(async () => {
-  const db = app.make('db')
+  t.teardown(async () => {
+    const db = app.make('db')
 
-  if (await db.schema.hasTable(UserModel.tableName)) {
-    await db.schema.dropTable(UserModel.tableName)
-  }
+    if (await db.schema.hasTable(UserModel.tableName)) {
+      await db.schema.dropTable(UserModel.tableName)
+    }
 
-  await db.destroy()
+    await db.destroy()
+  })
 })

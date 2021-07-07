@@ -1,9 +1,9 @@
 'use strict'
 
+const Path = require('path')
+const Crypto = require('crypto')
 const { DatabaseManager } = require('../../dist')
 const { Application } = require('@supercharge/core')
-
-const { MYSQL_USER = 'root', MYSQL_PASSWORD = 'secret' } = process.env
 
 exports.makeDb = makeDb
 exports.makeApp = makeApp
@@ -11,9 +11,9 @@ exports.makeApp = makeApp
 /**
  * @returns {Database}
  */
-function makeDb (app) {
+function makeDb (app, dbDirectory) {
   return new DatabaseManager(
-    app || makeApp()
+    app || makeApp(undefined, dbDirectory)
   )
 }
 
@@ -22,13 +22,13 @@ function makeDb (app) {
  *
  * @returns {Application}
  */
-function makeApp (config = {}) {
+function makeApp (config = {}, dbDirectory) {
   const app = new Application()
 
   app.config().set('database', {
-    connection: 'mysql',
+    connection: 'sqlite',
     connections: {
-      ...createMySqlConnectionConfig(),
+      ...createSqliteConnectionConfig(dbDirectory),
       ...config.connections
     },
     ...config
@@ -38,19 +38,21 @@ function makeApp (config = {}) {
 }
 
 /**
- * Returns a MySQL configuration.
+ * Returns a SQLite configuration.
  *
  * @returns {Object}
  */
-function createMySqlConnectionConfig () {
+function createSqliteConnectionConfig (dbDirectory) {
+  const id = Crypto.randomBytes(28).toString('hex').slice(0, 5)
+  const dbPath = dbDirectory || Path.join(__dirname, '../fixtures')
+  const dbFile = `${dbPath}/database-${id}.sqlite`
+
   return {
-    mysql: {
-      client: 'mysql',
+    sqlite: {
+      client: 'sqlite3',
+      useNullAsDefault: true,
       connection: {
-        host: '127.0.0.1',
-        user: MYSQL_USER,
-        password: MYSQL_PASSWORD,
-        database: 'supercharge_test'
+        filename: dbFile
       }
     }
   }

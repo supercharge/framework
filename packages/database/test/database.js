@@ -36,10 +36,12 @@ test('throws when not providing a connection while checking for connections', as
 })
 
 test('connects to the database', async t => {
+  const dbDirectory = t.testdir()
+
   /**
    * @type {Database}
    */
-  const db = makeDb()
+  const db = makeDb(null, dbDirectory)
   const tableName = 'users'
 
   if (!await db.schema.hasTable(tableName)) {
