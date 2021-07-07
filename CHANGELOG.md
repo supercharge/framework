@@ -6,6 +6,10 @@
 
 ### Updated
 - bump dependencies
+- `@supercharge/database`
+    - add `sqlite3` as a default dependency
+    - move to sqlite for testing
+    - removed mysql NPM devDependency
 
 ### Fixed
 - `@supercharge/view`
