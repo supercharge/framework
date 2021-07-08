@@ -3,6 +3,9 @@
 ## [2.0.0-alpha.4](https://github.com/supercharge/framework/compare/v2.0.0-alpha.3...v2.0.0-alpha.4) - 2021-0x-xx
 
 ### Added
+- add npm scripts
+    - `clean` to remove all node_modules folders from managed packages
+    - `fresh` to freshly bootstrap all packages
 
 ### Updated
 - bump dependencies
