@@ -1,5 +1,7 @@
 'use strict'
 
+import { ViewConfig } from './config'
+
 export interface ViewEngine {
   /**
    * Boot the view engine. This may contain loading partial views
@@ -11,5 +13,10 @@ export interface ViewEngine {
   /**
    * Returns the rendered HTML view.
    */
-  render(view: string, data?: any): Promise<string>
+  render(view: string, data: any, config?: ViewConfig): Promise<string>
+
+  /**
+   * Determine whether the given `view` template file exists.
+   */
+  exists(view: string): Promise<boolean>
 }

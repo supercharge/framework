@@ -11,5 +11,5 @@ export interface ConsoleKernel {
    *
    * @param {Array} input - command line arguments (argv)
    */
-  handle(input: string[]): Promise<any>
+  run(input?: string[]): Promise<any>
 }

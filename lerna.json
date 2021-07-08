@@ -1,6 +1,18 @@
 {
+  "version": "2.0.0-alpha.3",
   "packages": [
     "packages/*"
   ],
-  "version": "independent"
+  "command": {
+    "publish": {
+      "ignoreChanges": [
+        "packages/app/"
+      ]
+    },
+    "bootstrap": {
+      "npmClientArgs": [
+        "--no-package-lock"
+      ]
+    }
+  }
 }

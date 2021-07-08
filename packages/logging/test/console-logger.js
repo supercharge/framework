@@ -1,6 +1,6 @@
 'use strict'
 
-const { ConsoleLogger } = require('../dist/src/console-logger')
+const { ConsoleLogger } = require('../dist/console-logger')
 
 describe('Console Logger', () => {
   beforeEach(() => {

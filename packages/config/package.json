@@ -1,36 +1,33 @@
 {
 	"name": "@supercharge/config",
 	"description": "The Supercharge config package",
-	"version": "0.0.0",
+	"version": "2.0.0-alpha.3",
 	"author": "Marcus Pöhls <marcus@superchargejs.com>",
 	"bugs": {
 		"url": "https://github.com/supercharge/framework/issues"
 	},
 	"files": [
-		"dist/index.js",
-		"dist/index.d.ts",
-		"dist/src",
-		"dist/types"
+		"dist"
 	],
-	"main": "dist/index.js",
+	"main": "dist",
+	"types": "dist",
 	"dependencies": {
-		"@supercharge/contracts": "~0.0.0",
-		"lodash": "~4.17.20"
+		"@supercharge/contracts": "^2.0.0-alpha.3",
+		"lodash": "~4.17.21"
 	},
 	"devDependencies": {
-		"@types/jest": "~26.0.15",
-		"@types/lodash": "~4.14.165",
-		"@typescript-eslint/eslint-plugin": "~4.8.1",
-		"eslint": "~7.13.0",
+		"@types/jest": "~26.0.20",
+		"@types/lodash": "~4.14.168",
+		"@typescript-eslint/eslint-plugin": "~4.18.0",
+		"eslint": "~7.22.0",
 		"eslint-config-standard": "~16.0.2",
-		"eslint-config-standard-with-typescript": "~19.0.1",
+		"eslint-config-standard-with-typescript": "~20.0.0",
 		"eslint-plugin-import": "~2.22.1",
 		"eslint-plugin-node": "~11.1.0",
-		"eslint-plugin-promise": "~4.2.1",
-		"eslint-plugin-standard": "~4.1.0",
+		"eslint-plugin-promise": "~4.3.1",
 		"jest": "~26.6.3",
 		"jest-extended": "~0.11.5",
-		"typescript": "~4.0.5"
+		"typescript": "~4.2.3"
 	},
 	"engines": {
 		"node": ">=12"
@@ -51,8 +48,9 @@
 		"url": "git+https://github.com/supercharge/framework.git"
 	},
 	"scripts": {
-		"build": "tsc -b tsconfig.json",
-		"watch": "tsc --build tsconfig.json --watch",
+		"build": "tsc --build tsconfig.json",
+		"dev": "npm run build -- --watch",
+		"watch": "npm run dev",
 		"lint": "eslint src --ext .js,.ts",
 		"lint:fix": "npm run lint -- --fix",
 		"test": "npm run build && npm run lint && npm run test:run",

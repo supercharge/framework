@@ -1,8 +1,8 @@
 'use strict'
 
-import Fs from '@supercharge/filesystem'
+import Fs from '@supercharge/fs'
 import Collect from '@supercharge/collections'
-import { upon, esmResolve } from '@supercharge/goodies'
+import { esmRequire } from '@supercharge/goodies'
 import { Command, Application as Craft } from '@supercharge/console'
 import { Application, BootstrapperCtor, ConsoleKernel as ConsoleKernelContract } from '@supercharge/contracts'
 import { HandleExceptions, LoadConfiguration, LoadEnvironmentVariables, RegisterServiceProviders, BootServiceProviders } from '../bootstrappers'
@@ -58,7 +58,7 @@ export class ConsoleKernel implements ConsoleKernelContract {
    *
    * @returns {Promise}
    */
-  async handle (input: string[]): Promise<any> {
+  async run (input?: string[]): Promise<any> {
     await this.bootstrap()
     await this.craft().run(input)
   }
@@ -113,7 +113,7 @@ export class ConsoleKernel implements ConsoleKernelContract {
         return command instanceof Command && this.isNotExcluded(command)
       })
       .forEach((command: Command) => {
-        this.craft().registerCommand(command)
+        this.craft().add(command)
       })
   }
 
@@ -124,10 +124,10 @@ export class ConsoleKernel implements ConsoleKernelContract {
    *
    * @returns {Command}
    */
-  resolve (commandFile: string): Command {
-    return upon(esmResolve(require(commandFile)), (Candidate) => {
-      return new Candidate()
-    })
+  async resolve (commandFile: string): Promise<Command> {
+    const CommandCtor = esmRequire(commandFile)
+
+    return new CommandCtor()
   }
 
   /**

@@ -9,7 +9,7 @@ export class LoggingServiceProvider extends ServiceProvider implements ServicePr
    * Register the logger into the container.
    */
   register (): void {
-    this.app().singleton('supercharge/logger', () => {
+    this.app().singleton('logger', () => {
       return new LogManager(this.app())
     })
   }

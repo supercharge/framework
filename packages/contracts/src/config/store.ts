@@ -16,10 +16,17 @@ export interface ConfigStore {
   /**
    * Set a config value.
    */
-  set (key: string, value: any): void
+  set (key: string, value: any): ConfigStore
 
   /**
    * Determine whether the config store contains an item for the given `key`.
    */
   has (key: string): boolean
+
+  /**
+   * Ensure that the config store contains an item for the given `key`. Calls
+   * the given `callback` if no config item is available for the given `key`.
+   * Throws an error if the key is not available and no callback was found.
+   */
+  ensure (key: string, callback?: () => void): void
 }

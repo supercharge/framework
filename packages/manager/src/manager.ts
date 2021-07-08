@@ -116,4 +116,19 @@ export abstract class Manager {
   private missing (driver: string): boolean {
     return !this.has(driver)
   }
+
+  /**
+   * Ensure the given config `key` is set in the application’s configuration.
+   *
+   * @param {String} key
+   *
+   * @example
+   * ```
+   * configValidator.ensureConfigExists('view')
+   * configValidator.ensureConfigExists('app.port')
+   * ```
+   */
+  ensureConfig (key: string, callback?: () => void): void {
+    this.config().ensure(key, callback)
+  }
 }

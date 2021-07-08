@@ -1,11 +1,13 @@
 'use strict'
 
+import { Class } from '../support'
 import { HttpRoute } from './route'
 import { HttpContext } from './context'
 import { PendingRoute } from './pending-route'
 import { MiddlewareCtor } from './middleware'
+import { HttpController } from './controller'
 
-type ControllerAction = string
+type ControllerAction = string | Class<HttpController>
 type InlineRouteHandler = (ctx: HttpContext) => any | Promise<any>
 
 export type RouteHandler = ControllerAction | InlineRouteHandler
@@ -92,8 +94,7 @@ export interface HttpRouter {
   /**
    * Create a route group.
    */
-  group (path: string): void
-  group (callback: () => void): void
+  group (pathOrCallback: string | (() => void)): void
   group (attributes: RouteAttributes, callback: () => void): void
 
   /**

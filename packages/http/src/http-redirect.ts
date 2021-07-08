@@ -49,7 +49,9 @@ export class HttpRedirect implements HttpRedirectContract {
    *
    * @param url string
    */
-  to (path: string): void {
-    this.ctx.response.redirect(path)
+  to (path: string): this {
+    return tap(this, () => {
+      this.ctx.response.redirect(path)
+    })
   }
 }

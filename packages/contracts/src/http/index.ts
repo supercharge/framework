@@ -1,6 +1,7 @@
 'use strict'
 
 export * from './context'
+export * from './controller'
 export * from './cookie-options'
 export * from './cors-options'
 export * from './concerns'

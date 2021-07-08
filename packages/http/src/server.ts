@@ -3,6 +3,7 @@
 import Koa from 'koa'
 import bodyParser from 'koa-bodyparser'
 import { HttpContext } from './http-context'
+import Collect from '@supercharge/collections'
 import { esmRequire, tap } from '@supercharge/goodies'
 import { Application, Class, HttpKernel, MiddlewareCtor, HttpRouter, ErrorHandler } from '@supercharge/contracts'
 
@@ -60,7 +61,7 @@ export class Server {
       return this.meta.router
     }
 
-    const router = this.app().make<HttpRouter>('supercharge/route')
+    const router = this.app().make<HttpRouter>('route')
 
     return tap(router, () => {
       this.meta.router = router
@@ -137,7 +138,7 @@ export class Server {
    * @param ctx
    */
   private async handleErrorFor (ctx: HttpContext, error: Error): Promise<void> {
-    await this.app().make<ErrorHandler>('supercharge/error-handler').handle(ctx, error)
+    await this.app().make<ErrorHandler>('error.handler').handle(ctx, error)
   }
 
   /**
@@ -197,31 +198,46 @@ export class Server {
    * Register all available HTTP controllers.
    */
   private async registerHttpControllers (): Promise<void> {
-    const controllerPaths = await this.kernel().controllerPaths()
-
-    controllerPaths.forEach(controllerPath => {
-      this.resolveAndBindController(controllerPath)
+    await Collect(
+      await this.kernel().controllerPaths()
+    ).forEach(async controllerPath => {
+      await this.resolveAndBindController(controllerPath)
     })
   }
 
   /**
    * Bind the resolved HTTP controller into the container.
    */
-  private resolveAndBindController (controllerPath: string): void {
-    const Controller: Class = esmRequire(controllerPath)
-
-    this.app().bind(Controller.name, () => {
-      return new Controller(this.app())
+  private async resolveAndBindController (controllerPath: string): Promise<void> {
+    this.require(controllerPath).forEach(Controller => {
+      this.app().bind(Controller.name, () => {
+        return new Controller(this.app())
+      })
     })
+  }
+
+  /**
+   * Returns the controller classes exported from the given `controllerFilePath`.
+   *
+   * @param controllerFilePath
+   *
+   * @returns {Class[]}
+   */
+  private require (controllerFilePath: string): Class[] {
+    const controller = esmRequire(controllerFilePath)
+
+    return typeof controller === 'object'
+      ? Object.values(controller) // assuming that every key in the object is a controller
+      : [controller]
   }
 
   /**
    * Start the HTTP server.
    */
   async start (): Promise<void> {
-    await this.instance().listen(this.port(), this.hostname())
-
-    this.app().logger().info(`Started the server on http://${this.hostname()}:${this.port()}`)
+    this.instance().listen(this.port(), this.hostname(), () => {
+      this.app().logger().info(`Started the server on http://${this.hostname()}:${this.port()}`)
+    })
   }
 
   /**

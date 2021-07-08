@@ -7,8 +7,8 @@ import Collect from '@supercharge/collections'
 import { PendingRoute } from './pending-route'
 import { isFunction } from '@supercharge/classes'
 import { RouteCollection } from './route-collection'
-import { HttpContext, Response } from '@supercharge/http'
 import { isNullish, tap, upon } from '@supercharge/goodies'
+import { HttpContext, HttpRedirect, Response } from '@supercharge/http'
 import { HttpRouter, RouteHandler, RouteAttributes, HttpMethod, MiddlewareCtor, NextHandler, Middleware, Application } from '@supercharge/contracts'
 
 export class Router implements HttpRouter {
@@ -225,6 +225,15 @@ export class Router implements HttpRouter {
     }
 
     /**
+     * The returned response is an HTTP redirect composed using the fluent redirect
+     * interface. The HTTP redirect class automatically configured the Koa context.
+     * We can return early here because there’s no need to set an extra payload.
+     */
+    if (response instanceof HttpRedirect) {
+      return
+    }
+
+    /**
      * When a developer returns a plain value, like a string/object/array/etc., we’ll
      * assign the returned value as the response value. In case the response value
      * is an empty string, we’ll also set the response status to 204 (No Content).
@@ -366,7 +375,9 @@ export class Router implements HttpRouter {
    * @returns {Boolean}
    */
   hasGroupStack (): boolean {
-    return Collect(this.getLastGroup()).isNotEmpty()
+    return Collect(
+      this.getLastGroup()
+    ).isNotEmpty()
   }
 
   /**
@@ -375,7 +386,9 @@ export class Router implements HttpRouter {
    * @returns {RouteGroup | undefined}
    */
   getLastGroup (): RouteGroup | undefined {
-    return Collect(this.groupStack()).last()
+    return Collect(
+      this.groupStack()
+    ).last()
   }
 
   /**
@@ -400,8 +413,7 @@ export class Router implements HttpRouter {
    *
    * @returns {RouteGroup}
    */
-  group (path: string): void
-  group (callback: () => void): void
+  group (pathOrCallback: string | (() => void)): void
   group (attributes: RouteAttributes, callback: () => void): void
   group (attributes: any, callback?: any): void {
     /**
@@ -422,7 +434,8 @@ export class Router implements HttpRouter {
     this.groupStack().push(group)
 
     /*
-     * Process the path to a routes file or the callback to register routes or nested route groups to the router.
+     * Process the path to a routes file or the callback to
+     * register routes or nested route groups to the router.
      */
     if (typeof attributes === 'string') {
       this.loadRoutesFrom(attributes)

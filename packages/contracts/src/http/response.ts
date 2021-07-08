@@ -1,5 +1,6 @@
 'use strict'
 
+import { ViewConfigBuilder } from '../view'
 import { CookieOptions } from './cookie-options'
 import { InteractsWithState } from './concerns/interacts-with-state'
 
@@ -22,7 +23,7 @@ export interface HttpRedirect {
    *
    * @param url string
    */
-  to(path: string): void
+  to(path: string): this
 }
 
 export interface HttpResponse extends InteractsWithState {
@@ -45,7 +46,7 @@ export interface HttpResponse extends InteractsWithState {
    * // { 'Content-Type': 'application/json' }
    * ```
    */
-  headers(): { [key: string]: unknown }
+  headers(): Record<string, any>
 
   /**
    * Assign the object’s key-value pairs as response headers.
@@ -58,7 +59,7 @@ export interface HttpResponse extends InteractsWithState {
    * })
    * ```
    */
-  withHeaders(headers: { [key: string]: any }): this
+  withHeaders(headers: Record<string, any>): this
 
   /**
    * Append a header to the response. If you want to replance a possibly
@@ -175,8 +176,32 @@ export interface HttpResponse extends InteractsWithState {
    * @example
    * ```
    * response.view('welcome')
+   * response.view('welcome', view => {
+   *   view.layout('landing')
+   * })
    * response.view('user/dashboard', { user: { id: 1, name: 'Marcus' } })
+   * response.view('user/dashboard', { user: { id: 1, name: 'Marcus' } }, view => {
+   *   view.layout('profile')
+   * })
    * ```
    */
-  view (template: string, data?: any): Promise<this>
+  view (template: string, callback?: (viewBuilder: ViewConfigBuilder) => unknown): Promise<this>
+  view (template: string, data?: any, callback?: (viewBuilder: ViewConfigBuilder) => unknown): Promise<this>
+
+  /**
+   * Abort the request and throw an error with the given `status`. The status defaults
+   * to 500. You may pass an error message or error instance as the second argument.
+   * Use the third, optional argument for properties in the error response.
+   *
+   * @example
+   * ```
+   * response.throw(403)
+   * response.throw(400, 'Missing username')
+   * response.throw(401, new Error('Invalid bearer token.'))
+   * response.throw(403, 'Access denied.', { user })
+   * ```
+   */
+  throw (status: number): void
+  throw (status: number | string | Error): void
+  throw (status: number, message?: string, properties?: {}): void
 }

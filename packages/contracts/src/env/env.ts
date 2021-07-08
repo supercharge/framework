@@ -31,13 +31,19 @@ export interface EnvStore {
    */
   set (key: string, value: string): void
 
-
   /**
    * Determine whether the `NODE_ENV` variable is set to `'production'`.
    *
    * @returns {Boolean}
    */
   isProduction (): boolean
+
+  /**
+   * Determine whether the `NODE_ENV` variable is **not** set to `'production'`.
+   *
+   * @returns {Boolean}
+   */
+  isNotProduction (): boolean
 
   /**
    * Determine whether the `NODE_ENV` variable is set to `'test'` or `'testing'`.

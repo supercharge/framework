@@ -23,6 +23,11 @@ export interface Application extends Container {
   version(): string | undefined
 
   /**
+   * Determine whether the application is in debug mode.
+   */
+  debug(): boolean
+
+  /**
    * Returns the root path of the application directory.
    */
   basePath(): string
@@ -47,7 +52,7 @@ export interface Application extends Container {
    *
    * @param {String} path
    */
-  configPath (path: string): string
+  configPath (path?: string): string
 
   /**
    * Returns an absolute path into the application’s public directory.
@@ -61,14 +66,21 @@ export interface Application extends Container {
    *
    * @param {String} path
    */
-  resourcePath (path: string): string
+  resourcePath (path?: string): string
 
   /**
    * Returns an absolute path into the application’s storage directory.
    *
    * @param {String} path
    */
-  storagePath (path: string): string
+  storagePath (path?: string): string
+
+  /**
+   * Returns an absolute path into the application’s database directory.
+   *
+   * @param {String} path
+   */
+  databasePath (path?: string): string
 
   /**
    * The env store instance.

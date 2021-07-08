@@ -2,6 +2,7 @@
 
 import { Context } from 'koa'
 import Str from '@supercharge/strings'
+import { IncomingHttpHeaders } from 'http'
 import { RouterContext } from 'koa__router'
 import { HttpRequest, InteractsWithContentTypes } from '@supercharge/contracts'
 
@@ -36,16 +37,16 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
   }
 
   /**
-   * Returns the query parameter object.
+   * Returns the request’s query parameters.
    */
-  get query (): { [key: string]: unknown } {
+  get query (): Record<string, any> {
     return this.ctx.query
   }
 
   /**
-   * Returns the path parameter object.
+   * Returns the request’s path parameters.
    */
-  get params (): { [key: string]: unknown } {
+  get params (): Record<string, any> {
     return this.ctx.params
   }
 
@@ -59,7 +60,7 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
   /**
    * Returns the request headers.
    */
-  get headers (): { [key: string]: unknown } {
+  get headers (): IncomingHttpHeaders {
     return this.ctx.headers
   }
 
@@ -73,7 +74,7 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * @returns {String}
    */
   header (key: string, defaultValue?: any): string | undefined {
-    return this.headers[key] || defaultValue
+    return this.headers[key] ?? defaultValue
   }
 
   /**

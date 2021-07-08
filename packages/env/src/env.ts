@@ -78,6 +78,15 @@ export class Env implements EnvStore {
   }
 
   /**
+   * Determine whether the `NODE_ENV` variable is **not** set to `production`.
+   *
+   * @returns {Boolean}
+   */
+  isNotProduction (): boolean {
+    return !this.isProduction()
+  }
+
+  /**
    * Determine whether the `NODE_ENV` variable is set to `testing`.
    *
    * @returns {Boolean}

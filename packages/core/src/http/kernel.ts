@@ -1,11 +1,14 @@
 'use strict'
 
-import Fs from '@supercharge/filesystem'
+import Fs from '@supercharge/fs'
 import { Server } from '@supercharge/http'
 import { Application, BootstrapperCtor, HttpKernel as HttpKernelContract, MiddlewareCtor } from '@supercharge/contracts'
 import { HandleExceptions, LoadConfiguration, LoadEnvironmentVariables, RegisterServiceProviders, BootServiceProviders } from '../bootstrappers'
 
 export class HttpKernel implements HttpKernelContract {
+  /**
+   * Stores the HTTP kernel’s meta data.
+   */
   private readonly meta: {
     /**
      * The application instance.
@@ -26,6 +29,15 @@ export class HttpKernel implements HttpKernelContract {
   constructor (app: Application) {
     this.meta = { app }
     this.server = new Server(this)
+  }
+
+  /**
+   * Creates a new HTTP kernel instance for the given `app`.
+   *
+   * @param {Application} app
+   */
+  static for (app: Application): HttpKernel {
+    return new this(app)
   }
 
   /**

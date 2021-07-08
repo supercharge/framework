@@ -58,7 +58,9 @@ export class HttpContext extends InteractsWithState implements HttpContextContra
    * @returns {Response}
    */
   get response (): Response {
-    return new Response(this.ctx, this.app.make<ViewEngine>('supercharge/view'), this.cookieOptions())
+    return new Response(
+      this.ctx, this.app.make<ViewEngine>('view'), this.cookieOptions()
+    )
   }
 
   /**

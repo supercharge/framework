@@ -30,6 +30,7 @@ describe('Config', () => {
 
   it('set', () => {
     const config = new Config()
+
     config.set('key', 'value')
     expect(config.get('key')).toEqual('value')
 
@@ -39,13 +40,23 @@ describe('Config', () => {
 
   it('has', () => {
     const config = new Config()
-
-    config.set('app.port', 1234)
-    config.set('app.env', 'production')
+      .set('app.port', 1234)
+      .set('app.env', 'production')
 
     expect(config.has('app.port')).toBeTrue()
     expect(config.has('app.name')).toBeFalse()
     expect(config.has('app.environment')).toBeFalse()
+  })
+
+  it('ensure', () => {
+    const config = new Config().set('app.port', 1234)
+
+    expect(() => config.ensure('app.port')).not.toThrow()
+
+    expect(() => config.ensure('app.name')).toThrow()
+    expect(() => config.ensure('app.name', () => {
+      throw new Error('Config Error')
+    })).toThrow('Config Error')
   })
 
   it('clear', () => {

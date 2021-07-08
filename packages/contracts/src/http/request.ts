@@ -1,5 +1,6 @@
 'use strict'
 
+import { IncomingHttpHeaders } from 'http'
 import { InteractsWithContentTypes } from './concerns'
 
 export interface HttpRequest extends InteractsWithContentTypes {
@@ -21,7 +22,7 @@ export interface HttpRequest extends InteractsWithContentTypes {
   /**
    * Returns the request headers.
    */
-  headers: { [key: string]: unknown }
+  headers: IncomingHttpHeaders
 
   /**
    * Returns the request header identified by the given `key`. The default

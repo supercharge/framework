@@ -43,8 +43,10 @@ export class Config implements ConfigStore {
    * @param {String} key
    * @param {String} value
    */
-  set (key: string, value: any): void {
+  set (key: string, value: any): Config {
     _.set(this.config, key, value)
+
+    return this
   }
 
   /**
@@ -56,6 +58,30 @@ export class Config implements ConfigStore {
    */
   has (key: string): boolean {
     return _.has(this.all(), key)
+  }
+
+  /**
+   * Ensure the given config `key` in the application’s configuration.
+   *
+   * @param {String} key
+   * @param {Function} callback
+   *
+   * @example
+   * ```
+   * config.ensure('view')
+   * config.ensure('app.port')
+   * ```
+   */
+  ensure (key: string, callback?: () => void): void {
+    if (this.has(key)) {
+      return
+    }
+
+    if (typeof callback === 'function') {
+      callback()
+    }
+
+    throw new Error(`Missing configuration for "${key}".`)
   }
 
   /**
