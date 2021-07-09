@@ -1,7 +1,7 @@
 {
   "name": "@supercharge/database",
   "nscription": "The Supercharge database package",
-  "version": "2.0.0-alpha.3",
+  "version": "2.0.0-alpha.4",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
@@ -20,7 +20,7 @@
     "sqlite3": "~5.0.2"
   },
   "devDependencies": {
-    "@supercharge/core": "^2.0.0-alpha.3",
+    "@supercharge/core": "^2.0.0-alpha.4",
     "@typescript-eslint/eslint-plugin": "~4.27.0",
     "eslint": "~7.28.0",
     "eslint-config-standard": "~16.0.3",
