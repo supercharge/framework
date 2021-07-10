@@ -54,7 +54,7 @@ Follow these steps to set up a local development environment for the framework:
   npm run bootstrap
   ```
 
-### 4. Build the packages
+#### 4. Build the packages
   ```bash
   npm run build
   ```
