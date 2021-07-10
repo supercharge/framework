@@ -63,11 +63,17 @@ That’s it! You can start developing new features for the framework.
 
 
 ### Testing Packages
-Each package in the framework has their own tests. You can run the tests for an individual package. You don’t need to run tests from all packages when developing a feature.
+Testing the framework is the combination of running the tests of each package. Each package in the framework has their own tests. You can run the full test suite by running the tests of each package or you can test individual packages. You don’t need to run tests from all packages when developing a feature.
 
 Run tests for a selected package by navigating to the package directory `cd packages/<package-name>` and run `npm test` in the terminal:
 
-For example, test the logging package like this:
+
+### Run All Tests
+You can run all tests from the framework’s root directory unsing `npm test`. This triggers the tests of all packages.
+
+
+### Testing a Single Package
+Let’s take the `logging` package as an example. You can test the logging package like this:
 
 ```bash
 cd packages/logging
