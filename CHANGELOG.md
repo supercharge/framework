@@ -1,6 +1,13 @@
 # Changelog
 
-## [2.0.0-alpha.4](https://github.com/supercharge/framework/compare/v2.0.0-alpha.3...v2.0.0-alpha.4) - 2021-0x-xx
+## [2.0.0-alpha.5](https://github.com/supercharge/framework/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) - 2021-07-xx
+
+### Updated
+- `@supercharge/contracts`
+    - use `Record<string, any>` as types for `request.params` and `request.query`
+
+
+## [2.0.0-alpha.4](https://github.com/supercharge/framework/compare/v2.0.0-alpha.3...v2.0.0-alpha.4) - 2021-07-09
 
 ### Added
 - add npm scripts
