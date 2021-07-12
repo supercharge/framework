@@ -38,8 +38,8 @@
     "bootstrap": "lerna bootstrap --no-ci",
     "build": "lerna run build --stream --no-private",
     "watch": "npm run dev",
-    "dev": "lerna run dev --stream --no-private",
-    "lint": "lerna run lint",
-    "test": "lerna run test"
+    "dev": "lerna run dev --parallel --stream --no-private",
+    "lint": "lerna run lint --parallel --stream",
+    "test": "lerna run test --parallel --stream"
   }
 }
