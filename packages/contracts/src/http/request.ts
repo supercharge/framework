@@ -17,12 +17,12 @@ export interface HttpRequest extends InteractsWithContentTypes {
   /**
    * Returns the query parameter object.
    */
-  query: { [key: string]: unknown }
+  query: Record<string, any>
 
   /**
    * Returns the path parameter object.
    */
-  params: { [key: string]: unknown }
+  params: Record<string, any>
 
   /**
    * Returns the request payload.
