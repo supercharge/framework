@@ -1,6 +1,6 @@
 'use strict'
 
-import { IncomingHttpHeaders } from 'http'
+import { HeaderBag } from './header-bag'
 import { InteractsWithContentTypes } from './concerns'
 
 export interface HttpRequest extends InteractsWithContentTypes {
@@ -32,13 +32,13 @@ export interface HttpRequest extends InteractsWithContentTypes {
   /**
    * Returns the request headers.
    */
-  headers: IncomingHttpHeaders
+  headers(): HeaderBag
 
   /**
    * Returns the request header identified by the given `key`. The default
    * value will be returned if no header is present for the given key.
    */
-  header(key: string, defaultValue?: any): string | undefined
+  header(key: string, defaultValue?: string | string[]): string | string[] | undefined
 
   /**
    * Determine whether the request contains a header with the given `key`.

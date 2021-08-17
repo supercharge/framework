@@ -2,7 +2,7 @@
 
 import { Context } from 'koa'
 import Str from '@supercharge/strings'
-import { IncomingHttpHeaders } from 'http'
+import { HeaderBag } from './header-bag'
 import { RouterContext } from 'koa__router'
 import { HttpRequest, InteractsWithContentTypes } from '@supercharge/contracts'
 
@@ -60,8 +60,8 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
   /**
    * Returns the request headers.
    */
-  get headers (): IncomingHttpHeaders {
-    return this.ctx.headers
+  headers (): HeaderBag {
+    return new HeaderBag(this.ctx.headers)
   }
 
   /**
@@ -69,12 +69,12 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * value will be returned if no header is present for the given key.
    *
    * @param {String} key
-   * @param {*} defaultValue
+   * @param {String|String[]} defaultValue
    *
    * @returns {String}
    */
-  header (key: string, defaultValue?: any): string | undefined {
-    return this.headers[key] ?? defaultValue
+  header (key: string, defaultValue?: string | string[]): string | string[] | undefined {
+    return this.headers().get(key, defaultValue)
   }
 
   /**
@@ -83,7 +83,7 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * @returns {Boolean}
    */
   hasHeader (key: string): boolean {
-    return !!this.header(key)
+    return this.headers().has(key)
   }
 
   /**
