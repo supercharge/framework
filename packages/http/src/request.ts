@@ -4,6 +4,7 @@ import { Context } from 'koa'
 import Str from '@supercharge/strings'
 import { HeaderBag } from './header-bag'
 import { RouterContext } from 'koa__router'
+import { ParameterBag } from './parameter-bag'
 import { HttpRequest, InteractsWithContentTypes } from '@supercharge/contracts'
 
 export class Request implements HttpRequest, InteractsWithContentTypes {
@@ -39,21 +40,21 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
   /**
    * Returns the request’s query parameters.
    */
-  get query (): Record<string, any> {
-    return this.ctx.query
+  query (): ParameterBag {
+    return new ParameterBag(this.ctx.query)
   }
 
   /**
    * Returns the request’s path parameters.
    */
-  get params (): Record<string, any> {
-    return this.ctx.params
+  params (): ParameterBag {
+    return new ParameterBag(this.ctx.params)
   }
 
   /**
    * Returns the request payload.
    */
-  get payload (): any {
+  payload (): any {
     return this.ctx.request.body
   }
 

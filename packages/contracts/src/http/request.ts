@@ -1,6 +1,7 @@
 'use strict'
 
 import { HeaderBag } from './header-bag'
+import { ParameterBag } from './parameter-bag'
 import { InteractsWithContentTypes } from './concerns'
 
 export interface HttpRequest extends InteractsWithContentTypes {
@@ -17,12 +18,12 @@ export interface HttpRequest extends InteractsWithContentTypes {
   /**
    * Returns the query parameter object.
    */
-  query: Record<string, any>
+  query(): ParameterBag
 
   /**
    * Returns the path parameter object.
    */
-  params: Record<string, any>
+  params(): ParameterBag
 
   /**
    * Returns the request payload.
