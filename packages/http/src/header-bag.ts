@@ -20,8 +20,16 @@ export class HeaderBag implements HeaderBagContract {
   /**
    * Returns a HTTP headers object.
    */
-  all (): IncomingHttpHeaders {
-    return this.headers
+  all (...keys: string[]): IncomingHttpHeaders {
+    if (keys.length === 0) {
+      return this.headers
+    }
+
+    return keys.reduce((carry: Record<string, any>, key: string) => {
+      carry[key] = this.get(key)
+
+      return carry
+    }, {})
   }
 
   /**

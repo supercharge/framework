@@ -6,7 +6,7 @@ export interface HeaderBag {
   /**
    * Returns a HTTP headers object.
    */
-  all(): IncomingHttpHeaders
+  all(...keys: string[]): IncomingHttpHeaders
 
   /**
    * Returns the HTTP header value for the given `name`.
