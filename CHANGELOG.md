@@ -2,9 +2,28 @@
 
 ## [2.0.0-alpha.5](https://github.com/supercharge/framework/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) - 2021-07-xx
 
+### Added
+- `@supercharge/http`
+    - added `HeaderBag`, `ParameterBag` classes to provide helpful methods to access request input
+
 ### Updated
 - `@supercharge/contracts`
     - use `Record<string, any>` as types for `request.params` and `request.query`
+
+### Breaking Changes
+- `@supercharge/http`
+    - the properties `request.query`, `request.params`, and `request.headers` return an input bag instead of an object
+    ```js
+    // before
+    const query = request.query
+    const params = request.params
+    const headers = request.headers
+
+    // after
+    const query = request.query().all()
+    const params = request.params().all()
+    const headers = request.headers().all()
+    ```
 
 
 ## [2.0.0-alpha.4](https://github.com/supercharge/framework/compare/v2.0.0-alpha.3...v2.0.0-alpha.4) - 2021-07-09
