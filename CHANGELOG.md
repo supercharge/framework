@@ -7,8 +7,15 @@
     - added `HeaderBag`, `ParameterBag` classes to provide helpful methods to access request input
 
 ### Updated
+- bump dependencies
 - `@supercharge/contracts`
     - use `Record<string, any>` as types for `request.params` and `request.query`
+- `@supercharge/core`
+    - use `HttpError` class from `@supercharge/errors` as base class
+- `@supercharge/routing`
+    - add comments to `RouteCollection`
+    - refine comments of `Router` methods
+    - internal refinements of the `RouteCollection`
 
 ### Breaking Changes
 - `@supercharge/http`

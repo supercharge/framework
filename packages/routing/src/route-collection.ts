@@ -4,21 +4,37 @@ import { Route } from './route'
 import { tap } from '@supercharge/goodies'
 
 export class RouteCollection {
-  private readonly meta: {
-    routes: Route[]
-  }
+  /**
+   * Stores all registered routes.
+   */
+  private routes: Route[]
 
+  /**
+   * Create a new instance.
+   */
   constructor () {
-    this.meta = { routes: [] }
+    this.routes = []
   }
 
+  /**
+   * Register a new route to the collection.
+   *
+   * @param {Route} route
+   *
+   * @returns {}
+   */
   public add (route: Route | Route[]): Route | Route[] {
     return tap(route, () => {
-      this.meta.routes = this.meta.routes.concat(route)
+      this.routes = this.routes.concat(route)
     })
   }
 
+  /**
+   * Returns all registered routes.
+   *
+   * @returns {Route[]}
+   */
   public all (): Route[] {
-    return this.meta.routes
+    return this.routes
   }
 }
