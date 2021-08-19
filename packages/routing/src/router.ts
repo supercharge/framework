@@ -266,8 +266,9 @@ export class Router implements HttpRouter {
   /**
    * Create a GET route.
    *
-   * @param path String
-   * @param handler RouteHandler
+   * @param {String} path
+   * @param {RouteHandler} handler
+   * @param {String[]} middleware
    *
    * @returns {Route}
    */
@@ -278,8 +279,9 @@ export class Router implements HttpRouter {
   /**
    * Create a POST route.
    *
-   * @param path String
-   * @param handler RouteHandler
+   * @param {String} path
+   * @param {RouteHandler} handler
+   * @param {String[]} middleware
    *
    * @returns {Route}
    */
@@ -290,8 +292,9 @@ export class Router implements HttpRouter {
   /**
    * Create a PUT route.
    *
-   * @param path String
-   * @param handler RouteHandler
+   * @param {String} path
+   * @param {RouteHandler} handler
+   * @param {String[]} middleware
    *
    * @returns {Route}
    */
@@ -302,8 +305,9 @@ export class Router implements HttpRouter {
   /**
    * Create a DELETE route.
    *
-   * @param path String
-   * @param handler RouteHandler
+   * @param {String} path
+   * @param {RouteHandler} handler
+   * @param {String[]} middleware
    *
    * @returns {Route}
    */
@@ -314,8 +318,9 @@ export class Router implements HttpRouter {
   /**
    * Create a PATCH route.
    *
-   * @param path String
-   * @param handler RouteHandler
+   * @param {String} path
+   * @param {RouteHandler} handler
+   * @param {String[]} middleware
    *
    * @returns {Route}
    */
@@ -326,8 +331,9 @@ export class Router implements HttpRouter {
   /**
    * Create an OPTIONS route.
    *
-   * @param path String
-   * @param handler RouteHandler
+   * @param {String} path
+   * @param {RouteHandler} handler
+   * @param {String[]} middleware
    *
    * @returns {Route}
    */
@@ -338,9 +344,9 @@ export class Router implements HttpRouter {
   /**
    * Create a new route and add it to the routes collection.
    *
-   * @param method HttpMethod
-   * @param path String
-   * @param handler RouteHandler
+   * @param {HttpMethod} method
+   * @param {String} path
+   * @param {RouteHandler} handler
    *
    * @returns {Route}
    */
@@ -353,9 +359,9 @@ export class Router implements HttpRouter {
   /**
    * Create a new route instance.
    *
-   * @param method HttpMethod
-   * @param path String
-   * @param handler RouteHandler
+   * @param {HttpMethod} method
+   * @param {String} path
+   * @param {RouteHandler} handler
    *
    * @returns {Route}
    */
@@ -394,7 +400,7 @@ export class Router implements HttpRouter {
   /**
    * Merge the group attributes into the given route.
    *
-   * @param route
+   * @param {Route} route
    */
   mergeGroupAttributesIntoRoute (route: Route): void {
     const group = this.getLastGroup()
