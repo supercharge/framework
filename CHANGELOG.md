@@ -3,8 +3,15 @@
 ## [2.0.0-alpha.5](https://github.com/supercharge/framework/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) - 2021-07-xx
 
 ### Updated
+- bump dependencies
 - `@supercharge/contracts`
     - use `Record<string, any>` as types for `request.params` and `request.query`
+- `@supercharge/core`
+    - use `HttpError` class from `@supercharge/errors` as base class
+- `@supercharge/routing`
+    - add comments to `RouteCollection`
+    - refine comments of `Router` methods
+    - internal refinements of the `RouteCollection`
 
 
 ## [2.0.0-alpha.4](https://github.com/supercharge/framework/compare/v2.0.0-alpha.3...v2.0.0-alpha.4) - 2021-07-09
