@@ -72,8 +72,11 @@ export class ErrorHandler implements ErrorHandlerContract {
 
   /**
    * Handle the given error.
+   *
+   * @param {HttpContext} ctx
+   * @param {Error} error
    */
-  async handle (ctx: HttpContext, error: any): Promise<void> {
+  async handle (ctx: HttpContext, error: Error): Promise<void> {
     const httpError = HttpError.wrap(error)
 
     await this.report(ctx, httpError)
@@ -82,6 +85,9 @@ export class ErrorHandler implements ErrorHandlerContract {
 
   /**
    * Report an error.
+   *
+   * @param {HttpContext} ctx
+   * @param {HttpError} error
    */
   async report (ctx: HttpContext, error: HttpError): Promise<void> {
     await Collect(this.reportCallbacks).forEach(async reportCallback => {
@@ -92,7 +98,10 @@ export class ErrorHandler implements ErrorHandlerContract {
   }
 
   /**
-   * Render an error into an HTTP response.
+   * Render the error into an HTTP response.
+   *
+   * @param {HttpContext} ctx
+   * @param {HttpError} error
    */
   async render (ctx: HttpContext, error: HttpError): Promise<any> {
     return ctx.request.wantsJson()
@@ -104,10 +113,10 @@ export class ErrorHandler implements ErrorHandlerContract {
    * Creates a JSON response depending on the app’s environment.
    *
    * @param {HttpContext} ctx
-   * @param {*} error
+   * @param {HttpError} error
    */
   renderJsonResponse (ctx: HttpContext, error: HttpError): void {
-    const { message, stack, statusCode } = error
+    const { message, stack, status: statusCode } = error
 
     this.app.env().isProduction()
       ? ctx.response.status(statusCode).payload({ message })
@@ -118,7 +127,7 @@ export class ErrorHandler implements ErrorHandlerContract {
    * Creates an HTML response depending on the app’s environment.
    *
    * @param {HttpContext} ctx
-   * @param {*} error
+   * @param {HttpError} error
    */
   async renderViewResponse (ctx: HttpContext, error: HttpError): Promise<void> {
     if (await this.isMissingTemplateFor(error)) {
@@ -128,7 +137,7 @@ export class ErrorHandler implements ErrorHandlerContract {
     }
 
     await ctx.response
-      .status(error.statusCode)
+      .status(error.status)
       .view(
         this.viewTemplateFor(error), { error }
       )
@@ -166,6 +175,6 @@ export class ErrorHandler implements ErrorHandlerContract {
    * @returns {String}
    */
   private viewTemplateFor (error: HttpError): string {
-    return `errors/${error.statusCode}`
+    return `errors/${error.status}`
   }
 }
