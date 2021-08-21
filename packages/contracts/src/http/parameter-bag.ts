@@ -9,7 +9,7 @@ export interface ParameterBag {
   /**
    * Returns the HTTP header value for the given `name`.
    */
-  get<T = any>(name: string, defaultValue: T): T | undefined
+  get<T = any>(name: string, defaultValue: T): T
 
   /**
    * Set an attribute for the given `name` and assign the `value`.

@@ -39,7 +39,7 @@ export class ParameterBag implements ParameterBagContract {
    *
    * @returns {T|undefined}
    */
-  get<T = any> (name: string, defaultValue?: T): T | undefined {
+  get<T = any> (name: string, defaultValue?: T): T {
     return this.attributes[name] ?? defaultValue
   }
 
