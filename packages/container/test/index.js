@@ -3,35 +3,66 @@
 const { Container } = require('../dist')
 
 describe('Container', () => {
-  it('throws for missing namespace when binding an instance', () => {
+  it('throws for invalid namespace when binding an instance', () => {
     const container = new Container()
 
     expect(() => container.bind()).toThrow()
-    expect(() => container.bind('')).toThrow()
     expect(() => container.bind(null)).toThrow()
+    expect(() => container.bind('', () => {})).toThrow()
+
+    expect(() => container.bind({}, () => {})).not.toThrow()
+    expect(container.hasBinding({})).toBeTrue()
+
+    expect(() => container.bind(123, () => {})).not.toThrow()
+    expect(container.hasBinding(123)).toBeTrue()
+
+    expect(() => container.bind(true, () => {})).not.toThrow()
+    expect(container.hasBinding(true)).toBeTrue()
   })
 
-  it('throws for missing the factory function when binding an instance', () => {
+  it('throws when missing the factory function when binding an instance', () => {
     const container = new Container()
 
     expect(() => container.bind('namespace')).toThrow()
   })
 
-  it('bind', () => {
+  it('bind (string namespace)', () => {
     const container = new Container()
 
     container.bind('namespace', () => 1)
-    container.bind('namespace/with/slash', () => 2)
+    container.bind('namespace.binding', () => 2)
+    container.bind('namespace/binding', () => 3)
 
     expect(container.hasBinding('namespace')).toBeTrue()
-    expect(container.hasBinding('namespace/with/slash')).toBeTrue()
+    expect(container.hasBinding('namespace.binding')).toBeTrue()
+    expect(container.hasBinding('namespace/binding')).toBeTrue()
 
     expect(container.isSingleton('namespace')).toBeFalse()
 
     container.singleton('singleton', () => 1)
-    container.singleton('singleton/with/slash', () => 2)
+    container.singleton('singleton.binding', () => 2)
+    container.singleton('namespace.binding', () => 2)
 
     expect(container.isSingleton('singleton')).toBeTrue()
+    expect(container.isSingleton('singleton.binding')).toBeTrue()
+    expect(container.isSingleton('namespace.binding')).toBeTrue()
+  })
+
+  it('bind (class constructor as namespace)', () => {
+    class User {
+      constructor (data) {
+        this.data = data
+      }
+    }
+
+    const container = new Container()
+
+    container.bind(User, () => {
+      return new User({ name: 'Supercharge' })
+    })
+
+    expect(container.hasBinding(User)).toBeTrue()
+    expect(container.make(User)).toEqual(new User({ name: 'Supercharge' }))
   })
 
   it('make', () => {
@@ -54,17 +85,17 @@ describe('Container', () => {
   })
 
   it('make class', () => {
-    const container = new Container()
     class User {
       constructor (app) {
         this.app = app
       }
     }
 
+    const container = new Container()
     const user = container.make(User)
 
     expect(user instanceof User).toBeTrue()
-    expect(user.app).toEqual(container)
+    expect(user.app).toBe(container)
   })
 
   it('throws for missing namespace when binding a singleton', () => {
