@@ -2,6 +2,12 @@
 
 ## [2.0.0-alpha.5](https://github.com/supercharge/framework/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) - 2021-07-xx
 
+### Added
+- `@supercharge/contracts`
+    - extend the container types to resolve classes when passed to as a namespace
+- `@supercharge/container`
+    - add handling to bind and resolve classes as the namespace in the container
+
 ### Updated
 - bump dependencies
 - `@supercharge/contracts`
