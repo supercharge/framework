@@ -24,7 +24,7 @@ export interface Container {
    *
    * @param {String} namespace
    */
-  make<T> (namespace: string | Class): T
+  make<T = any> (namespace: string | Class): T
 
   /**
    * Determine whether the given `namespace` is bound in the container.

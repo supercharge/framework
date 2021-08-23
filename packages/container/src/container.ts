@@ -140,7 +140,7 @@ export class Container implements ContainerContract {
    *
    * @returns {*}
    */
-  make<T>(namespace: string | Class<T, [Application]>): T {
+  make<T = any>(namespace: string | Class<T, [Application]>): T {
     /**
      * If the namespace exists as a singleton, we’ll return the instance
      * without instantiating a new one. This way, the same instance
