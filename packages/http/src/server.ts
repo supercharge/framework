@@ -1,10 +1,10 @@
 'use strict'
 
 import Koa from 'koa'
-import bodyParser from 'koa-bodyparser'
 import { HttpContext } from './http-context'
 import Collect from '@supercharge/collections'
 import { esmRequire, tap } from '@supercharge/goodies'
+import bodyParser, { IKoaBodyOptions } from 'koa-body'
 import { Application, Class, HttpKernel, MiddlewareCtor, HttpRouter, ErrorHandler } from '@supercharge/contracts'
 
 export class Server {
@@ -147,7 +147,18 @@ export class Server {
    * registered here will be available out of the box.
    */
   registerCoreMiddleware (): void {
-    this.instance().use(bodyParser())
+    this.instance().use(bodyParser(
+      this.bodyParserOptions()
+    ))
+  }
+
+  /**
+   * Returns the body parser options.
+   *
+   * @returns {IKoaBodyOptions}
+   */
+  private bodyParserOptions (): IKoaBodyOptions {
+    return this.app().config().get('bodyparser')
   }
 
   /**
