@@ -148,7 +148,7 @@ export class Server {
    */
   registerCoreMiddleware (): void {
     this.instance().use(bodyParser(
-      this.bodyParserOptions()
+      // this.bodyParserOptions()
     ))
   }
 
@@ -157,8 +157,13 @@ export class Server {
    *
    * @returns {IKoaBodyOptions}
    */
-  private bodyParserOptions (): IKoaBodyOptions {
-    return this.app().config().get('bodyparser')
+  protected bodyParserOptions (): IKoaBodyOptions {
+    const bodyParserOptions = this.app().config().get('bodyparser')
+
+    // TODO: translate bodyParserOptions into koa-body compatible format
+    return {
+      ...bodyParserOptions
+    }
   }
 
   /**
