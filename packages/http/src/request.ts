@@ -118,4 +118,34 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
       this.header('accept')
     ).contains('text/html')
   }
+
+  /**
+   * Determine whether the request contains any of the given content `types`.
+   * This method compares the "Content-Type" header value with all of the
+   * given `types` determining whether one of the content types matches.
+   *
+   * @example
+   * ```
+   * // Request with Content-Type: text/html; charset=utf-8
+   * request.isContentType('text/html') // true
+   * request.isContentType('text/html', 'application/json') // true
+   * request.isContentType(['text/html', 'application/json'])  // true
+   *
+   * // Request with Content-Type: application/json
+   * request.isContentType('json') // true
+   * request.isContentType('application/*')  // true
+   * request.isContentType('application/json', 'application/json') // true
+   *
+   * request.isContentType('json', 'html') // true
+   * request.isContentType('text/html') // false
+   * request.isContentType('html') // false
+   * ```
+   */
+  isContentType (types: string[]): boolean
+  isContentType (...types: string[]): boolean
+  isContentType (...types: string[]|string[][]): boolean {
+    const contentTypes = ([] as string[]).concat(...types)
+
+    return !!this.ctx.request.is(contentTypes)
+  }
 }
