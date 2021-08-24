@@ -1,5 +1,6 @@
 'use strict'
 
+export * from './bodyparser-options'
 export * from './context'
 export * from './controller'
 export * from './cookie-options'
