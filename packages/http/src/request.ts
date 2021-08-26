@@ -23,6 +23,15 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
   }
 
   /**
+   * Returns the request’s async iterator.
+   *
+   * @returns {AsyncIterator}
+   */
+  [Symbol.asyncIterator] (): AsyncIterator<any> {
+    return this.ctx.req[Symbol.asyncIterator]()
+  }
+
+  /**
    * Returns the request method.
    */
   method (): string {

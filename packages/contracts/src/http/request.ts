@@ -5,6 +5,13 @@ import { InteractsWithContentTypes } from './concerns'
 
 export interface HttpRequest extends InteractsWithContentTypes {
   /**
+   * Returns the request’s async iterator.
+   *
+   * @returns {AsyncIterator}
+   */
+  [Symbol.asyncIterator] (): AsyncIterator<any>
+
+  /**
    * Returns the request method.
    */
   method (): string

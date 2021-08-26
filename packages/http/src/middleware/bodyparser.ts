@@ -1,7 +1,8 @@
 'use strict'
 
-import buddy from '@supercharge/co-body'
-import { Application, CorsOptions, HttpContext, Middleware, NextHandler } from '@supercharge/contracts'
+import Set from '@supercharge/set'
+import JSON from '@supercharge/json'
+import { Application, BodyparserOptions, HttpContext, HttpRequest, Middleware, NextHandler } from '@supercharge/contracts'
 
 export class Bodyparser implements Middleware {
   /**
@@ -23,8 +24,8 @@ export class Bodyparser implements Middleware {
    *
    * @returns {CorsOptions}
    */
-  config (): CorsOptions {
-    return this.app.config().get('cors')
+  config (): BodyparserOptions {
+    return this.app.config().get('bodyparser')
   }
 
   /**
@@ -34,6 +35,45 @@ export class Bodyparser implements Middleware {
    * @param next NextHandler
    */
   async handle (ctx: HttpContext, next: NextHandler): Promise<void> {
+    if (this.shouldParseInput(ctx.request)) {
+      return await next()
+    }
+
     await next()
+  }
+
+  shouldParseInput (request: HttpRequest): boolean {
+    return this.methods().includes(
+      request.method().toUpperCase()
+    )
+  }
+
+  private methods (): Set<string> {
+    return Set.of([...this.config().methods])
+  }
+
+  async parseJson (request: HttpRequest): Promise<any> {
+    const body = await this.collectBodyFrom(request)
+
+    return JSON.parse(
+      body.toString()
+    )
+  }
+
+  async parseText (request: HttpRequest): Promise<any> {
+    const body = await this.collectBodyFrom(request)
+
+    return body.toString()
+  }
+
+  async collectBodyFrom (request: HttpRequest): Promise<any> {
+    let body = ''
+
+    for await (const chunk of request) {
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+      body += chunk
+    }
+
+    return body
   }
 }
