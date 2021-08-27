@@ -12,8 +12,6 @@ type InlineRouteHandler = (ctx: HttpContext) => any | Promise<any>
 
 export type RouteHandler = ControllerAction | InlineRouteHandler
 
-export type HttpMethod = 'get' | 'head' | 'post' | 'put' | 'delete' | 'patch' | 'options'
-
 export interface RouteAttributes {
   /**
    * A prefix that will be applied to all routes defined within the group callback.
