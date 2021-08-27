@@ -125,7 +125,7 @@ export class Server {
     this.instance().use(async (ctx, next) => {
       try {
         await next()
-      } catch (error) {
+      } catch (error: any) {
         await this.handleErrorFor(this.createContext(ctx), error)
       }
     })
