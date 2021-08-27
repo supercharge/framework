@@ -2,7 +2,8 @@
 
 // import Formidable from 'formidable'
 import JSON from '@supercharge/json'
-// import { HttpError } from '@supercharge/http-error'
+import { URLSearchParams } from 'url'
+import { HttpError } from '@supercharge/http-errors'
 import { BodyparserOptions } from './bodyparser-options'
 import { Application, HttpContext, HttpRequest, Middleware, NextHandler } from '@supercharge/contracts'
 
@@ -81,8 +82,7 @@ export class Bodyparser implements Middleware {
         return await this.parseMultipart(request)
 
       default:
-        // TODO throw HttpError.unsupportedMediaType()
-        throw new Error('UnsupportedMediaType')
+        throw HttpError.unsupportedMediaType(`Unsupported Content-Type. Received "${request.contentType() ?? ''}"`)
     }
   }
 
@@ -100,7 +100,7 @@ export class Bodyparser implements Middleware {
   }
 
   /**
-   * Parse incoming request body and return the result.
+   * Returns the parsed JSON data.
    *
    * @param {HttpRequest} request
    *
@@ -127,6 +127,13 @@ export class Bodyparser implements Middleware {
     )
   }
 
+  /**
+   * Returns the parsed text data.
+   *
+   * @param {HttpRequest} request
+   *
+   * @returns {*}
+   */
   async parseText (request: HttpRequest): Promise<any> {
     const body = await this.collectBodyFrom(request)
 
@@ -146,9 +153,19 @@ export class Bodyparser implements Middleware {
     )
   }
 
+  /**
+   * Returns the parsed form data.
+   *
+   * @param {HttpRequest} request
+   *
+   * @returns {*}
+   */
   async parseFormUrlEncoded (request: HttpRequest): Promise<any> {
-    // TODO
-    // const body = await this.collectBodyFrom(request)
+    const body = await this.collectBodyFrom(request)
+
+    return Object.fromEntries(
+      new URLSearchParams(body.toString())
+    )
   }
 
   /**
@@ -164,6 +181,13 @@ export class Bodyparser implements Middleware {
     )
   }
 
+  /**
+   * Returns the parsed multipart data.
+   *
+   * @param {HttpRequest} request
+   *
+   * @returns {*}
+   */
   async parseMultipart (_request: HttpRequest): Promise<any> {
     // TODO
     // const body = await this.collectBodyFrom(request)
@@ -184,6 +208,13 @@ export class Bodyparser implements Middleware {
     // })
   }
 
+  /**
+   * Fetch the incoming data from the given `request`.
+   *
+   * @param {HttpRequest} request
+   *
+   * @returns {*}
+   */
   async collectBodyFrom (request: HttpRequest): Promise<any> {
     let body = ''
 
