@@ -218,7 +218,9 @@ export class Bodyparser implements Middleware {
   async collectBodyFrom (request: HttpRequest): Promise<any> {
     let body = ''
 
-    request.req().setEncoding(this.options().encoding())
+    request.req().setEncoding(
+      this.options().encoding()
+    )
 
     for await (const chunk of request.req()) {
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
