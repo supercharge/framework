@@ -1,8 +1,10 @@
 'use strict'
 
-import Set from '@supercharge/set'
+// import Formidable from 'formidable'
 import JSON from '@supercharge/json'
-import { Application, BodyparserOptions, HttpContext, HttpRequest, Middleware, NextHandler } from '@supercharge/contracts'
+// import { HttpError } from '@supercharge/http-error'
+import { BodyparserOptions } from './bodyparser-options'
+import { Application, HttpContext, HttpRequest, Middleware, NextHandler } from '@supercharge/contracts'
 
 export class Bodyparser implements Middleware {
   /**
@@ -24,8 +26,10 @@ export class Bodyparser implements Middleware {
    *
    * @returns {CorsOptions}
    */
-  config (): BodyparserOptions {
-    return this.app.config().get('bodyparser')
+  options (): BodyparserOptions {
+    return new BodyparserOptions(
+      this.app.config().get('bodyparser')
+    )
   }
 
   /**
@@ -34,29 +38,92 @@ export class Bodyparser implements Middleware {
    * @param ctx HttpContext
    * @param next NextHandler
    */
-  async handle (ctx: HttpContext, next: NextHandler): Promise<void> {
-    if (this.shouldParseInput(ctx.request)) {
-      return await next()
+  async handle ({ request }: HttpContext, next: NextHandler): Promise<void> {
+    if (this.shouldParseInput(request)) {
+      request.setPayload(await this.parse(request))
     }
 
     await next()
   }
 
+  /**
+   * Determine whether to parse incoming request body.
+   *
+   * @param {HttpRequest} request
+   *
+   * @returns {Boolean}
+   */
   shouldParseInput (request: HttpRequest): boolean {
-    return this.methods().includes(
+    return this.options().methods().includes(
       request.method().toUpperCase()
     )
   }
 
-  private methods (): Set<string> {
-    return Set.of([...this.config().methods])
+  /**
+   * Parse incoming request body and return the result.
+   *
+   * @param {HttpRequest} request
+   *
+   * @returns {Boolean}
+   */
+  async parse (request: HttpRequest): Promise<any> {
+    switch (true) {
+      case this.isJson(request):
+        return await this.parseJson(request)
+
+      case this.isText(request):
+        return await this.parseText(request)
+
+      case this.isFormUrlEncoded(request):
+        return await this.parseFormUrlEncoded(request)
+
+      case this.isMultipart(request):
+        return await this.parseMultipart(request)
+
+      default:
+        // TODO throw HttpError.unsupportedMediaType()
+        throw new Error('UnsupportedMediaType')
+    }
   }
 
+  /**
+   * Determine whether the given `request` contains a JSON body.
+   *
+   * @param {HttpRequest} request
+   *
+   * @returns {Boolean}
+   */
+  protected isJson (request: HttpRequest): boolean {
+    return request.isContentType(
+      this.options().json().contentTypes()
+    )
+  }
+
+  /**
+   * Parse incoming request body and return the result.
+   *
+   * @param {HttpRequest} request
+   *
+   * @returns {Boolean}
+   */
   async parseJson (request: HttpRequest): Promise<any> {
     const body = await this.collectBodyFrom(request)
 
     return JSON.parse(
       body.toString()
+    )
+  }
+
+  /**
+   * Determine whether the given `request` contains a text body.
+   *
+   * @param {HttpRequest} request
+   *
+   * @returns {Boolean}
+   */
+  protected isText (request: HttpRequest): boolean {
+    return request.isContentType(
+      this.options().text().contentTypes()
     )
   }
 
@@ -66,10 +133,63 @@ export class Bodyparser implements Middleware {
     return body.toString()
   }
 
+  /**
+   * Determine whether the given `request` contains form-url-encoded data.
+   *
+   * @param {HttpRequest} request
+   *
+   * @returns {Boolean}
+   */
+  protected isFormUrlEncoded (request: HttpRequest): boolean {
+    return request.isContentType(
+      this.options().form().contentTypes()
+    )
+  }
+
+  async parseFormUrlEncoded (request: HttpRequest): Promise<any> {
+    // TODO
+    // const body = await this.collectBodyFrom(request)
+  }
+
+  /**
+   * Determine whether the given `request` contains multipart data.
+   *
+   * @param {HttpRequest} request
+   *
+   * @returns {Boolean}
+   */
+  protected isMultipart (request: HttpRequest): boolean {
+    return request.isContentType(
+      this.options().multipart().contentTypes()
+    )
+  }
+
+  async parseMultipart (_request: HttpRequest): Promise<any> {
+    // TODO
+    // const body = await this.collectBodyFrom(request)
+
+    // const form = Formidable({
+    //   encoding: this.options().encoding() as any, // TODO make BufferEncoding from Formidable compatible with Node’s BufferEncoding
+    //   maxFields: this.options().multipart().maxFields()
+    // })
+
+    // const { fields, files } = await new Promise((resolve, reject) => {
+    //   form.parse(request.req(), (error, fields, files) => {
+    //     if (error) {
+    //       return reject(error)
+    //     }
+
+    //     resolve({ fields, files })
+    //   })
+    // })
+  }
+
   async collectBodyFrom (request: HttpRequest): Promise<any> {
     let body = ''
 
-    for await (const chunk of request) {
+    request.req().setEncoding(this.options().encoding())
+
+    for await (const chunk of request.req()) {
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       body += chunk
     }
