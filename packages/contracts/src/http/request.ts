@@ -1,15 +1,13 @@
 'use strict'
 
-import { IncomingHttpHeaders } from 'http'
 import { InteractsWithContentTypes } from './concerns'
+import { IncomingHttpHeaders, IncomingMessage } from 'http'
 
 export interface HttpRequest extends InteractsWithContentTypes {
   /**
-   * Returns the request’s async iterator.
-   *
-   * @returns {AsyncIterator}
+   * Returns the raw Node.js request.
    */
-  [Symbol.asyncIterator] (): AsyncIterator<any>
+  req(): IncomingMessage
 
   /**
    * Returns the request method.
@@ -37,6 +35,11 @@ export interface HttpRequest extends InteractsWithContentTypes {
   payload: any
 
   /**
+   * Assign the given `payload` as the request body.
+   */
+  setPayload(payload: any): this
+
+  /**
    * Returns the request headers.
    */
   headers: IncomingHttpHeaders
@@ -51,4 +54,5 @@ export interface HttpRequest extends InteractsWithContentTypes {
    * Determine whether the request contains a header with the given `key`.
    */
   hasHeader(key: string): boolean
+
 }

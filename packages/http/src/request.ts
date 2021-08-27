@@ -2,8 +2,8 @@
 
 import { Context } from 'koa'
 import Str from '@supercharge/strings'
-import { IncomingHttpHeaders } from 'http'
 import { RouterContext } from 'koa__router'
+import { IncomingHttpHeaders, IncomingMessage } from 'http'
 import { HttpRequest, InteractsWithContentTypes } from '@supercharge/contracts'
 
 export class Request implements HttpRequest, InteractsWithContentTypes {
@@ -23,12 +23,10 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
   }
 
   /**
-   * Returns the request’s async iterator.
-   *
-   * @returns {AsyncIterator}
+   * Returns the raw Node.js request.
    */
-  [Symbol.asyncIterator] (): AsyncIterator<any> {
-    return this.ctx.req[Symbol.asyncIterator]()
+  req (): IncomingMessage {
+    return this.ctx.req
   }
 
   /**
@@ -64,6 +62,19 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    */
   get payload (): any {
     return this.ctx.request.body
+  }
+
+  /**
+   * Assign the given `payload` as the request body.
+   *
+   * @param {*} payload
+   *
+   * @returns {this}
+   */
+  setPayload (payload: any): this {
+    this.ctx.body = payload
+
+    return this
   }
 
   /**
