@@ -32,6 +32,16 @@ export interface InteractsWithContentTypes {
   wantsHtml (): boolean
 
   /**
+   * Returns the request’s content mime type from the `Content-Type` header field.
+   *
+   * @example
+   * ```
+   * request.contentType()
+   * ```
+   */
+  contentType (): string | undefined
+
+  /**
    * Determine whether the request contains any of the given content `types`.
    * This method compares the "Content-Type" header value with all of the
    * given `types` determining whether one of the content types matches.
