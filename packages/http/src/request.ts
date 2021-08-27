@@ -143,18 +143,16 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * // Request with Content-Type: application/json
    * request.isContentType('json') // true
    * request.isContentType('application/*')  // true
-   * request.isContentType('application/json', 'application/json') // true
    *
    * request.isContentType('json', 'html') // true
-   * request.isContentType('text/html') // false
    * request.isContentType('html') // false
    * ```
    */
   isContentType (types: string[]): boolean
   isContentType (...types: string[]): boolean
   isContentType (...types: string[]|string[][]): boolean {
-    const contentTypes = ([] as string[]).concat(...types)
-
-    return !!this.ctx.request.is(contentTypes)
+    return !!this.ctx.request.is(
+      ([] as string[]).concat(...types)
+    )
   }
 }
