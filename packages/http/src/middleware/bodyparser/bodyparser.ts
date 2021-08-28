@@ -40,7 +40,7 @@ export class Bodyparser implements Middleware {
    * @param next NextHandler
    */
   async handle ({ request }: HttpContext, next: NextHandler): Promise<void> {
-    if (this.shouldParseInput(request)) {
+    if (this.shouldParsePayload(request)) {
       request.setPayload(await this.parse(request))
     }
 
@@ -54,8 +54,21 @@ export class Bodyparser implements Middleware {
    *
    * @returns {Boolean}
    */
-  shouldParseInput (request: HttpRequest): boolean {
-    return this.options().methods().includes(
+  shouldParsePayload (request: HttpRequest): boolean {
+    return this.hasConfiguredMethod(request) && request.hasPayload()
+  }
+
+  /**
+   * Determine whether to parse incoming request body.
+   *
+   * @param {HttpRequest} request
+   *
+   * @returns {Boolean}
+   */
+  hasConfiguredMethod (request: HttpRequest): boolean {
+    return this.options().methods().map(method => {
+      return method.toUpperCase()
+    }).includes(
       request.method().toUpperCase()
     )
   }
@@ -68,22 +81,23 @@ export class Bodyparser implements Middleware {
    * @returns {Boolean}
    */
   async parse (request: HttpRequest): Promise<any> {
-    switch (true) {
-      case this.isJson(request):
-        return await this.parseJson(request)
-
-      case this.isText(request):
-        return await this.parseText(request)
-
-      case this.isFormUrlEncoded(request):
-        return await this.parseFormUrlEncoded(request)
-
-      case this.isMultipart(request):
-        return await this.parseMultipart(request)
-
-      default:
-        throw HttpError.unsupportedMediaType(`Unsupported Content-Type. Received "${request.contentType() ?? ''}"`)
+    if (this.isJson(request)) {
+      return await this.parseJson(request)
     }
+
+    if (this.isText(request)) {
+      return await this.parseText(request)
+    }
+
+    if (this.isFormUrlEncoded(request)) {
+      return await this.parseFormUrlEncoded(request)
+    }
+
+    if (this.isMultipart(request)) {
+      return await this.parseMultipart(request)
+    }
+
+    throw HttpError.unsupportedMediaType(`Unsupported Content-Type. Received "${request.contentType() ?? ''}"`)
   }
 
   /**
