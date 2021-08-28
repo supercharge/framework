@@ -36,6 +36,6 @@ export class BodyparserBaseOptions {
    * @returns {String[]}
    */
   contentTypes (): string[] {
-    return Set.of(this.options.contentTypes).toArray()
+    return Set.from(this.options.contentTypes).toArray()
   }
 }

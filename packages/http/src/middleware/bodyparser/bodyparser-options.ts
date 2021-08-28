@@ -22,7 +22,7 @@ export class BodyparserOptions {
   }
 
   /**
-   * Returns a JSON options instance.
+   * Returns the configured encoding.
    *
    * @returns {BodyparserJsonOptions}
    */
@@ -31,12 +31,12 @@ export class BodyparserOptions {
   }
 
   /**
-   * Returns a JSON options instance.
+   * Returns an array of allowed methods.
    *
    * @returns {BodyparserJsonOptions}
    */
   methods (): string[] {
-    return Set.of(this.options.methods).toArray()
+    return Set.from(this.options.methods).toArray()
   }
 
   /**
