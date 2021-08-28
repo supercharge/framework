@@ -65,6 +65,13 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
   }
 
   /**
+   * Determine whether a request body exists.
+   */
+  hasPayload (): boolean {
+    return !!this.header('transfer-encoding') || !isNaN(Number(this.header('content-length')))
+  }
+
+  /**
    * Assign the given `payload` as the request body.
    *
    * @param {*} payload

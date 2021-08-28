@@ -35,6 +35,11 @@ export interface HttpRequest extends InteractsWithContentTypes {
   payload: any
 
   /**
+   * Determine whether a request body exists.
+   */
+  hasPayload(): boolean
+
+  /**
    * Assign the given `payload` as the request body.
    */
   setPayload(payload: any): this
