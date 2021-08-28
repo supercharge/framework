@@ -1,14 +1,15 @@
 'use strict'
 
+import Bytes from 'bytes'
 import { BodyparserBaseOptions } from './bodyparser-base-options'
 
 export class BodyparserJsonOptions extends BodyparserBaseOptions {
   /**
-   * Returns the JSON body size limit.
+   * Returns the JSON body size limit in bytes.
    *
    * @returns {String|Number}
    */
-  limit (): string | number {
-    return this.options.limit ?? '1mb'
+  limit (): number {
+    return Bytes.parse(this.options.limit ?? '1mb')
   }
 }

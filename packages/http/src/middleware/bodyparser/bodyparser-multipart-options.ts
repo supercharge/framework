@@ -1,7 +1,8 @@
 'use strict'
 
-import { BodyparserOptions as BodyparserOptionsContract } from '@supercharge/contracts'
+import Bytes from 'bytes'
 import { BodyparserBaseOptions } from './bodyparser-base-options'
+import { BodyparserOptions as BodyparserOptionsContract } from '@supercharge/contracts'
 
 export class BodyparserMultipartOptions extends BodyparserBaseOptions {
   /**
@@ -21,12 +22,12 @@ export class BodyparserMultipartOptions extends BodyparserBaseOptions {
   }
 
   /**
-   * Returns the multipart body size limit.
+   * Returns the multipart body size limit in bytes.
    *
    * @returns {String|Number}
    */
-  limit (): string | number {
-    return this.options.limit ?? '20mb'
+  limit (): number {
+    return Bytes.parse(this.options.limit ?? '20mb')
   }
 
   /**

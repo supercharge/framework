@@ -1,5 +1,6 @@
 'use strict'
 
+import Bytes from 'bytes'
 import Set from '@supercharge/set'
 
 interface BodyparserBaseOptionsContract {
@@ -23,12 +24,12 @@ export class BodyparserBaseOptions {
   }
 
   /**
-   * Returns the JSON body size limit.
+   * Returns the JSON body size limit in bytes.
    *
    * @returns {String|Number}
    */
-  limit (): string | number {
-    return this.options.limit ?? '56kb'
+  limit (): number {
+    return Bytes.parse(this.options.limit ?? '56kb')
   }
 
   /**
