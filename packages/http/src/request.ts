@@ -79,7 +79,7 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * @returns {this}
    */
   setPayload (payload: any): this {
-    this.ctx.body = payload
+    this.ctx.request.body = payload
 
     return this
   }
