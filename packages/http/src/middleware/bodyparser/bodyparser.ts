@@ -7,7 +7,7 @@ import { HttpError } from '@supercharge/http-errors'
 import { BodyparserOptions } from './bodyparser-options'
 import { Application, HttpContext, HttpRequest, Middleware, NextHandler } from '@supercharge/contracts'
 
-export class Bodyparser implements Middleware {
+export class BodyparserMiddleware implements Middleware {
   /**
    * The application instance.
    */

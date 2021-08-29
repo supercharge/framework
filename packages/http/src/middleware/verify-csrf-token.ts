@@ -2,7 +2,7 @@
 
 import { HttpContext, Middleware, NextHandler } from '@supercharge/contracts'
 
-export class VerifyCsrfToken implements Middleware {
+export class VerifyCsrfTokenMiddleware implements Middleware {
   /**
    * Returns an array of URIs that should be excluded from CSRF verfication.
    *
