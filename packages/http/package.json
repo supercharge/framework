@@ -17,7 +17,7 @@
 		"@supercharge/contracts": "^2.0.0-alpha.3",
 		"@supercharge/goodies": "~1.10.0",
 		"@supercharge/http-errors": "~1.0.0",
-		"@supercharge/json": "~1.0.0",
+		"@supercharge/json": "~1.1.0",
 		"@supercharge/set": "~2.1.0",
 		"@supercharge/strings": "~1.19.0",
 		"bytes": "~3.1.0",
@@ -42,7 +42,8 @@
 		"eslint-plugin-node": "~11.1.0",
 		"eslint-plugin-promise": "~5.1.0",
 		"expect": "~27.1.0",
-		"typescript": "~4.4.2",
+		"supertest-fetch": "~1.4.3",
+		"typescript": "~4.3.5",
 		"uvu": "~0.5.1"
 	},
 	"engines": {
@@ -69,7 +70,7 @@
 		"lint": "eslint src --ext .js,.ts",
 		"lint:fix": "npm run lint -- --fix",
 		"test": "npm run build && npm run lint && npm run test:coverage",
-		"test:run": "uvu",
+		"test:run": "uvu --ignore fixtures --ignore helpers",
 		"test:coverage": "c8 --include=dist npm run test:run && npm run test:report",
 		"test:report": "c8 report --reporter=html"
 	}
