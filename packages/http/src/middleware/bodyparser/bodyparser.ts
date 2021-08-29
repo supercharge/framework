@@ -123,9 +123,7 @@ export class BodyparserMiddleware implements Middleware {
   async parseJson (request: HttpRequest): Promise<any> {
     const body = await this.collectBodyFrom(request)
 
-    return JSON.parse(
-      body.toString()
-    )
+    return JSON.parse(body.toString()) || {}
   }
 
   /**
