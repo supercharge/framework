@@ -11,7 +11,22 @@ export class Server {
   /**
    * The server’s meta data.
    */
-  private meta: ServerMeta
+  private meta: {
+    /**
+     * The HTTP kernel instance.
+     */
+    kernel: HttpKernel
+
+    /**
+     * The Koa server instance.
+     */
+    instance?: Koa
+
+    /**
+     * The HTTP router instance.
+     */
+    router?: HttpRouter
+  }
 
   /**
    * Create a new HTTP context instance.
@@ -88,6 +103,7 @@ export class Server {
   createServerInstance (): Koa {
     return tap(new Koa(), server => {
       server.keys = [this.app().key()]
+      this.meta.instance = server
     })
   }
 
@@ -273,21 +289,4 @@ export class Server {
   private hostname (): string {
     return this.app().config().get('http.host')
   }
-}
-
-interface ServerMeta {
-  /**
-   * The HTTP kernel instance.
-   */
-  kernel: HttpKernel
-
-  /**
-   * The Koa server instance.
-   */
-  instance?: Koa
-
-  /**
-   * The HTTP router instance.
-   */
-  router?: HttpRouter
 }
