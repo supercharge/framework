@@ -5,8 +5,11 @@
 ### Added
 - `@supercharge/contracts`
     - extend the container types to resolve classes when passed to as a namespace
+    - extend the HTTP `Request` contract: added `request.hasPayload()`, `request.setPayload()`, `request.rawPayload()`, `request.setRawPayload()`, `request.isContentType(...types)`, `request.contentType()`
 - `@supercharge/container`
     - add handling to bind and resolve classes as the namespace in the container
+- `@supercharge/http`
+    - add bodyparser middleware replacing the previously used `koa-body`
 
 ### Updated
 - bump dependencies
