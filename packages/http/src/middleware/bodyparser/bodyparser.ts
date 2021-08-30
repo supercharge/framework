@@ -1,10 +1,10 @@
 'use strict'
 
-// import Formidable from 'formidable'
 import JSON from '@supercharge/json'
 import { URLSearchParams } from 'url'
 import { tap } from '@supercharge/goodies'
 import { HttpError } from '@supercharge/http-errors'
+import Formidable, { Fields, Files } from 'formidable'
 import { BodyparserOptions } from './bodyparser-options'
 import { Application, HttpContext, HttpRequest, Middleware, NextHandler } from '@supercharge/contracts'
 
@@ -201,24 +201,21 @@ export class BodyparserMiddleware implements Middleware {
    *
    * @returns {*}
    */
-  async parseMultipart (_request: HttpRequest): Promise<any> {
-    // TODO
-    // const body = await this.collectBodyFrom(request)
+  async parseMultipart (request: HttpRequest): Promise<{ fields: Fields, files: Files }> {
+    const form = new Formidable.IncomingForm({
+      encoding: this.options().encoding() as any, // TODO make Formidable BufferEncoding compatible with Node BufferEncoding
+      maxFields: this.options().multipart().maxFields()
+    })
 
-    // const form = Formidable({
-    //   encoding: this.options().encoding() as any, // TODO make BufferEncoding from Formidable compatible with Node’s BufferEncoding
-    //   maxFields: this.options().multipart().maxFields()
-    // })
+    return await new Promise((resolve, reject) => {
+      form.parse(request.req(), (error, fields: Fields, files: Files) => {
+        if (error) {
+          return reject(error)
+        }
 
-    // const { fields, files } = await new Promise((resolve, reject) => {
-    //   form.parse(request.req(), (error, fields, files) => {
-    //     if (error) {
-    //       return reject(error)
-    //     }
-
-    //     resolve({ fields, files })
-    //   })
-    // })
+        resolve({ fields, files })
+      })
+    })
   }
 
   /**
