@@ -12,7 +12,7 @@ const appMock = {
   make () {},
   config () {
     return {
-      get (key) {
+      get () {
         return BodyparserConfig
       }
     }
