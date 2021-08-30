@@ -45,6 +45,15 @@ export interface HttpRequest extends InteractsWithContentTypes {
   setPayload(payload: any): this
 
   /**
+   * Returns the raw request payload
+   */
+  rawPayload(): any
+
+  /**
+    * Store the given raw `payload` for this request.
+    */
+  setRawPayload(payload: any): this
+  /**
    * Returns the request headers.
    */
   headers: IncomingHttpHeaders

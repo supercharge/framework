@@ -13,6 +13,16 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
   protected readonly ctx: Context | Context & RouterContext
 
   /**
+   * Stores request meta data.
+   */
+  protected readonly meta: {
+    /**
+     * Stores the raw request payload
+     */
+    rawPayload?: any
+  }
+
+  /**
    * Create a new response instance.
    *
    * @param ctx
@@ -20,6 +30,7 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    */
   constructor (ctx: Context | Context & RouterContext) {
     this.ctx = ctx
+    this.meta = {}
   }
 
   /**
@@ -80,6 +91,26 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    */
   setPayload (payload: any): this {
     this.ctx.request.body = payload
+
+    return this
+  }
+
+  /**
+   * Returns the raw request payload
+   */
+  rawPayload (): any {
+    return this.meta.rawPayload
+  }
+
+  /**
+   * Store the given raw `payload` for this request.
+   *
+   * @param {*} payload
+   *
+   * @returns {this}
+   */
+  setRawPayload (payload: any): this {
+    this.meta.rawPayload = payload
 
     return this
   }
