@@ -3,6 +3,7 @@
 // import Formidable from 'formidable'
 import JSON from '@supercharge/json'
 import { URLSearchParams } from 'url'
+import { tap } from '@supercharge/goodies'
 import { HttpError } from '@supercharge/http-errors'
 import { BodyparserOptions } from './bodyparser-options'
 import { Application, HttpContext, HttpRequest, Middleware, NextHandler } from '@supercharge/contracts'
@@ -239,6 +240,8 @@ export class BodyparserMiddleware implements Middleware {
       body += chunk
     }
 
-    return body
+    return tap(body, () => {
+      request.setRawPayload(body)
+    })
   }
 }
