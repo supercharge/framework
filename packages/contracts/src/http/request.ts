@@ -1,8 +1,9 @@
 'use strict'
 
+import { FileBag } from './file-bag'
+import { UploadedFile } from './uploaded-file'
 import { InteractsWithContentTypes } from './concerns'
 import { IncomingHttpHeaders, IncomingMessage } from 'http'
-import { FileBag } from './file-bag'
 
 export interface HttpRequest extends InteractsWithContentTypes {
   /**
@@ -63,7 +64,7 @@ export interface HttpRequest extends InteractsWithContentTypes {
   /**
    * Assign the given `files` to the request.
    */
-  setFiles(files: any): this
+  setFiles(files: { [name: string]: UploadedFile | UploadedFile[] }): this
 
   /**
    * Returns the request headers.

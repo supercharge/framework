@@ -1,10 +1,19 @@
 'use strict'
 
 import { Context } from 'koa'
+import { FileBag } from './file-bag'
 import Str from '@supercharge/strings'
+import { tap } from '@supercharge/goodies'
 import { RouterContext } from 'koa__router'
 import { IncomingHttpHeaders, IncomingMessage } from 'http'
-import { HttpRequest, InteractsWithContentTypes } from '@supercharge/contracts'
+import { HttpRequest, InteractsWithContentTypes, UploadedFile } from '@supercharge/contracts'
+
+/**
+ * Represents uploaded files.
+ */
+interface Files {
+  [name: string]: UploadedFile | UploadedFile[]
+}
 
 export class Request implements HttpRequest, InteractsWithContentTypes {
   /**
@@ -17,9 +26,14 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    */
   protected readonly meta: {
     /**
-     * Stores the raw request payload
+     * Stores the raw request payload.
      */
     rawPayload?: any
+
+    /**
+     * Stores the uploaded files on the request.
+     */
+    files: Files
   }
 
   /**
@@ -30,7 +44,7 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    */
   constructor (ctx: Context | Context & RouterContext) {
     this.ctx = ctx
-    this.meta = {}
+    this.meta = { files: {} }
   }
 
   /**
@@ -90,9 +104,9 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * @returns {this}
    */
   setPayload (payload: any): this {
-    this.ctx.request.body = payload
-
-    return this
+    return tap(this, () => {
+      this.ctx.request.body = payload
+    })
   }
 
   /**
@@ -110,9 +124,31 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * @returns {this}
    */
   setRawPayload (payload: any): this {
-    this.meta.rawPayload = payload
+    return tap(this, () => {
+      this.meta.rawPayload = payload
+    })
+  }
 
-    return this
+  /**
+   * Returns all files on the request.
+   *
+   * @returns {FileBag}
+   */
+  files (): FileBag {
+    return new FileBag(this.meta.files)
+  }
+
+  /**
+   * Assign the given `files` to the request.
+   *
+   * @param {Files} files
+   *
+   * @returns {this}
+   */
+  setFiles (files: Files): this {
+    return tap(this, () => {
+      this.meta.files = files
+    })
   }
 
   /**

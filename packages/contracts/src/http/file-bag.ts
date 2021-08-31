@@ -4,17 +4,26 @@ import { UploadedFile } from './uploaded-file'
 
 export interface FileBag {
   /**
-   * Returns all uploaded files.
+   * Returns an object of all uploaded files.
    */
-  all(): UploadedFile[]
+  all(...keys: string[]): { [name: string]: UploadedFile | UploadedFile[] | undefined}
 
   /**
    * Returns the uploaded file for the given `name`.
    */
-  get(name: string): UploadedFile | undefined
+  get(name: string): UploadedFile | UploadedFile[] | undefined
 
   /**
-   * Add the given file to this header bag.
+   * Add the given file to this header bag. If there’s
    */
   add(name: string, file: UploadedFile): this
+
+  /**
+   * Determine whether a file or list of files exists for the given `name`.
+   *
+   * @param {String} name
+   *
+   * @returns {Boolean}
+   */
+  has(name: string): boolean
 }
