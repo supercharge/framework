@@ -1,17 +1,18 @@
 'use strict'
 
-import { MultipartFile } from './multipart-file'
+import Map from '@supercharge/map'
+import { MultipartFormField } from './multipart-form-field'
 
 export class MultipartBag {
   /**
    * Stores the multipart fields.
    */
-  protected readonly fields: { [field: string]: string | string[] }
+  protected readonly fields: Map<string, MultipartFormField<string>>
 
   /**
    * Stores the multipart files.
    */
-  protected readonly files: Record<string, MultipartFile | MultipartFile[] >
+  protected readonly files: Map<string, MultipartFormField<any>>
 
   /**
    * Create a new instance.
@@ -19,8 +20,8 @@ export class MultipartBag {
    * @param {BodyparserOptionsContract} options
    */
   constructor () {
-    this.files = {}
-    this.fields = {}
+    this.files = new Map()
+    this.fields = new Map()
   }
 
   addField (field: { [field: string]: string | string[] }): this {
@@ -28,8 +29,10 @@ export class MultipartBag {
   }
 
   addFields (fields: Array<{ [field: string]: string | string[] }>): this {
-    for (const [name, value] of fields) {
-      // TODO
+    for (const item of fields) {
+      console.log(item)
+
+      // this.fields.set(name, value)
     }
     return this
   }

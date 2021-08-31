@@ -2,6 +2,7 @@
 
 import { InteractsWithContentTypes } from './concerns'
 import { IncomingHttpHeaders, IncomingMessage } from 'http'
+import { FileBag } from './file-bag'
 
 export interface HttpRequest extends InteractsWithContentTypes {
   /**
@@ -53,6 +54,17 @@ export interface HttpRequest extends InteractsWithContentTypes {
     * Store the given raw `payload` for this request.
     */
   setRawPayload(payload: any): this
+
+  /**
+   * Returns all files on the request.
+   */
+  files(): FileBag
+
+  /**
+   * Assign the given `files` to the request.
+   */
+  setFiles(files: any): this
+
   /**
    * Returns the request headers.
    */

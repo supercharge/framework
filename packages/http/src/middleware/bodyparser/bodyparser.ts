@@ -42,7 +42,7 @@ export class BodyparserMiddleware implements Middleware {
    */
   async handle ({ request }: HttpContext, next: NextHandler): Promise<void> {
     if (this.shouldParsePayload(request)) {
-      request.setPayload(await this.parse(request))
+      await this.parse(request)
     }
 
     await next()
@@ -83,19 +83,28 @@ export class BodyparserMiddleware implements Middleware {
    */
   async parse (request: HttpRequest): Promise<any> {
     if (this.isJson(request)) {
-      return await this.parseJson(request)
+      return request.setPayload(
+        await this.parseJson(request)
+      )
     }
 
     if (this.isText(request)) {
-      return await this.parseText(request)
+      return request.setPayload(
+        await this.parseText(request)
+      )
     }
 
     if (this.isFormUrlEncoded(request)) {
-      return await this.parseFormUrlEncoded(request)
+      return request.setPayload(
+        await this.parseFormUrlEncoded(request)
+      )
     }
 
     if (this.isMultipart(request)) {
-      return await this.parseMultipart(request)
+      const { fields, files } = await this.parseMultipart(request)
+
+      request.setFiles(files)
+      request.setPayload(fields)
     }
 
     throw HttpError.unsupportedMediaType(`Unsupported Content-Type. Received "${request.contentType() ?? ''}"`)
@@ -203,6 +212,7 @@ export class BodyparserMiddleware implements Middleware {
    */
   async parseMultipart (request: HttpRequest): Promise<{ fields: Fields, files: Files }> {
     const form = new Formidable.IncomingForm({
+      multiples: true,
       encoding: this.options().encoding() as any, // TODO make Formidable BufferEncoding compatible with Node BufferEncoding
       maxFields: this.options().multipart().maxFields()
     })
