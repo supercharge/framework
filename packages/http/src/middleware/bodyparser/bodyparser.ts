@@ -3,6 +3,7 @@
 import JSON from '@supercharge/json'
 import { URLSearchParams } from 'url'
 import { tap } from '@supercharge/goodies'
+import { UploadedFile } from '../../uploaded-file'
 import { HttpError } from '@supercharge/http-errors'
 import Formidable, { Fields, Files } from 'formidable'
 import { BodyparserOptions } from './bodyparser-options'
@@ -81,30 +82,21 @@ export class BodyparserMiddleware implements Middleware {
    *
    * @returns {Boolean}
    */
-  async parse (request: HttpRequest): Promise<any> {
+  async parse (request: HttpRequest): Promise<void> {
     if (this.isJson(request)) {
-      return request.setPayload(
-        await this.parseJson(request)
-      )
+      return await this.parseJson(request)
     }
 
     if (this.isText(request)) {
-      return request.setPayload(
-        await this.parseText(request)
-      )
+      return await this.parseText(request)
     }
 
     if (this.isFormUrlEncoded(request)) {
-      return request.setPayload(
-        await this.parseFormUrlEncoded(request)
-      )
+      return await this.parseFormUrlEncoded(request)
     }
 
     if (this.isMultipart(request)) {
-      const { fields, files } = await this.parseMultipart(request)
-
-      request.setFiles(files)
-      request.setPayload(fields)
+      return await this.parseMultipart(request)
     }
 
     throw HttpError.unsupportedMediaType(`Unsupported Content-Type. Received "${request.contentType() ?? ''}"`)
@@ -130,10 +122,12 @@ export class BodyparserMiddleware implements Middleware {
    *
    * @returns {Boolean}
    */
-  async parseJson (request: HttpRequest): Promise<any> {
+  async parseJson (request: HttpRequest): Promise<void> {
     const body = await this.collectBodyFrom(request)
 
-    return JSON.parse(body.toString()) || {}
+    request.setPayload(
+      JSON.parse(body.toString()) || {}
+    )
   }
 
   /**
@@ -156,10 +150,12 @@ export class BodyparserMiddleware implements Middleware {
    *
    * @returns {*}
    */
-  async parseText (request: HttpRequest): Promise<any> {
+  async parseText (request: HttpRequest): Promise<void> {
     const body = await this.collectBodyFrom(request)
 
-    return body.toString()
+    request.setPayload(
+      body.toString()
+    )
   }
 
   /**
@@ -182,11 +178,13 @@ export class BodyparserMiddleware implements Middleware {
    *
    * @returns {*}
    */
-  async parseFormUrlEncoded (request: HttpRequest): Promise<any> {
+  async parseFormUrlEncoded (request: HttpRequest): Promise<void> {
     const body = await this.collectBodyFrom(request)
 
-    return Object.fromEntries(
-      new URLSearchParams(body.toString())
+    request.setPayload(
+      Object.fromEntries(
+        new URLSearchParams(body.toString())
+      )
     )
   }
 
@@ -210,14 +208,14 @@ export class BodyparserMiddleware implements Middleware {
    *
    * @returns {*}
    */
-  async parseMultipart (request: HttpRequest): Promise<{ fields: Fields, files: Files }> {
+  async parseMultipart (request: HttpRequest): Promise<void> {
     const form = new Formidable.IncomingForm({
       multiples: true,
       encoding: this.options().encoding() as any, // TODO make Formidable BufferEncoding compatible with Node BufferEncoding
       maxFields: this.options().multipart().maxFields()
     })
 
-    return await new Promise((resolve, reject) => {
+    const { files, fields }: { fields: Fields, files: Files } = await new Promise((resolve, reject) => {
       form.parse(request.req(), (error, fields: Fields, files: Files) => {
         if (error) {
           return reject(error)
@@ -226,6 +224,26 @@ export class BodyparserMiddleware implements Middleware {
         resolve({ fields, files })
       })
     })
+
+    request.setPayload(fields)
+    request.setFiles(this.convertToUploadedFiles(files))
+  }
+
+  /**
+   * Convert the files to instances of uploaded files.
+   *
+   * @param {Files} files
+   *
+   * @returns {{ [name: string]: UploadedFile | UploadedFile[] }}
+   */
+  private convertToUploadedFiles (files: Files): { [name: string]: UploadedFile | UploadedFile[] } {
+    return Object.entries(files).reduce((carry: { [key: string]: UploadedFile | UploadedFile[] }, [name, value]) => {
+      carry[name] = Array.isArray(value)
+        ? value.map(file => new UploadedFile(file))
+        : new UploadedFile(value)
+
+      return carry
+    }, {})
   }
 
   /**
