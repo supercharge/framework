@@ -122,7 +122,7 @@ export class BodyparserMiddleware implements Middleware {
    * @returns {Boolean}
    */
   async parseJson (request: HttpRequest): Promise<void> {
-    const body = await this.collectBodyFrom(request)
+    const body = await this.collectBodyFrom(request, { limit: this.options().json().limit() })
 
     request.setPayload(
       JSON.parse(body.toString()) || {}
@@ -150,7 +150,7 @@ export class BodyparserMiddleware implements Middleware {
    * @returns {*}
    */
   async parseText (request: HttpRequest): Promise<void> {
-    const body = await this.collectBodyFrom(request)
+    const body = await this.collectBodyFrom(request, { limit: this.options().text().limit() })
 
     request.setPayload(
       body.toString()
@@ -178,7 +178,7 @@ export class BodyparserMiddleware implements Middleware {
    * @returns {*}
    */
   async parseFormUrlEncoded (request: HttpRequest): Promise<void> {
-    const body = await this.collectBodyFrom(request)
+    const body = await this.collectBodyFrom(request, { limit: this.options().form().limit() })
 
     request.setPayload(
       Object.fromEntries(
@@ -211,7 +211,8 @@ export class BodyparserMiddleware implements Middleware {
     const form = new Formidable.IncomingForm({
       multiples: true,
       encoding: this.options().encoding() as any, // TODO make Formidable BufferEncoding compatible with Node BufferEncoding
-      maxFields: this.options().multipart().maxFields()
+      maxFields: this.options().multipart().maxFields(),
+      maxFieldsSize: this.options().multipart().maxFileSize()
     })
 
     const { files, fields }: { fields: Fields, files: Files } = await new Promise((resolve, reject) => {
@@ -235,7 +236,7 @@ export class BodyparserMiddleware implements Middleware {
    *
    * @returns {*}
    */
-  async collectBodyFrom (request: HttpRequest): Promise<any> {
+  async collectBodyFrom (request: HttpRequest, options: { limit: number}): Promise<any> {
     let body = ''
 
     request.req().setEncoding(
@@ -245,6 +246,10 @@ export class BodyparserMiddleware implements Middleware {
     for await (const chunk of request.req()) {
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       body += chunk
+
+      if (body.length > options.limit) {
+        throw HttpError.payloadTooLarge('Payload Too Large')
+      }
     }
 
     return tap(body, () => {

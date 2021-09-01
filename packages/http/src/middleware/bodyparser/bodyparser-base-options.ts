@@ -4,8 +4,9 @@ import Bytes from 'bytes'
 import Set from '@supercharge/set'
 
 interface BodyparserBaseOptionsContract {
-  limit: number | string
+  limit?: number | string
   contentTypes: string[]
+  maxFileSize?: number | string
 }
 
 export class BodyparserBaseOptions {

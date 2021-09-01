@@ -22,18 +22,18 @@ export class BodyparserMultipartOptions extends BodyparserBaseOptions {
   }
 
   /**
-   * Returns the multipart body size limit in bytes.
+   * Returns the multipart body file size limit in bytes.
    *
-   * @returns {String|Number}
+   * @returns {Number}
    */
-  limit (): number {
-    return Bytes.parse(this.options.limit ?? '20mb')
+  maxFileSize (): number {
+    return Bytes.parse(this.options.maxFileSize ?? '200mb')
   }
 
   /**
    * Returns the maximun number of allowed fields in the multipart body.
    *
-   * @returns {String|Number}
+   * @returns {Number}
    */
   maxFields (): number {
     return this.options.maxFields ?? 1000
