@@ -3,8 +3,8 @@
 import Koa from 'koa'
 import { HttpContext } from './http-context'
 import Collect from '@supercharge/collections'
+import { BodyparserMiddleware } from './middleware'
 import { esmRequire, tap } from '@supercharge/goodies'
-import bodyParser, { IKoaBodyOptions } from 'koa-body'
 import { Application, Class, HttpKernel, MiddlewareCtor, HttpRouter, ErrorHandler } from '@supercharge/contracts'
 
 export class Server {
@@ -163,23 +163,11 @@ export class Server {
    * registered here will be available out of the box.
    */
   registerCoreMiddleware (): void {
-    this.instance().use(bodyParser(
-      // this.bodyParserOptions()
-    ))
-  }
-
-  /**
-   * Returns the body parser options.
-   *
-   * @returns {IKoaBodyOptions}
-   */
-  protected bodyParserOptions (): IKoaBodyOptions {
-    const bodyParserOptions = this.app().config().get('bodyparser')
-
-    // TODO: translate bodyParserOptions into koa-body compatible format
-    return {
-      ...bodyParserOptions
-    }
+    [
+      BodyparserMiddleware
+    ].forEach((Middleware: MiddlewareCtor) => {
+      this.bindAndRegisterMiddleware(Middleware)
+    })
   }
 
   /**
