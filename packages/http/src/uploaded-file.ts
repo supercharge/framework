@@ -26,7 +26,8 @@ export class UploadedFile implements UploadedFileContract {
   }
 
   /**
-   * Returns the current file path.
+   * Returns the current file path of this uploaded file. Uploaded files
+   * are stored in a temporary location of the operating system.
    */
   path (): string {
     return this.file.path
@@ -44,7 +45,6 @@ export class UploadedFile implements UploadedFileContract {
    */
   mimeType (): string | undefined {
     if (this.file.type) {
-      // the code itself says it’s `file.mimetype` but the types say `file.type`
       return this.file.type
     }
   }
@@ -54,5 +54,19 @@ export class UploadedFile implements UploadedFileContract {
    */
   lastModified (): Date {
     return this.file.lastModifiedDate as Date
+  }
+
+  /**
+   * Returns the JSON object of this file.
+   *
+   * @returns {Object}
+   */
+  toJSON (): { [key: string]: any } {
+    return {
+      name: this.name(),
+      size: this.size(),
+      path: this.path(),
+      lastModified: this.lastModified()
+    }
   }
 }
