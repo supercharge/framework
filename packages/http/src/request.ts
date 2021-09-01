@@ -1,25 +1,26 @@
 'use strict'
 
-import { Context } from 'koa'
+import * as Koa from 'koa'
+import { Files } from 'formidable'
 import { FileBag } from './file-bag'
 import Str from '@supercharge/strings'
 import { tap } from '@supercharge/goodies'
 import { RouterContext } from 'koa__router'
 import { IncomingHttpHeaders, IncomingMessage } from 'http'
-import { HttpRequest, InteractsWithContentTypes, UploadedFile } from '@supercharge/contracts'
+import { HttpRequest, InteractsWithContentTypes } from '@supercharge/contracts'
 
-/**
- * Represents uploaded files.
- */
-interface Files {
-  [name: string]: UploadedFile | UploadedFile[]
+declare module 'koa' {
+  interface Request extends Koa.BaseRequest {
+    body?: any
+    files?: Files
+  }
 }
 
 export class Request implements HttpRequest, InteractsWithContentTypes {
   /**
    * The route context object from Koa.
    */
-  protected readonly ctx: Context | Context & RouterContext
+  protected readonly ctx: Koa.Context | Koa.Context & RouterContext
 
   /**
    * Stores request meta data.
@@ -29,11 +30,6 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
      * Stores the raw request payload.
      */
     rawPayload?: any
-
-    /**
-     * Stores the uploaded files on the request.
-     */
-    files: Files
   }
 
   /**
@@ -42,9 +38,9 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * @param ctx
    * @param cookieOptions
    */
-  constructor (ctx: Context | Context & RouterContext) {
+  constructor (ctx: Koa.Context | Koa.Context & RouterContext) {
     this.ctx = ctx
-    this.meta = { files: {} }
+    this.meta = {}
   }
 
   /**
@@ -135,7 +131,7 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * @returns {FileBag}
    */
   files (): FileBag {
-    return new FileBag(this.meta.files)
+    return FileBag.createFromBase(this.ctx.request.files)
   }
 
   /**
@@ -145,9 +141,9 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    *
    * @returns {this}
    */
-  setFiles (files: Files): this {
+  setFiles (files: any): this {
     return tap(this, () => {
-      this.meta.files = files
+      this.ctx.request.files = files
     })
   }
 

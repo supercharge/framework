@@ -1,7 +1,9 @@
 'use strict'
 
+import { Files } from 'formidable'
 import { tap } from '@supercharge/goodies'
-import { FileBag as FileBagContract, UploadedFile } from '@supercharge/contracts'
+import { UploadedFile } from './uploaded-file'
+import { FileBag as FileBagContract } from '@supercharge/contracts'
 
 export class FileBag implements FileBagContract {
   /**
@@ -14,6 +16,25 @@ export class FileBag implements FileBagContract {
    */
   constructor (files: { [name: string]: UploadedFile | UploadedFile[]}) {
     this.files = files
+  }
+
+  /**
+   * Convert the given `files` to Supercharge uploaded file instances.
+   *
+   * @param {Files} files
+   *
+   * @returns {FileBag}
+   */
+  static createFromBase (files?: Files): FileBag {
+    return new this(
+      Object.entries(files ?? {}).reduce((carry: { [key: string]: UploadedFile | UploadedFile[] }, [name, value]) => {
+        carry[name] = Array.isArray(value)
+          ? value.map(file => new UploadedFile(file))
+          : new UploadedFile(value)
+
+        return carry
+      }, {})
+    )
   }
 
   /**
@@ -67,5 +88,12 @@ export class FileBag implements FileBagContract {
    */
   has (name: string): boolean {
     return !!this.get(name)
+  }
+
+  /**
+   * Returns an object containing all files in the bag.
+   */
+  toJSON (): { [name: string]: UploadedFile | UploadedFile[] | undefined} {
+    return this.all()
   }
 }

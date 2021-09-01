@@ -16,7 +16,7 @@ export interface FileBag {
   /**
    * Add the given file to this header bag. If there’s
    */
-  add(name: string, file: UploadedFile): this
+  add(name: string, file: UploadedFile | UploadedFile[]): this
 
   /**
    * Determine whether a file or list of files exists for the given `name`.
