@@ -12,6 +12,7 @@ import { HttpRequest, InteractsWithContentTypes } from '@supercharge/contracts'
 declare module 'koa' {
   interface Request extends Koa.BaseRequest {
     body?: any
+    rawBody?: any
     files?: Files
   }
 }
@@ -23,16 +24,6 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
   protected readonly ctx: Koa.Context | Koa.Context & RouterContext
 
   /**
-   * Stores request meta data.
-   */
-  protected readonly meta: {
-    /**
-     * Stores the raw request payload.
-     */
-    rawPayload?: any
-  }
-
-  /**
    * Create a new response instance.
    *
    * @param ctx
@@ -40,7 +31,6 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    */
   constructor (ctx: Koa.Context | Koa.Context & RouterContext) {
     this.ctx = ctx
-    this.meta = {}
   }
 
   /**
@@ -109,7 +99,7 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * Returns the raw request payload
    */
   rawPayload (): any {
-    return this.meta.rawPayload
+    return this.ctx.request.rawBody
   }
 
   /**
@@ -121,7 +111,7 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    */
   setRawPayload (payload: any): this {
     return tap(this, () => {
-      this.meta.rawPayload = payload
+      this.ctx.request.rawBody = payload
     })
   }
 
