@@ -3,7 +3,6 @@
 import JSON from '@supercharge/json'
 import { URLSearchParams } from 'url'
 import { tap } from '@supercharge/goodies'
-import { UploadedFile } from '../../uploaded-file'
 import { HttpError } from '@supercharge/http-errors'
 import Formidable, { Fields, Files } from 'formidable'
 import { BodyparserOptions } from './bodyparser-options'
@@ -69,9 +68,9 @@ export class BodyparserMiddleware implements Middleware {
    */
   hasConfiguredMethod (request: HttpRequest): boolean {
     return this.options().methods().map(method => {
-      return method.toUpperCase()
+      return method.toLowerCase()
     }).includes(
-      request.method().toUpperCase()
+      request.method().toLowerCase()
     )
   }
 
@@ -225,25 +224,8 @@ export class BodyparserMiddleware implements Middleware {
       })
     })
 
+    request.setFiles(files)
     request.setPayload(fields)
-    request.setFiles(this.convertToUploadedFiles(files))
-  }
-
-  /**
-   * Convert the files to instances of uploaded files.
-   *
-   * @param {Files} files
-   *
-   * @returns {{ [name: string]: UploadedFile | UploadedFile[] }}
-   */
-  private convertToUploadedFiles (files: Files): { [name: string]: UploadedFile | UploadedFile[] } {
-    return Object.entries(files).reduce((carry: { [key: string]: UploadedFile | UploadedFile[] }, [name, value]) => {
-      carry[name] = Array.isArray(value)
-        ? value.map(file => new UploadedFile(file))
-        : new UploadedFile(value)
-
-      return carry
-    }, {})
   }
 
   /**
