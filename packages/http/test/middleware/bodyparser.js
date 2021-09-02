@@ -4,142 +4,240 @@ const Koa = require('koa')
 const Path = require('path')
 const { test } = require('uvu')
 const expect = require('expect')
+const deepmerge = require('deepmerge')
 const Supertest = require('supertest')
 const { createServer } = require('http')
-const BodyparserConfig = require('./fixtures/bodyparser-config')
 const { BodyparserMiddleware, HttpContext } = require('../../dist')
+const defaultBodyparserConfig = require('./fixtures/bodyparser-config')
 
-const uploadFilePath = Path.resolve(__dirname, 'fixtures', 'test-multipart-file.txt')
+const testFile1Path = Path.resolve(__dirname, 'fixtures', 'test-multipart-file-1.txt')
+const testFile2Path = Path.resolve(__dirname, 'fixtures', 'test-multipart-file-2.txt')
 
-const appMock = {
-  make () {},
-  config () {
-    return {
-      get () {
-        return BodyparserConfig
+function createAppMock (bodyparserConfig = {}) {
+  return {
+    make () {},
+    config () {
+      return {
+        get () {
+          return deepmerge.all([{}, defaultBodyparserConfig, bodyparserConfig])
+        }
       }
     }
   }
 }
 
-const app = new Koa()
-  .use(async (ctx, next) => {
-    const context = HttpContext.wrap(ctx, appMock)
+function createHttpServer (bodyparserConfig) {
+  const appMock = createAppMock(bodyparserConfig)
 
-    await new BodyparserMiddleware(appMock).handle(context, async () => {
-      context.response.payload(context.request.payload)
-    })
-
-    await next()
-  })
-
-const server = createServer(app.callback())
-
-test('parse json body', async () => {
-  await Supertest(server)
-    .post('/')
-    .set('Content-Type', 'application/json')
-    .send(JSON.stringify({ hello: 'Supercharge' }))
-    .expect(200, { hello: 'Supercharge' })
-    .expect('content-type', 'application/json; charset=utf-8')
-})
-
-test('proceeds request without a body', async () => {
-  await Supertest(server)
-    .post('/')
-    .set('Content-Type', 'application/json')
-    .expect(200, {})
-})
-
-test('parse urlencoded body', async () => {
-  await Supertest(server)
-    .post('/')
-    .set('Content-Type', 'application/x-www-form-urlencoded')
-    .send('hello=Supercharge')
-    .expect(200, { hello: 'Supercharge' })
-})
-
-test('parse text body', async () => {
-  await Supertest(server)
-    .post('/')
-    .set('Content-Type', 'text/plain')
-    .send('hello Supercharge')
-    .expect(200, 'hello Supercharge')
-})
-
-test('parse multipart formdata', async () => {
   const app = new Koa().use(async (ctx, next) => {
     const context = HttpContext.wrap(ctx, appMock)
 
-    await new BodyparserMiddleware(appMock).handle(context, async () => {
-      context.response.payload(context.request.files())
-    })
+    try {
+      await new BodyparserMiddleware(appMock).handle(context, async () => {
+        context.response.payload({
+          files: context.request.files(),
+          payload: context.request.payload
+        })
+      })
+    } catch (error) {
+      return error.status
+        ? context.response.throw(error.status, error.message)
+        : context.response.throw(error)
+    }
 
     await next()
   })
 
-  const server = createServer(app.callback())
+  return createServer(app.callback())
+}
 
-  const { body: files } = await Supertest(server)
+test('parse json body', async () => {
+  await Supertest(createHttpServer())
     .post('/')
-    .attach('upload', uploadFilePath)
+    .set('Content-Type', 'application/json')
+    .send({ hello: 'Supercharge' })
+    .expect(200, { payload: { hello: 'Supercharge' }, files: {} })
+    .expect('content-type', 'application/json; charset=utf-8')
+})
+
+test('parse json body stringified', async () => {
+  await Supertest(createHttpServer())
+    .post('/')
+    .set('Content-Type', 'application/json')
+    .send(JSON.stringify({ hello: 'Supercharge' }))
+    .expect(200, { payload: { hello: 'Supercharge' }, files: {} })
+    .expect('content-type', 'application/json; charset=utf-8')
+})
+
+test('fails when exceeding the JSON limit', async () => {
+  await Supertest(
+    createHttpServer({ json: { limit: '10b' } })
+  )
+    .post('/')
+    .set('Content-Type', 'application/json')
+    .send({ something: 'larger than 10 bytes' })
+    .expect(413, 'Payload Too Large')
+})
+
+test('proceeds request without a body', async () => {
+  await Supertest(createHttpServer())
+    .post('/')
+    .set('Content-Type', 'application/json')
+    .expect(200, { payload: {}, files: {} })
+})
+
+test('parse urlencoded body from string', async () => {
+  await Supertest(createHttpServer())
+    .post('/')
+    .set('Content-Type', 'application/x-www-form-urlencoded')
+    .send('hello=Supercharge')
+    .expect(200, { payload: { hello: 'Supercharge' }, files: {} })
+})
+
+test('parse urlencoded body from object', async () => {
+  await Supertest(createHttpServer())
+    .post('/')
+    .set('Content-Type', 'application/x-www-form-urlencoded')
+    .send({ hello: 'Supercharge' })
+    .expect(200, { payload: { hello: 'Supercharge' }, files: {} })
+})
+
+test('fails when exceeding form limit', async () => {
+  await Supertest(
+    // createHttpServer({ form: { limit: '10b' } })
+    createHttpServer({ form: { limit: '10b' } })
+  )
+    .post('/')
+    .set('Content-Type', 'application/x-www-form-urlencoded')
+    .send({ something: 'larger than 10 bytes' })
+    .expect(413, 'Payload Too Large')
+})
+
+test('parse text body', async () => {
+  await Supertest(createHttpServer())
+    .post('/')
+    .set('Content-Type', 'text/plain')
+    .send('hello Supercharge')
+    .expect(200, { payload: 'hello Supercharge', files: {} })
+})
+
+test('fails when exceeding the text limit', async () => {
+  await Supertest(
+    createHttpServer({ text: { limit: '10b' } })
+  )
+    .post('/')
+    .set('Content-Type', 'text/plain')
+    .send('something larger than 10 bytes')
+    .expect(413, 'Payload Too Large')
+})
+
+test('parse multipart files', async () => {
+  const { body } = await Supertest(createHttpServer())
+    .post('/')
+    .attach('upload', testFile1Path)
     .set('Content-Type', 'multipart/form-data')
     .expect(200)
 
-  expect(Object.keys(files)).toEqual(['upload'])
-  expect(files).toMatchObject({
-    upload: { name: 'test-multipart-file.txt', size: 37 }
+  expect(body.payload).toEqual({})
+  expect(body.files).toMatchObject({ upload: { name: 'test-multipart-file-1.txt', size: 37 } })
+})
+
+test('parse multipart fields', async () => {
+  await Supertest(createHttpServer())
+    .post('/')
+    .field('name', 'Supercharge')
+    .field('isAwesome', 1)
+    .set('Content-Type', 'multipart/form-data')
+    .expect(200, { files: {}, payload: { name: 'Supercharge', isAwesome: '1' } })
+})
+
+test('parse multipart fields and files', async () => {
+  const { body } = await Supertest(createHttpServer())
+    .post('/')
+    .field('user', 'Marcus')
+    .field('name', 'Supercharge')
+    .attach('uploads', testFile1Path)
+    .attach('uploads', testFile2Path)
+    .set('Content-Type', 'multipart/form-data')
+    .expect(200)
+
+  expect(body.payload).toEqual({ name: 'Supercharge', user: 'Marcus' })
+  expect(body.files).toMatchObject({
+    uploads: [
+      { name: 'test-multipart-file-1.txt', size: 37 },
+      { name: 'test-multipart-file-2.txt', size: 45 }
+    ]
   })
 })
 
-// test('parse multiple files in multipart formdata', async () => {
-//   let files
-
-//   const app = new Koa()
-//     .use(async (ctx, next) => {
-//       const context = HttpContext.wrap(ctx, appMock)
-
-//       console.log({ contentType: context.request.contentType() })
-
-//       await new BodyparserMiddleware(appMock).handle(context, async () => {
-//         files = context.request.files()
-//         context.response.payload(context.request.files())
-//       })
-
-//       await next()
-//     })
-
-//   const server = createServer(app.callback())
-
-//   console.log({ files })
-
-//   await Supertest(server)
-//     .post('/')
-//     .attach('package[]', packageFilePath)
-//     .set('Content-Type', 'multipart/form-data')
-//     .expect(200, { package: {} })
-// })
+test('fails when exceeding the maxFileSize limit', async () => {
+  await Supertest(
+    createHttpServer({ multipart: { maxFileSize: '10b' } })
+  )
+    .post('/')
+    .attach('uploads', testFile1Path)
+    .set('Content-Type', 'multipart/form-data')
+    .expect(413, 'maxFileSize exceeded')
+})
 
 test('throws for unsupported content type', async () => {
-  await Supertest(server)
+  await Supertest(createHttpServer())
     .post('/')
     .set('Content-Type', 'unsupported/content-type')
     .send('hello Supercharge')
-    .expect(415, 'Unsupported Media Type')
+    .expect(415, 'Unsupported Content Type. Received "unsupported/content-type"')
 })
 
 test('fails when posting data without content-type headers', async () => {
-  await Supertest(server)
+  await Supertest(createHttpServer())
     .post('/')
-    .expect(415, 'Unsupported Media Type')
+    .expect(415, 'Unsupported Content Type. Received ""')
 })
 
 test('skips parsing on GET request', async () => {
-  await Supertest(server).get('/').expect(204)
+  await Supertest(createHttpServer())
+    .get('/?hello=Supercharge')
+    .expect(200, { files: {} })
 })
 
 test('skips parsing on DELETE request', async () => {
-  await Supertest(server).delete('/').expect(204)
+  await Supertest(createHttpServer())
+    .delete('/?hello=Supercharge')
+    .expect(200, { files: {} })
 })
+
+module.exports = {
+  encoding: 'utf-8',
+  methods: ['POST', 'PUT', 'PATCH'],
+
+  json: {
+    limit: '1mb',
+    contentTypes: [
+      'application/json',
+      'application/*+json',
+      'application/csp-report'
+    ]
+  },
+
+  text: {
+    limit: '56kb',
+    contentTypes: ['text/*']
+  },
+
+  form: {
+    limit: '56kb',
+    contentTypes: [
+      'application/x-www-form-urlencoded'
+    ]
+  },
+
+  multipart: {
+    limit: '20mb',
+    maxFields: 1000,
+    contentTypes: [
+      'multipart/form-data'
+    ]
+  }
+}
 
 test.run()
