@@ -35,6 +35,7 @@ export class BodyparserBaseOptions {
 
   /**
    * Returns the allowed JSON content types
+   *
    * @returns {String[]}
    */
   contentTypes (): string[] {
