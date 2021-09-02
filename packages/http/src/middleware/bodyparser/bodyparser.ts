@@ -1,6 +1,7 @@
 'use strict'
 
 import JSON from '@supercharge/json'
+import { PassThrough } from 'stream'
 import { URLSearchParams } from 'url'
 import { tap } from '@supercharge/goodies'
 import { HttpError } from '@supercharge/http-errors'
@@ -98,7 +99,7 @@ export class BodyparserMiddleware implements Middleware {
       return await this.parseMultipart(request)
     }
 
-    throw HttpError.unsupportedMediaType(`Unsupported Content-Type. Received "${request.contentType() ?? ''}"`)
+    throw HttpError.unsupportedMediaType(`Unsupported Content Type. Received "${request.contentType() ?? ''}"`)
   }
 
   /**
@@ -212,13 +213,15 @@ export class BodyparserMiddleware implements Middleware {
       multiples: true,
       encoding: this.options().encoding() as any, // TODO make Formidable BufferEncoding compatible with Node BufferEncoding
       maxFields: this.options().multipart().maxFields(),
-      maxFieldsSize: this.options().multipart().maxFileSize()
+      maxFileSize: this.options().multipart().maxFileSize()
     })
 
     const { files, fields }: { fields: Fields, files: Files } = await new Promise((resolve, reject) => {
       form.parse(request.req(), (error, fields: Fields, files: Files) => {
         if (error) {
-          return reject(error)
+          return String(error.message).includes('maxFileSize exceeded')
+            ? reject(HttpError.payloadTooLarge('maxFileSize exceeded'))
+            : reject(error)
         }
 
         resolve({ fields, files })
@@ -243,13 +246,22 @@ export class BodyparserMiddleware implements Middleware {
       this.options().encoding()
     )
 
-    for await (const chunk of request.req()) {
-      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-      body += chunk
+    try {
+      // this .pipe(new PassThrough()) workaround is needed: stream iteration on requests is currently broken in Node.js
+      // https://github.com/nodejs/node/issues/38262
+      for await (const chunk of request.req().pipe(new PassThrough())) {
+        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+        body += chunk
 
-      if (body.length > options.limit) {
-        throw HttpError.payloadTooLarge('Payload Too Large')
+        if (body.length > options.limit) {
+          throw HttpError.payloadTooLarge('Payload Too Large')
+        }
       }
+    } catch (error) {
+      request.req().unpipe()
+      request.req().resume()
+
+      throw error
     }
 
     return tap(body, () => {
