@@ -173,7 +173,7 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    */
   isJson (): boolean {
     return Str(
-      this.header('content-type')
+      this.contentType()
     ).contains('/json', '+json')
   }
 
@@ -208,7 +208,7 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * ```
    */
   contentType (): string | undefined {
-    return this.header('Content-Type')
+    return this.header('content-type')
   }
 
   /**
