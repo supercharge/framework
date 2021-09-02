@@ -26,4 +26,9 @@ export interface FileBag {
    * @returns {Boolean}
    */
   has(name: string): boolean
+
+  /**
+   * Determine whether files were uploaded on the request.
+   */
+  isEmpty(): boolean
 }

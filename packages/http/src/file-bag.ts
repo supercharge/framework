@@ -91,6 +91,13 @@ export class FileBag implements FileBagContract {
   }
 
   /**
+   * Determine whether files were uploaded on the request.
+   */
+  isEmpty (): boolean {
+    return Object.keys(this.files).length === 0
+  }
+
+  /**
    * Returns an object containing all files in the bag.
    */
   toJSON (): { [name: string]: UploadedFile | UploadedFile[] | undefined} {
