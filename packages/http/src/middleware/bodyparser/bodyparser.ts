@@ -3,7 +3,7 @@
 import JSON from '@supercharge/json'
 import { PassThrough } from 'stream'
 import { URLSearchParams } from 'url'
-import { tap } from '@supercharge/goodies'
+import Str from '@supercharge/strings'
 import { HttpError } from '@supercharge/http-errors'
 import Formidable, { Fields, Files } from 'formidable'
 import { BodyparserOptions } from './bodyparser-options'
@@ -126,7 +126,7 @@ export class BodyparserMiddleware implements Middleware {
     const body = await this.collectBodyFrom(request, { limit: this.options().json().limit() })
 
     request.setPayload(
-      JSON.parse(body.toString()) || {}
+      JSON.parse(body) || {}
     )
   }
 
@@ -153,9 +153,7 @@ export class BodyparserMiddleware implements Middleware {
   async parseText (request: HttpRequest): Promise<void> {
     const body = await this.collectBodyFrom(request, { limit: this.options().text().limit() })
 
-    request.setPayload(
-      body.toString()
-    )
+    request.setPayload(body)
   }
 
   /**
@@ -183,7 +181,7 @@ export class BodyparserMiddleware implements Middleware {
 
     request.setPayload(
       Object.fromEntries(
-        new URLSearchParams(body.toString())
+        new URLSearchParams(body)
       )
     )
   }
@@ -239,7 +237,7 @@ export class BodyparserMiddleware implements Middleware {
    *
    * @returns {*}
    */
-  async collectBodyFrom (request: HttpRequest, options: { limit: number}): Promise<any> {
+  async collectBodyFrom (request: HttpRequest, options: { limit: number}): Promise<string> {
     let body = ''
 
     request.req().setEncoding(
@@ -247,7 +245,8 @@ export class BodyparserMiddleware implements Middleware {
     )
 
     try {
-      // this .pipe(new PassThrough()) workaround is needed: stream iteration on requests is currently broken in Node.js
+      // this .pipe(new PassThrough()) workaround is needed because
+      // stream iteration on requests is currently broken in Node.js
       // https://github.com/nodejs/node/issues/38262
       for await (const chunk of request.req().pipe(new PassThrough())) {
         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
@@ -264,8 +263,8 @@ export class BodyparserMiddleware implements Middleware {
       throw error
     }
 
-    return tap(body, () => {
-      request.setRawPayload(body)
-    })
+    request.setRawPayload(body)
+
+    return Str(body).stripBom().get()
   }
 }
