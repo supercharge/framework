@@ -6,12 +6,12 @@ export interface HeaderBag {
   /**
    * Returns a HTTP headers object.
    */
-  all(...keys: string[]): IncomingHttpHeaders
+  all(...keys: Array<keyof IncomingHttpHeaders>): IncomingHttpHeaders
 
   /**
    * Returns the HTTP header value for the given `name`.
    */
-  get(name: string, defaultValue: string | string[]): string | string[] | undefined
+  get<Header extends keyof IncomingHttpHeaders> (name: Header, defaultValue?: any): IncomingHttpHeaders[Header]
 
   /**
    * Set an HTTP header for the given `name` and assign the `value`.
@@ -22,5 +22,5 @@ export interface HeaderBag {
   /**
    * Determine whether the HTTP header for the given `name` exists.
    */
-  has(name: string): boolean
+  has(name: keyof IncomingHttpHeaders): boolean
 }

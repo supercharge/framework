@@ -183,9 +183,8 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    *
    * @returns {String}
    */
-
-  header< Header extends keyof IncomingHttpHeaders > (name: Header, defaultValue?: IncomingHttpHeaders[Header]): IncomingHttpHeaders[Header] {
-    return this.headers().get(name, defaultValue)
+  header<Header extends keyof IncomingHttpHeaders> (key: Header, defaultValue?: any): IncomingHttpHeaders[Header] {
+    return this.headers().get(key, defaultValue)
   }
 
   /**

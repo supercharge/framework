@@ -20,12 +20,12 @@ export class HeaderBag implements HeaderBagContract {
   /**
    * Returns a HTTP headers object.
    */
-  all (...keys: string[]): IncomingHttpHeaders {
+  all (...keys: Array<keyof IncomingHttpHeaders>): IncomingHttpHeaders {
     if (keys.length === 0) {
       return this.headers
     }
 
-    return keys.reduce((carry: Record<string, any>, key: string) => {
+    return keys.reduce((carry: Record<string, any>, key) => {
       carry[key] = this.get(key)
 
       return carry
@@ -40,7 +40,7 @@ export class HeaderBag implements HeaderBagContract {
    *
    * @returns {String|String[]|undefined}
    */
-  get (name: string, defaultValue?: string | string[]): string | string[] | undefined {
+  get<Header extends keyof IncomingHttpHeaders> (name: Header, defaultValue?: any): IncomingHttpHeaders[Header] {
     return this.headers[name] ?? defaultValue
   }
 
@@ -66,7 +66,7 @@ export class HeaderBag implements HeaderBagContract {
    *
    * @returns {Boolean}
    */
-  has (name: string): boolean {
+  has (name: keyof IncomingHttpHeaders): boolean {
     return !!this.get(name)
   }
 }
