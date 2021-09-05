@@ -23,7 +23,7 @@ export interface ParameterBag {
   has(name: string): boolean
 
   /**
-   * Remove the attribute with the given `name`.
+   * Remove the attribute for the given `name`.
    */
   remove(name: string): ParameterBag
 }

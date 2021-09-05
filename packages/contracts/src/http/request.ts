@@ -39,9 +39,9 @@ export interface HttpRequest extends InteractsWithContentTypes {
   param<T = any>(name: string, defaultValue: T): T
 
   /**
-   * Returns the merged request payload with query parameters. The query
-   * parameters take preceedence over the request payload in case
-   * attributes with the same name are defined in both places.
+   * Returns the merged request payload, files and query parameters. The query parameters
+   * take preceedence over the request payload and files. Files take preceedence over the
+   * request payload in case attributes with the same name are defined in both places.
    */
   all (): Record<string, any>
 

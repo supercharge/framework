@@ -17,7 +17,7 @@ export interface HeaderBag {
    * Set an HTTP header for the given `name` and assign the `value`.
    * This will override an existing header for the given `name`.
    */
-  set (name: string, value: string | string[]): HeaderBag
+  set (name: string, value: any): HeaderBag
 
   /**
    * Determine whether the HTTP header for the given `name` exists.
