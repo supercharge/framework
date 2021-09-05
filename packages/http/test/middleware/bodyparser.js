@@ -151,6 +151,15 @@ test('parse multipart fields', async () => {
     .expect(200, { files: {}, payload: { name: 'Supercharge', isAwesome: '1' } })
 })
 
+// test('fails when exceeding maxFields ', async () => {
+//   await Supertest(createHttpServer({ multipart: { maxFields: 1 } }))
+//     .post('/')
+//     .field('user', 'Marcus')
+//     .field('name', 'Supercharge')
+//     .set('Content-Type', 'multipart/form-data')
+//     .expect(500)
+// })
+
 test('parse multipart fields and files', async () => {
   const { body } = await Supertest(createHttpServer())
     .post('/')
