@@ -13,23 +13,25 @@ export class HeaderBag implements HeaderBagContract {
   /**
    * Create a new instance.
    */
-  constructor (headers: IncomingHttpHeaders) {
+  constructor (headers: IncomingHttpHeaders = {}) {
     this.headers = headers
   }
 
   /**
    * Returns a HTTP headers object.
    */
-  all (...keys: Array<keyof IncomingHttpHeaders>): IncomingHttpHeaders {
+  all (...keys: Array<keyof IncomingHttpHeaders>|Array<Array<keyof IncomingHttpHeaders>>): IncomingHttpHeaders {
     if (keys.length === 0) {
       return this.headers
     }
 
-    return keys.reduce((carry: Record<string, any>, key) => {
-      carry[key] = this.get(key)
+    return ([] as Array<keyof IncomingHttpHeaders>)
+      .concat(...keys)
+      .reduce((carry: Record<string, any>, key) => {
+        carry[key] = this.get(key)
 
-      return carry
-    }, {})
+        return carry
+      }, {})
   }
 
   /**
@@ -49,11 +51,11 @@ export class HeaderBag implements HeaderBagContract {
    * This will override an existing header for the given `name`.
    *
    * @param {String} name
-   * @param {String|String[]} value
+   * @param {*} value
    *
    * @returns {HeaderBag}
    */
-  set (name: string, value: string | string[]): HeaderBag {
+  set (name: string, value: any): HeaderBag {
     return tap(this, () => {
       this.headers[name] = value
     })

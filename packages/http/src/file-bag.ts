@@ -14,7 +14,7 @@ export class FileBag implements FileBagContract {
   /**
    * Create a new instance.
    */
-  constructor (files: { [name: string]: UploadedFile | UploadedFile[]}) {
+  constructor (files: { [name: string]: UploadedFile | UploadedFile[]} = {}) {
     this.files = files
   }
 
@@ -40,16 +40,18 @@ export class FileBag implements FileBagContract {
   /**
    * Returns an object of all uploaded files.
    */
-  all (...keys: string[]): { [name: string]: UploadedFile | UploadedFile[] | undefined} {
+  all (...keys: string[]|string[][]): { [name: string]: UploadedFile | UploadedFile[] | undefined} {
     if (keys.length === 0) {
       return this.files
     }
 
-    return keys.reduce((carry: { [name: string]: UploadedFile | UploadedFile[] | undefined }, key: string) => {
-      carry[key] = this.get(key)
+    return ([] as string[])
+      .concat(...keys)
+      .reduce((carry: { [name: string]: UploadedFile | UploadedFile[] | undefined }, key: string) => {
+        carry[key] = this.get(key)
 
-      return carry
-    }, {})
+        return carry
+      }, {})
   }
 
   /**

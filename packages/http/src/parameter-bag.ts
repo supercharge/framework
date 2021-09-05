@@ -12,23 +12,25 @@ export class ParameterBag implements ParameterBagContract {
   /**
    * Create a new instance.
    */
-  constructor (attributes: Record<string, any>) {
+  constructor (attributes: Record<string, any> = {}) {
     this.attributes = attributes
   }
 
   /**
    * Returns the attributes object.
    */
-  all (...keys: string[]): Record<string, any> {
+  all (...keys: string[]|string[][]): Record<string, any> {
     if (keys.length === 0) {
       return this.attributes
     }
 
-    return keys.reduce((carry: Record<string, any>, key: string) => {
-      carry[key] = this.get(key)
+    return ([] as string[])
+      .concat(...keys)
+      .reduce((carry: Record<string, any>, key) => {
+        carry[key] = this.get(key)
 
-      return carry
-    }, {})
+        return carry
+      }, {})
   }
 
   /**
@@ -70,7 +72,7 @@ export class ParameterBag implements ParameterBagContract {
   }
 
   /**
-   * Remove the attribute with the given `name`.
+   * Remove the attribute for the given `name`.
    *
    * @param {String} name
    *
