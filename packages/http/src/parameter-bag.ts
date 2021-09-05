@@ -84,4 +84,11 @@ export class ParameterBag implements ParameterBagContract {
       delete this.attributes[name]
     })
   }
+
+  /**
+   * Returns an object containing all attributes.
+   */
+  toJSON (): Record<string, any> {
+    return this.all()
+  }
 }
