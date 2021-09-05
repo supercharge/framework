@@ -1,10 +1,17 @@
 'use strict'
 
+import { FileBag } from './file-bag'
+import { IncomingMessage } from 'http'
 import { HeaderBag } from './header-bag'
 import { ParameterBag } from './parameter-bag'
 import { InteractsWithContentTypes } from './concerns'
 
 export interface HttpRequest extends InteractsWithContentTypes {
+  /**
+   * Returns the raw Node.js request.
+   */
+  req(): IncomingMessage
+
   /**
    * Returns the request method.
    */
@@ -16,7 +23,7 @@ export interface HttpRequest extends InteractsWithContentTypes {
   path (): string
 
   /**
-   * Returns the query parameter object.
+   * Returns the query parameter bag.
    */
   query(): ParameterBag
 
@@ -32,11 +39,6 @@ export interface HttpRequest extends InteractsWithContentTypes {
   param<T = any>(name: string, defaultValue: T): T
 
   /**
-   * Returns the request payload.
-   */
-  payload(): any
-
-  /**
    * Returns the merged request payload with query parameters. The query
    * parameters take preceedence over the request payload in case
    * attributes with the same name are defined in both places.
@@ -50,7 +52,42 @@ export interface HttpRequest extends InteractsWithContentTypes {
   input<T = any> (name: string, defaultValue?: T): T
 
   /**
-   * Returns the request headers.
+   * Returns the request payload.
+   */
+  payload(): any
+
+  /**
+   * Determine whether a request body exists.
+   */
+  hasPayload(): boolean
+
+  /**
+   * Assign the given `payload` as the request body.
+   */
+  setPayload(payload: any): this
+
+  /**
+   * Returns the raw request payload
+   */
+  rawPayload(): any
+
+  /**
+    * Store the given raw `payload` for this request.
+    */
+  setRawPayload(payload: any): this
+
+  /**
+   * Returns all files on the request.
+   */
+  files(): FileBag
+
+  /**
+   * Assign the given `files` to the request.
+   */
+  setFiles(files: { [name: string]: any }): this
+
+  /**
+   * Returns the request header bag.
    */
   headers(): HeaderBag
 

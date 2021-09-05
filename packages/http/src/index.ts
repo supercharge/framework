@@ -1,6 +1,7 @@
 'use strict'
 
 export * from './controller'
+export * from './file-bag'
 export * from './header-bag'
 export * from './http-context'
 export * from './http-redirect'
@@ -9,3 +10,4 @@ export * from './middleware'
 export * from './request'
 export * from './response'
 export * from './server'
+export * from './uploaded-file'

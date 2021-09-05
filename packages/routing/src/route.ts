@@ -3,11 +3,11 @@
 import Str from '@supercharge/strings'
 import { isClass } from '@supercharge/classes'
 import { tap, isNullish } from '@supercharge/goodies'
-import { HttpRoute, HttpController, RouteHandler, HttpMethod, HttpContext, Application, Class } from '@supercharge/contracts'
+import { HttpRoute, HttpController, RouteHandler, HttpMethods, HttpContext, Application, Class } from '@supercharge/contracts'
 
 interface RouteAttributes {
   path: string
-  methods: HttpMethod[]
+  methods: HttpMethods[]
   handler: RouteHandler
   middleware: string[]
 }
@@ -35,7 +35,7 @@ export class Route implements HttpRoute {
    * @param path string
    * @param handler RouteHandler
    */
-  constructor (methods: HttpMethod[], path: string, handler: RouteHandler, app: Application) {
+  constructor (methods: HttpMethods[], path: string, handler: RouteHandler, app: Application) {
     this.app = app
     this.attributes = { methods, path, handler, middleware: [] }
   }
@@ -54,7 +54,7 @@ export class Route implements HttpRoute {
    *
    * @returns string
    */
-  public methods (): HttpMethod[] {
+  public methods (): HttpMethods[] {
     return this.attributes.methods
   }
 

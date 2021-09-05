@@ -1,9 +1,9 @@
 'use strict'
 
 import Koa from 'koa'
-import bodyParser from 'koa-bodyparser'
 import { HttpContext } from './http-context'
 import Collect from '@supercharge/collections'
+import { BodyparserMiddleware } from './middleware'
 import { esmRequire, tap } from '@supercharge/goodies'
 import { Application, Class, HttpKernel, MiddlewareCtor, HttpRouter, ErrorHandler } from '@supercharge/contracts'
 
@@ -11,7 +11,22 @@ export class Server {
   /**
    * The server’s meta data.
    */
-  private meta: ServerMeta
+  private meta: {
+    /**
+     * The HTTP kernel instance.
+     */
+    kernel: HttpKernel
+
+    /**
+     * The Koa server instance.
+     */
+    instance?: Koa
+
+    /**
+     * The HTTP router instance.
+     */
+    router?: HttpRouter
+  }
 
   /**
    * Create a new HTTP context instance.
@@ -88,6 +103,7 @@ export class Server {
   createServerInstance (): Koa {
     return tap(new Koa(), server => {
       server.keys = [this.app().key()]
+      this.meta.instance = server
     })
   }
 
@@ -125,7 +141,7 @@ export class Server {
     this.instance().use(async (ctx, next) => {
       try {
         await next()
-      } catch (error) {
+      } catch (error: any) {
         await this.handleErrorFor(this.createContext(ctx), error)
       }
     })
@@ -147,7 +163,11 @@ export class Server {
    * registered here will be available out of the box.
    */
   registerCoreMiddleware (): void {
-    this.instance().use(bodyParser())
+    [
+      BodyparserMiddleware
+    ].forEach((Middleware: MiddlewareCtor) => {
+      this.bindAndRegisterMiddleware(Middleware)
+    })
   }
 
   /**
@@ -257,21 +277,4 @@ export class Server {
   private hostname (): string {
     return this.app().config().get('http.host')
   }
-}
-
-interface ServerMeta {
-  /**
-   * The HTTP kernel instance.
-   */
-  kernel: HttpKernel
-
-  /**
-   * The Koa server instance.
-   */
-  instance?: Koa
-
-  /**
-   * The HTTP router instance.
-   */
-  router?: HttpRouter
 }

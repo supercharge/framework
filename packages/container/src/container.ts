@@ -40,16 +40,33 @@ export class Container implements ContainerContract {
    *
    * @returns {Container}
    */
-  bind (namespace: string, factory: BindingFactory, isSingleton: boolean = false): this {
+  bind (namespace: string | Class, factory: BindingFactory, isSingleton: boolean = false): this {
     this.ensureNamespace(namespace)
 
-    if (this.isNotFunction(factory)) {
+    if (!isFunction(factory)) {
       throw new Error(`container.bind(namespace, factory) expects the second argument to be a function. Received ${typeof factory}`)
     }
 
     return tap(this, () => {
-      this.bindings.set(namespace, { factory, isSingleton })
+      this.bindings.set(this.resolveNamespace(namespace), { factory, isSingleton })
     })
+  }
+
+  /**
+   * Ensure the given `namespace` is a string or a class constructor.
+   *
+   * @param {String|Class} namespace
+   */
+  private ensureNamespace (namespace: string | Class): void {
+    if (isClass(namespace)) {
+      return
+    }
+
+    if (Str(namespace).isNotEmpty()) {
+      return
+    }
+
+    throw new Error('Cannot bind empty namespace to the container')
   }
 
   /**
@@ -90,10 +107,17 @@ export class Container implements ContainerContract {
     )
   }
 
+  /**
+   * Returns the resolved namespace identifier as a string.
+   *
+   * @param {String|Class} namespace
+   *
+   * @returns {String}
+   */
   private resolveNamespace (namespace: string | Class): string {
-    return typeof namespace === 'string'
-      ? namespace
-      : className(namespace)
+    return isClass(namespace)
+      ? className(namespace)
+      : String(namespace)
   }
 
   /**
@@ -116,7 +140,7 @@ export class Container implements ContainerContract {
    *
    * @returns {*}
    */
-  make<T>(namespace: string | Class<T, [Application]>): T {
+  make<T = any>(namespace: string | Class<T, [Application]>): T {
     /**
      * If the namespace exists as a singleton, we’ll return the instance
      * without instantiating a new one. This way, the same instance
@@ -169,7 +193,7 @@ export class Container implements ContainerContract {
     }
 
     if (isClass(namespace)) {
-      return this.createFactoryFor(namespace as Class)
+      return this.createFactoryFor(namespace)
     }
 
     throw new Error(`Missing container binding for the given namespace "${this.resolveNamespace(namespace)}"`)
@@ -186,7 +210,7 @@ export class Container implements ContainerContract {
     namespace = this.resolveNamespace(namespace)
 
     return upon(this.bindings.get(namespace), binding => {
-      return binding?.factory
+      return (binding as Binding).factory
     })
   }
 
@@ -213,40 +237,5 @@ export class Container implements ContainerContract {
       this.bindings = new Map()
       this.singletons = new Map()
     })
-  }
-
-  /**
-   * Determine whether the given input is a function.
-   *
-   * @param target
-   *
-   * @returns {Boolean}
-   */
-  private ensureNamespace (namespace: string): void {
-    if (Str(namespace).isEmpty()) {
-      throw new Error('Cannot bind empty namespace to the container')
-    }
-  }
-
-  /**
-   * Determine whether the given input is not a function.
-   *
-   * @param target
-   *
-   * @returns {Boolean}
-   */
-  private isNotFunction (target: any): boolean {
-    return !this.isFunction(target)
-  }
-
-  /**
-   * Determine whether the given input is a function.
-   *
-   * @param target
-   *
-   * @returns {Boolean}
-   */
-  private isFunction (target: any): boolean {
-    return isFunction(target)
   }
 }

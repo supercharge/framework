@@ -4,7 +4,13 @@
 
 ### Added
 - `@supercharge/http`
-    - added `HeaderBag`, `ParameterBag` classes to provide helpful methods to access request input
+    - added `HeaderBag`, `ParameterBag`, `FileBag` classes to provide helpful methods to access request input
+    - add bodyparser middleware replacing the previously used `koa-body`
+- `@supercharge/contracts`
+    - extend the container types to resolve classes when passed to as a namespace
+    - extend the HTTP `Request` contract: added `request.hasPayload()`, `request.setPayload()`, `request.rawPayload()`, `request.setRawPayload()`, `request.isContentType(...types)`, `request.contentType()`
+- `@supercharge/container`
+    - add handling to bind and resolve classes as the namespace in the container
 
 ### Updated
 - bump dependencies

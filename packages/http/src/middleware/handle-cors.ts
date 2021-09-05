@@ -3,7 +3,7 @@
 import cors from '@koa/cors'
 import { Application, CorsOptions, HttpContext, Middleware, NextHandler } from '@supercharge/contracts'
 
-export class HandleCors implements Middleware {
+export class HandleCorsMiddleware implements Middleware {
   /**
    * The application instance.
    */

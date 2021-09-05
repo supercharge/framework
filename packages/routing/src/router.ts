@@ -9,7 +9,7 @@ import { isFunction } from '@supercharge/classes'
 import { RouteCollection } from './route-collection'
 import { isNullish, tap, upon } from '@supercharge/goodies'
 import { HttpContext, HttpRedirect, Response } from '@supercharge/http'
-import { HttpRouter, RouteHandler, RouteAttributes, HttpMethod, MiddlewareCtor, NextHandler, Middleware, Application } from '@supercharge/contracts'
+import { HttpRouter, RouteHandler, RouteAttributes, HttpMethods, MiddlewareCtor, NextHandler, Middleware, Application } from '@supercharge/contracts'
 
 export class Router implements HttpRouter {
   private readonly meta: {
@@ -344,13 +344,13 @@ export class Router implements HttpRouter {
   /**
    * Create a new route and add it to the routes collection.
    *
-   * @param {HttpMethod} method
+   * @param {HttpMethods} method
    * @param {String} path
    * @param {RouteHandler} handler
    *
    * @returns {Route}
    */
-  addRoute (methods: HttpMethod[], path: string, handler: RouteHandler, middleware?: string[]): Route {
+  addRoute (methods: HttpMethods[], path: string, handler: RouteHandler, middleware?: string[]): Route {
     return tap(this.createRoute(methods, path, handler, middleware), route => {
       return this.routes().add(route)
     })
@@ -359,13 +359,13 @@ export class Router implements HttpRouter {
   /**
    * Create a new route instance.
    *
-   * @param {HttpMethod} method
+   * @param {HttpMethods} method
    * @param {String} path
    * @param {RouteHandler} handler
    *
    * @returns {Route}
    */
-  createRoute (methods: HttpMethod[], path: string, handler: RouteHandler, middleware?: string[]): Route {
+  createRoute (methods: HttpMethods[], path: string, handler: RouteHandler, middleware?: string[]): Route {
     const route = new Route(methods, path, handler, this.app()).middleware(middleware)
 
     if (this.hasGroupStack()) {
