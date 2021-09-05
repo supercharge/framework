@@ -36,7 +36,7 @@ function createHttpServer (bodyparserConfig) {
       await new BodyparserMiddleware(appMock).handle(context, async () => {
         context.response.payload({
           files: context.request.files(),
-          payload: context.request.payload
+          payload: context.request.payload()
         })
       })
     } catch (error) {
