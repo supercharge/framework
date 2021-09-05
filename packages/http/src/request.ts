@@ -1,16 +1,27 @@
 'use strict'
 
-import { Context } from 'koa'
+import * as Koa from 'koa'
+import { Files } from 'formidable'
+import { FileBag } from './file-bag'
 import Str from '@supercharge/strings'
-import { IncomingHttpHeaders } from 'http'
+import { tap } from '@supercharge/goodies'
 import { RouterContext } from 'koa__router'
+import { IncomingHttpHeaders, IncomingMessage } from 'http'
 import { HttpRequest, InteractsWithContentTypes } from '@supercharge/contracts'
+
+declare module 'koa' {
+  interface Request extends Koa.BaseRequest {
+    body?: any
+    rawBody?: any
+    files?: Files
+  }
+}
 
 export class Request implements HttpRequest, InteractsWithContentTypes {
   /**
    * The route context object from Koa.
    */
-  protected readonly ctx: Context | Context & RouterContext
+  protected readonly ctx: Koa.Context | Koa.Context & RouterContext
 
   /**
    * Create a new response instance.
@@ -18,8 +29,15 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * @param ctx
    * @param cookieOptions
    */
-  constructor (ctx: Context | Context & RouterContext) {
+  constructor (ctx: Koa.Context | Koa.Context & RouterContext) {
     this.ctx = ctx
+  }
+
+  /**
+   * Returns the raw Node.js request.
+   */
+  req (): IncomingMessage {
+    return this.ctx.req
   }
 
   /**
@@ -58,6 +76,68 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
   }
 
   /**
+   * Determine whether a request body exists.
+   */
+  hasPayload (): boolean {
+    return !!this.header('transfer-encoding') || !isNaN(Number(this.header('content-length')))
+  }
+
+  /**
+   * Assign the given `payload` as the request body.
+   *
+   * @param {*} payload
+   *
+   * @returns {this}
+   */
+  setPayload (payload: any): this {
+    return tap(this, () => {
+      this.ctx.request.body = payload
+    })
+  }
+
+  /**
+   * Returns the raw request payload
+   */
+  rawPayload (): any {
+    return this.ctx.request.rawBody
+  }
+
+  /**
+   * Store the given raw `payload` for this request.
+   *
+   * @param {*} payload
+   *
+   * @returns {this}
+   */
+  setRawPayload (payload: any): this {
+    return tap(this, () => {
+      this.ctx.request.rawBody = payload
+    })
+  }
+
+  /**
+   * Returns all files on the request.
+   *
+   * @returns {FileBag}
+   */
+  files (): FileBag {
+    return FileBag.createFromBase(this.ctx.request.files)
+  }
+
+  /**
+   * Assign the given `files` to the request.
+   *
+   * @param {Files} files
+   *
+   * @returns {this}
+   */
+  setFiles (files: any): this {
+    return tap(this, () => {
+      this.ctx.request.files = files
+    })
+  }
+
+  /**
    * Returns the request headers.
    */
   get headers (): IncomingHttpHeaders {
@@ -93,7 +173,7 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    */
   isJson (): boolean {
     return Str(
-      this.header('content-type')
+      this.contentType()
     ).contains('/json', '+json')
   }
 
@@ -120,6 +200,18 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
   }
 
   /**
+   * Returns the request’s content mime type from the `Content-Type` header field.
+   *
+   * @example
+   * ```
+   * request.contentType()
+   * ```
+   */
+  contentType (): string | undefined {
+    return this.header('content-type')
+  }
+
+  /**
    * Determine whether the request contains any of the given content `types`.
    * This method compares the "Content-Type" header value with all of the
    * given `types` determining whether one of the content types matches.
@@ -134,18 +226,16 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * // Request with Content-Type: application/json
    * request.isContentType('json') // true
    * request.isContentType('application/*')  // true
-   * request.isContentType('application/json', 'application/json') // true
    *
    * request.isContentType('json', 'html') // true
-   * request.isContentType('text/html') // false
    * request.isContentType('html') // false
    * ```
    */
   isContentType (types: string[]): boolean
   isContentType (...types: string[]): boolean
   isContentType (...types: string[]|string[][]): boolean {
-    const contentTypes = ([] as string[]).concat(...types)
-
-    return !!this.ctx.request.is(contentTypes)
+    return !!this.ctx.request.is(
+      ([] as string[]).concat(...types)
+    )
   }
 }

@@ -3,7 +3,7 @@
 import serveStaticFilesFrom from 'koa-static'
 import { Application, HttpContext, Middleware, NextHandler, StaticAssetsOptions } from '@supercharge/contracts'
 
-export class ServeStaticAssets implements Middleware {
+export class ServeStaticAssetsMiddleware implements Middleware {
   /**
    * The application instance.
    */

@@ -1,9 +1,15 @@
 'use strict'
 
-import { IncomingHttpHeaders } from 'http'
+import { FileBag } from './file-bag'
 import { InteractsWithContentTypes } from './concerns'
+import { IncomingHttpHeaders, IncomingMessage } from 'http'
 
 export interface HttpRequest extends InteractsWithContentTypes {
+  /**
+   * Returns the raw Node.js request.
+   */
+  req(): IncomingMessage
+
   /**
    * Returns the request method.
    */
@@ -30,6 +36,36 @@ export interface HttpRequest extends InteractsWithContentTypes {
   payload: any
 
   /**
+   * Determine whether a request body exists.
+   */
+  hasPayload(): boolean
+
+  /**
+   * Assign the given `payload` as the request body.
+   */
+  setPayload(payload: any): this
+
+  /**
+   * Returns the raw request payload
+   */
+  rawPayload(): any
+
+  /**
+    * Store the given raw `payload` for this request.
+    */
+  setRawPayload(payload: any): this
+
+  /**
+   * Returns all files on the request.
+   */
+  files(): FileBag
+
+  /**
+   * Assign the given `files` to the request.
+   */
+  setFiles(files: { [name: string]: any }): this
+
+  /**
    * Returns the request headers.
    */
   headers: IncomingHttpHeaders
@@ -44,4 +80,5 @@ export interface HttpRequest extends InteractsWithContentTypes {
    * Determine whether the request contains a header with the given `key`.
    */
   hasHeader(key: string): boolean
+
 }
