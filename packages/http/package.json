@@ -66,7 +66,8 @@
 		"url": "git+https://github.com/supercharge/framework.git"
 	},
 	"scripts": {
-		"build": "tsc",
+		"build:force": "npm run build -- --force",
+		"build": "tsc --build tsconfig.json",
 		"dev": "tsc --watch",
 		"lint": "eslint src --ext .js,.ts",
 		"lint:fix": "npm run lint -- --fix",
