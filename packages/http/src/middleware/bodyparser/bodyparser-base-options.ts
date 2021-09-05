@@ -20,7 +20,7 @@ export class BodyparserBaseOptions {
    *
    * @param {BodyparserBaseOptionsContract} options
    */
-  constructor (options: BodyparserBaseOptionsContract) {
+  constructor (options: BodyparserBaseOptionsContract = { contentTypes: [] }) {
     this.options = options
   }
 
@@ -39,6 +39,9 @@ export class BodyparserBaseOptions {
    * @returns {String[]}
    */
   contentTypes (): string[] {
-    return Set.from(this.options.contentTypes).toArray()
+    return Set
+      .from(this.options.contentTypes)
+      .map(contentType => contentType.toLowerCase())
+      .toArray()
   }
 }
