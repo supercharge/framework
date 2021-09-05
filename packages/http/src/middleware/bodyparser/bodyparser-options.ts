@@ -31,12 +31,21 @@ export class BodyparserOptions {
   }
 
   /**
-   * Returns an array of allowed methods.
+   * Returns an array of allowed methods, transformed to lowercase.
+   *
+   * @example
+   * ```js
+   * new BodyparserOptions({ methods: ['post', 'PUT'] }).methods()
+   * // ['post', 'put']
+   * ```
    *
    * @returns {BodyparserJsonOptions}
    */
   methods (): string[] {
-    return Set.from(this.options.methods).toArray()
+    return Set
+      .from(this.options.methods)
+      .map(method => method.toLowerCase())
+      .toArray()
   }
 
   /**
@@ -72,6 +81,6 @@ export class BodyparserOptions {
    * @returns {BodyparserMultipartOptions}
    */
   multipart (): BodyparserMultipartOptions {
-    return new BodyparserMultipartOptions(this.options.multipart)
+    return new BodyparserMultipartOptions(this.options.multipart ?? {})
   }
 }
