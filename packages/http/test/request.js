@@ -1,13 +1,10 @@
 'use strict'
 
 const Koa = require('koa')
-const Path = require('path')
-const expect = require('expect')
 const { test } = require('uvu')
+const expect = require('expect')
 const Supertest = require('supertest')
 const { HttpContext } = require('../dist')
-
-const testFilePath = Path.resolve(__dirname, 'middleware', 'fixtures', 'test-multipart-file-1.txt')
 
 const appMock = {
   make () {},
@@ -30,24 +27,29 @@ test('request querystring', async () => {
     .expect(200, { name: 'Supercharge', marcus: 'isCool' })
 })
 
-test('request.all() returns merged query params and payload', async () => {
+test('request.all() returns merged query params, payload, and files', async () => {
   const app = new Koa().use(ctx => {
     const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    request
+      .setPayload({ supercharge: 'is cool' })
+      .setFiles({ upload: { name: 'UploadedFile' } })
 
     return response.payload({
       all: request.all(),
       query: request.query(),
+      files: request.files(),
       payload: request.payload()
     })
   })
 
   await Supertest(app.callback())
-    .post('/?name=Supercharge')
-    .send({ supercharge: 'is cool' })
+    .get('/?name=Supercharge')
     .expect(200, {
       query: { name: 'Supercharge' },
       payload: { supercharge: 'is cool' },
-      all: { name: 'Supercharge', supercharge: 'is cool' }
+      files: { upload: { name: 'UploadedFile' } },
+      all: { name: 'Supercharge', supercharge: 'is cool', upload: { name: 'UploadedFile' } }
     })
 })
 
@@ -81,9 +83,11 @@ test('request.input() returns a single key from query params', async () => {
     .expect(200, { input: 'Supercharge' })
 })
 
-test.only('request.input() returns a single key from payload', async () => {
+test('request.input() returns a single key from payload', async () => {
   const app = new Koa().use(ctx => {
     const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    request.setPayload({ supercharge: 'is cool' })
 
     return response.payload({
       input: request.input('name', 'Marcus')
@@ -91,8 +95,7 @@ test.only('request.input() returns a single key from payload', async () => {
   })
 
   await Supertest(app.callback())
-    .post('/')
-    .send({ name: 'Supercharge' })
+    .get('/?name=Supercharge')
     .expect(200, { input: 'Supercharge' })
 })
 
@@ -100,20 +103,19 @@ test('request.input() returns a single key from files', async () => {
   const app = new Koa().use(ctx => {
     const { request, response } = HttpContext.wrap(ctx, appMock)
 
+    request.setFiles({ upload: { name: 'UploadedFile' } })
+
     return response.payload({
       input: request.input('upload')
     })
   })
 
   const { body } = await Supertest(app.callback())
-    .post('/')
-    .attach('upload', testFilePath)
+    .get('/')
     .expect(200)
 
   expect(body).toMatchObject({
-    input: {
-      name: 'test-multipart-file-1.txt', size: 37
-    }
+    input: { name: 'UploadedFile' }
   })
 })
 
