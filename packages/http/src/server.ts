@@ -72,15 +72,11 @@ export class Server {
    * @returns {HttpRouter}
    */
   router (): HttpRouter {
-    if (this.meta.router) {
-      return this.meta.router
+    if (!this.meta.router) {
+      this.meta.router = this.app().make<HttpRouter>('route')
     }
 
-    const router = this.app().make<HttpRouter>('route')
-
-    return tap(router, () => {
-      this.meta.router = router
-    })
+    return this.meta.router
   }
 
   /**
