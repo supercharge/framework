@@ -5,7 +5,6 @@ const expect = require('expect')
 const { ParameterBag } = require('../dist')
 
 test('all', () => {
-  expect(new ParameterBag().all()).toEqual({})
   expect(new ParameterBag({}).all()).toEqual({})
   expect(
     new ParameterBag({ accept: 'application/json' }).all()
@@ -22,13 +21,12 @@ test('all for keys', () => {
 
 test('get', () => {
   expect(new ParameterBag({}).get()).toEqual(undefined)
-  expect(new ParameterBag().get('test')).toEqual(undefined)
+  expect(new ParameterBag({}).get('test')).toEqual(undefined)
   expect(new ParameterBag({ a: 'b' }).get('c')).toEqual(undefined)
   expect(new ParameterBag({ a: 'b' }).get('a')).toEqual('b')
 })
 
 test('set', () => {
-  expect(new ParameterBag().set('a', 1).all()).toEqual({ a: 1 })
   expect(new ParameterBag({}).set('a', 1).all()).toEqual({ a: 1 })
 
   expect(new ParameterBag({ a: 'b' }).set('c', 1).all()).toEqual({ a: 'b', c: 1 })
@@ -40,14 +38,14 @@ test('set', () => {
 
 test('has', () => {
   expect(new ParameterBag({}).has()).toBe(false)
-  expect(new ParameterBag().has('test')).toBe(false)
+  expect(new ParameterBag({}).has('test')).toBe(false)
   expect(new ParameterBag({ a: 'b' }).has('c')).toBe(false)
 
   expect(new ParameterBag({ a: 'b' }).has('a')).toBe(true)
 })
 
 test('has', () => {
-  expect(new ParameterBag().remove('a').all()).toEqual({ })
+  expect(new ParameterBag({}).remove('a').all()).toEqual({ })
   expect(new ParameterBag({}).remove('a').all()).toEqual({ })
   expect(new ParameterBag({ a: 1, b: 2 }).remove('a').all()).toEqual({ b: 2 })
   expect(new ParameterBag({ a: 1, b: 2 }).remove('c').all()).toEqual({ a: 1, b: 2 })
