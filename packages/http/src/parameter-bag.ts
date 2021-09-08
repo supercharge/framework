@@ -12,7 +12,7 @@ export class ParameterBag implements ParameterBagContract {
   /**
    * Create a new instance.
    */
-  constructor (attributes: Record<string, any> = {}) {
+  constructor (attributes: Record<string, any>) {
     this.attributes = attributes
   }
 

@@ -67,6 +67,10 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * Returns the request’s path parameters.
    */
   params (): ParameterBag {
+    if (!this.ctx.params) {
+      this.ctx.params = {}
+    }
+
     return new ParameterBag(this.ctx.params)
   }
 
