@@ -133,4 +133,50 @@ test('request.input() returns a default', async () => {
     .expect(200, { input: 'Marcus' })
 })
 
+test('request.params() returns the path params', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    request.params().set('name', 'Supercharge')
+
+    return response.payload({
+      params: request.params()
+    })
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(200, { params: { name: 'Supercharge' } })
+})
+
+test('request.param() returns the param value', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    request.params().set('name', 'Supercharge')
+
+    return response.payload({
+      param: request.param('name')
+    })
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(200, { param: 'Supercharge' })
+})
+
+test('request.param() returns the param default value if it doesn’t exist', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload({
+      param: request.param('name', 'Marcus')
+    })
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(200, { param: 'Marcus' })
+})
+
 test.run()
