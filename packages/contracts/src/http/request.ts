@@ -43,7 +43,7 @@ export interface HttpRequest extends InteractsWithContentTypes {
    * take preceedence over the request payload and files. Files take preceedence over the
    * request payload in case attributes with the same name are defined in both places.
    */
-  all (): Record<string, any>
+  all (): { [key: string]: any }
 
   /**
    * Returns an input item for the given `name` from the request payload or query parameters.

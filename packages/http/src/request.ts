@@ -90,7 +90,7 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * take preceedence over the request payload and files. Files take preceedence over the
    * request payload in case attributes with the same name are defined in both places.
    */
-  all (): Record<string, any> {
+  all (): { [key: string]: any } {
     return {
       ...this.payload(),
       ...this.query().all(),
