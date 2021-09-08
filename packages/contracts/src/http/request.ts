@@ -1,8 +1,10 @@
 'use strict'
 
 import { FileBag } from './file-bag'
+import { IncomingMessage } from 'http'
+import { HeaderBag } from './header-bag'
+import { ParameterBag } from './parameter-bag'
 import { InteractsWithContentTypes } from './concerns'
-import { IncomingHttpHeaders, IncomingMessage } from 'http'
 
 export interface HttpRequest extends InteractsWithContentTypes {
   /**
@@ -21,19 +23,38 @@ export interface HttpRequest extends InteractsWithContentTypes {
   path (): string
 
   /**
-   * Returns the query parameter object.
+   * Returns the query parameter bag.
    */
-  query: Record<string, any>
+  query(): ParameterBag
 
   /**
-   * Returns the path parameter object.
+   * Returns the path parameter bag.
    */
-  params: Record<string, any>
+  params(): ParameterBag
+
+  /**
+   * Returns the path parameter for the given `name`. Returns the
+   * `defaultValue` if a parameter for the name doesn’t exist.
+   */
+  param<T = any>(name: string, defaultValue: T): T
+
+  /**
+   * Returns the merged request payload, files and query parameters. The query parameters
+   * take preceedence over the request payload and files. Files take preceedence over the
+   * request payload in case attributes with the same name are defined in both places.
+   */
+  all (): { [key: string]: any }
+
+  /**
+   * Returns an input item for the given `name` from the request payload or query parameters.
+   * Returns the `defaultValue` if a parameter for the name doesn’t exist.
+   */
+  input<T = any> (name: string, defaultValue?: T): T
 
   /**
    * Returns the request payload.
    */
-  payload: any
+  payload(): any
 
   /**
    * Determine whether a request body exists.
@@ -66,19 +87,18 @@ export interface HttpRequest extends InteractsWithContentTypes {
   setFiles(files: { [name: string]: any }): this
 
   /**
-   * Returns the request headers.
+   * Returns the request header bag.
    */
-  headers: IncomingHttpHeaders
+  headers(): HeaderBag
 
   /**
    * Returns the request header identified by the given `key`. The default
    * value will be returned if no header is present for the given key.
    */
-  header(key: string, defaultValue?: any): string | undefined
+  header(key: string, defaultValue?: string | string[]): string | string[] | undefined
 
   /**
    * Determine whether the request contains a header with the given `key`.
    */
   hasHeader(key: string): boolean
-
 }

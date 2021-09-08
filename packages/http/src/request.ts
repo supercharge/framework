@@ -4,8 +4,10 @@ import * as Koa from 'koa'
 import { Files } from 'formidable'
 import { FileBag } from './file-bag'
 import Str from '@supercharge/strings'
+import { HeaderBag } from './header-bag'
 import { tap } from '@supercharge/goodies'
 import { RouterContext } from 'koa__router'
+import { ParameterBag } from './parameter-bag'
 import { IncomingHttpHeaders, IncomingMessage } from 'http'
 import { HttpRequest, InteractsWithContentTypes } from '@supercharge/contracts'
 
@@ -57,22 +59,55 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
   /**
    * Returns the request’s query parameters.
    */
-  get query (): Record<string, any> {
-    return this.ctx.query
+  query (): ParameterBag {
+    return new ParameterBag(this.ctx.query)
   }
 
   /**
    * Returns the request’s path parameters.
    */
-  get params (): Record<string, any> {
-    return this.ctx.params
+  params (): ParameterBag {
+    if (!this.ctx.params) {
+      this.ctx.params = {}
+    }
+
+    return new ParameterBag(this.ctx.params)
+  }
+
+  /**
+   * Returns the path parameter for the given `name`. Returns the
+   * `defaultValue` if a parameter for the name doesn’t exist.
+   */
+  param<T = any> (name: string, defaultValue?: T): T {
+    return this.params().get(name, defaultValue)
   }
 
   /**
    * Returns the request payload.
    */
-  get payload (): any {
+  payload (): any {
     return this.ctx.request.body
+  }
+
+  /**
+   * Returns the merged request payload, files and query parameters. The query parameters
+   * take preceedence over the request payload and files. Files take preceedence over the
+   * request payload in case attributes with the same name are defined in both places.
+   */
+  all (): { [key: string]: any } {
+    return {
+      ...this.payload(),
+      ...this.query().all(),
+      ...this.files().all()
+    }
+  }
+
+  /**
+   * Returns an input item for the given `name` from the request payload or query parameters.
+   * Returns the `defaultValue` if a parameter for the name doesn’t exist.
+   */
+  input<T = any> (name: string, defaultValue?: T): T {
+    return this.all()[name] ?? defaultValue
   }
 
   /**
@@ -140,8 +175,8 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
   /**
    * Returns the request headers.
    */
-  get headers (): IncomingHttpHeaders {
-    return this.ctx.headers
+  headers (): HeaderBag {
+    return new HeaderBag(this.ctx.headers)
   }
 
   /**
@@ -149,12 +184,12 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * value will be returned if no header is present for the given key.
    *
    * @param {String} key
-   * @param {*} defaultValue
+   * @param {String|String[]} defaultValue
    *
    * @returns {String}
    */
-  header (key: string, defaultValue?: any): string | undefined {
-    return this.headers[key] ?? defaultValue
+  header<Header extends keyof IncomingHttpHeaders> (key: Header, defaultValue?: any): IncomingHttpHeaders[Header] {
+    return this.headers().get(key, defaultValue)
   }
 
   /**
@@ -163,7 +198,7 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * @returns {Boolean}
    */
   hasHeader (key: string): boolean {
-    return !!this.header(key)
+    return this.headers().has(key)
   }
 
   /**
@@ -207,7 +242,7 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * request.contentType()
    * ```
    */
-  contentType (): string | undefined {
+  contentType (): IncomingHttpHeaders['content-type'] {
     return this.header('content-type')
   }
 

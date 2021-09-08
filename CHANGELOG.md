@@ -3,13 +3,14 @@
 ## [2.0.0-alpha.5](https://github.com/supercharge/framework/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) - 2021-07-xx
 
 ### Added
+- `@supercharge/http`
+    - added `HeaderBag`, `ParameterBag`, `FileBag` classes to provide helpful methods to access request input
+    - add bodyparser middleware replacing the previously used `koa-body`
 - `@supercharge/contracts`
     - extend the container types to resolve classes when passed to as a namespace
     - extend the HTTP `Request` contract: added `request.hasPayload()`, `request.setPayload()`, `request.rawPayload()`, `request.setRawPayload()`, `request.isContentType(...types)`, `request.contentType()`
 - `@supercharge/container`
     - add handling to bind and resolve classes as the namespace in the container
-- `@supercharge/http`
-    - add bodyparser middleware replacing the previously used `koa-body`
 
 ### Updated
 - bump dependencies
@@ -21,6 +22,21 @@
     - add comments to `RouteCollection`
     - refine comments of `Router` methods
     - internal refinements of the `RouteCollection`
+
+### Breaking Changes
+- `@supercharge/http`
+    - the properties `request.query`, `request.params`, and `request.headers` return an input bag instead of an object
+    ```js
+    // before
+    const query = request.query
+    const params = request.params
+    const headers = request.headers
+
+    // after
+    const query = request.query().all()
+    const params = request.params().all()
+    const headers = request.headers().all()
+    ```
 
 
 ## [2.0.0-alpha.4](https://github.com/supercharge/framework/compare/v2.0.0-alpha.3...v2.0.0-alpha.4) - 2021-07-09

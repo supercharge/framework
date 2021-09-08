@@ -2,8 +2,10 @@
 
 export * from './controller'
 export * from './file-bag'
+export * from './header-bag'
 export * from './http-context'
 export * from './http-redirect'
+export * from './parameter-bag'
 export * from './middleware'
 export * from './request'
 export * from './response'
