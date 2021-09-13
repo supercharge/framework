@@ -3,6 +3,7 @@
 export * from './application'
 export * from './bootstrappers'
 export * from './console/kernel'
+export * from './contracts'
 export * from './errors'
 export * from './http/kernel'
 export * from './providers'

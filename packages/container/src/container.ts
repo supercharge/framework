@@ -4,12 +4,10 @@ import Map from '@supercharge/map'
 import Str from '@supercharge/strings'
 import { className, isClass } from '@supercharge/classes'
 import { tap, upon, isFunction } from '@supercharge/goodies'
-import { Application, Class, Container as ContainerContract } from '@supercharge/contracts'
-
-type BindingFactory = (container: Container) => unknown
+import { Class, Container as ContainerContract, BindingFactory } from '@supercharge/contracts'
 
 interface Binding {
-  factory: BindingFactory
+  factory: BindingFactory<any>
   isSingleton: boolean
 }
 
@@ -40,7 +38,7 @@ export class Container implements ContainerContract {
    *
    * @returns {Container}
    */
-  bind (namespace: string | Class, factory: BindingFactory, isSingleton: boolean = false): this {
+  bind (namespace: string | Class, factory: BindingFactory<any>, isSingleton: boolean = false): this {
     this.ensureNamespace(namespace)
 
     if (!isFunction(factory)) {
@@ -77,7 +75,7 @@ export class Container implements ContainerContract {
    *
    * @returns {Container}
    */
-  singleton (namespace: string, factory: BindingFactory): this {
+  singleton (namespace: string | Class, factory: BindingFactory<any>): this {
     return this.bind(namespace, factory, true)
   }
 
@@ -140,7 +138,7 @@ export class Container implements ContainerContract {
    *
    * @returns {*}
    */
-  make<T = any>(namespace: string | Class<T, [Application]>): T {
+  make<T extends any>(namespace: string | Class): T {
     /**
      * If the namespace exists as a singleton, we’ll return the instance
      * without instantiating a new one. This way, the same instance
@@ -207,10 +205,10 @@ export class Container implements ContainerContract {
    * @returns {Function}
    */
   resolveFactoryFor (namespace: string | Class): any {
-    namespace = this.resolveNamespace(namespace)
+    const name = this.resolveNamespace(namespace)
 
-    return upon(this.bindings.get(namespace), binding => {
-      return (binding as Binding).factory
+    return upon(this.bindings.get(name), binding => {
+      return (binding as unknown as Binding).factory
     })
   }
 
@@ -222,7 +220,7 @@ export class Container implements ContainerContract {
    * @returns {Function}
    */
   createFactoryFor (Constructor: Class): any {
-    return (container: this) => {
+    return (container: Container) => {
       return new Constructor(container)
     }
   }

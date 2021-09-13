@@ -5,7 +5,7 @@ import { HttpContext } from './http-context'
 import Collect from '@supercharge/collections'
 import { BodyparserMiddleware } from './middleware'
 import { esmRequire, tap } from '@supercharge/goodies'
-import { Application, Class, HttpKernel, MiddlewareCtor, HttpRouter, ErrorHandler } from '@supercharge/contracts'
+import { Application, Class, HttpKernel, Middleware as MiddlewareContract, MiddlewareCtor, HttpRouter, ErrorHandler } from '@supercharge/contracts'
 
 export class Server {
   /**
@@ -186,7 +186,7 @@ export class Server {
     })
 
     this.instance().use(async (ctx, next) => {
-      return this.app().make(Middleware).handle(
+      return this.app().make<MiddlewareContract>(Middleware).handle(
         this.createContext(ctx), next
       )
     })
