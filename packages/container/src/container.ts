@@ -11,11 +11,7 @@ interface Binding {
   isSingleton: boolean
 }
 
-export interface ContainerBindings {
-  'container': Container
-}
-
-export class Container<ContainerBindings extends string | Class = any> implements ContainerContract {
+export class Container implements ContainerContract {
   /**
    * Stores the container bindings.
    */
@@ -42,11 +38,7 @@ export class Container<ContainerBindings extends string | Class = any> implement
    *
    * @returns {Container}
    */
-  bind<Binding extends keyof ContainerBindings> (
-    namespace: Binding,
-    factory: BindingFactory<ContainerBindings[Binding]>,
-    isSingleton: boolean = false
-  ): this {
+  bind (namespace: string | Class, factory: BindingFactory<any>, isSingleton: boolean = false): this {
     this.ensureNamespace(namespace)
 
     if (!isFunction(factory)) {
@@ -63,7 +55,7 @@ export class Container<ContainerBindings extends string | Class = any> implement
    *
    * @param {String|Class} namespace
    */
-  private ensureNamespace<Binding extends keyof ContainerBindings> (namespace: Binding): void {
+  private ensureNamespace (namespace: string | Class): void {
     if (isClass(namespace)) {
       return
     }
@@ -83,10 +75,7 @@ export class Container<ContainerBindings extends string | Class = any> implement
    *
    * @returns {Container}
    */
-  singleton<Binding extends keyof ContainerBindings> (
-    namespace: Binding,
-    factory: BindingFactory<ContainerBindings[Binding]>
-  ): this {
+  singleton (namespace: string | Class, factory: BindingFactory<any>): this {
     return this.bind(namespace, factory, true)
   }
 
@@ -97,7 +86,7 @@ export class Container<ContainerBindings extends string | Class = any> implement
    *
    * @returns {Boolean}
    */
-  hasBinding<Binding extends keyof ContainerBindings> (namespace: Binding): boolean {
+  hasBinding (namespace: string | Class): boolean {
     return this.bindings.has(
       this.resolveNamespace(namespace)
     )
@@ -110,7 +99,7 @@ export class Container<ContainerBindings extends string | Class = any> implement
    *
    * @returns {Boolean}
    */
-  hasSingletonBinding<Binding extends keyof ContainerBindings> (namespace: Binding): boolean {
+  hasSingletonBinding (namespace: string | Class): boolean {
     return this.singletons.has(
       this.resolveNamespace(namespace)
     )
@@ -123,7 +112,7 @@ export class Container<ContainerBindings extends string | Class = any> implement
    *
    * @returns {String}
    */
-  private resolveNamespace<Binding extends keyof ContainerBindings> (namespace: Binding): string {
+  private resolveNamespace (namespace: string | Class): string {
     return isClass(namespace)
       ? className(namespace)
       : String(namespace)
@@ -136,7 +125,7 @@ export class Container<ContainerBindings extends string | Class = any> implement
    *
    * @returns {Boolean}
    */
-  isSingleton<Binding extends keyof ContainerBindings> (namespace: Binding): boolean {
+  isSingleton (namespace: string | Class): boolean {
     return this.hasSingletonBinding(namespace) || this.bindings.contains((key, binding) => {
       return key === this.resolveNamespace(namespace) && binding.isSingleton
     })
@@ -149,7 +138,7 @@ export class Container<ContainerBindings extends string | Class = any> implement
    *
    * @returns {*}
    */
-  make<T extends any, Binding extends keyof ContainerBindings>(namespace: Binding): T {
+  make<T extends any>(namespace: string | Class): T {
     /**
      * If the namespace exists as a singleton, we’ll return the instance
      * without instantiating a new one. This way, the same instance
@@ -159,7 +148,7 @@ export class Container<ContainerBindings extends string | Class = any> implement
       return this.singletons.get(this.resolveNamespace(namespace)) as T
     }
 
-    const instance = this.build<T, Binding>(namespace)
+    const instance = this.build<T>(namespace)
 
     /**
      * If the namespace is expected to be a singleton, we’ll cache the instance
@@ -181,7 +170,7 @@ export class Container<ContainerBindings extends string | Class = any> implement
    *
    * @throws
    */
-  private build<T, Binding extends keyof ContainerBindings> (namespace: Binding): T {
+  private build<T> (namespace: string | Class): T {
     return upon(this.getFactoryFor(namespace), factory => {
       return factory(this)
     })
@@ -196,7 +185,7 @@ export class Container<ContainerBindings extends string | Class = any> implement
    *
    * @throws
    */
-  private getFactoryFor<Binding extends keyof ContainerBindings> (namespace: Binding): any {
+  private getFactoryFor (namespace: string | Class): any {
     if (this.hasBinding(namespace)) {
       return this.resolveFactoryFor(namespace)
     }
@@ -215,7 +204,7 @@ export class Container<ContainerBindings extends string | Class = any> implement
    *
    * @returns {Function}
    */
-  resolveFactoryFor<Bindin extends keyof ContainerBindings> (namespace: Bindin): any {
+  resolveFactoryFor (namespace: string | Class): any {
     const name = this.resolveNamespace(namespace)
 
     return upon(this.bindings.get(name), binding => {
@@ -231,7 +220,7 @@ export class Container<ContainerBindings extends string | Class = any> implement
    * @returns {Function}
    */
   createFactoryFor (Constructor: Class): any {
-    return (container: this) => {
+    return (container: Container) => {
       return new Constructor(container)
     }
   }

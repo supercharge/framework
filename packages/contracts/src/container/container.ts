@@ -8,57 +8,32 @@ import { Class } from '../support'
 export type BindingFactory<ReturnValue extends any> = (container: Container) => ReturnValue
 
 /**
- * TBA.
- */
-export interface LookupNode<Namespace extends string | Class> {
-  namespace: Namespace
-  factory: BindingFactory<any>
-  isSingleton: boolean
-}
-
-/**
- * Infers the type of the `container.make()` method for the given input.
- *
- * - String and LookupNode = Returns any
- * - Class constructor with "makePlain" are returned as it is
- * - Otherwise an instance of the class constructor is returned
- * - All other values are returned as it is
- */
-export type InferMakeType<T> = T extends string | LookupNode<string>
-  ? any
-  : T extends Class
-    ? T
-    : T extends Class<infer A>
-      ? A
-      : T
-
-/**
  * Defines the IoC Container interface.
  */
 export interface Container<ContainerBindings extends string | Class = any> {
   /**
    * Register a binding into the container.
    */
-  bind<Binding extends keyof ContainerBindings> (
-    namespace: Binding,
-    factory: BindingFactory<ContainerBindings[Binding]>
+  bind<Namespace extends keyof ContainerBindings> (
+    namespace: Namespace,
+    factory: BindingFactory<ContainerBindings[Namespace]>
   ): this
-  bind<Binding extends string | Class>(
-    namespace: Binding,
-    factory: BindingFactory<Binding extends keyof ContainerBindings ? ContainerBindings[Binding] : any>
+  bind<Namespace extends string | Class>(
+    namespace: Namespace,
+    factory: BindingFactory<Namespace extends keyof ContainerBindings ? ContainerBindings[Namespace] : any>
   ): this
 
   /**
    * Register a shared binding (singleton) in the container. It resolves the instance only once
    * and saves it in memory afterwards. Returns the cached instance on every subsequent call.
    */
-  singleton<Binding extends keyof ContainerBindings> (
-    namespace: Binding,
-    factory: BindingFactory<ContainerBindings[Binding]>
+  singleton<Namespace extends keyof ContainerBindings> (
+    namespace: Namespace,
+    factory: BindingFactory<ContainerBindings[Namespace]>
   ): this
-  singleton<Binding extends string | Class>(
-    namespace: Binding,
-    factory: BindingFactory<Binding extends keyof ContainerBindings ? ContainerBindings[Binding] : any>
+  singleton<Namespace extends string | Class>(
+    namespace: Namespace,
+    factory: BindingFactory<Namespace extends keyof ContainerBindings ? ContainerBindings[Namespace] : any>
   ): this
 
   /**
@@ -66,10 +41,12 @@ export interface Container<ContainerBindings extends string | Class = any> {
    *
    * @param {String} namespace
    */
-  make<Binding extends Extract<keyof ContainerBindings, string>> (
-    namespace: Binding | LookupNode<Binding>
-  ): ContainerBindings[Binding]
-  make<T extends any> (namespace: T | LookupNode<string>): T extends keyof ContainerBindings ? ContainerBindings[T] : InferMakeType<T>
+  make<Namespace extends Extract<keyof ContainerBindings, string>> (
+    namespace: Namespace
+  ): Namespace extends keyof ContainerBindings ? ContainerBindings[Namespace] : InferMakeType<Namespace>
+  make<T = any> (
+    namespace: string | Class
+  ): T
 
   /**
    * Determine whether the given `namespace` is bound in the container.
@@ -82,3 +59,19 @@ export interface Container<ContainerBindings extends string | Class = any> {
    */
   flush (): this
 }
+
+/**
+ * Infers the type of the `container.make()` method for the given input.
+ *
+ * - String and LookupNode = Returns any
+ * - Class constructor with "makePlain" are returned as it is
+ * - Otherwise an instance of the class constructor is returned
+ * - All other values are returned as it is
+ */
+export type InferMakeType<T> = T extends string
+  ? any
+  : T extends Class
+    ? T
+    : T extends Class<infer A>
+      ? A
+      : T
