@@ -7,7 +7,7 @@ export class ParameterBag implements ParameterBagContract {
   /**
    * Stores the request attributes, like query or path parameters.
    */
-  private readonly attributes: Record<string, any>
+  private attributes: Record<string, any>
 
   /**
    * Create a new instance.
@@ -80,8 +80,9 @@ export class ParameterBag implements ParameterBagContract {
    */
   remove (name: string): ParameterBag {
     return tap(this, () => {
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-      delete this.attributes[name]
+      const { [name]: _, ...rest } = this.attributes
+
+      this.attributes = rest
     })
   }
 
