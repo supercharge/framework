@@ -44,7 +44,7 @@ test('has', () => {
   expect(new ParameterBag({ a: 'b' }).has('a')).toBe(true)
 })
 
-test('has', () => {
+test('remove', () => {
   expect(new ParameterBag({}).remove('a').all()).toEqual({ })
   expect(new ParameterBag({}).remove('a').all()).toEqual({ })
   expect(new ParameterBag({ a: 1, b: 2 }).remove('a').all()).toEqual({ b: 2 })
