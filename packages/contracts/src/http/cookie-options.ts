@@ -13,7 +13,7 @@ export interface CookieOptions {
 
   /**
    * Determine whether the cookie is a 'same-site' cookie.
-   * Using `true` maps to `'strict'`.
+   * Using `true` maps to `'strict'`, using `false` maps to `none`.
    */
   sameSite: 'strict' | 'lax' | 'none' | true | false
 
