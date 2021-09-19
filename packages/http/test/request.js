@@ -208,4 +208,43 @@ test('request.headers()', async () => {
   })
 })
 
+test('request.cookie() returns an unsigned (plain) cookie', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload({
+      cookies: { data: request.cookie('data', cookie => cookie.unsigned()) }
+    })
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .set('Cookie', 'data=value')
+    .expect(200)
+
+  expect(response.headers['set-cookie']).toBeUndefined()
+  expect(response.body).toMatchObject({
+    cookies: { data: 'value' }
+  })
+})
+
+test('request.cookie() returns a signed cookie', async () => {
+  const appKeys = ['abcde']
+  const app = new Koa({ keys: appKeys }).use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload('ok').cookie('name', 'Supercharge')
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .set('Cookie', 'key=value')
+    .expect(200)
+
+  expect(response.headers['set-cookie']).toEqual([
+    'name=Supercharge; path=/; httponly',
+    'name.sig=vMKzqvNMXRSaFegfFMZZS4diDJM; path=/; httponly'
+  ])
+})
+
 test.run()
