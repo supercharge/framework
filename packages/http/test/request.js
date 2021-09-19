@@ -62,11 +62,11 @@ test('request.input() returns empty payload when not providing a key', async () 
     })
   })
 
-  const { body } = await Supertest(app.callback())
+  const response = await Supertest(app.callback())
     .get('/?name=Supercharge')
     .expect(200)
 
-  expect(body).toMatchObject({})
+  expect(response.body).toMatchObject({})
 })
 
 test('request.input() returns a single key from query params', async () => {
@@ -110,11 +110,11 @@ test('request.input() returns a single key from files', async () => {
     })
   })
 
-  const { body } = await Supertest(app.callback())
+  const response = await Supertest(app.callback())
     .get('/')
     .expect(200)
 
-  expect(body).toMatchObject({
+  expect(response.body).toMatchObject({
     input: { name: 'UploadedFile' }
   })
 })
@@ -177,6 +177,35 @@ test('request.param() returns the param default value if it doesn’t exist', as
   await Supertest(app.callback())
     .get('/')
     .expect(200, { param: 'Marcus' })
+})
+
+test('request.headers()', async () => {
+  const app = new Koa()
+    .use(async (ctx, next) => {
+      const { request } = HttpContext.wrap(ctx, appMock)
+
+      request.headers().set('x-name', 'Supercharge')
+      await next()
+    })
+    .use(ctx => {
+      const { request, response } = HttpContext.wrap(ctx, appMock)
+
+      return response.payload({
+        headers: request.headers()
+      })
+    })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .set('x-testing', 'foo')
+    .expect(200)
+
+  expect(response.body.headers).toMatchObject({
+    headers: {
+      'x-testing': 'foo',
+      'x-name': 'Supercharge'
+    }
+  })
 })
 
 test.run()
