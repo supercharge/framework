@@ -5,11 +5,12 @@ import { Files } from 'formidable'
 import { FileBag } from './file-bag'
 import Str from '@supercharge/strings'
 import { HeaderBag } from './header-bag'
+import { CookieBag } from './cookie-bag'
 import { tap } from '@supercharge/goodies'
 import { RouterContext } from 'koa__router'
 import { ParameterBag } from './parameter-bag'
 import { IncomingHttpHeaders, IncomingMessage } from 'http'
-import { HttpRequest, InteractsWithContentTypes } from '@supercharge/contracts'
+import { HttpRequest, InteractsWithContentTypes, RequestCookieBuilderCallback } from '@supercharge/contracts'
 
 declare module 'koa' {
   interface Request extends Koa.BaseRequest {
@@ -83,6 +84,22 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
   }
 
   /**
+   * Returns the cookie value for the given `name`. Supports an options
+   * builder as the second argument allowing you to change whether you
+   * want to retrieve the cookie `unsigned` from the incomig request.
+   */
+  cookie (name: string, cookieBuilder?: RequestCookieBuilderCallback): string | undefined {
+    return new CookieBag(this.ctx.cookies).get(name, cookieBuilder)
+  }
+
+  /**
+   * Determine whether a cookie exists for the given `name`.
+   */
+  hasCookie (name: string): boolean {
+    return new CookieBag(this.ctx.cookies).has(name)
+  }
+
+  /**
    * Returns the request payload.
    */
   payload (): any {
@@ -114,7 +131,7 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * Determine whether a request body exists.
    */
   hasPayload (): boolean {
-    return !!this.header('transfer-encoding') || !isNaN(Number(this.header('content-length')))
+    return this.headers().has('transfer-encoding') || !isNaN(Number(this.header('content-length')))
   }
 
   /**

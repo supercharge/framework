@@ -5,6 +5,7 @@ import { IncomingMessage } from 'http'
 import { HeaderBag } from './header-bag'
 import { ParameterBag } from './parameter-bag'
 import { InteractsWithContentTypes } from './concerns'
+import { RequestCookieBuilderCallback } from './cookie-options-builder'
 
 export interface HttpRequest extends InteractsWithContentTypes {
   /**
@@ -36,7 +37,14 @@ export interface HttpRequest extends InteractsWithContentTypes {
    * Returns the path parameter for the given `name`. Returns the
    * `defaultValue` if a parameter for the name doesn’t exist.
    */
-  param<T = any>(name: string, defaultValue: T): T
+  param<T = any>(name: string, defaultValue?: T): T
+
+  /**
+   * Returns the cookie value for the given `name`. Supports an options
+   * builder as the second argument allowing you to change whether you
+   * want to retrieve the cookie `unsigned` from the incomig request.
+   */
+  cookie(name: string, cookieBuilder?: RequestCookieBuilderCallback): string | undefined
 
   /**
    * Returns the merged request payload, files and query parameters. The query parameters
