@@ -2,8 +2,8 @@
 
 import * as Cookies from 'cookies'
 import { tap } from '@supercharge/goodies'
-import { RequestCookieBuilder } from './cookies/request-cookie-builder'
-import { CookieBag as CookieBagContract, RequestCookieBuilderCallback } from '@supercharge/contracts'
+import { RequestCookieBuilder, ResponseCookieBuilder } from './cookies'
+import { CookieBag as CookieBagContract, RequestCookieBuilderCallback, ResponseCookieBuilderCallback } from '@supercharge/contracts'
 
 export class CookieBag implements CookieBagContract {
   /**
@@ -42,12 +42,18 @@ export class CookieBag implements CookieBagContract {
    * This will override an existing attribute for the given `name`.
    *
    * @param {String} name
-   * @param {String|String[]} value
+   * @param {String?} value
    *
    * @returns {HeaderBag}
    */
-  // set (name: string, value?: string, cookieBuilder?: ResponseCookieBuilderCallback): this {
-  set (name: string, value?: string, options?: any): this {
+  set (name: string, value?: string | null, cookieBuilder?: ResponseCookieBuilderCallback): this {
+    const options: Cookies.SetOption = { signed: true }
+    const builder = new ResponseCookieBuilder(options)
+
+    if (typeof cookieBuilder === 'function') {
+      cookieBuilder(builder)
+    }
+
     return tap(this, () => {
       this.cookies.set(name, value, options)
     })
