@@ -66,7 +66,9 @@ export interface HttpResponse extends InteractsWithState {
    *
    * @example
    * ```
-   * response.cookie('name', 'value', options)
+   * response.cookie('name', 'value', cookie => {
+   *   cookie.expires('7d')
+   * })
    * ```
    */
   cookie(key: string, value?: string | null, cookieBuilder?: ResponseCookieBuilderCallback): this
