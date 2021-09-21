@@ -1,8 +1,40 @@
 'use strict'
 
-import ms, { StringValue } from 'ms'
+import ms from 'ms'
 import { tap } from '@supercharge/goodies'
 import { CookieOptions, ResponseCookieBuilder as ResponseCookieBuilderContract } from '@supercharge/contracts'
+
+type Units =
+  | 'Years'
+  | 'Year'
+  | 'Y'
+  | 'Weeks'
+  | 'Week'
+  | 'W'
+  | 'Days'
+  | 'Day'
+  | 'D'
+  | 'Hours'
+  | 'Hour'
+  | 'H'
+  | 'Minutes'
+  | 'Minute'
+  | 'Min'
+  | 'M'
+  | 'Seconds'
+  | 'Second'
+  | 'Sec'
+  | 's'
+  | 'Milliseconds'
+  | 'Millisecond'
+  | 'Ms'
+
+type UnitAnyCase = Lowercase<Units> | Units
+
+export type StringTime =
+    | `${number}`
+    | `${number}${UnitAnyCase}`
+    | `${number} ${UnitAnyCase}`
 
 export class ResponseCookieBuilder implements ResponseCookieBuilderContract {
   /**
@@ -20,13 +52,13 @@ export class ResponseCookieBuilder implements ResponseCookieBuilderContract {
   /**
    * Creates a cookie that expires in `time` milliseconds from now.
    */
-  expiresIn (time: StringValue | number): this {
+  expiresIn (time: StringTime | number): this {
     if (typeof time === 'string') {
       this.responseCookieOptions.maxAge = ms(time)
-    }
-
-    if (typeof time === 'number') {
+    } else if (typeof time === 'number') {
       this.responseCookieOptions.maxAge = time
+    } else {
+      throw new Error(`Unsupported argument in method "expiresIn" of response cookie builder. Supported are strings and numbers. Received ${typeof time}`)
     }
 
     return this
