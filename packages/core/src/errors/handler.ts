@@ -22,6 +22,8 @@ export class ErrorHandler implements ErrorHandlerContract {
   constructor (app: Application) {
     this.app = app
     this.reportCallbacks = []
+
+    this.register()
   }
 
   /**
