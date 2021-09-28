@@ -132,7 +132,7 @@ export class HttpKernel implements HttpKernelContract {
    * configuration, register service providers into the IoC container
    * and ultimately boot the registered providers.
    */
-  async bootstrap (): Promise<void> {
+  protected async bootstrap (): Promise<void> {
     await this.app().bootstrapWith(
       this.bootstrappers()
     )
@@ -167,14 +167,14 @@ export class HttpKernel implements HttpKernelContract {
   /**
    * Start the HTTP server to listen on a local port.
    */
-  async listen (): Promise<void> {
+  protected async listen (): Promise<void> {
     await this.server.start()
   }
 
   /**
    * Run the configured `booted` callbacks.
    */
-  private async runBootedCallbacks (): Promise<void> {
+  protected async runBootedCallbacks (): Promise<void> {
     await this.runCallbacks(
       this.bootedCallbacks()
     )
@@ -185,7 +185,7 @@ export class HttpKernel implements HttpKernelContract {
    *
    * @param {Callback[]} callbacks
    */
-  private async runCallbacks (callbacks: Callback[]): Promise<void> {
+  protected async runCallbacks (callbacks: Callback[]): Promise<void> {
     await Collect(callbacks).forEach(async callback => {
       await callback()
     })
