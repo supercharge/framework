@@ -38,6 +38,8 @@ export class HttpKernel implements HttpKernelContract {
   constructor (app: Application) {
     this.server = new Server(this)
     this.meta = { app, bootedCallbacks: [] }
+
+    this.register()
   }
 
   /**
@@ -47,6 +49,15 @@ export class HttpKernel implements HttpKernelContract {
    */
   static for (app: Application): HttpKernel {
     return new this(app)
+  }
+
+  /**
+   * Register the booting or booted callbacks. For example, you may use a `booted`
+   * callback to send a "ready" signal to PM2 (or any other process manager)
+   * informing that your HTTP server is ready to accept incoming requests.
+   */
+  register (): void {
+    //
   }
 
   /**
