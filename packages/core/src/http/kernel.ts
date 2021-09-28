@@ -83,7 +83,7 @@ export class HttpKernel implements HttpKernelContract {
    *
    * @returns {this}
    */
-  protected booted (callback: Callback): this {
+  booted (callback: Callback): this {
     return tap(this, () => {
       this.bootedCallbacks().push(callback)
     })
@@ -132,7 +132,7 @@ export class HttpKernel implements HttpKernelContract {
   /**
    * Returns the list of application bootstrappers.
    */
-  protected bootstrappers (): BootstrapperCtor[] {
+  bootstrappers (): BootstrapperCtor[] {
     return [
       HandleExceptions,
       LoadEnvironmentVariables,
@@ -154,9 +154,9 @@ export class HttpKernel implements HttpKernelContract {
   }
 
   /**
-   * Start the HTTP server.
+   * Start the HTTP server to listen on a local port.
    */
-  private async listen (): Promise<void> {
+  async listen (): Promise<void> {
     await this.server.start()
   }
 
