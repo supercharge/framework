@@ -1,14 +1,29 @@
 # Changelog
 
-## [2.0.0-alpha.5](https://github.com/supercharge/framework/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) - 2021-07-xx
+## [2.0.0-alpha.5](https://github.com/supercharge/framework/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) - 2021-09-29
 
 ### Added
+- `@supercharge/contracts`
+    - extend the container types to resolve classes when passed to as a namespace
+    - extend the HTTP `Request` contract, added methods:
+        - `request.hasPayload()`
+        - `request.setPayload()`
+        - `request.rawPayload()`
+        - `request.setRawPayload()`
+        - `request.isContentType(...types)`
+        - `request.contentType()`
+        - `request.req()`: returns the raw Node.js request
+        - `request.all()`: returns the merged request payload, query parameters, and files
+        - `request.input()`: retrieve a single request input
+        - `request.files()`
+        - `request.setFiles()`
 - `@supercharge/http`
     - added `HeaderBag`, `ParameterBag`, `FileBag` classes to provide helpful methods to access request input
     - add bodyparser middleware replacing the previously used `koa-body`
-- `@supercharge/contracts`
-    - extend the container types to resolve classes when passed to as a namespace
-    - extend the HTTP `Request` contract: added `request.hasPayload()`, `request.setPayload()`, `request.rawPayload()`, `request.setRawPayload()`, `request.isContentType(...types)`, `request.contentType()`
+    - add `booted` method to the `HttpKernel` class
+    - call the `register` method of the `HttpKernel` to register “booted” callbacks
+    - add request `CookieBag` to to retrieve cookies from the incoming request
+    - implement the new HTTP request methods
 - `@supercharge/container`
     - add handling to bind and resolve classes as the namespace in the container
 
@@ -18,6 +33,9 @@
     - use `Record<string, any>` as types for `request.params` and `request.query`
 - `@supercharge/core`
     - use `HttpError` class from `@supercharge/errors` as base class
+    - removed `bootstrap` method from `HttpKernel`
+- `@supercharge/http`
+    - refactor the HTTP Server to properly initialize and save the server instance
 - `@supercharge/routing`
     - add comments to `RouteCollection`
     - refine comments of `Router` methods
@@ -37,6 +55,10 @@
     const params = request.params().all()
     const headers = request.headers().all()
     ```
+    - rename exported middlewares:
+      - `HandleCors` -> `HandleCorsMiddleware`
+      - `VerifyCsrfToken` -> `VerifyCsrfTokenMiddleware`
+      - `ServeStaticAssets` -> `ServeStaticAssetsMiddleware`
 
 
 ## [2.0.0-alpha.4](https://github.com/supercharge/framework/compare/v2.0.0-alpha.3...v2.0.0-alpha.4) - 2021-07-09

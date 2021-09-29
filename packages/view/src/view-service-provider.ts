@@ -3,6 +3,10 @@
 import { ViewManager } from './manager'
 import { ServiceProvider } from '@supercharge/support'
 
+export interface ContainerBindings {
+  'view': ViewManager
+}
+
 export class ViewServiceProvider extends ServiceProvider {
   /**
    * Register application services to the container.

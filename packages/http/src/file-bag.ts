@@ -5,16 +5,20 @@ import { tap } from '@supercharge/goodies'
 import { UploadedFile } from './uploaded-file'
 import { FileBag as FileBagContract } from '@supercharge/contracts'
 
+interface UploadedFileType {
+  [name: string]: UploadedFile | UploadedFile[]
+}
+
 export class FileBag implements FileBagContract {
   /**
    * Stores the files on the request.
    */
-  private readonly files: { [name: string]: UploadedFile | UploadedFile[] }
+  private readonly files: UploadedFileType
 
   /**
    * Create a new instance.
    */
-  constructor (files: { [name: string]: UploadedFile | UploadedFile[]} = {}) {
+  constructor (files: UploadedFileType = {}) {
     this.files = files
   }
 
@@ -27,7 +31,7 @@ export class FileBag implements FileBagContract {
    */
   static createFromBase (files?: Files): FileBag {
     return new this(
-      Object.entries(files ?? {}).reduce((carry: { [key: string]: UploadedFile | UploadedFile[] }, [name, value]) => {
+      Object.entries(files ?? {}).reduce((carry: UploadedFileType, [name, value]) => {
         carry[name] = Array.isArray(value)
           ? value.map(file => new UploadedFile(file))
           : new UploadedFile(value)
@@ -40,7 +44,7 @@ export class FileBag implements FileBagContract {
   /**
    * Returns an object of all uploaded files.
    */
-  all (...keys: string[]|string[][]): { [name: string]: UploadedFile | UploadedFile[] | undefined} {
+  all (...keys: string[]|string[][]): { [name: string]: UploadedFile | UploadedFile[] | undefined } {
     if (keys.length === 0) {
       return this.files
     }
@@ -102,7 +106,7 @@ export class FileBag implements FileBagContract {
   /**
    * Returns an object containing all files in the bag.
    */
-  toJSON (): { [name: string]: UploadedFile | UploadedFile[] | undefined} {
-    return this.all()
+  toJSON (): UploadedFileType {
+    return this.all() as UploadedFileType
   }
 }

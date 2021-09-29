@@ -411,10 +411,10 @@ export class Application extends Container implements ApplicationContract {
   }
 
   /**
-     * Call the given booting `callbacks` for this application.
-     *
-     * @param {Callback[]} callbacks
-     */
+   * Call the given booting `callbacks` for this application.
+   *
+   * @param {Callback[]} callbacks
+   */
   async runAppCallbacks (callbacks: Callback[]): Promise<void> {
     await Collect(callbacks).forEach(async callback => {
       await callback(this)
