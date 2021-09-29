@@ -8,13 +8,13 @@ export class RequestCookieBuilder implements RequestCookieContract {
   /**
    * Stores the options used when retrieving a cookie value from the request.
    */
-  private readonly getCookieOptions: Cookies.GetOption
+  private readonly cookieOptions: Cookies.GetOption
 
   /**
    * Create a new instance.
    */
   constructor (options: Cookies.GetOption) {
-    this.getCookieOptions = options
+    this.cookieOptions = options
   }
 
   /**
@@ -24,7 +24,7 @@ export class RequestCookieBuilder implements RequestCookieContract {
    */
   unsigned (): this {
     return tap(this, () => {
-      this.getCookieOptions.signed = false
+      this.cookieOptions.signed = false
     })
   }
 }
