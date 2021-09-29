@@ -105,7 +105,7 @@ export class HttpKernel implements HttpKernelContract {
    *
    * @returns {Callback[]}
    */
-  private bootedCallbacks (): Callback[] {
+  bootedCallbacks (): Callback[] {
     return this.meta.bootedCallbacks
   }
 
