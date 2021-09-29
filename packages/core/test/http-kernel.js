@@ -23,4 +23,17 @@ test('registers and calls booted callbacks', async () => {
   bootstrapStub.restore()
 })
 
+test('calls register when creating the HttpKernel instance', async () => {
+  class CustomHttpKernel extends HttpKernel {
+    register () {
+      this
+        .booted(() => {})
+        .booted(() => {})
+    }
+  }
+
+  const kernel = new CustomHttpKernel()
+  expect(kernel.bootedCallbacks().length).toBe(2)
+})
+
 test.run()
