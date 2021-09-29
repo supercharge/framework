@@ -1,7 +1,7 @@
 {
   "name": "@supercharge/view",
   "nscription": "The Supercharge view package",
-  "version": "2.0.0-alpha.4",
+  "version": "2.0.0-alpha.5",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
@@ -13,12 +13,12 @@
   ],
   "dependencies": {
     "@supercharge/collections": "~3.1.4",
-    "@supercharge/contracts": "^2.0.0-alpha.3",
+    "@supercharge/contracts": "^2.0.0-alpha.5",
     "@supercharge/fs": "~3.1.0",
     "@supercharge/goodies": "~1.9.0",
-    "@supercharge/manager": "^2.0.0-alpha.3",
+    "@supercharge/manager": "^2.0.0-alpha.5",
     "@supercharge/strings": "~1.18.0",
-    "@supercharge/support": "^2.0.0-alpha.3",
+    "@supercharge/support": "^2.0.0-alpha.5",
     "handlebars": "~4.7.7"
   },
   "devDependencies": {
