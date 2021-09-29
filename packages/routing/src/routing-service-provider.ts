@@ -3,6 +3,10 @@
 import { Router } from './router'
 import { ServiceProvider } from '@supercharge/support'
 
+export interface ContainerBindings {
+  'route': Router
+}
+
 export class RoutingServiceProvider extends ServiceProvider {
   /**
    * Register application services to the container.
