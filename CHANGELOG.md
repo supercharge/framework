@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.0.0-alpha.5](https://github.com/supercharge/framework/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) - 2021-09-xx
+## [2.0.0-alpha.5](https://github.com/supercharge/framework/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) - 2021-09-29
 
 ### Added
 - `@supercharge/contracts`
