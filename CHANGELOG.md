@@ -1,11 +1,13 @@
 # Changelog
 
-## [2.0.0-alpha.5](https://github.com/supercharge/framework/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) - 2021-07-xx
+## [2.0.0-alpha.5](https://github.com/supercharge/framework/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) - 2021-09-xx
 
 ### Added
 - `@supercharge/http`
     - added `HeaderBag`, `ParameterBag`, `FileBag` classes to provide helpful methods to access request input
     - add bodyparser middleware replacing the previously used `koa-body`
+    - add `booted` method to the `HttpKernel` class
+    - call the `register` method of the `HttpKernel` to register “booted” callbacks
 - `@supercharge/contracts`
     - extend the container types to resolve classes when passed to as a namespace
     - extend the HTTP `Request` contract: added `request.hasPayload()`, `request.setPayload()`, `request.rawPayload()`, `request.setRawPayload()`, `request.isContentType(...types)`, `request.contentType()`
@@ -18,6 +20,7 @@
     - use `Record<string, any>` as types for `request.params` and `request.query`
 - `@supercharge/core`
     - use `HttpError` class from `@supercharge/errors` as base class
+    - removed `bootstrap` method from `HttpKernel`
 - `@supercharge/routing`
     - add comments to `RouteCollection`
     - refine comments of `Router` methods
