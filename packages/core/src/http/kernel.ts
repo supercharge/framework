@@ -4,7 +4,7 @@ import Fs from '@supercharge/fs'
 import { tap } from '@supercharge/goodies'
 import { Server } from '@supercharge/http'
 import Collect from '@supercharge/collections'
-import { Application, BootstrapperCtor, HttpKernel as HttpKernelContract, MiddlewareCtor } from '@supercharge/contracts'
+import { Application, BootstrapperCtor, HttpKernel as HttpKernelContract, HttpServerHandler, MiddlewareCtor } from '@supercharge/contracts'
 import { HandleExceptions, LoadConfiguration, LoadEnvironmentVariables, RegisterServiceProviders, BootServiceProviders } from '../bootstrappers'
 
 type Callback = () => unknown | Promise<unknown>
@@ -23,12 +23,12 @@ export class HttpKernel implements HttpKernelContract {
      * Stores the "booted" callbacks
      */
     bootedCallbacks: Callback[]
-  }
 
-  /**
-   * The HTTP server instance.
-   */
-  private readonly server: Server
+    /**
+     * The HTTP server instance.
+     */
+    readonly server: Server
+  }
 
   /**
    * Create a new HTTP kernel instance.
@@ -36,8 +36,7 @@ export class HttpKernel implements HttpKernelContract {
    * @param {Application} app
    */
   constructor (app: Application) {
-    this.server = new Server(this)
-    this.meta = { app, bootedCallbacks: [] }
+    this.meta = { app, bootedCallbacks: [], server: new Server(this) }
 
     this.register()
   }
@@ -49,6 +48,15 @@ export class HttpKernel implements HttpKernelContract {
    */
   static for (app: Application): HttpKernel {
     return new this(app)
+  }
+
+  /**
+   * Returns the HTTP server instance.
+   *
+   * @returns {Server}
+   */
+  server (): Server {
+    return this.meta.server
   }
 
   /**
@@ -117,6 +125,22 @@ export class HttpKernel implements HttpKernelContract {
   }
 
   /**
+   * Returns a request handler callback compatible with Node.js’ native HTTP server. This method
+   * bootstraps the HTTP server instance by registering routes and middleware before returning
+   * it. This request handler callback is useful during testing when sending requests into
+   * the HTTP server instance with a community package, like Supertest from visionmedia.
+   *
+   * @returns {HttpServerHandler}
+   */
+  async serverCallback (): Promise<HttpServerHandler> {
+    await this.bootstrap()
+
+    return await tap(this.server().callback(), async () => {
+      await this.runBootedCallbacks()
+    })
+  }
+
+  /**
    * Start the HTTP instance listening for incoming requests.
    *
    * @returns {Promise}
@@ -137,7 +161,7 @@ export class HttpKernel implements HttpKernelContract {
       this.bootstrappers()
     )
 
-    await this.server.bootstrap()
+    await this.server().bootstrap()
   }
 
   /**
@@ -168,7 +192,7 @@ export class HttpKernel implements HttpKernelContract {
    * Start the HTTP server to listen on a local port.
    */
   protected async listen (): Promise<void> {
-    await this.server.start()
+    await this.server().start()
   }
 
   /**
