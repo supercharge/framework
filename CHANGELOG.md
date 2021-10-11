@@ -5,6 +5,14 @@
 ### Added
 - `@supercharge/config`
     - `config.get<T>(key, defaultValue)` now supports a generic return type `T`
+- `@supercharge/contracts`
+    - add `HttpServer` contract
+- `@supercharge/http`
+    - the HTTP `Server` class implements the `HttpServer` contract
+    - HTTP server: expose a `server.callback()` method that is useful for testing and compatible with Node.js’ native HTTP server
+- `@supercharge/core`
+    - add a `kernel.server()` method to the HTTP kernel providing the server instance
+    - expose a `kernel.serverCallback()` bootstrapping the HTTP kernel and returning the `server.callback()` method.
 
 ### Updated
 - bump dependencies
