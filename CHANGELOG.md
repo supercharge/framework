@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.0.0-alpha.6](https://github.com/supercharge/framework/compare/v2.0.0-alpha.5...v2.0.0-alpha.6) - 2021-10-xx
+
+### Added
+- `@supercharge/config`
+    - `config.get<T>(key, defaultValue)` now supports a generic return type `T`
+
+### Updated
+- bump dependencies
+
+
 ## [2.0.0-alpha.5](https://github.com/supercharge/framework/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) - 2021-09-29
 
 ### Added

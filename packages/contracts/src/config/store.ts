@@ -11,7 +11,7 @@ export interface ConfigStore {
    * a default value as the second argument. The default value will be
    * returned if the config value for `key` is not existent.
    */
-  get (key: string, defaultValue?: any): any
+  get<T = any> (key: string, defaultValue?: T): T
 
   /**
    * Set a config value.
