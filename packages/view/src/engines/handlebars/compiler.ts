@@ -140,7 +140,7 @@ export class HandlebarsCompiler implements ViewEngine {
    */
   async partialsLocations (): Promise<string[]> {
     return await Collect(
-      this.config().get('view.handlebars.partials')
+      this.config().get<string[]>('view.handlebars.partials')
     ).filter(async path => {
       return await Fs.exists(path)
     })
@@ -205,7 +205,7 @@ export class HandlebarsCompiler implements ViewEngine {
       this.compiler().registerPartial(
         this.partialNameFrom(file, basePath), await Fs.content(file)
       )
-    } catch (error) {
+    } catch (error: any) {
       this.logger().warning(`WARNING: failed to register partial "${file}": ${String(error.message)}`)
     }
   }
@@ -268,7 +268,7 @@ export class HandlebarsCompiler implements ViewEngine {
       typeof helper === 'function'
         ? this.compiler().registerHelper(name, helper)
         : this.logger().warning(`View helper "${file}" is not a function, received "${typeof helper}"`)
-    } catch (error) {
+    } catch (error: any) {
       this.logger().warning(`WARNING: failed to load helper "${file}": ${String(error.message)}`)
     }
   }

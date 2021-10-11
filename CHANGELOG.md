@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.0.0-alpha.6](https://github.com/supercharge/framework/compare/v2.0.0-alpha.5...v2.0.0-alpha.6) - 2021-10-11
+
+### Added
+- `@supercharge/config`
+    - `config.get<T>(key, defaultValue)` now supports a generic return type `T`
+- `@supercharge/contracts`
+    - add `HttpServer` contract
+- `@supercharge/http`
+    - the HTTP `Server` class implements the `HttpServer` contract
+    - HTTP server: expose a `server.callback()` method that is useful for testing and compatible with Node.js’ native HTTP server
+- `@supercharge/core`
+    - add a `kernel.server()` method to the HTTP kernel providing the server instance
+    - expose a `kernel.serverCallback()` bootstrapping the HTTP kernel and returning the `server.callback()` method.
+
+### Updated
+- bump dependencies
+
+
 ## [2.0.0-alpha.5](https://github.com/supercharge/framework/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) - 2021-09-29
 
 ### Added
