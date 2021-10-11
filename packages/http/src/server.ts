@@ -5,9 +5,9 @@ import { HttpContext } from './http-context'
 import Collect from '@supercharge/collections'
 import { BodyparserMiddleware } from './middleware'
 import { esmRequire, tap } from '@supercharge/goodies'
-import { Application, Class, HttpKernel, Middleware as MiddlewareContract, MiddlewareCtor, HttpRouter, ErrorHandler } from '@supercharge/contracts'
+import { Application, Class, HttpKernel, HttpServer, Middleware as MiddlewareContract, MiddlewareCtor, HttpRouter, ErrorHandler, HttpServerHandler } from '@supercharge/contracts'
 
-export class Server {
+export class Server implements HttpServer {
   /**
    * The server’s meta data.
    */
@@ -77,6 +77,15 @@ export class Server {
     }
 
     return this.meta.router
+  }
+
+  /**
+   * Returns a request handler callback compatible with Node.js’ native HTTP server.
+   *
+   * @returns {HttpServerHandler}
+   */
+  callback (): HttpServerHandler {
+    return this.instance().callback()
   }
 
   /**
