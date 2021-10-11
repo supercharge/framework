@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.0.0-alpha.6](https://github.com/supercharge/framework/compare/v2.0.0-alpha.5...v2.0.0-alpha.6) - 2021-10-xx
+## [2.0.0-alpha.6](https://github.com/supercharge/framework/compare/v2.0.0-alpha.5...v2.0.0-alpha.6) - 2021-10-11
 
 ### Added
 - `@supercharge/config`
