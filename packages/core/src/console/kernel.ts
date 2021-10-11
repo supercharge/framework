@@ -30,6 +30,15 @@ export class ConsoleKernel implements ConsoleKernelContract {
   }
 
   /**
+   * Creates a new console kernel instance for the given `app`.
+   *
+   * @param {Application} app
+   */
+  static for (app: Application): ConsoleKernel {
+    return new this(app)
+  }
+
+  /**
    * Returns the application instance.
    *
    * @returns {Application}
