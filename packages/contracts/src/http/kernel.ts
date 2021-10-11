@@ -1,5 +1,6 @@
 'use strict'
 
+import { HttpServer } from './server'
 import { Application } from '../foundation'
 import { MiddlewareCtor } from './middleware'
 
@@ -8,6 +9,11 @@ export interface HttpKernel {
    * Returns the app instance.
    */
   app(): Application
+
+  /**
+   * Returns the HTTP server instance.
+   */
+  server (): HttpServer
 
   /**
    * Start an HTTP Server instance handling incoming requests.
