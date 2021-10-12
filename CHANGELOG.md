@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.0-alpha.8](https://github.com/supercharge/framework/compare/v2.0.0-alpha.6...v2.0.0-alpha.8) - 2021-10-xx
+
+### Added
+- `@supercharge/contracts`
+    - extend the HTTP kernel contract with additional methods
+
+
 ## [2.0.0-alpha.7](https://github.com/supercharge/framework/compare/v2.0.0-alpha.6...v2.0.0-alpha.7) - 2021-10-12
 
 ### Notice
