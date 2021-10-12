@@ -27,7 +27,12 @@ export class HttpKernel implements HttpKernelContract {
     /**
      * The HTTP server instance.
      */
-    readonly server: Server
+    server: Server
+
+    /**
+     * Determine whether the bootstrapping ran.
+     */
+    isBootstrapped: boolean
   }
 
   /**
@@ -36,7 +41,12 @@ export class HttpKernel implements HttpKernelContract {
    * @param {Application} app
    */
   constructor (app: Application) {
-    this.meta = { app, bootedCallbacks: [], server: new Server(this) }
+    this.meta = {
+      app,
+      bootedCallbacks: [],
+      isBootstrapped: false,
+      server: new Server(this)
+    }
 
     this.register()
   }
@@ -48,6 +58,26 @@ export class HttpKernel implements HttpKernelContract {
    */
   static for (app: Application): HttpKernel {
     return new this(app)
+  }
+
+  /**
+   * Determine whether the HTTP kernel is already boostrapped.
+   *
+   * @returns {Boolean}
+   */
+  isBootstrapped (): boolean {
+    return this.meta.isBootstrapped
+  }
+
+  /**
+   * Mark this HTTP kernel as bootstrapped.
+   *
+   * @returns {this}
+   */
+  markAsBootstrapped (): this {
+    return tap(this, () => {
+      this.meta.isBootstrapped = true
+    })
   }
 
   /**
@@ -133,6 +163,10 @@ export class HttpKernel implements HttpKernelContract {
    * @returns {HttpServerHandler}
    */
   async serverCallback (): Promise<HttpServerHandler> {
+    if (this.isBootstrapped()) {
+      return this.server().callback()
+    }
+
     await this.bootstrap()
 
     return await tap(this.server().callback(), async () => {
@@ -162,6 +196,7 @@ export class HttpKernel implements HttpKernelContract {
     )
 
     await this.server().bootstrap()
+    this.markAsBootstrapped()
   }
 
   /**
