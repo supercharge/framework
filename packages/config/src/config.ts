@@ -33,7 +33,7 @@ export class Config implements ConfigStore {
    *
    * @returns {*}
    */
-  get<T = any> (key: string, defaultValue?: T): T {
+  get<T extends any = any> (key: string, defaultValue?: T): T {
     return _.get(this.config, key, defaultValue)
   }
 
