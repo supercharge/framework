@@ -1,7 +1,7 @@
 {
 	"name": "@supercharge/routing",
 	"description": "The Supercharge routing package",
-	"version": "2.0.0-alpha.6",
+	"version": "2.0.0-alpha.7",
 	"author": "Marcus Pöhls <marcus@superchargejs.com>",
 	"bugs": {
 		"url": "https://github.com/supercharge/framework/issues"
@@ -15,11 +15,11 @@
 		"@koa/router": "~10.0.0",
 		"@supercharge/classes": "~1.4.0",
 		"@supercharge/collections": "~3.1.4",
-		"@supercharge/contracts": "^2.0.0-alpha.6",
+		"@supercharge/contracts": "^2.0.0-alpha.7",
 		"@supercharge/goodies": "~1.9.0",
-		"@supercharge/http": "^2.0.0-alpha.6",
+		"@supercharge/http": "^2.0.0-alpha.7",
 		"@supercharge/strings": "~1.18.0",
-		"@supercharge/support": "^2.0.0-alpha.6",
+		"@supercharge/support": "^2.0.0-alpha.7",
 		"globby": "~11.0.3"
 	},
 	"devDependencies": {
