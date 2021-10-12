@@ -58,7 +58,7 @@ export class ResponseCookieBuilder implements ResponseCookieBuilderContract {
     } else if (typeof time === 'number') {
       this.responseCookieOptions.maxAge = time
     } else {
-      throw new Error(`Unsupported argument in method "expiresIn" of response cookie builder. Supported are strings and numbers. Received ${typeof time}`)
+      throw new Error(`Strings and numbers are supported arguments in method "expiresIn".Received ${typeof time}`)
     }
 
     return this
@@ -68,6 +68,10 @@ export class ResponseCookieBuilder implements ResponseCookieBuilderContract {
    * Creates a cookie that expires at the given `date` time in the future.
    */
   expiresAt (date: Date): this {
+    if (!(date instanceof Date)) {
+      throw new Error('Argument in method "expiresAt" must be an instance of date.')
+    }
+
     return tap(this, () => {
       this.responseCookieOptions.expires = date
     })
