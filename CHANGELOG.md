@@ -1,5 +1,27 @@
 # Changelog
 
+## [2.0.0-alpha.8](https://github.com/supercharge/framework/compare/v2.0.0-alpha.6...v2.0.0-alpha.8) - 2021-10-xx
+
+### Added
+- `@supercharge/contracts`
+    - extend the HTTP kernel contract with additional methods
+
+
+## [2.0.0-alpha.7](https://github.com/supercharge/framework/compare/v2.0.0-alpha.6...v2.0.0-alpha.7) - 2021-10-12
+
+### Notice
+- this release is also required to publish the updated packages because of an NPM outage: https://status.npmjs.org/incidents/wy4002vc8ryc
+
+### Added
+- `@supercharge/core`
+    - add a `kernel.server()` method to the HTTP kernel providing the server instance
+    - expose a `kernel.serverCallback()` bootstrapping the HTTP kernel and returning the `server.callback()` method.
+
+### Updated
+- `@supercharge/config`
+    - refine generic contract for `config.get<T>()`
+
+
 ## [2.0.0-alpha.6](https://github.com/supercharge/framework/compare/v2.0.0-alpha.5...v2.0.0-alpha.6) - 2021-10-11
 
 ### Added

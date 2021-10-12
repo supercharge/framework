@@ -26,13 +26,18 @@ export class Server implements HttpServer {
      * The HTTP router instance.
      */
     router?: HttpRouter
+
+    /**
+     * Determine whether the HTTP server bootstrapping ran.
+     */
+    isBootstrapped: boolean
   }
 
   /**
    * Create a new HTTP context instance.
    */
   constructor (kernel: HttpKernel) {
-    this.meta = { kernel }
+    this.meta = { kernel, isBootstrapped: false }
   }
 
   /**
@@ -67,6 +72,26 @@ export class Server implements HttpServer {
   }
 
   /**
+   * Determine whether the HTTP server is already boostrapped.
+   *
+   * @returns {Boolean}
+   */
+  isBootstrapped (): boolean {
+    return this.meta.isBootstrapped
+  }
+
+  /**
+   * Mark this HTTP server as bootstrapped.
+   *
+   * @returns {this}
+   */
+  markAsBootstrapped (): this {
+    return tap(this, () => {
+      this.meta.isBootstrapped = true
+    })
+  }
+
+  /**
    * Returns the router instance.
    *
    * @returns {HttpRouter}
@@ -92,12 +117,18 @@ export class Server implements HttpServer {
    * Bootstrap the HTTP server.
    */
   async bootstrap (): Promise<void> {
+    if (this.isBootstrapped()) {
+      return
+    }
+
     this.createServerInstance()
     this.syncMiddlewareToRouter()
 
     await this.registerMiddleware()
     await this.registerRoutes()
     await this.registerHttpControllers()
+
+    this.markAsBootstrapped()
   }
 
   /**
