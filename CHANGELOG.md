@@ -5,6 +5,9 @@
 ### Added
 - `@supercharge/contracts`
     - extend the HTTP kernel contract with additional methods
+- `@supercharge/http`
+    - use a `CookieBag` to set response cookies
+    - refactor the `CookieBag#set(key, value, cookieBuilder)` method to support a `cookieBuilder` as the third argument
 
 
 ## [2.0.0-alpha.7](https://github.com/supercharge/framework/compare/v2.0.0-alpha.6...v2.0.0-alpha.7) - 2021-10-12
