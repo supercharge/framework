@@ -50,7 +50,7 @@ export interface ResponseCookieBuilder {
   /**
    * Determine how the cookie behaves on cross-site requests.
    */
-  sameSite(attribute: 'strict' | 'lax' | 'none' | boolean): this
+  sameSite(attribute: 'strict' | 'lax' | 'none' | true): this
 
   /**
    * The cookie will be signed using the app key.
@@ -63,7 +63,7 @@ export interface ResponseCookieBuilder {
   unsigned(): this
 
   /**
-   * Mark this cookie to overwrite or not overwrite any previously set cookie with the same name.
+   * Mark this cookie to overwrite any previously set cookie with the same name.
    */
-  overwrite(overwrite?: boolean): this
+  overwrite(): this
 }

@@ -126,7 +126,7 @@ export class ResponseCookieBuilder implements ResponseCookieBuilderContract {
   /**
    * Determine how the cookie behaves on cross-site requests.
    */
-  sameSite (attribute: 'strict' | 'lax' | 'none' | boolean): this {
+  sameSite (attribute: 'strict' | 'lax' | 'none' | true): this {
     return tap(this, () => {
       this.responseCookieOptions.sameSite = attribute
     })
@@ -151,11 +151,11 @@ export class ResponseCookieBuilder implements ResponseCookieBuilderContract {
   }
 
   /**
-   * Mark this cookie to overwrite or not overwrite any previously set cookie with the same name.
+   * Mark this cookie to overwrite any previously set cookie with the same name.
    */
-  overwrite (overwrite?: boolean): this {
+  overwrite (): this {
     return tap(this, () => {
-      this.responseCookieOptions.overwrite = overwrite ?? false
+      this.responseCookieOptions.overwrite = true
     })
   }
 }
