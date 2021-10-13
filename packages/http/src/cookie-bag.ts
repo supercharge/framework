@@ -2,8 +2,8 @@
 
 import * as Cookies from 'cookies'
 import { tap } from '@supercharge/goodies'
-import { RequestCookieBuilder } from './cookies/request-cookie-builder'
-import { CookieBag as CookieBagContract, RequestCookieBuilderCallback } from '@supercharge/contracts'
+import { RequestCookieBuilder, ResponseCookieBuilder } from './cookies'
+import { CookieBag as CookieBagContract, CookieOptions, RequestCookieBuilderCallback, ResponseCookieBuilderCallback } from '@supercharge/contracts'
 
 export class CookieBag implements CookieBagContract {
   /**
@@ -12,10 +12,16 @@ export class CookieBag implements CookieBagContract {
   private readonly cookies: Cookies
 
   /**
+   * Stores the default cookie options.
+   */
+  private readonly options: CookieOptions
+
+  /**
    * Create a new instance.
    */
-  constructor (cookies: Cookies) {
+  constructor (cookies: Cookies, options?: CookieOptions) {
     this.cookies = cookies
+    this.options = options ?? { signed: true }
   }
 
   /**
@@ -26,12 +32,12 @@ export class CookieBag implements CookieBagContract {
    *
    * @returns {T|undefined}
    */
-  get (name: string, cookieBuilder?: RequestCookieBuilderCallback): string | undefined {
+  get (name: string, callback?: RequestCookieBuilderCallback): string | undefined {
     const options: Cookies.GetOption = { signed: true }
-    const builder = new RequestCookieBuilder(options)
 
-    if (typeof cookieBuilder === 'function') {
-      cookieBuilder(builder)
+    if (typeof callback === 'function') {
+      const builder = new RequestCookieBuilder(options)
+      callback(builder)
     }
 
     return this.cookies.get(name, options)
@@ -42,12 +48,18 @@ export class CookieBag implements CookieBagContract {
    * This will override an existing attribute for the given `name`.
    *
    * @param {String} name
-   * @param {String|String[]} value
+   * @param {String?} value
    *
    * @returns {HeaderBag}
    */
-  // set (name: string, value?: string, cookieBuilder?: ResponseCookieBuilderCallback): this {
-  set (name: string, value?: string, options?: any): this {
+  set (name: string, value?: string | null, cookieBuilder?: ResponseCookieBuilderCallback): this {
+    const options = this.mergedCookieOptions({ signed: true })
+
+    if (typeof cookieBuilder === 'function') {
+      const builder = new ResponseCookieBuilder(options)
+      cookieBuilder(builder)
+    }
+
     return tap(this, () => {
       this.cookies.set(name, value, options)
     })
@@ -62,5 +74,16 @@ export class CookieBag implements CookieBagContract {
    */
   has (name: string): boolean {
     return !!this.get(name)
+  }
+
+  /**
+   * Returns the merged cookie options from the default config and the given `options`.
+   *
+   * @param options
+   *
+   * @returns {CookieOptions}
+   */
+  private mergedCookieOptions (options?: CookieOptions): CookieOptions {
+    return { ...this.options, ...options }
   }
 }

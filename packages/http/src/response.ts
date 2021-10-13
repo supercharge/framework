@@ -1,11 +1,12 @@
 'use strict'
 
 import { Context } from 'koa'
+import { CookieBag } from './cookie-bag'
 import { tap } from '@supercharge/goodies'
 import { HttpRedirect } from './http-redirect'
 import { InteractsWithState } from './interacts-with-state'
 import { ViewConfigBuilder } from './view-config-builder'
-import { CookieOptions, HttpResponse, ViewEngine, ViewConfigBuilder as ViewConfigBuilderContract } from '@supercharge/contracts'
+import { CookieOptions, HttpResponse, ViewEngine, ViewConfigBuilder as ViewConfigBuilderContract, ResponseCookieBuilderCallback } from '@supercharge/contracts'
 
 export class Response extends InteractsWithState implements HttpResponse {
   /**
@@ -14,7 +15,7 @@ export class Response extends InteractsWithState implements HttpResponse {
   private readonly viewEngine: ViewEngine
 
   /**
-   * The cookie options.
+   * The default cookie options.
    */
   private readonly cookieOptions: CookieOptions
 
@@ -106,21 +107,10 @@ export class Response extends InteractsWithState implements HttpResponse {
    * response.cookie('name', 'value', options)
    * ```
    */
-  cookie (key: string, value: any, options?: CookieOptions): this {
+  cookie (name: string, value?: string | null, cookieBuilder?: ResponseCookieBuilderCallback): this {
     return tap(this, () => {
-      this.ctx.cookies.set(key, value, this.mergedCookieOptions(options))
+      new CookieBag(this.ctx.cookies, this.cookieOptions).set(name, value, cookieBuilder)
     })
-  }
-
-  /**
-   * Returns the merged cookie options from the default config and the given `options`.
-   *
-   * @param options
-   *
-   * @returns {CookieOptions}
-   */
-  private mergedCookieOptions (options?: CookieOptions): CookieOptions {
-    return Object.assign({}, this.cookieOptions, options)
   }
 
   /**

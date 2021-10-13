@@ -1,8 +1,7 @@
 'use strict'
 
-import { HttpRedirect } from '.'
 import { ViewConfigBuilder } from '../view'
-import { CookieOptions } from './cookie-options'
+import { HttpRedirect, ResponseCookieBuilderCallback } from '.'
 import { InteractsWithState } from './concerns/interacts-with-state'
 
 export interface HttpResponse extends InteractsWithState {
@@ -67,10 +66,12 @@ export interface HttpResponse extends InteractsWithState {
    *
    * @example
    * ```
-   * response.cookie('name', 'value', options)
+   * response.cookie('name', 'value', cookie => {
+   *   cookie.expires('7d')
+   * })
    * ```
    */
-  cookie(key: string, value: any, options: CookieOptions): this
+  cookie(key: string, value?: string | null, cookieBuilder?: ResponseCookieBuilderCallback): this
 
   /**
    * Set the response payload.

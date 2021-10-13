@@ -1,8 +1,19 @@
 'use strict'
 
+const Koa = require('koa')
 const { test } = require('uvu')
 const expect = require('expect')
-const { Response } = require('../dist/response')
+const Supertest = require('supertest')
+const { Response, HttpContext } = require('../dist')
+
+const appMock = {
+  make () {},
+  config () {
+    return {
+      get () { }
+    }
+  }
+}
 
 test('share', () => {
   const user = { name: 'Marcus' }
@@ -22,6 +33,335 @@ test('state', () => {
 
   const shareKeyValue = new Response({ state: {} }).share('name', 'Marcus')
   expect(shareKeyValue.state()).toEqual({ name: 'Marcus' })
+})
+
+test('response.cookie() creates a signed cookie by default', async () => {
+  const app = new Koa({ keys: ['abc'] }).use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response
+      .payload('ok')
+      .cookie('name', 'Supercharge')
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.headers['set-cookie']).toEqual([
+    'name=Supercharge; path=/; httponly',
+    'name.sig=5mOcXAID6uxyDuEtEsHOSti1nWI; path=/; httponly'
+  ])
+})
+
+test('response.cookie() creates a signed cookie', async () => {
+  const app = new Koa({ keys: ['abc'] }).use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response
+      .payload('ok')
+      .cookie('name', 'Supercharge', cookie => cookie.unsigned().signed())
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.headers['set-cookie']).toEqual([
+    'name=Supercharge; path=/; httponly',
+    'name.sig=5mOcXAID6uxyDuEtEsHOSti1nWI; path=/; httponly'
+  ])
+})
+
+test('response.cookie() creates an unsigned (plain) cookie', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response
+      .payload('ok')
+      .cookie('name', 'Supercharge', cookie => cookie.unsigned())
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.headers['set-cookie']).toEqual(['name=Supercharge; path=/; httponly'])
+})
+
+test('response.cookie() creates a cookie that expiresIn a number of milliseconds', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response
+      .payload('ok')
+      .cookie('expiresNumber', 'Supercharge', cookie => cookie.unsigned().expiresIn(5))
+      .cookie('expiresString', 'Supercharge', cookie => cookie.unsigned().expiresIn('1min'))
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.headers['set-cookie']).toEqual([
+    `expiresNumber=Supercharge; path=/; expires=${new Date(Date.now() + 5).toUTCString()}; httponly`,
+    `expiresString=Supercharge; path=/; expires=${new Date(Date.now() + 60 * 1000).toUTCString()}; httponly`
+  ])
+})
+
+test('throws on response.cookie() when not providing expiration time', async () => {
+  const app = new Koa().use(async ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    expect(() => {
+      response.cookie('name', 'Supercharge', cookie => cookie.unsigned().expiresIn())
+    }).toThrow('Strings and numbers are supported arguments in method "expiresIn"')
+
+    return response.payload('ok')
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(200, 'ok')
+})
+
+test('response.cookie() creates a cookie that expiresAt', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response
+      .payload('ok')
+      .cookie('name', 'Supercharge', cookie => cookie.unsigned().expiresAt(new Date()))
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.headers['set-cookie'][0]).toContain('expires=')
+})
+
+test('throws on response.cookie() when not providing an argument to expiresAt', async () => {
+  const app = new Koa().use(async ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    expect(() => {
+      response.cookie('name', 'Supercharge', cookie => cookie.unsigned().expiresAt())
+    }).toThrow('Argument in method "expiresAt" must be an instance of date')
+
+    expect(() => {
+      response.cookie('name', 'Supercharge', cookie => cookie.unsigned().expiresAt(123))
+    }).toThrow('Argument in method "expiresAt" must be an instance of date')
+
+    expect(() => {
+      response.cookie('name', 'Supercharge', cookie => cookie.unsigned().expiresAt('now'))
+    }).toThrow('Argument in method "expiresAt" must be an instance of date')
+
+    return response.payload('ok')
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(200, 'ok')
+})
+
+test('response.cookie() sets a path', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response
+      .payload('ok')
+      .cookie('name', 'Supercharge', cookie => cookie.unsigned().path('/custom'))
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.headers['set-cookie']).toEqual(['name=Supercharge; path=/custom; httponly'])
+})
+
+test('response.cookie() sets a domain', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response
+      .payload('ok')
+      .cookie('name', 'Supercharge', cookie => cookie.unsigned().domain('sub.superchargejs.com'))
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.headers['set-cookie']).toEqual(['name=Supercharge; path=/; domain=sub.superchargejs.com; httponly'])
+})
+
+test('response.cookie() configures httpOnly', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response
+      .payload('ok')
+      .cookie('name', 'Supercharge', cookie => cookie.unsigned().httpOnly(false))
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.headers['set-cookie']).toEqual(['name=Supercharge; path=/'])
+})
+
+test('response.cookie() creates unsecured cookie', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response
+      .payload('ok')
+      .cookie('name', 'Supercharge', cookie => cookie.unsigned().unsecured())
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.headers['set-cookie']).toEqual(['name=Supercharge; path=/; httponly'])
+})
+
+test('response.cookie() creates a secure cookie', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    ctx.cookies.secure = true
+
+    return response
+      .payload('ok')
+      .cookie('name', 'Supercharge', cookie => cookie.secure().unsigned())
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.headers['set-cookie']).toEqual(['name=Supercharge; path=/; secure; httponly'])
+})
+
+test('response.cookie() creates a sameSite strict cookie', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response
+      .payload('ok')
+      .cookie('name', 'Supercharge', cookie => cookie.unsigned().sameSite(true))
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.headers['set-cookie']).toEqual(['name=Supercharge; path=/; samesite=strict; httponly'])
+})
+
+test('response.cookie() ignores sameSite set to false', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response
+      .payload('ok')
+      .cookie('name', 'Supercharge', cookie => cookie.unsigned().sameSite(false))
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.headers['set-cookie']).toEqual(['name=Supercharge; path=/; httponly'])
+})
+
+test('response.cookie() creates a sameSite strict cookie', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response
+      .payload('ok')
+      .cookie('name', 'Supercharge', cookie => cookie.unsigned().sameSite('strict'))
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.headers['set-cookie']).toEqual(['name=Supercharge; path=/; samesite=strict; httponly'])
+})
+
+test('response.cookie() creates a sameSite lax cookie', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response
+      .payload('ok')
+      .cookie('name', 'Supercharge', cookie => cookie.unsigned().sameSite('lax'))
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.headers['set-cookie']).toEqual(['name=Supercharge; path=/; samesite=lax; httponly'])
+})
+
+test('response.cookie() creates a sameSite none cookie', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response
+      .payload('ok')
+      .cookie('name', 'Supercharge', cookie => cookie.unsigned().sameSite('none'))
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.headers['set-cookie']).toEqual(['name=Supercharge; path=/; samesite=none; httponly'])
+})
+
+test('response.cookie() does not overwrite cookie by default', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response
+      .payload('ok')
+      .cookie('name', 'Supercharge', cookie => cookie.unsigned())
+      .cookie('name', 'Marcus', cookie => cookie.unsigned())
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.headers['set-cookie']).toEqual([
+    'name=Supercharge; path=/; httponly',
+    'name=Marcus; path=/; httponly'
+  ])
+})
+
+test('response.cookie() overwrites cookies', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response
+      .payload('ok')
+      .cookie('name', 'Supercharge', cookie => cookie.unsigned())
+      .cookie('name', 'Marcus', cookie => cookie.unsigned().overwrite())
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.headers['set-cookie']).toEqual(['name=Marcus; path=/; httponly'])
 })
 
 test.run()
