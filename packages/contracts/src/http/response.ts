@@ -2,7 +2,7 @@
 
 import { ViewConfigBuilder } from '../view'
 import { InteractsWithState } from './concerns/interacts-with-state'
-import { HeaderBag, HttpRedirect, ResponseCookieBuilderCallback } from '.'
+import { HttpRedirect, ResponseCookieBuilderCallback } from '.'
 
 export interface HttpResponse extends InteractsWithState {
   /**
@@ -24,7 +24,8 @@ export interface HttpResponse extends InteractsWithState {
    * // { 'Content-Type': 'application/json' }
    * ```
    */
-  headers(): HeaderBag<string | string[] | number>
+  // headers(): HeaderBag<string | string[] | number>
+  headers(): any
 
   /**
    * Assign the object’s key-value pairs as response headers.

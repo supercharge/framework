@@ -4,11 +4,11 @@ import * as Koa from 'koa'
 import { Files } from 'formidable'
 import { FileBag } from './file-bag'
 import Str from '@supercharge/strings'
-import { HeaderBag } from './header-bag'
 import { CookieBag } from './cookie-bag'
 import { tap } from '@supercharge/goodies'
-import { RouterContext } from 'koa__router'
+import { RouterContext } from '@koa/router'
 import { ParameterBag } from './parameter-bag'
+import { RequestHeaderBag } from './request-header-bag'
 import { IncomingHttpHeaders, IncomingMessage } from 'http'
 import { HttpRequest, InteractsWithContentTypes, RequestCookieBuilderCallback } from '@supercharge/contracts'
 
@@ -24,7 +24,7 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
   /**
    * The route context object from Koa.
    */
-  protected readonly ctx: Koa.Context | Koa.Context & RouterContext
+  protected readonly ctx: Koa.Context & RouterContext
 
   /**
    * Create a new response instance.
@@ -32,7 +32,7 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * @param ctx
    * @param cookieOptions
    */
-  constructor (ctx: Koa.Context | Koa.Context & RouterContext) {
+  constructor (ctx: Koa.Context & RouterContext) {
     this.ctx = ctx
   }
 
@@ -192,8 +192,8 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
   /**
    * Returns the request header bag.
    */
-  headers (): HeaderBag<string | string[]> {
-    return new HeaderBag<string | string[]>(this.ctx.headers)
+  headers (): RequestHeaderBag {
+    return new RequestHeaderBag(this.ctx)
   }
 
   /**

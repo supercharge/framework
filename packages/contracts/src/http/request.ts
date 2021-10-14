@@ -2,9 +2,9 @@
 
 import { FileBag } from './file-bag'
 import { IncomingMessage } from 'http'
-import { HeaderBag } from './header-bag'
 import { ParameterBag } from './parameter-bag'
 import { InteractsWithContentTypes } from './concerns'
+import { RequestHeaderBag } from './request-header-bag'
 import { RequestCookieBuilderCallback } from './cookie-options-builder'
 
 export interface HttpRequest extends InteractsWithContentTypes {
@@ -97,7 +97,7 @@ export interface HttpRequest extends InteractsWithContentTypes {
   /**
    * Returns the request header bag.
    */
-  headers(): HeaderBag<string | string[]>
+  headers(): RequestHeaderBag
 
   /**
    * Returns the request header identified by the given `key`. The default

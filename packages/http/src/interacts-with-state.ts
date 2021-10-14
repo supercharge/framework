@@ -1,14 +1,14 @@
 'use strict'
 
-import { Context } from 'koa'
 import { tap } from '@supercharge/goodies'
+import { RouterContext } from '@koa/router'
 import { InteractsWithState as InteractsWithStateContract } from '@supercharge/contracts'
 
 export class InteractsWithState implements InteractsWithStateContract {
   /**
    * The route context object from Koa.
    */
-  protected readonly ctx: Context
+  protected readonly ctx: RouterContext
 
   /**
    * Create a new response instance.
@@ -16,7 +16,7 @@ export class InteractsWithState implements InteractsWithStateContract {
    * @param ctx
    * @param cookieOptions
    */
-  constructor (ctx: Context) {
+  constructor (ctx: RouterContext) {
     this.ctx = ctx
   }
 

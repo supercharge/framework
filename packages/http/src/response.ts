@@ -1,12 +1,12 @@
 'use strict'
 
-import { Context } from 'koa'
 import { CookieBag } from './cookie-bag'
-import { HeaderBag } from './header-bag'
 import { tap } from '@supercharge/goodies'
+import { RouterContext } from '@koa/router'
 import { HttpRedirect } from './http-redirect'
-import { InteractsWithState } from './interacts-with-state'
+import { ResponseHeaderBag } from './response-header-bag'
 import { ViewConfigBuilder } from './view-config-builder'
+import { InteractsWithState } from './interacts-with-state'
 import { CookieOptions, HttpResponse, ViewEngine, ViewConfigBuilder as ViewConfigBuilderContract, ResponseCookieBuilderCallback } from '@supercharge/contracts'
 
 export class Response extends InteractsWithState implements HttpResponse {
@@ -26,7 +26,7 @@ export class Response extends InteractsWithState implements HttpResponse {
    * @param ctx
    * @param cookieOptions
    */
-  constructor (ctx: Context, viewEngine: ViewEngine, cookieOptions: CookieOptions) {
+  constructor (ctx: RouterContext, viewEngine: ViewEngine, cookieOptions: CookieOptions) {
     super(ctx)
 
     this.viewEngine = viewEngine
@@ -49,8 +49,8 @@ export class Response extends InteractsWithState implements HttpResponse {
    *
    * @returns {HeaderBag}
    */
-  headers (): HeaderBag<string | string[] | number> {
-    return new HeaderBag<string | string[] | number>(this.ctx.response.headers)
+  headers (): ResponseHeaderBag {
+    return new ResponseHeaderBag(this.ctx)
   }
 
   /**
@@ -58,7 +58,7 @@ export class Response extends InteractsWithState implements HttpResponse {
    *
    * @returns {this}
    */
-  header (name: string, value: string | number): this {
+  header (name: string, value: string | string[] | number): this {
     return tap(this, () => {
       return this.headers().set(name, value)
     })
@@ -69,7 +69,7 @@ export class Response extends InteractsWithState implements HttpResponse {
    *
    * @returns {Response}
    */
-  withHeaders (headers: { [key: string]: any }): this {
+  withHeaders (headers: { [key: string]: string | string[] | number }): this {
     Object.entries(headers).forEach(([key, value]) => {
       this.header(key, value)
     })
@@ -83,7 +83,7 @@ export class Response extends InteractsWithState implements HttpResponse {
    *
    * @returns {Response}
    */
-  appendHeader (key: string, value: any): this {
+  appendHeader (key: string, value: string | string[]): this {
     return tap(this, () => {
       this.ctx.response.append(key, value)
     })

@@ -200,12 +200,92 @@ test('request.headers()', async () => {
     .set('x-testing', 'foo')
     .expect(200)
 
-  expect(response.body.headers).toMatchObject({
+  expect(response.body).toMatchObject({
     headers: {
       'x-testing': 'foo',
       'x-name': 'Supercharge'
     }
   })
+})
+
+test('request.headers().all()', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    request.headers()
+      .set('foo', 'bar')
+      .set('sessionId', 1)
+      .set('name', 'Supercharge')
+      .set('supercharge', 'is cool')
+
+    return response.payload({
+      headers: request.headers().all('name', 'foo')
+    })
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.body).toMatchObject({
+    headers: {
+      foo: 'bar',
+      name: 'Supercharge'
+    }
+  })
+})
+
+test('request.headers().get(key, defaultValue)', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload(
+      request.headers().get('name', 'defaultValue')
+    )
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(200, 'defaultValue')
+})
+
+test('request.headers().has()', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    request.headers()
+      .set('sessionId', 1)
+      .set('name', 'Supercharge')
+
+    return response.payload(
+      request.headers().has('name')
+    )
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(200, 'true')
+})
+
+test('response.headers().remove()', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    request.headers()
+      .set('sessionId', 1)
+      .set('name', 'Supercharge')
+
+    return response.payload(
+      request.headers().remove('name')
+    )
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.body).toMatchObject({ sessionId: 1 })
+  expect(response.body).not.toMatchObject({ name: 'Supercharge' })
 })
 
 test('request.cookie() returns an unsigned (plain) cookie', async () => {
