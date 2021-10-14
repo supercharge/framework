@@ -4,11 +4,11 @@ import * as Koa from 'koa'
 import { Files } from 'formidable'
 import { FileBag } from './file-bag'
 import Str from '@supercharge/strings'
-import { HeaderBag } from './header-bag'
 import { CookieBag } from './cookie-bag'
 import { tap } from '@supercharge/goodies'
-import { RouterContext } from 'koa__router'
+import { RouterContext } from '@koa/router'
 import { ParameterBag } from './parameter-bag'
+import { RequestHeaderBag } from './request-header-bag'
 import { IncomingHttpHeaders, IncomingMessage } from 'http'
 import { HttpRequest, InteractsWithContentTypes, RequestCookieBuilderCallback } from '@supercharge/contracts'
 
@@ -24,7 +24,7 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
   /**
    * The route context object from Koa.
    */
-  protected readonly ctx: Koa.Context | Koa.Context & RouterContext
+  protected readonly ctx: Koa.Context & RouterContext
 
   /**
    * Create a new response instance.
@@ -32,7 +32,7 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * @param ctx
    * @param cookieOptions
    */
-  constructor (ctx: Koa.Context | Koa.Context & RouterContext) {
+  constructor (ctx: Koa.Context & RouterContext) {
     this.ctx = ctx
   }
 
@@ -60,14 +60,14 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
   /**
    * Returns the request’s query parameters.
    */
-  query (): ParameterBag {
-    return new ParameterBag(this.ctx.query)
+  query (): ParameterBag<string | string[]> {
+    return new ParameterBag<string | string[]>(this.ctx.query)
   }
 
   /**
    * Returns the request’s path parameters.
    */
-  params (): ParameterBag {
+  params (): ParameterBag<string> {
     if (!this.ctx.params) {
       this.ctx.params = {}
     }
@@ -79,7 +79,7 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * Returns the path parameter for the given `name`. Returns the
    * `defaultValue` if a parameter for the name doesn’t exist.
    */
-  param<T = any> (name: string, defaultValue?: T): T {
+  param (name: string, defaultValue?: string): string | undefined {
     return this.params().get(name, defaultValue)
   }
 
@@ -190,10 +190,10 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
   }
 
   /**
-   * Returns the request headers.
+   * Returns the request header bag.
    */
-  headers (): HeaderBag {
-    return new HeaderBag(this.ctx.headers)
+  headers (): RequestHeaderBag {
+    return new RequestHeaderBag(this.ctx)
   }
 
   /**

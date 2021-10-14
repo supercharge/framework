@@ -1,8 +1,8 @@
 'use strict'
 
-import { Context } from 'koa'
 import { Request } from './request'
 import { Response } from './response'
+import { RouterContext } from '@koa/router'
 import { InteractsWithState } from './interacts-with-state'
 import { Application, HttpContext as HttpContextContract, CookieOptions, ViewEngine } from '@supercharge/contracts'
 
@@ -17,7 +17,7 @@ export class HttpContext extends InteractsWithState implements HttpContextContra
    *
    * @param ctx
    */
-  constructor (ctx: Context, app: Application) {
+  constructor (ctx: RouterContext, app: Application) {
     super(ctx)
 
     this.app = app
@@ -37,9 +37,9 @@ export class HttpContext extends InteractsWithState implements HttpContextContra
   /**
    * Returns the raw Koa HTTP context instance.
    *
-   * @returns {Context}
+   * @returns {RouterContext}
    */
-  get raw (): Context {
+  get raw (): RouterContext {
     return this.ctx
   }
 

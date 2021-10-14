@@ -28,9 +28,9 @@ export class CookieBag implements CookieBagContract {
    * Returns the attribute value for the given `name` or the `defaultValue`.
    *
    * @param {String} name
-   * @param {T} defaultValue
+   * @param {RequestCookieBuilderCallback} callback
    *
-   * @returns {T|undefined}
+   * @returns {String|undefined}
    */
   get (name: string, callback?: RequestCookieBuilderCallback): string | undefined {
     const options: Cookies.GetOption = { signed: true }
@@ -50,7 +50,7 @@ export class CookieBag implements CookieBagContract {
    * @param {String} name
    * @param {String?} value
    *
-   * @returns {HeaderBag}
+   * @returns {ThisType}
    */
   set (name: string, value?: string | null, cookieBuilder?: ResponseCookieBuilderCallback): this {
     const options = this.mergedCookieOptions({ signed: true })

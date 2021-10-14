@@ -2,9 +2,9 @@
 
 import { FileBag } from './file-bag'
 import { IncomingMessage } from 'http'
-import { HeaderBag } from './header-bag'
 import { ParameterBag } from './parameter-bag'
 import { InteractsWithContentTypes } from './concerns'
+import { RequestHeaderBag } from './request-header-bag'
 import { RequestCookieBuilderCallback } from './cookie-options-builder'
 
 export interface HttpRequest extends InteractsWithContentTypes {
@@ -26,18 +26,18 @@ export interface HttpRequest extends InteractsWithContentTypes {
   /**
    * Returns the query parameter bag.
    */
-  query(): ParameterBag
+  query(): ParameterBag<string | string[]>
 
   /**
    * Returns the path parameter bag.
    */
-  params(): ParameterBag
+  params(): ParameterBag<string>
 
   /**
    * Returns the path parameter for the given `name`. Returns the
    * `defaultValue` if a parameter for the name doesn’t exist.
    */
-  param<T = any>(name: string, defaultValue?: T): T
+  param (name: string, defaultValue?: string): string | undefined
 
   /**
    * Returns the cookie value for the given `name`. Supports an options
@@ -97,7 +97,7 @@ export interface HttpRequest extends InteractsWithContentTypes {
   /**
    * Returns the request header bag.
    */
-  headers(): HeaderBag
+  headers(): RequestHeaderBag
 
   /**
    * Returns the request header identified by the given `key`. The default

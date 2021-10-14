@@ -1,8 +1,8 @@
 'use strict'
 
 import { ViewConfigBuilder } from '../view'
-import { HttpRedirect, ResponseCookieBuilderCallback } from '.'
 import { InteractsWithState } from './concerns/interacts-with-state'
+import { HttpRedirect, ResponseCookieBuilderCallback } from '.'
 
 export interface HttpResponse extends InteractsWithState {
   /**
@@ -13,7 +13,7 @@ export interface HttpResponse extends InteractsWithState {
    * response.header('x-app-name', 'Supercharge')
    * ```
    */
-  header(key: string, value: any): this
+  header(key: string, value: string | string[] | number): this
 
   /**
    * Returns the response headers.
@@ -24,7 +24,8 @@ export interface HttpResponse extends InteractsWithState {
    * // { 'Content-Type': 'application/json' }
    * ```
    */
-  headers(): Record<string, any>
+  // headers(): HeaderBag<string | string[] | number>
+  headers(): any
 
   /**
    * Assign the object’s key-value pairs as response headers.
@@ -37,7 +38,7 @@ export interface HttpResponse extends InteractsWithState {
    * })
    * ```
    */
-  withHeaders(headers: Record<string, any>): this
+  withHeaders(headers: Record<string, string | string[] | number>): this
 
   /**
    * Append a header to the response. If you want to replance a possibly
@@ -49,7 +50,7 @@ export interface HttpResponse extends InteractsWithState {
    * response.appendHeader('Link', ['<http://localhost/>', '<http://localhost:3000/>']);
    * ```
    */
-  appendHeader(key: string, value: any): this
+  appendHeader(key: string, value: string | string[] | number): this
 
   /**
    * Remove a header field from the response.
