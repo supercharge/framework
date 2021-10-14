@@ -2,6 +2,7 @@
 
 import { Context } from 'koa'
 import { CookieBag } from './cookie-bag'
+import { HeaderBag } from './header-bag'
 import { tap } from '@supercharge/goodies'
 import { HttpRedirect } from './http-redirect'
 import { InteractsWithState } from './interacts-with-state'
@@ -44,22 +45,22 @@ export class Response extends InteractsWithState implements HttpResponse {
   }
 
   /**
-   * Returns the response headers.
+   * Returns the response header bag.
    *
-   * @returns {Object}
+   * @returns {HeaderBag}
    */
-  headers (): { [key: string]: unknown } {
-    return this.ctx.response.headers
+  headers (): HeaderBag<string | string[] | number> {
+    return new HeaderBag<string | string[] | number>(this.ctx.response.headers)
   }
 
   /**
-   * Set a response header.
+   * Set a response header with the given `name` and `value`.
    *
-   * @returns {Response}
+   * @returns {this}
    */
-  header (key: string, value: any): this {
+  header (name: string, value: string | number): this {
     return tap(this, () => {
-      this.ctx.response.set(key, value)
+      return this.headers().set(name, value)
     })
   }
 
