@@ -221,7 +221,7 @@ export class Server implements HttpServer {
    * @param {MiddlewareCtor} Middleware
    */
   private bindAndRegisterMiddleware (Middleware: MiddlewareCtor): void {
-    this.app().singleton(Middleware.name, () => {
+    this.app().singleton(Middleware, () => {
       return new Middleware(this.app())
     })
 
@@ -266,7 +266,7 @@ export class Server implements HttpServer {
    */
   private async resolveAndBindController (controllerPath: string): Promise<void> {
     this.require(controllerPath).forEach(Controller => {
-      this.app().bind(Controller.name, () => {
+      this.app().bind(Controller, () => {
         return new Controller(this.app())
       })
     })
