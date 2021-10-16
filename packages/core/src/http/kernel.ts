@@ -4,7 +4,7 @@ import Fs from '@supercharge/fs'
 import { tap } from '@supercharge/goodies'
 import { Server } from '@supercharge/http'
 import Collect from '@supercharge/collections'
-import { Application, BootstrapperCtor, HttpKernel as HttpKernelContract, HttpServerHandler, MiddlewareCtor } from '@supercharge/contracts'
+import { Application, BootstrapperCtor, HttpKernel as HttpKernelContract, HttpServer, HttpServerHandler, MiddlewareCtor } from '@supercharge/contracts'
 import { HandleExceptions, LoadConfiguration, LoadEnvironmentVariables, RegisterServiceProviders, BootServiceProviders } from '../bootstrappers'
 
 type Callback = () => unknown | Promise<unknown>
@@ -49,6 +49,7 @@ export class HttpKernel implements HttpKernelContract {
     }
 
     this.register()
+    this.registerHttpBindings()
   }
 
   /**
@@ -58,6 +59,16 @@ export class HttpKernel implements HttpKernelContract {
    */
   static for (app: Application): HttpKernel {
     return new this(app)
+  }
+
+  /**
+   * Register the HTTP base bindings into the container.
+   */
+  private registerHttpBindings (): void {
+    this.app().singleton('http.kernel', () => this)
+
+    this.app().singleton(Server, () => this.server())
+    this.app().singleton('http.server', () => this.server())
   }
 
   /**
@@ -85,7 +96,7 @@ export class HttpKernel implements HttpKernelContract {
    *
    * @returns {Server}
    */
-  server (): Server {
+  server (): HttpServer {
     return this.meta.server
   }
 

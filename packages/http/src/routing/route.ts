@@ -192,7 +192,7 @@ export class Route implements HttpRoute {
       throw new Error(`Missing controller method for route ${this.methods().toString()} ${this.path()}`)
     }
 
-    return await this.getController()[method as string](ctx)
+    return await this.getController()[method](ctx)
   }
 
   /**

@@ -8,7 +8,7 @@ import { PendingRoute } from './pending-route'
 import { isFunction } from '@supercharge/classes'
 import { RouteCollection } from './route-collection'
 import { isNullish, tap, upon } from '@supercharge/goodies'
-import { HttpContext, HttpRedirect, Response } from '@supercharge/http'
+import { HttpContext, HttpRedirect, Response } from '../server'
 import { HttpRouter, RouteHandler, RouteAttributes, HttpMethods, MiddlewareCtor, NextHandler, Middleware, Application } from '@supercharge/contracts'
 
 export class Router implements HttpRouter {

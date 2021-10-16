@@ -1,6 +1,6 @@
 'use strict'
 
-import { Application } from '../foundation'
+import { Application } from '../core'
 
 export type ServiceProviderCtor =
   /**
