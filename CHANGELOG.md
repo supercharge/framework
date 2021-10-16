@@ -8,6 +8,11 @@
 - `@supercharge/http`
     - use a `CookieBag` to set response cookies
     - refactor the `CookieBag#set(key, value, cookieBuilder)` method to support a `cookieBuilder` as the third argument
+    - all classes from `@supercharge/routing` are now part of this ``@supercharge/http` package
+    - exports all classes from the previous `@supercharge/routing` package
+
+### Deleted
+- `@supercharge/routing` is now merged into the `@supercharge/http` package
 
 
 ## [2.0.0-alpha.7](https://github.com/supercharge/framework/compare/v2.0.0-alpha.6...v2.0.0-alpha.7) - 2021-10-12
