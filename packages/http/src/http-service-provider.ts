@@ -24,7 +24,7 @@ export class HttpServiceProvider extends ServiceProvider {
       return new Router(this.app())
     })
 
-    this.app().singleton('route', () => {
+    this.app().singleton('router', () => {
       return this.app().make('route')
     })
   }
