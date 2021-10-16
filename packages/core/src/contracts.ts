@@ -1,6 +1,7 @@
 'use strict'
 
-import { Application, ConfigStore, EnvStore } from '@supercharge/contracts/src'
+import { Server } from '@supercharge/http'
+import { Application, ConfigStore, EnvStore, HttpKernel } from '@supercharge/contracts'
 
 export interface ContainerBindings {
   'app': Application
@@ -8,4 +9,8 @@ export interface ContainerBindings {
 
   'env': EnvStore
   'config': ConfigStore
+
+  'http.kernel': HttpKernel
+  'http.server': Server
+  Server: Server
 }

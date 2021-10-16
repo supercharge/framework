@@ -8,9 +8,9 @@ import { PackageJson } from 'type-fest'
 import { Config } from '@supercharge/config'
 import Collect from '@supercharge/collections'
 import { Container } from '@supercharge/container'
+import { HttpServiceProvider } from '@supercharge/http'
 import { esmRequire, tap, upon } from '@supercharge/goodies'
 import { LoggingServiceProvider } from '@supercharge/logging'
-import { RoutingServiceProvider } from '@supercharge/routing'
 import { EnvStore, ConfigStore, BootstrapperCtor, ServiceProvider, ServiceProviderCtor, Application as ApplicationContract, Logger, ErrorHandlerCtor } from '@supercharge/contracts'
 
 export class Application extends Container implements ApplicationContract {
@@ -88,7 +88,7 @@ export class Application extends Container implements ApplicationContract {
    * Register the base service provider into the container.
    */
   private registerBaseServiceProviders (): void {
-    this.register(new RoutingServiceProvider(this))
+    this.register(new HttpServiceProvider(this))
     this.register(new LoggingServiceProvider(this))
   }
 
