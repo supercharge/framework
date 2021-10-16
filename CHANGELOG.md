@@ -11,6 +11,9 @@
     - all classes from `@supercharge/routing` are now part of this ``@supercharge/http` package
     - exports all classes from the previous `@supercharge/routing` package
 
+### Updated
+- bump dependencies
+
 ### Deleted
 - `@supercharge/routing` is now merged into the `@supercharge/http` package
 
