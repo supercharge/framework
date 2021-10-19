@@ -4,8 +4,8 @@ import Koa from 'koa'
 import { HttpContext } from './http-context'
 import Collect from '@supercharge/collections'
 import { BodyparserMiddleware } from './middleware'
-import { isConstructor } from '@supercharge/classes'
 import { esmRequire, tap } from '@supercharge/goodies'
+import { className, isConstructor } from '@supercharge/classes'
 import { Application, Class, HttpKernel, HttpServer, Middleware as MiddlewareContract, MiddlewareCtor, HttpRouter, ErrorHandler, HttpServerHandler, InlineMiddlewareHandler } from '@supercharge/contracts'
 
 export class Server implements HttpServer {
@@ -122,15 +122,34 @@ export class Server implements HttpServer {
    * @param {MiddlewareCtor} Middleware
    */
   private bindAndRegisterMiddlewareClass (Middleware: MiddlewareCtor): void {
+    this.ensureHandleMethod(Middleware)
+
     this.app().singleton(Middleware, () => {
       return new Middleware(this.app())
     })
 
-    this.use(async (ctx, next) => {
+    this.instance().use(async (ctx, next) => {
       return this.app().make<MiddlewareContract>(Middleware).handle(
         this.createContext(ctx), next
       )
     })
+  }
+
+  /**
+   * Ensure that the given `Middleware` implements a `handle` method.
+   *
+   * @param Middleware
+   *
+   * @throws
+   */
+  private ensureHandleMethod (Middleware: MiddlewareCtor): void {
+    const middleware = new Middleware(this.app())
+
+    if (typeof middleware.handle === 'function') {
+      return
+    }
+
+    throw new Error(`The Middleware class ${className(Middleware)} must implement a "handle" method.`)
   }
 
   /**
@@ -139,7 +158,7 @@ export class Server implements HttpServer {
    * @param {MiddlewareCtor} Middleware
    */
   private registerMiddlewareHandler (handler: InlineMiddlewareHandler): void {
-    this.use(async (ctx, next) => {
+    this.instance().use(async (ctx, next) => {
       return await handler(this.createContext(ctx), next)
     })
   }
