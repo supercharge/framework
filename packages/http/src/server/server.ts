@@ -73,8 +73,6 @@ export class Server implements HttpServer {
       try {
         await next()
       } catch (error: any) {
-        console.log({ error })
-
         await this.handleErrorFor(this.createContext(ctx), error)
       }
     })
