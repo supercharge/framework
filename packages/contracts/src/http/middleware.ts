@@ -3,11 +3,14 @@
 import { Application } from '../core'
 import { HttpContext, NextHandler } from './context'
 
+export type InlineMiddlewareHandler =
+    (ctx: HttpContext, next: NextHandler) => any | Promise<any>
+
 export type MiddlewareCtor = new (app: Application) => Middleware
 
 export interface Middleware {
   /**
-   * Handle the given request.
+   * Handle the given request `ctx`.
    */
-  handle(ctx: HttpContext, next: NextHandler): unknown | Promise<unknown>
+  handle(ctx: HttpContext, next: NextHandler): any | Promise<any>
 }

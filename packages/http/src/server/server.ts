@@ -5,7 +5,8 @@ import { HttpContext } from './http-context'
 import Collect from '@supercharge/collections'
 import { BodyparserMiddleware } from './middleware'
 import { esmRequire, tap } from '@supercharge/goodies'
-import { Application, Class, HttpKernel, HttpServer, Middleware as MiddlewareContract, MiddlewareCtor, HttpRouter, ErrorHandler, HttpServerHandler } from '@supercharge/contracts'
+import { className, isConstructor } from '@supercharge/classes'
+import { Application, Class, HttpKernel, HttpServer, Middleware as MiddlewareContract, MiddlewareCtor, HttpRouter, ErrorHandler, HttpServerHandler, InlineMiddlewareHandler } from '@supercharge/contracts'
 
 export class Server implements HttpServer {
   /**
@@ -105,6 +106,64 @@ export class Server implements HttpServer {
   }
 
   /**
+   * Add the given `Middleware` as a global middleware to the HTTP server.
+   */
+  use (Middleware: MiddlewareCtor | InlineMiddlewareHandler): this {
+    isConstructor<any>(Middleware)
+      ? this.bindAndRegisterMiddlewareClass(Middleware)
+      : this.registerMiddlewareHandler(Middleware)
+
+    return this
+  }
+
+  /**
+   * Register the given HTTP middleware to the IoC container and HTTP server instance.
+   *
+   * @param {MiddlewareCtor} Middleware
+   */
+  private bindAndRegisterMiddlewareClass (Middleware: MiddlewareCtor): void {
+    this.ensureHandleMethod(Middleware)
+
+    this.app().singleton(Middleware, () => {
+      return new Middleware(this.app())
+    })
+
+    this.instance().use(async (ctx, next) => {
+      return this.app().make<MiddlewareContract>(Middleware).handle(
+        this.createContext(ctx), next
+      )
+    })
+  }
+
+  /**
+   * Ensure that the given `Middleware` implements a `handle` method.
+   *
+   * @param Middleware
+   *
+   * @throws
+   */
+  private ensureHandleMethod (Middleware: MiddlewareCtor): void {
+    const middleware = new Middleware(this.app())
+
+    if (typeof middleware.handle === 'function') {
+      return
+    }
+
+    throw new Error(`The Middleware class ${className(Middleware)} must implement a "handle" method.`)
+  }
+
+  /**
+   * Register the given HTTP middleware to the IoC container and HTTP server instance.
+   *
+   * @param {MiddlewareCtor} Middleware
+   */
+  private registerMiddlewareHandler (handler: InlineMiddlewareHandler): void {
+    this.instance().use(async (ctx, next) => {
+      return await handler(this.createContext(ctx), next)
+    })
+  }
+
+  /**
    * Returns a request handler callback compatible with Node.js’ native HTTP server.
    *
    * @returns {HttpServerHandler}
@@ -174,7 +233,7 @@ export class Server implements HttpServer {
    * Register an exception handler to process and respond for a given error.
    */
   registerErrorHandler (): void {
-    this.instance().use(async (ctx, next) => {
+    this.use(async (ctx, next) => {
       try {
         await next()
       } catch (error: any) {
@@ -202,7 +261,7 @@ export class Server implements HttpServer {
     [
       BodyparserMiddleware
     ].forEach((Middleware: MiddlewareCtor) => {
-      this.bindAndRegisterMiddleware(Middleware)
+      this.use(Middleware)
     })
   }
 
@@ -211,24 +270,7 @@ export class Server implements HttpServer {
    */
   registerAppMiddleware (): void {
     this.kernel().middleware().forEach((Middleware: MiddlewareCtor) => {
-      this.bindAndRegisterMiddleware(Middleware)
-    })
-  }
-
-  /**
-   * Register the given HTTP middleware to the IoC container and HTTP server instance.
-   *
-   * @param {MiddlewareCtor} Middleware
-   */
-  private bindAndRegisterMiddleware (Middleware: MiddlewareCtor): void {
-    this.app().singleton(Middleware, () => {
-      return new Middleware(this.app())
-    })
-
-    this.instance().use(async (ctx, next) => {
-      return this.app().make<MiddlewareContract>(Middleware).handle(
-        this.createContext(ctx), next
-      )
+      this.use(Middleware)
     })
   }
 
