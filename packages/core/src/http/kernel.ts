@@ -48,8 +48,8 @@ export class HttpKernel implements HttpKernelContract {
       server: new Server(this)
     }
 
-    this.register()
     this.registerHttpBindings()
+    this.register()
   }
 
   /**
@@ -202,9 +202,15 @@ export class HttpKernel implements HttpKernelContract {
    * and ultimately boot the registered providers.
    */
   protected async bootstrap (): Promise<void> {
+    if (this.isBootstrapped()) {
+      return
+    }
+
     await this.app().bootstrapWith(
       this.bootstrappers()
     )
+
+    this.registerMiddleware()
 
     await this.server().bootstrap()
     this.markAsBootstrapped()
@@ -221,6 +227,34 @@ export class HttpKernel implements HttpKernelContract {
       RegisterServiceProviders,
       BootServiceProviders
     ]
+  }
+
+  /**
+   * Register the configured middleware stacks to the HTTP server.
+   */
+  registerMiddleware (): void {
+    this.registerAppMiddleware()
+    this.registerRouteLevelMiddleware()
+  }
+
+  /**
+   * Register the application middleware stack to the HTTP server.
+   */
+  registerAppMiddleware (): void {
+    this.middleware().forEach((Middleware: MiddlewareCtor) => {
+      this.server().use(Middleware)
+    })
+  }
+
+  /**
+   * Sync the available middleware to the router.
+   */
+  registerRouteLevelMiddleware (): void {
+    Object.entries(
+      this.routeMiddleware()
+    ).forEach(([name, middleware]) => {
+      this.server().useRouteMiddlware(name, middleware)
+    })
   }
 
   /**

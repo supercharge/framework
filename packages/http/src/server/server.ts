@@ -38,7 +38,78 @@ export class Server implements HttpServer {
    * Create a new HTTP context instance.
    */
   constructor (kernel: HttpKernel) {
-    this.meta = { kernel, isBootstrapped: false }
+    this.meta = {
+      kernel,
+      isBootstrapped: false
+    }
+
+    this.registerMiddleware()
+  }
+
+  /**
+   * Returns a Koa server instance.
+   *
+   * @returns {Koa}
+   */
+  createServerInstance (): Koa {
+    return new Koa({
+      keys: [this.app().key()]
+    })
+  }
+
+  /**
+   * Register middlware to the HTTP server.
+   */
+  registerMiddleware (): void {
+    this.registerCoreMiddleware()
+    this.registerErrorHandler()
+  }
+
+  /**
+   * Register an exception handler to process and respond for a given error.
+   */
+  registerErrorHandler (): void {
+    this.use(async (ctx, next) => {
+      try {
+        await next()
+      } catch (error: any) {
+        console.log({ error })
+
+        await this.handleErrorFor(this.createContext(ctx), error)
+      }
+    })
+  }
+
+  /**
+   * Process the given `error` and HTTP `ctx` using the error handler.
+   *
+   * @param error
+   * @param ctx
+   */
+  private async handleErrorFor (ctx: HttpContext, error: Error): Promise<void> {
+    await this.app().make<ErrorHandler>('error.handler').handle(ctx, error)
+  }
+
+  /**
+   * Register the core middleware stack. This is basically a global middleware
+   * stack, but it’s not configurable by the user. Instead, all middleware
+   * registered here will be available out of the box.
+   */
+  registerCoreMiddleware (): void {
+    this.coreMiddleware().forEach((Middleware: MiddlewareCtor) => {
+      this.use(Middleware)
+    })
+  }
+
+  /**
+   * Returns an array of middleware that will be registered when creating the HTTP server.
+   *
+   * @returns {MiddlewareCtor[]}
+   */
+  coreMiddleware (): MiddlewareCtor[] {
+    return [
+      BodyparserMiddleware
+    ]
   }
 
   /**
@@ -103,6 +174,15 @@ export class Server implements HttpServer {
     }
 
     return this.meta.router
+  }
+
+  /**
+   * Register a route-level middleware for the given `name` and `Middleware` to the HTTP router.
+   */
+  useRouteMiddlware (name: string, Middleware: MiddlewareCtor): this {
+    return tap(this, () => {
+      this.router().registerAliasMiddleware(name, Middleware)
+    })
   }
 
   /**
@@ -180,98 +260,10 @@ export class Server implements HttpServer {
       return
     }
 
-    this.createServerInstance()
-    this.syncMiddlewareToRouter()
-
-    await this.registerMiddleware()
-    await this.registerRoutes()
+    this.registerRoutes()
     await this.registerHttpControllers()
 
     this.markAsBootstrapped()
-  }
-
-  /**
-   * Create a Koa server instance.
-   *
-   * @returns {Koa}
-   */
-  createServerInstance (): Koa {
-    return tap(new Koa(), server => {
-      server.keys = [this.app().key()]
-      this.meta.instance = server
-    })
-  }
-
-  /**
-   * Sync the available middleware to the router.
-   */
-  syncMiddlewareToRouter (): void {
-    this.syncRouteMiddlewareToRouter()
-  }
-
-  /**
-   * Sync the provided route-level middleware to the router.
-   */
-  syncRouteMiddlewareToRouter (): void {
-    Object.entries(
-      this.kernel().routeMiddleware()
-    ).forEach(([name, middleware]) => {
-      this.router().registerAliasMiddleware(name, middleware)
-    })
-  }
-
-  /**
-   * Register middlware to the HTTP server.
-   */
-  registerMiddleware (): void {
-    this.registerErrorHandler()
-    this.registerCoreMiddleware()
-    this.registerAppMiddleware()
-  }
-
-  /**
-   * Register an exception handler to process and respond for a given error.
-   */
-  registerErrorHandler (): void {
-    this.use(async (ctx, next) => {
-      try {
-        await next()
-      } catch (error: any) {
-        await this.handleErrorFor(this.createContext(ctx), error)
-      }
-    })
-  }
-
-  /**
-   * Process the given `error` and HTTP `ctx` using the error handler.
-   *
-   * @param error
-   * @param ctx
-   */
-  private async handleErrorFor (ctx: HttpContext, error: Error): Promise<void> {
-    await this.app().make<ErrorHandler>('error.handler').handle(ctx, error)
-  }
-
-  /**
-   * Register the core middleware stack. This is basically a global middleware
-   * stack, but it’s not configurable by the user. Instead, all middleware
-   * registered here will be available out of the box.
-   */
-  registerCoreMiddleware (): void {
-    [
-      BodyparserMiddleware
-    ].forEach((Middleware: MiddlewareCtor) => {
-      this.use(Middleware)
-    })
-  }
-
-  /**
-   * Register the global application middleware stack.
-   */
-  registerAppMiddleware (): void {
-    this.kernel().middleware().forEach((Middleware: MiddlewareCtor) => {
-      this.use(Middleware)
-    })
   }
 
   /**
@@ -286,7 +278,7 @@ export class Server implements HttpServer {
   /**
    * Register routes to the HTTP server.
    */
-  private async registerRoutes (): Promise<void> {
+  private registerRoutes (): void {
     this.instance().use(
       this.router().createRoutingMiddleware()
     )
