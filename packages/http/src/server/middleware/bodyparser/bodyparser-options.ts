@@ -18,7 +18,7 @@ export class BodyparserOptions {
    * @param {BodyparserOptionsContract} options
    */
   constructor (options: BodyparserOptionsContract) {
-    this.options = options
+    this.options = options ?? {}
   }
 
   /**
