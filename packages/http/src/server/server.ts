@@ -6,9 +6,9 @@ import Collect from '@supercharge/collections'
 import { BodyparserMiddleware } from './middleware'
 import { esmRequire, tap } from '@supercharge/goodies'
 import { className, isConstructor } from '@supercharge/classes'
-import { Application, Class, HttpKernel, HttpServer, Middleware as MiddlewareContract, MiddlewareCtor, HttpRouter, ErrorHandler, HttpServerHandler, InlineMiddlewareHandler } from '@supercharge/contracts'
+import { Application, Class, HttpKernel, HttpServer as HttpServerContract, Middleware as MiddlewareContract, MiddlewareCtor, HttpRouter, ErrorHandler, HttpServerHandler, InlineMiddlewareHandler } from '@supercharge/contracts'
 
-export class Server implements HttpServer {
+export class Server implements HttpServerContract {
   /**
    * The server’s meta data.
    */
