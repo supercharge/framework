@@ -20,6 +20,11 @@ export interface HttpServer {
   use (Middleware: MiddlewareCtor | InlineMiddlewareHandler): this
 
   /**
+   * Add a route-level middleware for the given `name` and `Middleware` to the HTTP router.
+   */
+  useRouteMiddlware (name: string, Middleware: MiddlewareCtor): this
+
+  /**
    * Returns a request handler callback compatible with Node.js’ native HTTP server.
    */
   callback (): HttpServerHandler

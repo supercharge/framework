@@ -27,7 +27,7 @@ export class HttpKernel implements HttpKernelContract {
     /**
      * The HTTP server instance.
      */
-    server: Server
+    server?: Server
 
     /**
      * Determine whether the bootstrapping ran.
@@ -44,12 +44,11 @@ export class HttpKernel implements HttpKernelContract {
     this.meta = {
       app,
       bootedCallbacks: [],
-      isBootstrapped: false,
-      server: new Server(this)
+      isBootstrapped: false
     }
 
-    this.register()
     this.registerHttpBindings()
+    this.register()
   }
 
   /**
@@ -97,6 +96,10 @@ export class HttpKernel implements HttpKernelContract {
    * @returns {Server}
    */
   server (): HttpServer {
+    if (!this.meta.server) {
+      this.meta.server = new Server(this)
+    }
+
     return this.meta.server
   }
 
@@ -202,9 +205,15 @@ export class HttpKernel implements HttpKernelContract {
    * and ultimately boot the registered providers.
    */
   protected async bootstrap (): Promise<void> {
+    if (this.isBootstrapped()) {
+      return
+    }
+
     await this.app().bootstrapWith(
       this.bootstrappers()
     )
+
+    this.registerMiddleware()
 
     await this.server().bootstrap()
     this.markAsBootstrapped()
@@ -221,6 +230,34 @@ export class HttpKernel implements HttpKernelContract {
       RegisterServiceProviders,
       BootServiceProviders
     ]
+  }
+
+  /**
+   * Register the configured middleware stacks to the HTTP server.
+   */
+  registerMiddleware (): void {
+    this.registerAppMiddleware()
+    this.registerRouteLevelMiddleware()
+  }
+
+  /**
+   * Register the application middleware stack to the HTTP server.
+   */
+  registerAppMiddleware (): void {
+    this.middleware().forEach((Middleware: MiddlewareCtor) => {
+      this.server().use(Middleware)
+    })
+  }
+
+  /**
+   * Sync the available middleware to the router.
+   */
+  registerRouteLevelMiddleware (): void {
+    Object.entries(
+      this.routeMiddleware()
+    ).forEach(([name, middleware]) => {
+      this.server().useRouteMiddlware(name, middleware)
+    })
   }
 
   /**
