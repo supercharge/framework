@@ -327,4 +327,75 @@ test('request.cookie() returns a signed cookie', async () => {
   ])
 })
 
+test('request.cookies().has(cookieName) determines whether a cookie exists', async () => {
+  const appKeys = ['abcde']
+  const app = new Koa({ keys: appKeys }).use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload({
+      fooExists: request.hasCookie('foo'),
+      barExists: request.hasCookie('bar')
+    })
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .set('Cookie', 'foo=bar')
+    .expect(200, { fooExists: true, barExists: false })
+})
+
+test('request.cookies().has(cookieName) works without request cookies', async () => {
+  const appKeys = ['abcde']
+  const app = new Koa({ keys: appKeys }).use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload({
+      exists: request.hasCookie('foo')
+    })
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(200, { exists: false })
+})
+
+test('creating a cookie uses default options', async () => {
+  const appKeys = ['abcde']
+  const cookieTTL = 123
+  const cookieOptions = {
+    maxAge: cookieTTL,
+    path: '/path',
+    sameSite: 'lax',
+    signed: false
+  }
+
+  const appMock = {
+    make () {},
+    config  () {
+      return {
+        get (key) {
+          if (key === 'http.cookie') {
+            return cookieOptions
+          }
+        }
+      }
+    }
+  }
+
+  const app = new Koa({ keys: appKeys }).use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload('ok').cookie('foo', 'bar')
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .set('Cookie', 'foo=bar')
+    .expect(200, 'ok')
+
+  expect(response.headers['set-cookie']).toEqual([
+    `foo=bar; path=/path; expires=${new Date(Date.now() + cookieTTL).toUTCString()}; samesite=lax; httponly`
+  ])
+})
+
 test.run()
