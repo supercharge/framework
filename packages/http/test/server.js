@@ -27,14 +27,8 @@ const app = {
   }
 }
 
-const kernelMock = {
-  app () {
-    return app
-  }
-}
-
 test('Starts a server without routes', async () => {
-  const server = new Server(kernelMock)
+  const server = new Server(app)
 
   await Supertest(server.callback())
     .get('/')
@@ -44,7 +38,7 @@ test('Starts a server without routes', async () => {
 test('adds a middleware using a function handler', async () => {
   let called = false
 
-  const server = new Server(kernelMock).use(async (ctx) => {
+  const server = new Server(app).use(async (ctx) => {
     called = true
 
     return ctx.response.payload('ok')
@@ -60,7 +54,7 @@ test('adds a middleware using a function handler', async () => {
 test('adds a middleware using a function handler', async () => {
   let called = false
 
-  const server = new Server(kernelMock).use(async (ctx) => {
+  const server = new Server(app).use(async (ctx) => {
     called = true
 
     return ctx.response.payload('ok')
@@ -77,7 +71,7 @@ test('proceeds middleware chain when calling next', async () => {
   let calledFirst = false
   let calledSecond = false
 
-  const server = new Server(kernelMock)
+  const server = new Server(app)
     .use(async (_, next) => {
       calledFirst = true
 
@@ -103,7 +97,7 @@ test('stops middleware chain when not calling next', async () => {
   let calledFirst = false
   let calledSecond = false
 
-  const server = new Server(kernelMock)
+  const server = new Server(app)
     .use(async (ctx) => {
       calledFirst = true
 
@@ -132,7 +126,7 @@ test('adds a middleware using a Middleware class', async () => {
     }
   }
 
-  const server = new Server(kernelMock).use(Middleware)
+  const server = new Server(app).use(Middleware)
 
   await Supertest(server.callback())
     .get('/')
@@ -145,7 +139,7 @@ test('throws when a Middleware class is not implementing the "handle" method', a
   expect(() => {
     class MiddlewareWithoutHandleMethod {}
 
-    new Server(kernelMock).use(MiddlewareWithoutHandleMethod)
+    new Server(app).use(MiddlewareWithoutHandleMethod)
   }).toThrow('must implement a "handle" method.')
 })
 

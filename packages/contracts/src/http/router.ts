@@ -7,7 +7,7 @@ import { PendingRoute } from './pending-route'
 import { MiddlewareCtor } from './middleware'
 import { HttpController } from './controller'
 
-type ControllerAction = string | Class<HttpController>
+type ControllerAction = Class<HttpController>
 type InlineRouteHandler = (ctx: HttpContext) => any | Promise<any>
 
 export type RouteHandler = ControllerAction | InlineRouteHandler

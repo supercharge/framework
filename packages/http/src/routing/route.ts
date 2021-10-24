@@ -1,8 +1,8 @@
 'use strict'
 
 import Str from '@supercharge/strings'
+import { tap } from '@supercharge/goodies'
 import { isClass } from '@supercharge/classes'
-import { tap, isNullish } from '@supercharge/goodies'
 import { HttpRoute, HttpController, RouteHandler, HttpMethods, HttpContext, Application, Class } from '@supercharge/contracts'
 
 interface RouteAttributes {
@@ -22,11 +22,6 @@ export class Route implements HttpRoute {
    * Stores the app instance.
    */
   private readonly app: Application
-
-  /**
-   * The route’s contorller.
-   */
-  private controller: any
 
   /**
    * Create a new route instance.
@@ -116,10 +111,6 @@ export class Route implements HttpRoute {
       return await this.runControllerClass(ctx)
     }
 
-    if (this.isControllerName()) {
-      return await this.runController(ctx)
-    }
-
     if (this.isInlineHandler()) {
       return await this.runCallable(ctx)
     }
@@ -155,83 +146,20 @@ export class Route implements HttpRoute {
   }
 
   /**
-   * Determine whether the assigned handler for this route is a controller action.
-   *
-   * @returns {Boolean}
-   */
-  isControllerName (): boolean {
-    return typeof this.handler() === 'string'
-  }
-
-  /**
    * Resolve the route controller instance and run
    * the `handle` method for the given HTTP `ctx`.
    *
    * @param ctx HttpContext
    */
   async runControllerClass (ctx: HttpContext): Promise<void> {
-    const Controller = this.handler() as Class<HttpController>
-    const instance = new Controller(this.app)
+    const instance = this.app.make<HttpController>(
+      this.handler() as Class<HttpController>
+    )
 
     if (typeof instance.handle !== 'function') {
       throw new Error(`You must implement the "handle" method in controller "${String(instance.constructor.name)}"`)
     }
 
     return await instance.handle(ctx)
-  }
-
-  /**
-   * Resolve and run the route controller method.
-   *
-   * @param ctx HttpContext
-   */
-  async runController (ctx: HttpContext): Promise<void> {
-    const method = this.getControllerMethod()
-
-    if (isNullish(method)) {
-      throw new Error(`Missing controller method for route ${this.methods().toString()} ${this.path()}`)
-    }
-
-    return await this.getController()[method](ctx)
-  }
-
-  /**
-   * Returns the controller for this route.
-   *
-   * @returns {*}
-   */
-  getController (): any {
-    if (!this.controller) {
-      this.controller = this.app.make(this.getControllerName())
-    }
-
-    return this.controller
-  }
-
-  /**
-   * Returns the controller name.
-   *
-   * @returns {String}
-   */
-  getControllerName (): string {
-    return this.parseControllerCallback()[0]
-  }
-
-  /**
-   * Returns the controller method.
-   *
-   * @returns {String}
-   */
-  getControllerMethod (): string | undefined {
-    return this.parseControllerCallback()[1]
-  }
-
-  /**
-   * Returns the parsed controller.
-   *
-   * @returns {String[]}
-   */
-  parseControllerCallback (): [ string, string | undefined] {
-    return Str(this.handler() as string).parseCallback('.')
   }
 }

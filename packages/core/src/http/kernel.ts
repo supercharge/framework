@@ -27,7 +27,7 @@ export class HttpKernel implements HttpKernelContract {
     /**
      * The HTTP server instance.
      */
-    server?: Server
+    server: Server
 
     /**
      * Determine whether the bootstrapping ran.
@@ -44,10 +44,11 @@ export class HttpKernel implements HttpKernelContract {
     this.meta = {
       app,
       bootedCallbacks: [],
-      isBootstrapped: false
+      isBootstrapped: false,
+      server: new Server(app)
     }
 
-    this.registerHttpBindings()
+    this.registerHttpContainerBindings()
     this.register()
   }
 
@@ -63,7 +64,7 @@ export class HttpKernel implements HttpKernelContract {
   /**
    * Register the HTTP base bindings into the container.
    */
-  private registerHttpBindings (): void {
+  private registerHttpContainerBindings (): void {
     this.app().singleton('http.kernel', () => this)
 
     this.app().singleton(Server, () => this.server())
@@ -96,10 +97,6 @@ export class HttpKernel implements HttpKernelContract {
    * @returns {Server}
    */
   server (): HttpServer {
-    if (!this.meta.server) {
-      this.meta.server = new Server(this)
-    }
-
     return this.meta.server
   }
 
