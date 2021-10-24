@@ -10,7 +10,7 @@ import { RouterContext } from '@koa/router'
 import { ParameterBag } from './parameter-bag'
 import { RequestHeaderBag } from './request-header-bag'
 import { IncomingHttpHeaders, IncomingMessage } from 'http'
-import { HttpRequest, InteractsWithContentTypes, RequestCookieBuilderCallback } from '@supercharge/contracts'
+import { CookieOptions, HttpRequest, InteractsWithContentTypes, RequestCookieBuilderCallback } from '@supercharge/contracts'
 
 declare module 'koa' {
   interface Request extends Koa.BaseRequest {
@@ -24,7 +24,12 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
   /**
    * The route context object from Koa.
    */
-  protected readonly ctx: Koa.Context & RouterContext
+  protected readonly ctx: RouterContext
+
+  /**
+   * The default cookie options.
+   */
+  private readonly cookieOptions: CookieOptions
 
   /**
    * Create a new response instance.
@@ -32,8 +37,9 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * @param ctx
    * @param cookieOptions
    */
-  constructor (ctx: Koa.Context & RouterContext) {
+  constructor (ctx: RouterContext, cookieOptions: CookieOptions) {
     this.ctx = ctx
+    this.cookieOptions = cookieOptions
   }
 
   /**
@@ -89,14 +95,14 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * want to retrieve the cookie `unsigned` from the incomig request.
    */
   cookie (name: string, cookieBuilder?: RequestCookieBuilderCallback): string | undefined {
-    return new CookieBag(this.ctx.cookies).get(name, cookieBuilder)
+    return new CookieBag(this.ctx.cookies, this.cookieOptions).get(name, cookieBuilder)
   }
 
   /**
    * Determine whether a cookie exists for the given `name`.
    */
   hasCookie (name: string): boolean {
-    return new CookieBag(this.ctx.cookies).has(name)
+    return new CookieBag(this.ctx.cookies, this.cookieOptions).has(name)
   }
 
   /**
