@@ -6,7 +6,7 @@ import Collect from '@supercharge/collections'
 import { BodyparserMiddleware } from './middleware'
 import { esmRequire, tap } from '@supercharge/goodies'
 import { className, isConstructor } from '@supercharge/classes'
-import { Application, Class, HttpKernel, HttpServer as HttpServerContract, Middleware as MiddlewareContract, MiddlewareCtor, HttpRouter, ErrorHandler, HttpServerHandler, InlineMiddlewareHandler } from '@supercharge/contracts'
+import { Application, Class, HttpKernel, HttpServer as HttpServerContract, Middleware as MiddlewareContract, MiddlewareCtor, HttpRouter, ErrorHandler, HttpServerHandler, InlineMiddlewareHandler, NextHandler } from '@supercharge/contracts'
 
 export class Server implements HttpServerContract {
   /**
@@ -69,7 +69,7 @@ export class Server implements HttpServerContract {
    * Register an exception handler to process and respond for a given error.
    */
   registerErrorHandler (): void {
-    this.use(async (ctx, next) => {
+    this.use(async (ctx: any, next: NextHandler) => {
       try {
         await next()
       } catch (error: any) {
@@ -177,7 +177,7 @@ export class Server implements HttpServerContract {
   /**
    * Register a route-level middleware for the given `name` and `Middleware` to the HTTP router.
    */
-  useRouteMiddlware (name: string, Middleware: MiddlewareCtor): this {
+  useRouteMiddleware (name: string, Middleware: MiddlewareCtor): this {
     return tap(this, () => {
       this.router().registerAliasMiddleware(name, Middleware)
     })

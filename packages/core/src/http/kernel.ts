@@ -256,7 +256,7 @@ export class HttpKernel implements HttpKernelContract {
     Object.entries(
       this.routeMiddleware()
     ).forEach(([name, middleware]) => {
-      this.server().useRouteMiddlware(name, middleware)
+      this.server().useRouteMiddleware(name, middleware)
     })
   }
 
