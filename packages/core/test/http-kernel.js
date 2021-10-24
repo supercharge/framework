@@ -6,7 +6,8 @@ const expect = require('expect')
 const { HttpKernel } = require('../dist')
 
 const appMock = {
-  singleton () {}
+  singleton () {},
+  key () { return 123 }
 }
 
 test('registers and calls booted callbacks', async () => {

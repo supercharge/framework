@@ -1,12 +1,11 @@
 'use strict'
 
 import Koa from 'koa'
+import { tap } from '@supercharge/goodies'
 import { HttpContext } from './http-context'
-import Collect from '@supercharge/collections'
 import { BodyparserMiddleware } from './middleware'
-import { esmRequire, tap } from '@supercharge/goodies'
 import { className, isConstructor } from '@supercharge/classes'
-import { Application, Class, HttpKernel, HttpServer as HttpServerContract, Middleware as MiddlewareContract, MiddlewareCtor, HttpRouter, ErrorHandler, HttpServerHandler, InlineMiddlewareHandler } from '@supercharge/contracts'
+import { Application, HttpServer as HttpServerContract, Middleware as MiddlewareContract, MiddlewareCtor, HttpRouter, ErrorHandler, HttpServerHandler, InlineMiddlewareHandler, NextHandler } from '@supercharge/contracts'
 
 export class Server implements HttpServerContract {
   /**
@@ -14,9 +13,9 @@ export class Server implements HttpServerContract {
    */
   private meta: {
     /**
-     * The HTTP kernel instance.
+     * The application instance.
      */
-    kernel: HttpKernel
+    app: Application
 
     /**
      * The Koa server instance.
@@ -37,30 +36,16 @@ export class Server implements HttpServerContract {
   /**
    * Create a new HTTP context instance.
    */
-  constructor (kernel: HttpKernel) {
-    this.meta = {
-      kernel,
-      isBootstrapped: false
-    }
+  constructor (app: Application) {
+    this.meta = { app, isBootstrapped: false }
 
-    this.registerMiddleware()
-  }
-
-  /**
-   * Returns a Koa server instance.
-   *
-   * @returns {Koa}
-   */
-  createServerInstance (): Koa {
-    return new Koa({
-      keys: [this.app().key()]
-    })
+    this.registerBaseMiddleware()
   }
 
   /**
    * Register middlware to the HTTP server.
    */
-  registerMiddleware (): void {
+  registerBaseMiddleware (): void {
     this.registerCoreMiddleware()
     this.registerErrorHandler()
   }
@@ -69,7 +54,7 @@ export class Server implements HttpServerContract {
    * Register an exception handler to process and respond for a given error.
    */
   registerErrorHandler (): void {
-    this.use(async (ctx, next) => {
+    this.use(async (ctx: any, next: NextHandler) => {
       try {
         await next()
       } catch (error: any) {
@@ -124,21 +109,23 @@ export class Server implements HttpServerContract {
   }
 
   /**
-   * Returns the HTTP kernel instance.
+   * Returns a Koa server instance.
    *
-   * @returns {HttpKernel}
+   * @returns {Koa}
    */
-  kernel (): HttpKernel {
-    return this.meta.kernel
+  createServerInstance (): Koa {
+    return new Koa({
+      keys: [this.app().key()]
+    })
   }
 
   /**
-   * Returns the app instance.
+   * Returns the application instance.
    *
    * @returns {Application}
    */
   app (): Application {
-    return this.kernel().app()
+    return this.meta.app
   }
 
   /**
@@ -177,7 +164,7 @@ export class Server implements HttpServerContract {
   /**
    * Register a route-level middleware for the given `name` and `Middleware` to the HTTP router.
    */
-  useRouteMiddlware (name: string, Middleware: MiddlewareCtor): this {
+  useRouteMiddleware (name: string, Middleware: MiddlewareCtor): this {
     return tap(this, () => {
       this.router().registerAliasMiddleware(name, Middleware)
     })
@@ -259,8 +246,6 @@ export class Server implements HttpServerContract {
     }
 
     this.registerRoutes()
-    await this.registerHttpControllers()
-
     this.markAsBootstrapped()
   }
 
@@ -280,43 +265,6 @@ export class Server implements HttpServerContract {
     this.instance().use(
       this.router().createRoutingMiddleware()
     )
-  }
-
-  /**
-   * Register all available HTTP controllers.
-   */
-  private async registerHttpControllers (): Promise<void> {
-    await Collect(
-      await this.kernel().controllerPaths()
-    ).forEach(async controllerPath => {
-      await this.resolveAndBindController(controllerPath)
-    })
-  }
-
-  /**
-   * Bind the resolved HTTP controller into the container.
-   */
-  private async resolveAndBindController (controllerPath: string): Promise<void> {
-    this.require(controllerPath).forEach(Controller => {
-      this.app().bind(Controller, () => {
-        return new Controller(this.app())
-      })
-    })
-  }
-
-  /**
-   * Returns the controller classes exported from the given `controllerFilePath`.
-   *
-   * @param controllerFilePath
-   *
-   * @returns {Class[]}
-   */
-  private require (controllerFilePath: string): Class[] {
-    const controller = esmRequire(controllerFilePath)
-
-    return typeof controller === 'object'
-      ? Object.values(controller) // assuming that every key in the object is a controller
-      : [controller]
   }
 
   /**

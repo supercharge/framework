@@ -1,12 +1,12 @@
 'use strict'
 
 import { Route } from './route'
-import KoaRouter from '@koa/router'
 import { RouteGroup } from './group'
 import Collect from '@supercharge/collections'
 import { PendingRoute } from './pending-route'
 import { isFunction } from '@supercharge/classes'
 import { RouteCollection } from './route-collection'
+import KoaRouter, { RouterContext } from '@koa/router'
 import { isNullish, tap, upon } from '@supercharge/goodies'
 import { HttpContext, HttpRedirect, Response } from '../server'
 import { HttpRouter, RouteHandler, RouteAttributes, HttpMethods, MiddlewareCtor, NextHandler, Middleware, Application } from '@supercharge/contracts'
@@ -123,8 +123,8 @@ export class Router implements HttpRouter {
     return route.getMiddleware().map(name => {
       this.ensureMiddlewareExists(name)
 
-      return async (ctx: any, next: NextHandler) => {
-        return this.getMiddleware(name).handle(
+      return async (ctx: RouterContext, next: NextHandler) => {
+        return await this.getMiddleware(name).handle(
           this.createContext(ctx), next
         )
       }
@@ -189,7 +189,7 @@ export class Router implements HttpRouter {
    * @returns {Function}
    */
   private createRouteHandler (route: Route): Function {
-    return async (ctx: any, next: NextHandler) => {
+    return async (ctx: RouterContext, next: NextHandler) => {
       await this.handleRequest(route, this.createContext(ctx))
       await next()
     }
