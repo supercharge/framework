@@ -1,19 +1,18 @@
 'use strict'
 
-import * as Cookies from 'cookies'
 import { tap } from '@supercharge/goodies'
-import { RequestCookieBuilder as RequestCookieContract } from '@supercharge/contracts'
+import { CookieOptions, RequestCookieBuilder as RequestCookieContract } from '@supercharge/contracts'
 
 export class RequestCookieBuilder implements RequestCookieContract {
   /**
    * Stores the options used when retrieving a cookie value from the request.
    */
-  private readonly cookieOptions: Cookies.GetOption
+  private readonly cookieOptions: CookieOptions
 
   /**
    * Create a new instance.
    */
-  constructor (options: Cookies.GetOption) {
+  constructor (options: CookieOptions) {
     this.cookieOptions = options
   }
 
