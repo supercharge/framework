@@ -20,11 +20,9 @@ export class RequestHeaderBag implements RequestHeaderBagContract {
 
   /**
    * Returns an object with all `keys` existing in the input bag.
-   */
-
-  /**
    *
    * @param keys
+   *
    * @returns
    */
   all<Key extends keyof IncomingHttpHeaders = string> (...keys: Key[] | Key[][]): { [Key in keyof IncomingHttpHeaders]: IncomingHttpHeaders[Key] } {
@@ -42,27 +40,27 @@ export class RequestHeaderBag implements RequestHeaderBagContract {
   }
 
   /**
-      * Returns the input value for the given `name`. Returns `undefined`
-      * if the given `name` does not exist in the input bag.
-      *
-      * @param {Header} name
-      * @param {Value} defaultValue
-      *
-      * @returns {Value | Dict<T>[Header] |undefined}
-      */
+   * Returns the input value for the given `name`. Returns `undefined`
+   * if the given `name` does not exist in the input bag.
+   *
+   * @param {Header} name
+   * @param {Value} defaultValue
+   *
+   * @returns {Value | Dict<T>[Header] |undefined}
+   */
   get<Header extends keyof IncomingHttpHeaders> (name: Header, defaultValue?: IncomingHttpHeaders[Header]): IncomingHttpHeaders[Header] {
     return this.ctx.request.headers[name] ?? defaultValue
   }
 
   /**
-      * Set an input for the given `name` and assign the `value`. This
-      * overrides a possibly existing input with the same `name`.
-      *
-      * @param {String} name
-      * @param {*} value
-      *
-      * @returns {this}
-      */
+   * Set an input for the given `name` and assign the `value`. This
+   * overrides a possibly existing input with the same `name`.
+   *
+   * @param {String} name
+   * @param {*} value
+   *
+   * @returns {this}
+   */
   set (name: string, value: any): this {
     return tap(this, () => {
       this.ctx.request.headers[name] = value
