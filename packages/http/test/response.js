@@ -4,10 +4,20 @@ const Koa = require('koa')
 const { test } = require('uvu')
 const expect = require('expect')
 const Supertest = require('supertest')
-const { Response, HttpContext } = require('../dist')
+const { Response, HttpContext, HttpRedirect } = require('../dist')
+
+const viewMock = {
+  render (template, data, viewConfig) {
+    return { template, data, viewConfig }
+  }
+}
 
 const appMock = {
-  make () {},
+  make (key) {
+    if (key === 'view') {
+      return viewMock
+    }
+  },
   config () {
     return {
       get () { }
@@ -485,6 +495,204 @@ test('response.headers().remove()', async () => {
 
   expect(response.body).toMatchObject({ sessionid: '1' })
   expect(response.body).not.toMatchObject({ name: 'Supercharge' })
+})
+
+test('response.withHeaders()', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    response.withHeaders({
+      sessionId: 1,
+      name: 'Supercharge'
+    })
+
+    return response.payload(
+      response.headers()
+    )
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(200, {
+      sessionid: '1',
+      name: 'Supercharge',
+      'content-type': 'application/json; charset=utf-8'
+    })
+})
+
+test('response.appendHeader()', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    response
+      .header('name', 'Supercharge')
+      .appendHeader('name', 'Marcus')
+
+    return response.payload(
+      response.headers()
+    )
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(200, {
+      name: ['Supercharge', 'Marcus'],
+      'content-type': 'application/json; charset=utf-8'
+    })
+})
+
+test('response.removeHeader()', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload(
+      response
+        .header('foo', 'bar')
+        .header('name', 'Supercharge')
+        .removeHeader('foo')
+        .headers()
+    )
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(200, {
+      name: 'Supercharge',
+      'content-type': 'application/json; charset=utf-8'
+    })
+})
+
+test('response.status()', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response.status(204)
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(204)
+})
+
+test('response.type()', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload('html').type('foo/bar')
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.headers['content-type']).toEqual('foo/bar')
+})
+
+test('response.etag()', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload('html').etag('md5HashSum')
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.headers.etag).toEqual('"md5HashSum"')
+})
+
+test('response.redirect()', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    const redirect = response.redirect()
+    expect(redirect).toBeInstanceOf(HttpRedirect)
+
+    return redirect.to('/other-uri-path')
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(302)
+
+  expect(response.headers.location).toEqual('/other-uri-path')
+})
+
+test('response.redirect(withUrl)', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    const redirect = response.redirect()
+    expect(response.redirect('/to')).toBeInstanceOf(HttpRedirect)
+
+    return redirect
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(302)
+
+  expect(response.headers.location).toEqual('/to')
+})
+
+test('response.permanentRedirect()', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    const redirect = response.permanentRedirect()
+    expect(redirect).toBeInstanceOf(HttpRedirect)
+
+    return redirect.to('/other-permanent-path')
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(301)
+
+  expect(response.headers.location).toEqual('/other-permanent-path')
+})
+
+test('response.view()', async () => {
+  const app = new Koa().use(async ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return await response.view('test-view')
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.body).toEqual({ template: 'test-view', data: {}, viewConfig: {} })
+})
+
+test('response.view() with data', async () => {
+  const app = new Koa().use(async ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return await response.view('test-view', { name: 'Supercharge' })
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.body).toEqual({ template: 'test-view', data: { name: 'Supercharge' }, viewConfig: {} })
+})
+
+test('response.view() with layout', async () => {
+  const app = new Koa().use(async ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return await response.view('test-view-with-layout', builder => builder.layout('main-layout'))
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.body).toEqual({ template: 'test-view-with-layout', data: {}, viewConfig: { layout: 'main-layout' } })
 })
 
 test.run()
