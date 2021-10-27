@@ -162,8 +162,8 @@ export class Response extends InteractsWithState implements HttpResponse {
    * @returns {HttpRedirect}
    */
   redirect (): HttpRedirect
-  redirect (url: string): void
-  redirect (url?: string): void | HttpRedirect {
+  redirect (url: string): HttpRedirect
+  redirect (url?: string): HttpRedirect {
     return url
       ? new HttpRedirect(this.ctx).to(url)
       : new HttpRedirect(this.ctx)
@@ -177,9 +177,9 @@ export class Response extends InteractsWithState implements HttpResponse {
    * @returns {HttpRedirect}
    */
   permanentRedirect (): HttpRedirect
-  permanentRedirect (url: string): void
-  permanentRedirect (url?: any): any {
-    return this.status(301).redirect(url)
+  permanentRedirect (url: string): HttpRedirect
+  permanentRedirect (url?: any): HttpRedirect {
+    return this.redirect(url).permanent()
   }
 
   /**
