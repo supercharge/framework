@@ -24,7 +24,7 @@ export class Server implements HttpServerContract {
     /**
      * The Koa server instance.
      */
-    instance?: Koa
+    koa: Koa
 
     /**
      * The started HTTP server instance
@@ -51,17 +51,31 @@ export class Server implements HttpServerContract {
    * Create a new HTTP context instance.
    */
   constructor (app: Application) {
-    this.meta = { app, isBootstrapped: false, bootedCallbacks: [] }
+    this.meta = {
+      app,
+      bootedCallbacks: [],
+      isBootstrapped: false,
+      koa: this.createServerInstance(app)
+    }
 
     this.registerBaseMiddleware()
+  }
+
+  /**
+   * Returns a Koa server instance.
+   *
+   * @returns {Koa}
+   */
+  createServerInstance (app: Application): Koa {
+    return new Koa({ keys: [app.key()] })
   }
 
   /**
    * Register middlware to the HTTP server.
    */
   registerBaseMiddleware (): void {
-    this.registerCoreMiddleware()
     this.registerErrorHandler()
+    this.registerCoreMiddleware()
   }
 
   /**
@@ -72,7 +86,7 @@ export class Server implements HttpServerContract {
       try {
         await next()
       } catch (error: any) {
-        await this.handleErrorFor(this.createContext(ctx), error)
+        await this.handleErrorFor(ctx, error)
       }
     })
   }
@@ -114,12 +128,8 @@ export class Server implements HttpServerContract {
    *
    * @returns {HttpRouter}
    */
-  instance (): Koa {
-    if (!this.meta.instance) {
-      this.meta.instance = this.createServerInstance()
-    }
-
-    return this.meta.instance
+  koa (): Koa {
+    return this.meta.koa
   }
 
   /**
@@ -169,17 +179,6 @@ export class Server implements HttpServerContract {
     await Collect(callbacks).forEach(async callback => {
       // eslint-disable-next-line node/no-callback-literal
       await callback(this)
-    })
-  }
-
-  /**
-   * Returns a Koa server instance.
-   *
-   * @returns {Koa}
-   */
-  createServerInstance (): Koa {
-    return new Koa({
-      keys: [this.app().key()]
     })
   }
 
@@ -257,7 +256,7 @@ export class Server implements HttpServerContract {
       return new Middleware(this.app())
     })
 
-    this.instance().use(async (ctx, next) => {
+    this.koa().use(async (ctx, next) => {
       return this.app().make<MiddlewareContract>(Middleware).handle(
         this.createContext(ctx), next
       )
@@ -287,7 +286,7 @@ export class Server implements HttpServerContract {
    * @param {MiddlewareCtor} Middleware
    */
   private registerMiddlewareHandler (handler: InlineMiddlewareHandler): void {
-    this.instance().use(async (ctx, next) => {
+    this.koa().use(async (ctx, next) => {
       return await handler(this.createContext(ctx), next)
     })
   }
@@ -298,7 +297,7 @@ export class Server implements HttpServerContract {
    * @returns {HttpServerHandler}
    */
   callback (): HttpServerHandler {
-    return this.instance().callback()
+    return this.koa().callback()
   }
 
   /**
@@ -326,7 +325,7 @@ export class Server implements HttpServerContract {
    * Register routes to the HTTP server.
    */
   private registerRoutes (): void {
-    this.instance().use(
+    this.koa().use(
       this.router().createRoutingMiddleware()
     )
   }
@@ -336,7 +335,7 @@ export class Server implements HttpServerContract {
    */
   async start (): Promise<void> {
     await new Promise<void>(resolve => {
-      this.meta.server = this.instance().listen(this.port(), this.hostname(), () => {
+      this.meta.server = this.koa().listen(this.port(), this.hostname(), () => {
         this.app().logger().info(`Started the server on http://${this.hostname()}:${this.port()}`)
 
         resolve()
