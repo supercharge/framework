@@ -3,9 +3,13 @@
 import Koa from 'koa'
 import { tap } from '@supercharge/goodies'
 import { HttpContext } from './http-context'
+import Collect from '@supercharge/collections'
+import { Server as NodeHttpServer } from 'http'
 import { BodyparserMiddleware } from './middleware'
 import { className, isConstructor } from '@supercharge/classes'
 import { Application, HttpServer as HttpServerContract, Middleware as MiddlewareContract, MiddlewareCtor, HttpRouter, ErrorHandler, HttpServerHandler, InlineMiddlewareHandler, NextHandler } from '@supercharge/contracts'
+
+type Callback = (server: Server) => unknown | Promise<unknown>
 
 export class Server implements HttpServerContract {
   /**
@@ -23,6 +27,11 @@ export class Server implements HttpServerContract {
     instance?: Koa
 
     /**
+     * The started HTTP server instance
+     */
+    server?: NodeHttpServer
+
+    /**
      * The HTTP router instance.
      */
     router?: HttpRouter
@@ -31,13 +40,18 @@ export class Server implements HttpServerContract {
      * Determine whether the HTTP server bootstrapping ran.
      */
     isBootstrapped: boolean
+
+    /**
+     * Stores the "booted" callbacks
+     */
+    bootedCallbacks: Callback[]
   }
 
   /**
    * Create a new HTTP context instance.
    */
   constructor (app: Application) {
-    this.meta = { app, isBootstrapped: false }
+    this.meta = { app, isBootstrapped: false, bootedCallbacks: [] }
 
     this.registerBaseMiddleware()
   }
@@ -106,6 +120,56 @@ export class Server implements HttpServerContract {
     }
 
     return this.meta.instance
+  }
+
+  /**
+   * Returns the started HTTP server instance.
+   *
+   * @returns {HttpRouter}
+   */
+  private startedServer (): NodeHttpServer | undefined {
+    return this.meta.server
+  }
+
+  /**
+   * Register a booted callback that runs after the HTTP server started.
+   *
+   * @returns {this}
+   */
+  booted (callback: Callback): this {
+    return tap(this, () => {
+      this.bootedCallbacks().push(callback)
+    })
+  }
+
+  /**
+   * Returns the booted callbacks.
+   *
+   * @returns {Callback[]}
+   */
+  private bootedCallbacks (): Callback[] {
+    return this.meta.bootedCallbacks
+  }
+
+  /**
+   * Run the configured `booted` callbacks.
+   */
+  protected async runBootedCallbacks (): Promise<void> {
+    await this.runCallbacks(
+      this.bootedCallbacks()
+    )
+  }
+
+  /**
+   * Call the given kernal `callbacks`.
+   *
+   * @param {Callback[]} callbacks
+   */
+  protected async runCallbacks (callbacks: Callback[]): Promise<void> {
+    await Collect(callbacks).forEach(async callback => {
+      // eslint-disable-next-line node/no-callback-literal
+      await callback(this)
+    })
   }
 
   /**
@@ -271,8 +335,27 @@ export class Server implements HttpServerContract {
    * Start the HTTP server.
    */
   async start (): Promise<void> {
-    this.instance().listen(this.port(), this.hostname(), () => {
-      this.app().logger().info(`Started the server on http://${this.hostname()}:${this.port()}`)
+    await new Promise<void>(resolve => {
+      this.meta.server = this.instance().listen(this.port(), this.hostname(), () => {
+        this.app().logger().info(`Started the server on http://${this.hostname()}:${this.port()}`)
+
+        resolve()
+      })
+    })
+
+    await this.runBootedCallbacks()
+  }
+
+  /**
+   * Stops the HTTP server.
+   */
+  async stop (): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.startedServer()?.close(error => {
+        return error
+          ? reject(error)
+          : resolve()
+      })
     })
   }
 
