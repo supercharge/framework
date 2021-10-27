@@ -695,4 +695,16 @@ test('response.view() with layout', async () => {
   expect(response.body).toEqual({ template: 'test-view-with-layout', data: {}, viewConfig: { layout: 'main-layout' } })
 })
 
+test('response.throw()', async () => {
+  const app = new Koa().use(async ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    response.throw(418, 'Teapot Supercharge')
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(418, 'Teapot Supercharge')
+})
+
 test.run()
