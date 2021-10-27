@@ -233,8 +233,6 @@ export class Response extends InteractsWithState implements HttpResponse {
    * @returns {Response}
    */
   throw (status: number, message?: string | Error, properties?: {}): void
-  throw (status: number | string | Error): void
-  throw (status: number): void
   throw (...properties: any[]): void {
     this.ctx.throw(...properties)
   }

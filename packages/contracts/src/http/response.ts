@@ -184,7 +184,5 @@ export interface HttpResponse extends InteractsWithState {
    * response.throw(403, 'Access denied.', { user })
    * ```
    */
-  throw (status: number): void
-  throw (status: number | string | Error): void
   throw (status: number, message?: string, properties?: {}): void
 }
