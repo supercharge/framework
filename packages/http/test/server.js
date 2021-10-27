@@ -173,4 +173,14 @@ test('fails silently with empty error handler', async () => {
     .expect(418, 'Teapot Supercharge')
 })
 
+test('server.useRouteMiddleware()', async () => {
+  class Middleware {
+    handle () {}
+  }
+
+  const server = new Server(app).useRouteMiddleware('noop', Middleware)
+
+  expect(server.router().hasMiddleware('noop')).toBe(true)
+})
+
 test.run()
