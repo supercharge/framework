@@ -1,8 +1,10 @@
 'use strict'
 
+const Koa = require('koa')
 const { test } = require('uvu')
 const expect = require('expect')
-const { HttpContext, HttpRedirect } = require('../dist')
+const Supertest = require('supertest')
+const { HttpContext } = require('../dist')
 
 const appMock = {
   make () {},
@@ -13,20 +15,60 @@ const appMock = {
   }
 }
 
-test.skip('redirect is chainable', async () => {
-  const ctx = {}
-  const redirect = new HttpRedirect(ctx)
+test('redirect is chainable', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
 
-  expect(
-    redirect.to('/path').withPayload()
-  ).toBeInstanceOf(HttpRedirect)
+    return response.redirect().to('/path').withPayload()
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(307)
+
+  expect(response.headers.location).toEqual('/path')
 })
 
-test.skip('response.redirect(withUrl)', async () => {
-  const ctx = {}
-  const { response } = HttpContext.wrap(ctx, appMock)
+test('redirect.back()', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
 
-  expect(response.redirect('/to')).toBeInstanceOf(HttpRedirect)
+    return response.redirect().back()
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(302)
+
+  expect(response.headers.location).toEqual('/')
+})
+
+test('redirect.back() with fallback', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response.redirect().back({ fallback: '/login' })
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(302)
+
+  expect(response.headers.location).toEqual('/login')
+})
+
+test('redirect.permanent()', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response.redirect().permanent().to('/permanent-path')
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(301)
+
+  expect(response.headers.location).toEqual('/permanent-path')
 })
 
 test.run()
