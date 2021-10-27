@@ -31,6 +31,17 @@ export class HttpRedirect implements HttpRedirectContract {
   }
 
   /**
+   * Redirect the request to the given URL `path`.
+   *
+   * @param url string
+   */
+  to (path: string): this {
+    return tap(this, () => {
+      this.ctx.response.redirect(path)
+    })
+  }
+
+  /**
    * Redirects the request with HTTP status 307. This keeps the request payload
    * which is useful for POST/PUT requests containing content.
    *
@@ -45,13 +56,11 @@ export class HttpRedirect implements HttpRedirectContract {
   }
 
   /**
-   * Redirect the request to the given URL `path`.
-   *
-   * @param url string
+   * Marks this redirect as permanent with HTTP status 301.
    */
-  to (path: string): this {
+  permanent (): this {
     return tap(this, () => {
-      this.ctx.response.redirect(path)
+      this.ctx.response.status = 301
     })
   }
 }
