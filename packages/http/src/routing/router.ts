@@ -419,9 +419,9 @@ export class Router implements HttpRouter {
    *
    * @returns {RouteGroup}
    */
-  group (pathOrCallback: string | (() => void)): void
+  group (prefixOrCallback: string | (() => void)): void
   group (attributes: RouteAttributes, callback: () => void): void
-  group (attributes: any, callback?: any): void {
+  group (attributes: any, callback?: () => void): void {
     /**
      * If only a single argument is provided by the user, we expect it to be the
      * callback function. That’s the reason we’re reassigning the variables here.
@@ -429,6 +429,14 @@ export class Router implements HttpRouter {
     if (isFunction(attributes)) {
       callback = attributes
       attributes = undefined
+    }
+
+    if (typeof attributes === 'string') {
+      attributes = { prefix: attributes }
+    }
+
+    if (typeof callback !== 'function') {
+      throw new Error('You must provide a callback function when using Route.group()')
     }
 
     const group = new RouteGroup(attributes)
@@ -440,28 +448,14 @@ export class Router implements HttpRouter {
     this.groupStack().push(group)
 
     /*
-     * Process the path to a routes file or the callback to
-     * register routes or nested route groups to the router.
+     * Process the callback to register routes or nested route groups to the router.
      */
-    if (typeof attributes === 'string') {
-      this.loadRoutesFrom(attributes)
-    } else {
-      callback()
-    }
+    callback()
 
     /*
      * Now that the callback is processed, remove this group from the stack.
      */
     this.groupStack().pop()
-  }
-
-  /**
-   * Load routes from the given route file `path`.
-   *
-   * @param path
-   */
-  private loadRoutesFrom (path: string): void {
-    require(path)
   }
 
   /**
