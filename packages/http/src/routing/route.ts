@@ -47,7 +47,7 @@ export class Route implements HttpRoute {
   /**
    * Returns the HTTP methods.
    *
-   * @returns string
+   * @returns HttpMethods[]
    */
   public methods (): HttpMethods[] {
     return this.attributes.methods
@@ -56,7 +56,7 @@ export class Route implements HttpRoute {
   /**
    * Returns the route handler.
    *
-   * @returns string
+   * @returns RouteHandler
    */
   public handler (): RouteHandler {
     return this.attributes.handler
@@ -67,7 +67,7 @@ export class Route implements HttpRoute {
    *
    * @param prefix String
    *
-   * @returns PendingRoute
+   * @returns Route
    */
   prefix (prefix: string): this {
     return tap(this, () => {
@@ -80,7 +80,7 @@ export class Route implements HttpRoute {
    *
    * @param middleware String|String[]
    *
-   * @returns PendingRoute
+   * @returns Route
    */
   middleware (middleware?: string|string[]): this {
     return tap(this, () => {
@@ -104,7 +104,7 @@ export class Route implements HttpRoute {
    *
    * @param ctx HttpContext
    *
-   * @returns {*}
+   * @returns {Promise<*>}
    */
   async run (ctx: HttpContext): Promise<any> {
     if (this.isControllerClass()) {
