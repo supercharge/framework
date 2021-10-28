@@ -55,19 +55,10 @@ export class Server implements HttpServerContract {
       app,
       bootedCallbacks: [],
       isBootstrapped: false,
-      koa: this.createServerInstance(app)
+      koa: new Koa({ keys: [app.key()] })
     }
 
     this.registerBaseMiddleware()
-  }
-
-  /**
-   * Returns a Koa server instance.
-   *
-   * @returns {Koa}
-   */
-  createServerInstance (app: Application): Koa {
-    return new Koa({ keys: [app.key()] })
   }
 
   /**
@@ -124,18 +115,18 @@ export class Server implements HttpServerContract {
   }
 
   /**
-   * Returns the HTTP server instance.
+   * Returns the Koa application instance.
    *
-   * @returns {HttpRouter}
+   * @returns {Koa}
    */
   koa (): Koa {
     return this.meta.koa
   }
 
   /**
-   * Returns the started HTTP server instance.
+   * Returns the HTTP server instance. Returns `undefined ` if the Koa server wasn’t started.
    *
-   * @returns {HttpRouter}
+   * @returns {NodeHttpServer | undefined}
    */
   private startedServer (): NodeHttpServer | undefined {
     return this.meta.server
@@ -346,7 +337,9 @@ export class Server implements HttpServerContract {
   }
 
   /**
-   * Stops the HTTP server.
+   * Stop the HTTP server from accepting new connections. Existing connections
+   * stay alive and will be processed. The server stops as soon as all open
+   * connections have been processed through the HTTP request lifecycle.
    */
   async stop (): Promise<void> {
     return new Promise((resolve, reject) => {
