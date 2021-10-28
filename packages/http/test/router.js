@@ -61,7 +61,7 @@ test('router.post()', async () => {
     .expect(201, 'Supercharge')
 })
 
-test.skip('router.group()', async () => {
+test('router.group()', async () => {
   const server = new Server(app)
   const router = server.router()
 
