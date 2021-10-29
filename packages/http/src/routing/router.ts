@@ -1,14 +1,16 @@
 'use strict'
 
 import { Route } from './route'
+import Map from '@supercharge/map'
 import { RouteGroup } from './group'
+import Str from '@supercharge/strings'
 import Collect from '@supercharge/collections'
 import { PendingRoute } from './pending-route'
-import { isFunction } from '@supercharge/classes'
 import { RouteCollection } from './route-collection'
 import KoaRouter, { RouterContext } from '@koa/router'
 import { isNullish, tap, upon } from '@supercharge/goodies'
 import { HttpContext, HttpRedirect, Response } from '../server'
+import { isFunction, isNotConstructor } from '@supercharge/classes'
 import { HttpRouter, RouteHandler, RouteAttributes, HttpMethods, MiddlewareCtor, NextHandler, Middleware, Application } from '@supercharge/contracts'
 
 export class Router implements HttpRouter {
@@ -31,7 +33,7 @@ export class Router implements HttpRouter {
     /**
      * Stores the named route middleware.
      */
-    middleware: { [name: string]: MiddlewareCtor }
+    middleware: Map<string, MiddlewareCtor>
 
     /**
      * Stores the opened route groups.
@@ -46,7 +48,7 @@ export class Router implements HttpRouter {
     this.meta = {
       app,
       groupStack: [],
-      middleware: {},
+      middleware: new Map(),
       instance: new KoaRouter(),
       routes: new RouteCollection()
     }
@@ -163,7 +165,7 @@ export class Router implements HttpRouter {
    * @returns {Boolean}
    */
   hasMiddleware (name: string): boolean {
-    return !!this.getMiddleware(name)
+    return this.meta.middleware.has(name)
   }
 
   /**
@@ -174,11 +176,9 @@ export class Router implements HttpRouter {
    * @returns {Middleware}
    */
   private getMiddleware (name: string): Middleware {
-    if (this.meta.middleware[name]) {
-      return new (this.meta.middleware[name])(this.app())
-    }
+    const Middleware = this.meta.middleware.get(name) as MiddlewareCtor
 
-    throw new Error(`Missing middleware "${name}". Configure it in your HTTP kernel`)
+    return new Middleware(this.app())
   }
 
   /**
@@ -428,7 +428,7 @@ export class Router implements HttpRouter {
      */
     if (isFunction(attributes)) {
       callback = attributes
-      attributes = undefined
+      attributes = {}
     }
 
     if (typeof attributes === 'string') {
@@ -489,8 +489,16 @@ export class Router implements HttpRouter {
    * @returns {Router}
    */
   registerAliasMiddleware (name: string, Middleware: MiddlewareCtor): Router {
+    if (Str(name).isEmpty()) {
+      throw new Error('Missing route-level middleware name')
+    }
+
+    if (isNotConstructor(Middleware)) {
+      throw new Error(`You must provide a class constructor for the route-level middleware "${name}"`)
+    }
+
     return tap(this, () => {
-      this.meta.middleware[name] = Middleware
+      this.meta.middleware.set(name, Middleware)
     })
   }
 }
