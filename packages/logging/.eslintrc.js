@@ -3,7 +3,6 @@
 module.exports = {
   env: {
     node: true,
-    jest: true,
     es2020: true
   },
   extends: [

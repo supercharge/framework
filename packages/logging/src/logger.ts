@@ -44,6 +44,19 @@ export class Logger {
   }
 
   /**
+   * Returns the extended color palette containing the corresponding
+   * colors for the added logging levels "emergency" and "critical".
+   *
+   * @returns {AbstractConfigSetColors}
+   */
+  colors (): AbstractConfigSetColors {
+    return Object.assign({
+      emergency: 'red',
+      critical: 'red'
+    }, Winston.config.syslog.colors)
+  }
+
+  /**
    * Returns the log level.
    */
   logLevel (): string {
@@ -62,19 +75,6 @@ export class Logger {
       emergency: 0,
       critical: 2
     }, Winston.config.syslog.levels)
-  }
-
-  /**
-   * Returns the extended color palette containing the corresponding
-   * colors for the added logging levels "emergency" and "critical".
-   *
-   * @returns {AbstractConfigSetColors}
-   */
-  colors (): AbstractConfigSetColors {
-    return Object.assign({
-      emergency: 'red',
-      critical: 'red'
-    }, Winston.config.syslog.colors)
   }
 
   /**
