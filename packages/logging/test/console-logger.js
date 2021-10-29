@@ -5,108 +5,165 @@ const { test } = require('uvu')
 const expect = require('expect')
 const { ConsoleLogger } = require('../dist/console-logger')
 
-// let consoleLogMock = Sinon.stub()
-// let consoleInfoMock = Sinon.stub()
-// let consoleErrorMock = Sinon.stub()
-
-// test.before(() => {
-//   consoleLogMock = Sinon.stub(console, 'log').returns(() => {})
-//   consoleInfoMock = Sinon.stub(console, 'info').returns(() => {})
-//   consoleErrorMock = Sinon.stub(console, 'error').returns(() => {})
-// })
-
-// test.after(() => {
-//   consoleLogMock.restore()
-//   consoleInfoMock.restore()
-//   consoleErrorMock.restore()
-// })
-
-test('logs debug message to file', () => {
-  const consoleLogStub = Sinon.stub(console, 'log').returns(() => {})
+test('logs debug message to console', () => {
+  const consoleLogStub = Sinon.stub(process.stdout, 'write').returns(() => {})
 
   const logger = new ConsoleLogger()
   logger.debug('debug message')
 
-  expect(consoleLogStub.called).toBe(true)
-  expect(consoleLogStub.calledWith('debug message')).toBe(true)
-
   consoleLogStub.restore()
 
-  console.log({ consoleLogStub })
+  expect(consoleLogStub.called).toBe(true)
+  expect(
+    !!consoleLogStub.args[0].find(message => message.includes('debug message'))
+  ).toBe(true)
 })
 
-test.skip('logs info message to file', () => {
+test('logs info message to console', () => {
+  const consoleLogStub = Sinon.stub(process.stdout, 'write').returns(() => {})
+
   const logger = new ConsoleLogger()
   logger.info('info message')
 
-  // expect(consoleLogMock.called).toBe(true)
-  // expect(consoleLogMock.calledWith('info message')).toBe(true)
+  consoleLogStub.restore()
+
+  expect(consoleLogStub.called).toBe(true)
+  expect(
+    !!consoleLogStub.args[0].find(message => message.includes('info message'))
+  ).toBe(true)
 })
 
-test.skip('logs notice message to file', async () => {
+test('logs notice message to console', async () => {
+  const consoleLogStub = Sinon.stub(process.stdout, 'write').returns(() => {})
+
   const logger = new ConsoleLogger()
   logger.notice('notice message')
 
-  expect(global.console.log.mock.calls[0][0]).toInclude('notice message')
+  consoleLogStub.restore()
+
+  expect(consoleLogStub.called).toBe(true)
+  expect(
+    !!consoleLogStub.args[0].find(message => message.includes('notice message'))
+  ).toBe(true)
 })
 
-test.skip('logs warning message to file', async () => {
+test('logs warning message to console', async () => {
+  const consoleLogStub = Sinon.stub(process.stdout, 'write').returns(() => {})
+
   const logger = new ConsoleLogger()
   logger.warning('warning message')
 
-  expect(global.console.log.mock.calls[0][0]).toInclude('warning message')
+  consoleLogStub.restore()
+
+  expect(consoleLogStub.called).toBe(true)
+  expect(
+    !!consoleLogStub.args[0].find(message => message.includes('warning message'))
+  ).toBe(true)
 })
 
-test.skip('logs error message to file', async () => {
+test('logs error message to console', async () => {
+  const consoleLogStub = Sinon.stub(process.stdout, 'write').returns(() => {})
+
   const logger = new ConsoleLogger()
   logger.error('error message')
 
-  expect(global.console.log.mock.calls[0][0]).toInclude('error message')
+  consoleLogStub.restore()
+
+  expect(consoleLogStub.called).toBe(true)
+  expect(
+    !!consoleLogStub.args[0].find(message => message.includes('error message'))
+  ).toBe(true)
 })
 
-test.skip('logs critical message to file', async () => {
+test('logs critical message to console', async () => {
+  const consoleLogStub = Sinon.stub(process.stdout, 'write').returns(() => {})
+
   const logger = new ConsoleLogger()
   logger.critical('critical message')
 
-  expect(global.console.log.mock.calls[0][0]).toInclude('critical message')
+  consoleLogStub.restore()
+
+  expect(consoleLogStub.called).toBe(true)
+  expect(
+    !!consoleLogStub.args[0].find(message => message.includes('critical message'))
+  ).toBe(true)
 })
 
-test.skip('logs alert message to file', async () => {
+test('logs alert message to console', async () => {
+  const consoleLogStub = Sinon.stub(process.stdout, 'write').returns(() => {})
+
   const logger = new ConsoleLogger()
   logger.alert('alert message')
 
-  expect(global.console.log.mock.calls[0][0]).toInclude('alert message')
+  consoleLogStub.restore()
+
+  expect(consoleLogStub.called).toBe(true)
+  expect(
+    !!consoleLogStub.args[0].find(message => message.includes('alert message'))
+  ).toBe(true)
 })
 
-test.skip('logs emergency message to file', async () => {
+test('logs emergency message to console', async () => {
+  const consoleLogStub = Sinon.stub(process.stdout, 'write').returns(() => {})
+
   const logger = new ConsoleLogger()
   logger.emergency('emergency message')
 
-  expect(global.console.log.mock.calls[0][0]).toInclude('emergency message')
+  consoleLogStub.restore()
+
+  expect(consoleLogStub.called).toBe(true)
+  expect(
+    !!consoleLogStub.args[0].find(message => message.includes('emergency message'))
+  ).toBe(true)
 })
 
-test.skip('logs message with context data (object)', async () => {
+test('logs message with context data (object)', async () => {
+  const consoleLogStub = Sinon.stub(process.stdout, 'write').returns(() => {})
+
   const logger = new ConsoleLogger()
   logger.info('custom message', { name: 'Marcus', app: 'Supercharge' })
 
-  expect(global.console.log.mock.calls[0][0]).toInclude('"name":"Marcus"')
+  consoleLogStub.restore()
+
+  expect(consoleLogStub.called).toBe(true)
+  expect(
+    !!consoleLogStub.args[0].find(message => {
+      return message.includes('custom message {"name":"Marcus","app":"Supercharge"}')
+    })
+  ).toBe(true)
 })
 
-test.skip('handles errors and shows stacktraces', async () => {
+test('handles errors and shows stacktraces', async () => {
+  const consoleLogStub = Sinon.stub(process.stdout, 'write').returns(() => {})
+
   const logger = new ConsoleLogger()
   logger.alert(new Error('Logging failed'))
 
-  expect(global.console.log.mock.calls[0][0]).toInclude('Logging failed')
+  consoleLogStub.restore()
+
+  expect(consoleLogStub.called).toBe(true)
+  expect(
+    !!consoleLogStub.args[0].find(message => message.includes('Logging failed'))
+  ).toBe(true)
 })
 
-test.skip('honors the log level', async () => {
+test('honors the log level', async () => {
+  const consoleLogStub = Sinon.stub(process.stdout, 'write').returns(() => {})
+
   const logger = new ConsoleLogger({ level: 'emergency' })
   logger.debug('should not appear')
   logger.emergency('this message should appear')
 
-  expect(global.console.log.mock.calls[0][0]).toInclude('emerg')
-  expect(global.console.log.mock.calls[0][0]).toInclude('this message should appear')
-  expect(global.console.log.mock.calls[0][0]).not.toInclude('should not appear')
+  consoleLogStub.restore()
+
+  expect(consoleLogStub.called).toBe(true)
+  expect(
+    !!consoleLogStub.args[0].find(message => message.includes('should not appear'))
+  ).toBe(false)
+
+  expect(
+    !!consoleLogStub.args[0].find(message => message.includes('this message should appear'))
+  ).toBe(true)
 })
 
 test.run()
