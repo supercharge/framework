@@ -150,7 +150,7 @@ class App {
   config () {
     return {
       get (key) {
-        return key ?? ''
+        return key || ''
       },
 
       ensure (key) {
