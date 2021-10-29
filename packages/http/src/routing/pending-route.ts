@@ -34,7 +34,7 @@ export class PendingRoute implements PendingRouteContract {
    *
    * @returns PendingRoute
    */
-  public prefix (prefix: string): PendingRoute {
+  prefix (prefix: string): PendingRoute {
     return tap(this, () => {
       this.attributes.prefix = Str(prefix).start('/').get()
     })
@@ -47,7 +47,7 @@ export class PendingRoute implements PendingRouteContract {
    *
    * @returns PendingRoute
    */
-  public middleware (middleware: string | string[]): PendingRoute {
+  middleware (middleware: string | string[]): PendingRoute {
     return tap(this, () => {
       this.attributes.middleware = this.attributes.middleware?.concat(middleware)
     })
