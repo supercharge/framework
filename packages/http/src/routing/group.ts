@@ -1,5 +1,6 @@
 'use strict'
 
+import Str from '@supercharge/strings'
 import { HttpRouteGroup, RouteAttributes } from '@supercharge/contracts'
 
 export class RouteGroup implements HttpRouteGroup {
@@ -23,7 +24,7 @@ export class RouteGroup implements HttpRouteGroup {
    * @returns string
    */
   prefix (): string {
-    return this.attributes.prefix ?? ''
+    return Str(this.attributes.prefix).ltrim('/').start('/').get()
   }
 
   /**
