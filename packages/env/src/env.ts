@@ -22,7 +22,7 @@ export class Env implements EnvStore {
    *
    * @param {String} key
    *
-   * @returns {*}
+   * @returns {String}
    *
    * @throws
    */
