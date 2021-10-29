@@ -41,7 +41,7 @@ export class Route implements HttpRoute {
    * @returns string
    */
   public path (): string {
-    return Str(this.attributes.path).rtrim('/').get()
+    return Str(this.attributes.path).trim('/').start('/').get()
   }
 
   /**
