@@ -126,7 +126,7 @@ export class Router implements HttpRouter {
       this.ensureMiddlewareExists(name)
 
       return async (ctx: RouterContext, next: NextHandler) => {
-        return await this.getMiddleware(name).handle(
+        return await this.makeMiddleware(name).handle(
           this.createContext(ctx), next
         )
       }
@@ -175,10 +175,10 @@ export class Router implements HttpRouter {
    *
    * @returns {Middleware}
    */
-  private getMiddleware (name: string): Middleware {
-    const Middleware = this.meta.middleware.get(name) as MiddlewareCtor
-
-    return new Middleware(this.app())
+  private makeMiddleware (name: string): Middleware {
+    return this.app().make(
+      this.meta.middleware.get(name) as MiddlewareCtor
+    )
   }
 
   /**
