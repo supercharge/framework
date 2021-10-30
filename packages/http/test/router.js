@@ -4,6 +4,7 @@ const { test } = require('uvu')
 const expect = require('expect')
 const Supertest = require('supertest')
 const { Server, Router } = require('../dist')
+const { isConstructor } = require('@supercharge/classes')
 
 const app = {
   bindings: {},
@@ -16,6 +17,11 @@ const app = {
 
     if (bindingCallback) {
       return bindingCallback(this)
+    }
+
+    if (isConstructor(key)) {
+      // eslint-disable-next-line new-cap
+      return new key(this)
     }
   },
   singleton (key, bindingCallback) {
@@ -111,6 +117,40 @@ test('router.options()', async () => {
   await Supertest(server.callback())
     .options('/name')
     .expect(200)
+})
+
+test('router.get() with controller class', async () => {
+  class Controller {
+    handle () {
+      return 'Supercharge'
+    }
+  }
+
+  const server = new Server(app)
+  const router = server.router()
+
+  router.get('/name', Controller)
+
+  await server.bootstrap()
+
+  await Supertest(server.callback())
+    .get('/name')
+    .expect(200, 'Supercharge')
+})
+
+test('fails for route controller class without .handle() method', async () => {
+  class Controller { }
+
+  const server = new Server(app)
+  const router = server.router()
+
+  router.get('/name', Controller)
+
+  await server.bootstrap()
+
+  await Supertest(server.callback())
+    .get('/name')
+    .expect(500)
 })
 
 test('router.group() without route prefix', async () => {
