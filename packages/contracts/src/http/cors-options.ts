@@ -2,37 +2,32 @@
 
 export interface CorsOptions {
   /**
-   * Tba.
+   * Controls the `Access-Control-Max-Age` header in seconds.
    */
   maxAge?: number
 
   /**
-   * `Access-Control-Allow-Origin`, default is request Origin header.
-   */
-  origin?: string // | ((ctx: HttpContext) => string) | ((ctx: HttpContext) => PromiseLike<string>)
-
-  /**
    * `Access-Control-Allow-Methods`
    */
-  allowMethods: string | string[]
+  allowedMethods: string | string[]
+
+  /**
+   * `Access-Control-Allow-Origin`, default is request Origin header.
+   */
+  allowedOrigin?: string
 
   /**
    * `Access-Control-Allow-Headers`
    */
-  allowHeaders?: string | string[]
+  allowedHeaders?: string | string[]
 
   /**
    * `Access-Control-Expose-Headers`
    */
-  exposeHeaders?: string | string[]
+  exposedHeaders?: string | string[]
 
   /**
    * `Access-Control-Allow-Credentials`
    */
-  credentials?: boolean
-
-  /**
-   * Add set headers to `err.header` if an error is thrown
-   */
-  keepHeadersOnError?: boolean
+  supportsCredentials?: boolean
 }

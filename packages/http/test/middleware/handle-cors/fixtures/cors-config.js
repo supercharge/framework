@@ -3,5 +3,5 @@
 module.exports = {
   maxAge: 0,
 
-  allowMethods: ['GET, HEAD, PUT, POST, DELETE, PATCH']
+  allowedMethods: ['GET, HEAD, PUT, POST, DELETE, PATCH']
 }
