@@ -7,7 +7,7 @@ import { HttpRedirect } from './http-redirect'
 import { ResponseHeaderBag } from './response-header-bag'
 import { ViewConfigBuilder } from './view-config-builder'
 import { InteractsWithState } from './interacts-with-state'
-import { CookieOptions, HttpResponse, ViewEngine, ViewConfigBuilder as ViewConfigBuilderContract, ResponseCookieBuilderCallback } from '@supercharge/contracts'
+import { CookieOptions, HttpResponse, ViewEngine, ViewBuilderCallback, ResponseCookieBuilderCallback } from '@supercharge/contracts'
 
 export class Response extends InteractsWithState implements HttpResponse {
   /**
@@ -90,13 +90,15 @@ export class Response extends InteractsWithState implements HttpResponse {
   }
 
   /**
-   * Remove a header field from the response.
+   * Remove the header field for the given `name` from the response.
+   *
+   * @param {String} name
    *
    * @returns {Response}
    */
-  removeHeader (key: string): this {
+  removeHeader (name: string): this {
     return tap(this, () => {
-      this.ctx.response.remove(key)
+      this.headers().remove(name)
     })
   }
 
@@ -160,8 +162,8 @@ export class Response extends InteractsWithState implements HttpResponse {
    * @returns {HttpRedirect}
    */
   redirect (): HttpRedirect
-  redirect (url: string): void
-  redirect (url?: string): void | HttpRedirect {
+  redirect (url: string): HttpRedirect
+  redirect (url?: string): HttpRedirect {
     return url
       ? new HttpRedirect(this.ctx).to(url)
       : new HttpRedirect(this.ctx)
@@ -175,9 +177,9 @@ export class Response extends InteractsWithState implements HttpResponse {
    * @returns {HttpRedirect}
    */
   permanentRedirect (): HttpRedirect
-  permanentRedirect (url: string): void
-  permanentRedirect (url?: any): any {
-    return this.status(301).redirect(url)
+  permanentRedirect (url: string): HttpRedirect
+  permanentRedirect (url?: any): HttpRedirect {
+    return this.redirect(url).permanent()
   }
 
   /**
@@ -189,15 +191,15 @@ export class Response extends InteractsWithState implements HttpResponse {
    *
    * @returns {String}
    */
-  async view (template: string, callback?: (viewBuilder: ViewConfigBuilderContract) => unknown): Promise<this>
-  async view (template: string, data?: any, callback?: (viewBuilder: ViewConfigBuilderContract) => unknown): Promise<this> {
+  async view (template: string, viewBuilder?: ViewBuilderCallback): Promise<this>
+  async view (template: string, data?: any, viewBuilder?: ViewBuilderCallback): Promise<this> {
     if (typeof data === 'function') {
-      callback = data
+      viewBuilder = data
       data = {}
     }
 
     return this.payload(
-      await this.renderView(template, data, callback)
+      await this.renderView(template, data, viewBuilder)
     )
   }
 
@@ -206,16 +208,16 @@ export class Response extends InteractsWithState implements HttpResponse {
    *
    * @param {String} template
    * @param {*} data
-   * @param {Function} callback
+   * @param {Function} viewBuilder
    *
    * @returns {String}
    */
-  private async renderView (template: string, data?: any, callback?: (viewBuilder: ViewConfigBuilderContract) => unknown): Promise<string> {
+  private async renderView (template: string, data?: any, viewBuilder?: ViewBuilderCallback): Promise<string> {
     const viewData = { ...this.state(), ...data }
     const viewConfig = {}
 
-    if (typeof callback === 'function') {
-      callback(
+    if (typeof viewBuilder === 'function') {
+      viewBuilder(
         new ViewConfigBuilder(viewConfig)
       )
     }
@@ -231,8 +233,6 @@ export class Response extends InteractsWithState implements HttpResponse {
    * @returns {Response}
    */
   throw (status: number, message?: string | Error, properties?: {}): void
-  throw (status: number | string | Error): void
-  throw (status: number): void
   throw (...properties: any[]): void {
     this.ctx.throw(...properties)
   }

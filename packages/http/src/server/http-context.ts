@@ -49,7 +49,7 @@ export class HttpContext extends InteractsWithState implements HttpContextContra
    * @returns {Request}
    */
   get request (): Request {
-    return new Request(this.ctx)
+    return new Request(this.ctx, this.cookieOptions())
   }
 
   /**

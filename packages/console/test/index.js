@@ -1,7 +1,10 @@
 'use strict'
 
-describe('Console', () => {
-  it.skip('TODO', () => {
-    expect(true).toBeFalse()
-  })
+const { test } = require('uvu')
+const expect = require('expect')
+
+test.skip('TODO', () => {
+  expect(true).toBeFalse()
 })
+
+test.run()

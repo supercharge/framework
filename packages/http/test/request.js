@@ -15,7 +15,21 @@ const appMock = {
   }
 }
 
-test('request querystring', async () => {
+test('request.path() returns the URL path', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload(
+      request.path()
+    )
+  })
+
+  await Supertest(app.callback())
+    .get('/supercharge/123/cool')
+    .expect(200, '/supercharge/123/cool')
+})
+
+test('request.query() returns the querystring', async () => {
   const app = new Koa().use(ctx => {
     const { request, response } = HttpContext.wrap(ctx, appMock)
 
@@ -267,6 +281,20 @@ test('request.headers().has()', async () => {
     .expect(200, 'true')
 })
 
+test('request.hasHeaders()', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload(
+      request.hasHeader('sessionId')
+    )
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(200, 'false')
+})
+
 test('response.headers().remove()', async () => {
   const app = new Koa().use(ctx => {
     const { request, response } = HttpContext.wrap(ctx, appMock)
@@ -325,6 +353,152 @@ test('request.cookie() returns a signed cookie', async () => {
     'name=Supercharge; path=/; httponly',
     'name.sig=vMKzqvNMXRSaFegfFMZZS4diDJM; path=/; httponly'
   ])
+})
+
+test('request.cookies().has(cookieName) determines whether a cookie exists', async () => {
+  const appKeys = ['abcde']
+  const app = new Koa({ keys: appKeys }).use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload({
+      fooExists: request.hasCookie('foo'),
+      barExists: request.hasCookie('bar')
+    })
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .set('Cookie', 'foo=bar')
+    .expect(200, { fooExists: true, barExists: false })
+})
+
+test('request.cookies().has(cookieName) works without request cookies', async () => {
+  const appKeys = ['abcde']
+  const app = new Koa({ keys: appKeys }).use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload({
+      exists: request.hasCookie('foo')
+    })
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(200, { exists: false })
+})
+
+test('creating a cookie uses default options', async () => {
+  const appKeys = ['abcde']
+  const cookieTTL = 123
+  const cookieOptions = {
+    maxAge: cookieTTL,
+    path: '/path',
+    sameSite: 'lax',
+    signed: false
+  }
+
+  const appMock = {
+    make () {},
+    config  () {
+      return {
+        get (key) {
+          if (key === 'http.cookie') {
+            return cookieOptions
+          }
+        }
+      }
+    }
+  }
+
+  const app = new Koa({ keys: appKeys }).use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload('ok').cookie('foo', 'bar')
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .set('Cookie', 'foo=bar')
+    .expect(200, 'ok')
+
+  expect(response.headers['set-cookie']).toEqual([
+    `foo=bar; path=/path; expires=${new Date(Date.now() + cookieTTL).toUTCString()}; samesite=lax; httponly`
+  ])
+})
+
+test('request.isJson()', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload(
+      request.isJson()
+    )
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .set('content-type', 'text/html')
+    .expect(200, 'false')
+
+  await Supertest(app.callback())
+    .get('/')
+    .set('content-type', 'application/json')
+    .expect(200, 'true')
+
+  await Supertest(app.callback())
+    .get('/')
+    .set('content-type', 'application/vnd.supercharge+json')
+    .expect(200, 'true')
+})
+
+test('request.wantsJson()', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload(
+      request.wantsJson()
+    )
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .set('accept', 'text/html')
+    .expect(200, 'false')
+
+  await Supertest(app.callback())
+    .get('/')
+    .set('accept', 'application/json')
+    .expect(200, 'true')
+
+  await Supertest(app.callback())
+    .get('/')
+    .set('accept', 'application/vnd.supercharge+json')
+    .expect(200, 'true')
+})
+
+test('request.wantsHtml()', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload(
+      request.wantsHtml()
+    )
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .set('accept', 'text/html')
+    .expect(200, 'true')
+
+  await Supertest(app.callback())
+    .get('/')
+    .set('accept', 'application/json')
+    .expect(200, 'false')
+
+  await Supertest(app.callback())
+    .get('/')
+    .set('accept', 'application/vnd.supercharge+json')
+    .expect(200, 'false')
 })
 
 test.run()

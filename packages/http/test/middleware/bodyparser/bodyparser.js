@@ -6,8 +6,7 @@ const { test } = require('uvu')
 const expect = require('expect')
 const deepmerge = require('deepmerge')
 const Supertest = require('supertest')
-const { createServer } = require('http')
-const { BodyparserMiddleware, HttpContext } = require('../../dist')
+const { BodyparserMiddleware, HttpContext } = require('../../../dist')
 const defaultBodyparserConfig = require('./fixtures/bodyparser-config')
 
 const testFile1Path = Path.resolve(__dirname, 'fixtures', 'test-multipart-file-1.txt')
@@ -48,7 +47,7 @@ function createHttpServer (bodyparserConfig) {
     await next()
   })
 
-  return createServer(app.callback())
+  return app.callback()
 }
 
 test('parse json body', async () => {
@@ -215,38 +214,37 @@ test('skips parsing on DELETE request', async () => {
     .expect(200, { files: {} })
 })
 
-module.exports = {
-  encoding: 'utf-8',
-  methods: ['POST', 'PUT', 'PATCH'],
+test('skips parsing on DELETE request', async () => {
+  await Supertest(createHttpServer())
+    .delete('/?hello=Supercharge')
+    .expect(200, { files: {} })
+})
 
-  json: {
-    limit: '1mb',
-    contentTypes: [
-      'application/json',
-      'application/*+json',
-      'application/csp-report'
-    ]
-  },
+test('sets the raw request payload', async () => {
+  const appMock = createAppMock()
+  const app = new Koa().use(async (ctx, next) => {
+    const context = HttpContext.wrap(ctx, appMock)
 
-  text: {
-    limit: '56kb',
-    contentTypes: ['text/*']
-  },
+    await new BodyparserMiddleware(appMock).handle(context, async () => {
+      context.response.payload({
+        payload: context.request.payload(),
+        rawPayload: context.request.rawPayload()
+      })
+    })
 
-  form: {
-    limit: '56kb',
-    contentTypes: [
-      'application/x-www-form-urlencoded'
-    ]
-  },
+    await next()
+  })
 
-  multipart: {
-    limit: '20mb',
-    maxFields: 1000,
-    contentTypes: [
-      'multipart/form-data'
-    ]
-  }
-}
+  const response = await Supertest(app.callback())
+    .post('/')
+    .set('Content-Type', 'application/x-www-form-urlencoded')
+    .send('hello=Supercharge')
+    .expect(200)
+
+  expect(response.body).toEqual({
+    rawPayload: 'hello=Supercharge',
+    payload: { hello: 'Supercharge' }
+  })
+})
 
 test.run()

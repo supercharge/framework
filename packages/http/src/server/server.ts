@@ -3,9 +3,13 @@
 import Koa from 'koa'
 import { tap } from '@supercharge/goodies'
 import { HttpContext } from './http-context'
+import Collect from '@supercharge/collections'
+import { Server as NodeHttpServer } from 'http'
 import { BodyparserMiddleware } from './middleware'
 import { className, isConstructor } from '@supercharge/classes'
 import { Application, HttpServer as HttpServerContract, Middleware as MiddlewareContract, MiddlewareCtor, HttpRouter, ErrorHandler, HttpServerHandler, InlineMiddlewareHandler, NextHandler } from '@supercharge/contracts'
+
+type Callback = (server: Server) => unknown | Promise<unknown>
 
 export class Server implements HttpServerContract {
   /**
@@ -20,7 +24,12 @@ export class Server implements HttpServerContract {
     /**
      * The Koa server instance.
      */
-    instance?: Koa
+    koa: Koa
+
+    /**
+     * The started HTTP server instance
+     */
+    server?: NodeHttpServer
 
     /**
      * The HTTP router instance.
@@ -31,13 +40,23 @@ export class Server implements HttpServerContract {
      * Determine whether the HTTP server bootstrapping ran.
      */
     isBootstrapped: boolean
+
+    /**
+     * Stores the "booted" callbacks
+     */
+    bootedCallbacks: Callback[]
   }
 
   /**
    * Create a new HTTP context instance.
    */
   constructor (app: Application) {
-    this.meta = { app, isBootstrapped: false }
+    this.meta = {
+      app,
+      bootedCallbacks: [],
+      isBootstrapped: false,
+      koa: new Koa({ keys: [app.key()] })
+    }
 
     this.registerBaseMiddleware()
   }
@@ -46,8 +65,8 @@ export class Server implements HttpServerContract {
    * Register middlware to the HTTP server.
    */
   registerBaseMiddleware (): void {
-    this.registerCoreMiddleware()
     this.registerErrorHandler()
+    this.registerCoreMiddleware()
   }
 
   /**
@@ -58,7 +77,7 @@ export class Server implements HttpServerContract {
       try {
         await next()
       } catch (error: any) {
-        await this.handleErrorFor(this.createContext(ctx), error)
+        await this.handleErrorFor(ctx, error)
       }
     })
   }
@@ -96,26 +115,61 @@ export class Server implements HttpServerContract {
   }
 
   /**
-   * Returns the HTTP server instance.
-   *
-   * @returns {HttpRouter}
-   */
-  instance (): Koa {
-    if (!this.meta.instance) {
-      this.meta.instance = this.createServerInstance()
-    }
-
-    return this.meta.instance
-  }
-
-  /**
-   * Returns a Koa server instance.
+   * Returns the Koa application instance.
    *
    * @returns {Koa}
    */
-  createServerInstance (): Koa {
-    return new Koa({
-      keys: [this.app().key()]
+  koa (): Koa {
+    return this.meta.koa
+  }
+
+  /**
+   * Returns the HTTP server instance. Returns `undefined ` if the Koa server wasn’t started.
+   *
+   * @returns {NodeHttpServer | undefined}
+   */
+  private startedServer (): NodeHttpServer | undefined {
+    return this.meta.server
+  }
+
+  /**
+   * Register a booted callback that runs after the HTTP server started.
+   *
+   * @returns {this}
+   */
+  booted (callback: Callback): this {
+    return tap(this, () => {
+      this.bootedCallbacks().push(callback)
+    })
+  }
+
+  /**
+   * Returns the booted callbacks.
+   *
+   * @returns {Callback[]}
+   */
+  private bootedCallbacks (): Callback[] {
+    return this.meta.bootedCallbacks
+  }
+
+  /**
+   * Run the configured `booted` callbacks.
+   */
+  protected async runBootedCallbacks (): Promise<void> {
+    await this.runCallbacks(
+      this.bootedCallbacks()
+    )
+  }
+
+  /**
+   * Call the given kernal `callbacks`.
+   *
+   * @param {Callback[]} callbacks
+   */
+  protected async runCallbacks (callbacks: Callback[]): Promise<void> {
+    await Collect(callbacks).forEach(async callback => {
+      // eslint-disable-next-line node/no-callback-literal
+      await callback(this)
     })
   }
 
@@ -193,7 +247,7 @@ export class Server implements HttpServerContract {
       return new Middleware(this.app())
     })
 
-    this.instance().use(async (ctx, next) => {
+    this.koa().use(async (ctx, next) => {
       return this.app().make<MiddlewareContract>(Middleware).handle(
         this.createContext(ctx), next
       )
@@ -223,7 +277,7 @@ export class Server implements HttpServerContract {
    * @param {MiddlewareCtor} Middleware
    */
   private registerMiddlewareHandler (handler: InlineMiddlewareHandler): void {
-    this.instance().use(async (ctx, next) => {
+    this.koa().use(async (ctx, next) => {
       return await handler(this.createContext(ctx), next)
     })
   }
@@ -234,7 +288,7 @@ export class Server implements HttpServerContract {
    * @returns {HttpServerHandler}
    */
   callback (): HttpServerHandler {
-    return this.instance().callback()
+    return this.koa().callback()
   }
 
   /**
@@ -262,7 +316,7 @@ export class Server implements HttpServerContract {
    * Register routes to the HTTP server.
    */
   private registerRoutes (): void {
-    this.instance().use(
+    this.koa().use(
       this.router().createRoutingMiddleware()
     )
   }
@@ -271,8 +325,29 @@ export class Server implements HttpServerContract {
    * Start the HTTP server.
    */
   async start (): Promise<void> {
-    this.instance().listen(this.port(), this.hostname(), () => {
-      this.app().logger().info(`Started the server on http://${this.hostname()}:${this.port()}`)
+    await new Promise<void>(resolve => {
+      this.meta.server = this.koa().listen(this.port(), this.hostname(), () => {
+        this.app().logger().info(`Started the server on http://${this.hostname()}:${this.port()}`)
+
+        resolve()
+      })
+    })
+
+    await this.runBootedCallbacks()
+  }
+
+  /**
+   * Stop the HTTP server from accepting new connections. Existing connections
+   * stay alive and will be processed. The server stops as soon as all open
+   * connections have been processed through the HTTP request lifecycle.
+   */
+  async stop (): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.startedServer()?.close(error => {
+        return error
+          ? reject(error)
+          : resolve()
+      })
     })
   }
 

@@ -13,26 +13,25 @@
   "types": "dist",
   "dependencies": {
     "@supercharge/contracts": "^2.0.0-alpha.7",
-    "@supercharge/goodies": "~1.9.0",
+    "@supercharge/goodies": "~1.10.0",
     "@supercharge/manager": "^2.0.0-alpha.7",
     "@supercharge/support": "^2.0.0-alpha.7",
-    "chalk": "~4.1.1",
+    "chalk": "~4.1.2",
     "winston": "~3.3.3"
   },
   "devDependencies": {
-    "@supercharge/fs": "~3.0.1",
-    "@types/bcryptjs": "~2.4.2",
-    "@types/jest": "~26.0.23",
-    "@typescript-eslint/eslint-plugin": "~4.28.0",
-    "eslint": "~7.29.0",
-    "eslint-config-standard": "~16.0.3",
-    "eslint-config-standard-with-typescript": "~20.0.0",
-    "eslint-plugin-import": "~2.23.4",
+    "@supercharge/fs": "~3.4.0",
+    "@typescript-eslint/eslint-plugin": "~4.33.0",
+    "c8": "~7.10.0",
+    "eslint": "~7.32.0",
+    "eslint-config-standard-with-typescript": "~21.0.1",
+    "eslint-plugin-import": "~2.25.2",
     "eslint-plugin-node": "~11.1.0",
-    "eslint-plugin-promise": "~5.1.0",
-    "jest": "~27.0.5",
-    "jest-extended": "~0.11.5",
-    "typescript": "~4.3.4"
+    "eslint-plugin-promise": "~5.1.1",
+    "expect": "~27.3.1",
+    "sinon": "~11.1.2",
+    "typescript": "~4.4.4",
+    "uvu": "~0.5.2"
   },
   "engines": {
     "node": ">=12"
@@ -58,7 +57,9 @@
     "watch": "npm run dev",
     "lint": "eslint src --ext .js,.ts",
     "lint:fix": "npm run lint -- --fix",
-    "test": "npm run build && npm run lint && npm run test:run",
-    "test:run": "jest"
+    "test": "npm run build && npm run lint && npm run test:coverage",
+    "test:run": "uvu --ignore helpers --ignore fixtures",
+    "test:coverage": "c8 --include=dist npm run test:run && npm run test:report",
+    "test:report": "c8 report --reporter=html"
   }
 }

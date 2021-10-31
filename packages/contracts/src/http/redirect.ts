@@ -7,6 +7,13 @@ export interface HttpRedirect {
   back(options?: { fallback: string }): void
 
   /**
+   * Redirect the request to the given URL `path`.
+   *
+   * @param url string
+   */
+  to(path: string): this
+
+  /**
    * Redirects the request with HTTP status 307. This keeps the request payload
    * which is useful for POST/PUT requests containing content.
    *
@@ -15,9 +22,7 @@ export interface HttpRedirect {
   withPayload(): this
 
   /**
-   * Redirect the request to the given URL `path`.
-   *
-   * @param url string
+   * Marks this redirect as permanent with HTTP status 301.
    */
-  to(path: string): this
+  permanent(): this
 }

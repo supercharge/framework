@@ -1,5 +1,6 @@
 'use strict'
 
+import Cookie from 'cookie'
 import * as Cookies from 'cookies'
 import { tap } from '@supercharge/goodies'
 import { RequestCookieBuilder, ResponseCookieBuilder } from './cookies'
@@ -7,7 +8,7 @@ import { CookieBag as CookieBagContract, CookieOptions, RequestCookieBuilderCall
 
 export class CookieBag implements CookieBagContract {
   /**
-   * Stores the request attributes, like query or path parameters.
+   * Stores the request cookies.
    */
   private readonly cookies: Cookies
 
@@ -33,14 +34,12 @@ export class CookieBag implements CookieBagContract {
    * @returns {String|undefined}
    */
   get (name: string, callback?: RequestCookieBuilderCallback): string | undefined {
-    const options: Cookies.GetOption = { signed: true }
-
     if (typeof callback === 'function') {
-      const builder = new RequestCookieBuilder(options)
+      const builder = new RequestCookieBuilder(this.options)
       callback(builder)
     }
 
-    return this.cookies.get(name, options)
+    return this.cookies.get(name, this.options)
   }
 
   /**
@@ -53,15 +52,13 @@ export class CookieBag implements CookieBagContract {
    * @returns {ThisType}
    */
   set (name: string, value?: string | null, cookieBuilder?: ResponseCookieBuilderCallback): this {
-    const options = this.mergedCookieOptions({ signed: true })
-
     if (typeof cookieBuilder === 'function') {
-      const builder = new ResponseCookieBuilder(options)
+      const builder = new ResponseCookieBuilder(this.options)
       cookieBuilder(builder)
     }
 
     return tap(this, () => {
-      this.cookies.set(name, value, options)
+      this.cookies.set(name, value, this.options)
     })
   }
 
@@ -73,17 +70,8 @@ export class CookieBag implements CookieBagContract {
    * @returns {Boolean}
    */
   has (name: string): boolean {
-    return !!this.get(name)
-  }
+    const parsed = Cookie.parse(this.cookies.request.headers.cookie ?? '')
 
-  /**
-   * Returns the merged cookie options from the default config and the given `options`.
-   *
-   * @param options
-   *
-   * @returns {CookieOptions}
-   */
-  private mergedCookieOptions (options?: CookieOptions): CookieOptions {
-    return { ...this.options, ...options }
+    return !!parsed[name]
   }
 }

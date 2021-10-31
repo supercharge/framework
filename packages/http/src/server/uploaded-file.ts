@@ -66,6 +66,7 @@ export class UploadedFile implements UploadedFileContract {
       name: this.name(),
       size: this.size(),
       path: this.path(),
+      mimeType: this.mimeType(),
       lastModified: this.lastModified()
     }
   }

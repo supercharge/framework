@@ -1,8 +1,10 @@
 'use strict'
 
 import { ViewConfigBuilder } from '../view'
-import { InteractsWithState } from './concerns/interacts-with-state'
 import { HttpRedirect, ResponseCookieBuilderCallback } from '.'
+import { InteractsWithState } from './concerns/interacts-with-state'
+
+export type ViewBuilderCallback = (viewBuilder: ViewConfigBuilder) => unknown
 
 export interface HttpResponse extends InteractsWithState {
   /**
@@ -166,8 +168,8 @@ export interface HttpResponse extends InteractsWithState {
    * })
    * ```
    */
-  view (template: string, callback?: (viewBuilder: ViewConfigBuilder) => unknown): Promise<this>
-  view (template: string, data?: any, callback?: (viewBuilder: ViewConfigBuilder) => unknown): Promise<this>
+  view (template: string, viewBuilder?: ViewBuilderCallback): Promise<this>
+  view (template: string, data?: ViewBuilderCallback | any, viewBuilder?: ViewBuilderCallback): Promise<this>
 
   /**
    * Abort the request and throw an error with the given `status`. The status defaults
@@ -182,7 +184,5 @@ export interface HttpResponse extends InteractsWithState {
    * response.throw(403, 'Access denied.', { user })
    * ```
    */
-  throw (status: number): void
-  throw (status: number | string | Error): void
   throw (status: number, message?: string, properties?: {}): void
 }

@@ -23,7 +23,6 @@
   },
   "devDependencies": {
     "@types/handlebars": "~4.1.0",
-    "@types/jest": "~26.0.23",
     "@typescript-eslint/eslint-plugin": "~4.28.1",
     "eslint": "~7.30.0",
     "eslint-config-standard": "~16.0.3",

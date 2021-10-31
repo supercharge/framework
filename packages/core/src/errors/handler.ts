@@ -121,8 +121,8 @@ export class ErrorHandler implements ErrorHandlerContract {
     const { message, stack, status: statusCode } = error
 
     this.app.env().isProduction()
-      ? ctx.response.status(statusCode).payload({ message })
-      : ctx.response.status(statusCode).payload({ message, stack, statusCode })
+      ? ctx.response.status(statusCode).payload({ message, statusCode })
+      : ctx.response.status(statusCode).payload({ message, statusCode, stack })
   }
 
   /**

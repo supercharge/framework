@@ -2,7 +2,7 @@
 
 const { test } = require('uvu')
 const expect = require('expect')
-const { BodyparserOptions } = require('../../dist')
+const { BodyparserOptions } = require('../../../dist')
 
 test('encoding', () => {
   expect(new BodyparserOptions({}).encoding()).toEqual('utf8')

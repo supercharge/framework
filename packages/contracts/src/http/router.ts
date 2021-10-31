@@ -3,9 +3,10 @@
 import { Class } from '../utils'
 import { HttpRoute } from './route'
 import { HttpContext } from './context'
-import { PendingRoute } from './pending-route'
 import { MiddlewareCtor } from './middleware'
 import { HttpController } from './controller'
+import { PendingRoute } from './pending-route'
+import { HttpRouteCollection } from './route-collection'
 
 type ControllerAction = Class<HttpController>
 type InlineRouteHandler = (ctx: HttpContext) => any | Promise<any>
@@ -90,9 +91,14 @@ export interface HttpRouter {
   options(path: string, handler: RouteHandler): HttpRoute
 
   /**
+   * Returns the route collection.
+   */
+  routes(): HttpRouteCollection
+
+  /**
    * Create a route group.
    */
-  group (pathOrCallback: string | (() => void)): void
+  group (prefixOrCallback: string | (() => void)): void
   group (attributes: RouteAttributes, callback: () => void): void
 
   /**

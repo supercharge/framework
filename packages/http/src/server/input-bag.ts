@@ -17,16 +17,6 @@ export class InputBag<T> implements InputBagContract<T> {
   }
 
   /**
-   * Returns a new instance for the given `attributes`.
-   *
-   * @param attributes
-   * @returns
-   */
-  static for<T> (attributes: Dict<T>): ThisType<T> {
-    return new this(attributes)
-  }
-
-  /**
    * Returns an object with all `keys` existing in the input bag.
    */
   all<Key extends keyof Dict<T> = string> (...keys: Key[] | Key[][]): Dict<T> {

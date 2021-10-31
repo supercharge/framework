@@ -4,27 +4,23 @@ import { tap } from '@supercharge/goodies'
 import { ServiceProvider } from '@supercharge/support'
 
 export class RouteServiceProvider extends ServiceProvider {
-  private loadRoutesCallback: undefined | (() => void)
+  private readonly loadRoutesCallbacks: Array<(() => void)> = []
 
   /**
    * Register application services to the container.
    */
   register (): void {
     this.booted(() => {
-      this.loadRoutes()
+      this.runRouteLoadingCallbacks()
     })
   }
 
   /**
-   * Register a callback that will be used to load the application’s routes.
-   *
-   * @param callback
-   *
-   * @returns {RouteServiceProvider}
+   * Run the registered route-loading callbacks.
    */
-  loadRoutesUsing (callback: () => void): this {
-    return tap(this, () => {
-      this.loadRoutesCallback = callback
+  protected runRouteLoadingCallbacks (): void {
+    this.loadRoutesCallbacks.forEach(callback => {
+      callback()
     })
   }
 
@@ -33,22 +29,24 @@ export class RouteServiceProvider extends ServiceProvider {
    *
    * @param callback
    *
-   * @returns {RouteServiceProvider}
+   * @returns {this}
    */
   loadRoutesFrom (path: string): this {
-    return tap(this, () => {
+    return this.loadRoutesUsing(() => {
       require(path)
     })
   }
 
   /**
-   * Load the application routes.
+   * Register a callback that will be used to load the application’s routes.
    *
-   * @return void
+   * @param callback
+   *
+   * @returns {this}
    */
-  protected loadRoutes (): void {
-    if (typeof this.loadRoutesCallback === 'function') {
-      return this.loadRoutesCallback()
-    }
+  loadRoutesUsing (callback: () => void): this {
+    return tap(this, () => {
+      this.loadRoutesCallbacks.push(callback)
+    })
   }
 }

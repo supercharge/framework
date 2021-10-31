@@ -2,8 +2,9 @@
 
 import { Route } from './route'
 import { tap } from '@supercharge/goodies'
+import { HttpRouteCollection } from '@supercharge/contracts'
 
-export class RouteCollection {
+export class RouteCollection implements HttpRouteCollection {
   /**
    * Stores all registered routes.
    */

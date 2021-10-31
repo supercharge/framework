@@ -208,7 +208,7 @@ export class Container implements ContainerContract {
     const name = this.resolveNamespace(namespace)
 
     return upon(this.bindings.get(name), binding => {
-      return (binding as unknown as Binding).factory
+      return binding?.factory
     })
   }
 

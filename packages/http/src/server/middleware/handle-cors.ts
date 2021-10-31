@@ -1,5 +1,6 @@
 'use strict'
 
+import Koa from 'koa'
 import cors from '@koa/cors'
 import { Application, CorsOptions, HttpContext, Middleware, NextHandler } from '@supercharge/contracts'
 
@@ -12,7 +13,7 @@ export class HandleCorsMiddleware implements Middleware {
   /**
    * The CORS handler for incoming requests.
    */
-  private readonly handleCors: any
+  private readonly handleCors: Koa.Middleware
 
   /**
    * Create a new middleware instance.
@@ -21,7 +22,7 @@ export class HandleCorsMiddleware implements Middleware {
    */
   constructor (app: Application) {
     this.app = app
-    this.handleCors = cors(this.config())
+    this.handleCors = cors(this.createConfig())
   }
 
   /**
@@ -29,7 +30,26 @@ export class HandleCorsMiddleware implements Middleware {
    *
    * @returns {CorsOptions}
    */
-  config (): CorsOptions {
+  protected createConfig (): cors.Options {
+    const options = this.config()
+
+    return {
+      maxAge: options.maxAge,
+      keepHeadersOnError: true,
+      origin: options.allowedOrigin,
+      allowMethods: options.allowedMethods,
+      allowHeaders: options.allowedHeaders,
+      exposeHeaders: options.exposedHeaders,
+      credentials: options.supportsCredentials
+    }
+  }
+
+  /**
+   * Returns the options determining how to serve assets.
+   *
+   * @returns {CorsOptions}
+   */
+  protected config (): CorsOptions {
     return this.app.config().get('cors')
   }
 

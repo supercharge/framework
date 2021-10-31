@@ -2,7 +2,7 @@
 
 const { test } = require('uvu')
 const expect = require('expect')
-const { BodyparserOptions } = require('../../dist')
+const { BodyparserOptions } = require('../../../dist')
 
 test('limit defaults to 56kb', () => {
   expect(new BodyparserOptions({ }).text().limit()).toEqual(

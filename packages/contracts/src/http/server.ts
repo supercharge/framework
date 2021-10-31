@@ -35,7 +35,19 @@ export interface HttpServer {
   bootstrap (): Promise<void>
 
   /**
-   * Start the HTTP server.
+   * Determine whether the HTTP server is already boostrapped.
+   */
+  isBootstrapped (): boolean
+
+  /**
+   * Start the HTTP server on a local hostname and port to accept incoming connections.
    */
   start (): Promise<void>
+
+  /**
+   * Stop the HTTP server from accepting new connections. Existing connections
+   * stay alive and will be processed. The server stops as soon as all open
+   * connections have been processed through the HTTP request lifecycle.
+   */
+  stop (): Promise<void>
 }
