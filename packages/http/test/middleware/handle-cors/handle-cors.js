@@ -33,8 +33,8 @@ function createAppMock (corsConfig = {}) {
   }
 }
 
-async function createHttpServer (bodyparserConfig) {
-  const appMock = createAppMock(bodyparserConfig)
+async function createHttpServer (corsConfig) {
+  const appMock = createAppMock(corsConfig)
 
   const server = new Server(appMock).use(HandleCorsMiddleware).use(ctx => {
     return ctx.response.payload('ok')
