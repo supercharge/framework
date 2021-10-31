@@ -15,7 +15,7 @@ export class PendingRoute implements PendingRouteContract {
   /**
    * Stores attributes (prefix, middleware, etc.) for a route or route group.
    */
-  private readonly attributes: RouteAttributes
+  private readonly attributes: Required<RouteAttributes>
 
   /**
    * Create a new pending route instance.
@@ -49,7 +49,7 @@ export class PendingRoute implements PendingRouteContract {
    */
   middleware (middleware: string | string[]): PendingRoute {
     return tap(this, () => {
-      this.attributes.middleware = this.attributes.middleware?.concat(middleware)
+      this.attributes.middleware = this.attributes.middleware.concat(middleware)
     })
   }
 
