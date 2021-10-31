@@ -9,6 +9,11 @@ const { isConstructor } = require('@supercharge/classes')
 const app = {
   bindings: {},
   make (key) {
+    if (isConstructor(key)) {
+      // eslint-disable-next-line new-cap
+      return new key(this)
+    }
+
     if (key === 'route') {
       return new Router(this)
     }
@@ -17,11 +22,6 @@ const app = {
 
     if (bindingCallback) {
       return bindingCallback(this)
-    }
-
-    if (isConstructor(key)) {
-      // eslint-disable-next-line new-cap
-      return new key(this)
     }
   },
   singleton (key, bindingCallback) {
