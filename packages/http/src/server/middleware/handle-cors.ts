@@ -1,5 +1,6 @@
 'use strict'
 
+import Koa from 'koa'
 import cors from '@koa/cors'
 import { Application, CorsOptions, HttpContext, Middleware, NextHandler } from '@supercharge/contracts'
 
@@ -12,7 +13,7 @@ export class HandleCorsMiddleware implements Middleware {
   /**
    * The CORS handler for incoming requests.
    */
-  private readonly handleCors: any
+  private readonly handleCors: Koa.Middleware
 
   /**
    * Create a new middleware instance.
