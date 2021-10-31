@@ -6,7 +6,7 @@ const { test } = require('uvu')
 const expect = require('expect')
 const deepmerge = require('deepmerge')
 const Supertest = require('supertest')
-const { BodyparserMiddleware, HttpContext } = require('../../dist')
+const { BodyparserMiddleware, HttpContext } = require('../../../dist')
 const defaultBodyparserConfig = require('./fixtures/bodyparser-config')
 
 const testFile1Path = Path.resolve(__dirname, 'fixtures', 'test-multipart-file-1.txt')
