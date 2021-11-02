@@ -21,8 +21,8 @@ test('.server()', async () => {
 
 test('.middleware() is empty by default', async () => {
   expect(
-    HttpKernel.for(app).server()
-  ).toBeInstanceOf(Server)
+    HttpKernel.for(app).middleware()
+  ).toEqual([])
 })
 
 test('.bootstrappers()', async () => {
