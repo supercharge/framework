@@ -5,10 +5,10 @@ const expect = require('expect')
 const { Config } = require('../dist')
 
 test('all', () => {
-  const config = new Config()
-  config.set('app.name', 'Supercharge')
-
-  expect(typeof config.all()).toEqual('object')
+  expect(new Config().all()).toEqual({})
+  expect(new Config(null).all()).toEqual({})
+  expect(new Config({}).all()).toEqual({})
+  expect(new Config({ name: 'foo' }).all()).toEqual({ name: 'foo' })
 })
 
 test('get', () => {
@@ -37,14 +37,25 @@ test('set', () => {
 
   config.set('key', undefined)
   expect(config.get('key')).toBeUndefined()
+
+  expect(
+    new Config()
+      .set('foo', 'bar')
+      .set('app.name', 'Supercharge')
+      .all()
+  ).toEqual({ foo: 'bar', app: { name: 'Supercharge' } })
 })
 
 test('has', () => {
   const config = new Config()
+    .set('null', null)
     .set('app.port', 1234)
-    .set('app.env', 'production')
+    .set('app.env.current', 'production')
 
+  expect(config.has('null')).toBe(true)
   expect(config.has('app.port')).toBe(true)
+  expect(config.has('app.env.current')).toBe(true)
+
   expect(config.has('app.name')).toBe(false)
   expect(config.has('app.environment')).toBe(false)
 })
