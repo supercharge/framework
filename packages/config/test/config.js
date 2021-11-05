@@ -15,7 +15,7 @@ test('get', () => {
   const config = new Config({ key: 'value' })
 
   expect(config.get('key')).toEqual('value')
-  expect(config.get('unavailable')).toEqual(undefined)
+  expect(config.get('unavailable')).toBeUndefined()
 })
 
 test('get nested', async () => {
@@ -26,7 +26,7 @@ test('get nested', async () => {
 
 test('get defaultValue', () => {
   const config = new Config()
-  expect(config.get('unavailable', 'fallback')).toEqual('fallback')
+  expect(config.get('unavailable', 'defaultValue')).toBe('defaultValue')
 })
 
 test('set', () => {
@@ -76,6 +76,7 @@ test('clear', () => {
   expect(config.has('key')).toBe(true)
 
   config.clear()
+  expect(config.all()).toEqual({})
   expect(config.has('key')).toBe(false)
 })
 
