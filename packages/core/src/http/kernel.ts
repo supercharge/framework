@@ -214,8 +214,7 @@ export class HttpKernel implements HttpKernelContract {
     )
 
     this.registerMiddleware()
-
-    await this.server().bootstrap()
+    this.server().bootstrap()
     this.markAsBootstrapped()
   }
 
