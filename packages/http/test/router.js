@@ -312,15 +312,13 @@ test('fails when registering middleware alias without a middleware class', async
 test('fails when adding not-registered middleware to route', async () => {
   const server = new Server(app)
 
-  const router = server.router()
-
-  router
+  server.router()
     .post('/name', ({ response }) => response.payload('Supercharge'))
     .middleware('unknown')
 
-  await expect(
-    server.bootstrap()
-  ).rejects.toThrow('Route-level middleware "unknown" is not registered in your HTTP kernel')
+  expect(
+    () => server.bootstrap()
+  ).toThrow('Route-level middleware "unknown" is not registered in your HTTP kernel')
 })
 
 test('router.middleware()', async () => {
@@ -390,16 +388,14 @@ test('router.middleware() registers and calls multiple middleware', async () => 
 test('fails when using router.middleware() with unknown middleware', async () => {
   const server = new Server(app)
 
-  const router = server.router()
-
-  router
+  server.router()
     .middleware('unknown')
     .middleware('another-unkown')
     .post('/name', ({ response }) => response.payload('Supercharge'))
 
-  await expect(
-    server.bootstrap()
-  ).rejects.toThrow('Route-level middleware "unknown" is not registered in your HTTP kernel')
+  expect(
+    () => server.bootstrap()
+  ).toThrow('Route-level middleware "unknown" is not registered in your HTTP kernel')
 })
 
 test('returns status 204 for empty responses', async () => {
