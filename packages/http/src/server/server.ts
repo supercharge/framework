@@ -288,13 +288,15 @@ export class Server implements HttpServerContract {
    * @returns {HttpServerHandler}
    */
   callback (): HttpServerHandler {
+    this.bootstrap()
+
     return this.koa().callback()
   }
 
   /**
    * Bootstrap the HTTP server.
    */
-  async bootstrap (): Promise<void> {
+  bootstrap (): void {
     if (this.isBootstrapped()) {
       return
     }

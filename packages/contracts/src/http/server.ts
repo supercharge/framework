@@ -32,7 +32,7 @@ export interface HttpServer {
   /**
    * Bootstrap the HTTP server.
    */
-  bootstrap (): Promise<void>
+  bootstrap (): void
 
   /**
    * Determine whether the HTTP server is already boostrapped.
