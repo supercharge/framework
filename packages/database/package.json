@@ -1,6 +1,6 @@
 {
   "name": "@supercharge/database",
-  "nscription": "The Supercharge database package",
+  "description": "The Supercharge database package",
   "version": "2.0.0-alpha.7",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {

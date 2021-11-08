@@ -1,6 +1,6 @@
 {
   "name": "@supercharge/support",
-  "nscription": "The Supercharge support package",
+  "description": "The Supercharge support package",
   "version": "2.0.0-alpha.7",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
