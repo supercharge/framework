@@ -46,7 +46,7 @@ export class Application extends Container implements ApplicationContract {
   }
 
   /**
-   * Create a new application instance.
+   * Create a new application instance with the given `basePath` as the app root.
    *
    * @param {String} basePath - absolute path to the application’s root directory
    *
