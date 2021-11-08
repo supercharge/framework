@@ -93,6 +93,24 @@ export class Application extends Container implements ApplicationContract {
   }
 
   /**
+   * Returns the env store instance.
+   *
+   * @returns {EnvStore}
+   */
+  env (): EnvStore {
+    return this.meta.env
+  }
+
+  /**
+   * Returns the config store instance.
+   *
+   * @returns {ConfigStore}
+   */
+  config (): ConfigStore {
+    return this.meta.config
+  }
+
+  /**
    * Returns the application logger instance.
    *
    * @returns {Logger}
@@ -132,12 +150,21 @@ export class Application extends Container implements ApplicationContract {
    *
    * @returns {String}
    */
-  readPackageJson (): PackageJson {
+  private readPackageJson (): PackageJson {
     return JSON.parse(
       Fs.readFileSync(
         this.resolveFromBasePath('package.json')
       ).toString()
     )
+  }
+
+  /**
+   * Returns the root path of the application directory.
+   *
+   * @returns {String}
+   */
+  basePath (): string {
+    return this.meta.appRoot
   }
 
   /**
@@ -153,15 +180,6 @@ export class Application extends Container implements ApplicationContract {
   }
 
   /**
-   * Determine whether the application is in debug mode.
-   *
-   * @returns {Boolean}
-   */
-  debug (): boolean {
-    return !!this.config().get('app.debug')
-  }
-
-  /**
    * Resolves the absolute path from the given `destination` in the
    * application directory, starting from the application root.
    * The destination supports a glob format, like 'providers/**'.
@@ -174,24 +192,6 @@ export class Application extends Container implements ApplicationContract {
     return Glob.sync(
       this.resolveFromBasePath(...destination)
     )[0]
-  }
-
-  /**
-   * Returns the root path of the application directory.
-   *
-   * @returns {String}
-   */
-  basePath (): string {
-    return this.meta.appRoot
-  }
-
-  /**
-   * Returns the config store instance.
-   *
-   * @returns {ConfigStore}
-   */
-  config (): ConfigStore {
-    return this.meta.config
   }
 
   /**
@@ -250,12 +250,24 @@ export class Application extends Container implements ApplicationContract {
   }
 
   /**
-   * Returns the env store instance.
+   * Returns the path to directory of the environment file.
+   * By default, this is the application's base path.
    *
-   * @returns {EnvStore}
+   * @returns {String}
    */
-  env (): EnvStore {
-    return this.meta.env
+  environmentPath (): string {
+    return this.meta.environmentPath ?? this.basePath()
+  }
+
+  /**
+   * Set the directory for the environment file.
+   *
+   * @param {String} path
+   */
+  useEnvironmentPath (path: string): this {
+    return tap(this, () => {
+      this.meta.environmentPath = path
+    })
   }
 
   /**
@@ -264,7 +276,7 @@ export class Application extends Container implements ApplicationContract {
    * @returns {String}
    */
   environmentFile (): string {
-    return this.meta.environmentFile || '.env'
+    return this.meta.environmentFile
   }
 
   /**
@@ -281,13 +293,12 @@ export class Application extends Container implements ApplicationContract {
   }
 
   /**
-   * Returns the path to directory of the environment file.
-   * By default, this is the application's base path.
+   * Returns the resolved path to the environment file.
    *
    * @returns {String}
    */
-  environmentPath (): string {
-    return this.basePath()
+  environmentFilePath (): string {
+    return `${this.environmentPath()}${Path.sep}${this.environmentFile()}`
   }
 
   /**
@@ -462,6 +473,11 @@ interface ApplicationMeta {
    * The environment file to load during application bootstrapping.
    */
   environmentFile: string
+
+  /**
+   * The directory for the environment file.
+   */
+  environmentPath?: string
 
   /**
    * Indicate whether the application runs in the console.

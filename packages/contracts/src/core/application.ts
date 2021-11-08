@@ -23,11 +23,6 @@ export interface Application extends Container {
   version(): string | undefined
 
   /**
-   * Determine whether the application is in debug mode.
-   */
-  debug(): boolean
-
-  /**
    * Returns the root path of the application directory.
    */
   basePath(): string
@@ -88,6 +83,21 @@ export interface Application extends Container {
   env(): EnvStore
 
   /**
+   * Returns the path to directory of the environment file.
+   * By default, this is the application's base path.
+   *
+   * @param {String} path - an optional path appended to the config path
+   */
+  environmentPath(): string
+
+  /**
+   * Set the directory for the environment file.
+   *
+   * @param {String} path
+   */
+  useEnvironmentPath(path: string): this
+
+  /**
    * Returns the environment file of the application. By default, this is `.env`.
    */
   environmentFile(): string
@@ -100,12 +110,9 @@ export interface Application extends Container {
   loadEnvironmentFrom(file: string): this
 
   /**
-   * Returns the path to directory of the environment file.
-   * By default, this is the application's base path.
-   *
-   * @param {String} path - an optional path appended to the config path
+   * Returns the resolved path to the environment file.
    */
-  environmentPath(): string
+  environmentFilePath(): string
 
   /**
    * Prepare booting application by running the array of `bootstrappers`.
