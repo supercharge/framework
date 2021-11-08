@@ -1,6 +1,6 @@
 {
   "name": "@supercharge/core",
-  "nscription": "The Supercharge foundation package",
+  "description": "The Supercharge foundation package",
   "version": "2.0.0-alpha.7",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
