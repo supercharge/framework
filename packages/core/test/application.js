@@ -78,4 +78,32 @@ test('app.loadEnvironmentFrom()', async () => {
   expect(app.environmentFile()).toEqual('./fixtures/.env')
 })
 
+test('app.environmentPath() uses appRoot by default', async () => {
+  const app = Application
+    .createWithAppRoot(__dirname)
+
+  expect(app.environmentPath()).toEqual(__dirname)
+})
+
+test('app.useEnvironmentPath()', async () => {
+  const app = Application
+    .createWithAppRoot(__dirname)
+    .useEnvironmentPath('fixtures')
+
+  expect(app.environmentPath()).toEqual(
+    Path.resolve(__dirname, 'fixtures')
+  )
+})
+
+test('app.environmentFilePath()', async () => {
+  const app = Application
+    .createWithAppRoot(__dirname)
+    .loadEnvironmentFrom('secrets.env')
+    .useEnvironmentPath('fixtures')
+
+  expect(app.environmentFilePath()).toEqual(
+    Path.resolve(__dirname, 'fixtures', 'secrets.env')
+  )
+})
+
 test.run()
