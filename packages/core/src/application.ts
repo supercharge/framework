@@ -266,7 +266,7 @@ export class Application extends Container implements ApplicationContract {
    */
   useEnvironmentPath (path: string): this {
     return tap(this, () => {
-      this.meta.environmentPath = Path.resolve(this.basePath(), path)
+      this.meta.environmentPath = this.resolveFromBasePath(path)
     })
   }
 
@@ -298,8 +298,8 @@ export class Application extends Container implements ApplicationContract {
    * @returns {String}
    */
   environmentFilePath (): string {
-    return Path.resolve(
-      `${this.environmentPath()}${Path.sep}${this.environmentFile()}`
+    return this.resolveFromBasePath(
+      this.environmentPath(), this.environmentFile()
     )
   }
 
