@@ -28,7 +28,12 @@ export interface HttpKernel {
   /**
    * Start an HTTP Server instance handling incoming requests.
    */
-  startServer(): Promise<void>
+  startServer(): Promise<this>
+
+  /**
+   * Stop the HTTP Server instance.
+   */
+  stopServer(): Promise<this>
 
   /**
    * Returns a request handler callback compatible with Node.js’ native HTTP server. This method
@@ -49,9 +54,4 @@ export interface HttpKernel {
    * listed here runs on every request to the application.
    */
   routeMiddleware(): { [key: string]: MiddlewareCtor}
-
-  /**
-   * Returns an array of file paths to all controllers.
-   */
-  controllerPaths (): Promise<string[]>
 }
