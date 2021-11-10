@@ -4,6 +4,7 @@ const Path = require('path')
 const Sinon = require('sinon')
 const { test } = require('uvu')
 const expect = require('expect')
+const Supertest = require('supertest')
 const { Server } = require('@supercharge/http')
 const { HttpKernel, Application } = require('../dist')
 
@@ -88,6 +89,37 @@ test('bootstrap and .startServer()', async () => {
   await kernel.stopServer()
 })
 
+test('register middleware', async () => {
+  const app = Application.createWithAppRoot(Path.resolve(__dirname, 'fixtures'))
+
+  app.config().set('app.key', 1234)
+
+  class TestMiddleware { handle () {} }
+
+  class CustomHttpKernel extends HttpKernel {
+    middleware () {
+      return [
+        TestMiddleware
+      ]
+    }
+
+    routeMiddleware () {
+      return {
+        test: class RouteMiddleware { handle () {} }
+      }
+    }
+  }
+
+  const kernel = new CustomHttpKernel(app)
+
+  await kernel.startServer()
+
+  expect(kernel.server().router().hasMiddleware('test')).toBe(true)
+  expect(kernel.server().router().hasMiddleware(TestMiddleware)).toBe(false) // it’s a global middleware, not registered to the router but for all routes
+
+  await kernel.stopServer()
+})
+
 test('bootstraps only once', async () => {
   const app = Application.createWithAppRoot(Path.resolve(__dirname, 'fixtures'))
   app.config().set('app.key', 1234)
@@ -103,6 +135,34 @@ test('bootstraps only once', async () => {
 
   expect(bootstrapWithStub.calledOnce).toBe(true)
   bootstrapWithStub.restore()
+})
+
+test('.serverCallback()', async () => {
+  const app = Application.createWithAppRoot(Path.resolve(__dirname, 'fixtures'))
+  app.config().set('app.key', 1234)
+  app.bind('view', () => {
+    return { render () {} }
+  })
+
+  const kernel = new HttpKernel(app)
+
+  kernel.server().use(async ({ request, response }) => {
+    return response.payload({
+      query: request.query().all()
+    })
+  })
+
+  await Supertest(
+    await kernel.serverCallback()
+  )
+    .get('/?name=Supercharge')
+    .expect(200, { query: { name: 'Supercharge' } })
+
+  await Supertest(
+    await kernel.serverCallback()
+  )
+    .get('/?foo=bar')
+    .expect(200, { query: { foo: 'bar' } })
 })
 
 test.run()
