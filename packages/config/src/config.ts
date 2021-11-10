@@ -7,19 +7,19 @@ export class Config implements ConfigStore {
   /**
    * The in-memory config store keeping all the config items.
    */
-  private config: object = {}
+  private config: { [key: string]: any } = {}
 
   /**
    * Create a new config store instance.
    */
-  constructor (config?: object) {
+  constructor (config?: { [key: string]: any }) {
     this.config = config ?? {}
   }
 
   /**
    * Returns the config store as an object.
    */
-  all (): object {
+  all (): { [key: string]: any } {
     return this.config
   }
 
@@ -43,7 +43,7 @@ export class Config implements ConfigStore {
    * @param {String} key
    * @param {String} value
    */
-  set (key: string, value: any): Config {
+  set (key: string, value: any): this {
     _.set(this.config, key, value)
 
     return this
@@ -58,6 +58,17 @@ export class Config implements ConfigStore {
    */
   has (key: string): boolean {
     return _.has(this.all(), key)
+  }
+
+  /**
+   * Determine whether the config store is missing an item for the given `key`.
+   *
+   * @param {String} key
+   *
+   * @returns {Boolean}
+   */
+  isMissing (key: string): boolean {
+    return !this.has(key)
   }
 
   /**

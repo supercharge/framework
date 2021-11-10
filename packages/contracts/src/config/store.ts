@@ -16,12 +16,17 @@ export interface ConfigStore {
   /**
    * Set a config value.
    */
-  set (key: string, value: any): ConfigStore
+  set (key: string, value: any): this
 
   /**
    * Determine whether the config store contains an item for the given `key`.
    */
   has (key: string): boolean
+
+  /**
+   * Determine whether the config store is missing an item for the given `key`.
+   */
+  isMissing (key: string): boolean
 
   /**
    * Ensure that the config store contains an item for the given `key`. Calls

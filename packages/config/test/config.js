@@ -49,6 +49,18 @@ test('has', () => {
   expect(config.has('app.environment')).toBe(false)
 })
 
+test('isMissing', () => {
+  const config = new Config()
+    .set('app.port', 1234)
+    .set('app.env', 'production')
+
+  expect(config.isMissing('app.name')).toBe(true)
+  expect(config.isMissing('app.environment')).toBe(true)
+
+  expect(config.isMissing('app.env')).toBe(false)
+  expect(config.isMissing('app.port')).toBe(false)
+})
+
 test('ensure', () => {
   const config = new Config().set('app.port', 1234)
 
