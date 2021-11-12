@@ -61,6 +61,7 @@
   },
   "repository": {
     "type": "git",
+    "directory": "packages/core",
     "url": "git+https://github.com/supercharge/framework.git"
   },
   "scripts": {

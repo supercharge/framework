@@ -20,6 +20,7 @@
   },
   "repository": {
     "type": "git",
+    "directory": "packages/contracts",
     "url": "git+https://github.com/supercharge/framework.git"
   },
   "dependencies": {

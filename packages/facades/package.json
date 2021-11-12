@@ -44,6 +44,7 @@
   },
   "repository": {
     "type": "git",
+    "directory": "packages/facades",
     "url": "git+https://github.com/supercharge/framework.git"
   },
   "scripts": {

@@ -48,6 +48,7 @@
   },
   "repository": {
     "type": "git",
+    "directory": "packages/logging",
     "url": "git+https://github.com/supercharge/framework.git"
   },
   "scripts": {
