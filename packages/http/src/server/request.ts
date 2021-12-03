@@ -296,4 +296,28 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
       ([] as string[]).concat(...types)
     )
   }
+
+  /**
+   * Determine whether the request method is cacheable.
+   * Cacheable methods are `HEAD` and `GET`.
+   *
+   * @see https://tools.ietf.org/html/rfc7231#section-4.2.3
+   *
+   * @returns {Boolean}
+   */
+  isMethodCacheable (): boolean {
+    return ['GET', 'HEAD'].includes(this.method().toUpperCase())
+  }
+
+  /**
+   * Determine whether the request method is not cacheable.
+   * Not cacheable methods are `POST`, `PUT`, `DELETE`, `PATCH`, and `OPTIONS`.
+   *
+   * @see https://tools.ietf.org/html/rfc7231#section-4.2.3
+   *
+   * @returns {Boolean}
+   */
+  isMethodNotCacheable (): boolean {
+    return !this.isMethodCacheable()
+  }
 }

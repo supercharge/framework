@@ -501,4 +501,74 @@ test('request.wantsHtml()', async () => {
     .expect(200, 'false')
 })
 
+test('request.isMethodCacheable()', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response
+      .header('is-cacheable', request.isMethodCacheable())
+      .payload({ isCacheable: request.isMethodCacheable() })
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(200, { isCacheable: true })
+
+  const response = await Supertest(app.callback())
+    .head('/')
+    .expect(200)
+  expect(response.headers['is-cacheable']).toBe('true')
+
+  await Supertest(app.callback())
+    .post('/')
+    .expect(200, { isCacheable: false })
+
+  await Supertest(app.callback())
+    .put('/')
+    .expect(200, { isCacheable: false })
+
+  await Supertest(app.callback())
+    .delete('/')
+    .expect(200, { isCacheable: false })
+
+  await Supertest(app.callback())
+    .options('/')
+    .expect(200, { isCacheable: false })
+})
+
+test('request.isMethodNotCacheable()', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response
+      .header('not-cacheable', request.isMethodNotCacheable())
+      .payload({ notCacheable: request.isMethodNotCacheable() })
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(200, { notCacheable: false })
+
+  const response = await Supertest(app.callback())
+    .head('/')
+    .expect(200)
+  expect(response.headers['not-cacheable']).toBe('false')
+
+  await Supertest(app.callback())
+    .post('/')
+    .expect(200, { notCacheable: true })
+
+  await Supertest(app.callback())
+    .put('/')
+    .expect(200, { notCacheable: true })
+
+  await Supertest(app.callback())
+    .delete('/')
+    .expect(200, { notCacheable: true })
+
+  await Supertest(app.callback())
+    .options('/')
+    .expect(200, { notCacheable: true })
+})
+
 test.run()

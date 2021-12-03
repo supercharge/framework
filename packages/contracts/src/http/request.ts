@@ -109,4 +109,20 @@ export interface HttpRequest extends InteractsWithContentTypes {
    * Determine whether the request contains a header with the given `key`.
    */
   hasHeader(key: string): boolean
+
+  /**
+   * Determine whether the request method is cacheable.
+   * Cacheable methods are `HEAD` and `GET`.
+   *
+   * @see https://tools.ietf.org/html/rfc7231#section-4.2.3
+   */
+  isMethodCacheable(): boolean
+
+  /**
+   * Determine whether the request method is not cacheable.
+   * Not cacheable methods are `POST`, `PUT`, `DELETE`, `PATCH`, and `OPTIONS`.
+   *
+   * @see https://tools.ietf.org/html/rfc7231#section-4.2.3
+   */
+  isMethodNotCacheable(): boolean
 }
