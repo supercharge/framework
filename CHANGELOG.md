@@ -10,6 +10,7 @@
     - refactor the `CookieBag#set(key, value, cookieBuilder)` method to support a `cookieBuilder` as the third argument
     - all classes from `@supercharge/routing` are now part of this ``@supercharge/http` package
     - exports all classes from the previous `@supercharge/routing` package
+    - add `request.isMethodCacheable` and  `request.isMethodNotCacheable` methods
 
 ### Updated
 - bump dependencies
