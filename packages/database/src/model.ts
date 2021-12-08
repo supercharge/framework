@@ -1,7 +1,7 @@
 'use strict'
 
 import { QueryBuilder } from './query-builder'
-import { Model as BaseModel } from 'objection'
+import { MaybeCompositeId, Model as BaseModel, TransactionOrKnex } from 'objection'
 
 export class Model extends BaseModel {
   /**
@@ -10,4 +10,11 @@ export class Model extends BaseModel {
    */
   QueryBuilderType!: QueryBuilder<this>
   static QueryBuilder = QueryBuilder
+
+  /**
+   * Find item of this model by the given `id`.
+   */
+  static findById (id: MaybeCompositeId, trx?: TransactionOrKnex): QueryBuilder<Model, Model | undefined> {
+    return this.query(trx).findById(id)
+  }
 }
