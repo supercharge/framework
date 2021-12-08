@@ -1,6 +1,6 @@
 'use strict'
 
-import knex, * as Knex from 'knex'
+import { knex, Knex } from 'knex'
 import { DatabaseManagerProxy } from './database-manager-proxy'
 import { Application, ConfigStore } from '@supercharge/contracts'
 
@@ -60,7 +60,7 @@ export class DatabaseManager {
    */
   isMissingConnection (name: string): boolean {
     if (!name) {
-      throw new Error('You must provide a connection "name"')
+      throw new Error('You must provide a database connection "name"')
     }
 
     return !this.connections.has(name)

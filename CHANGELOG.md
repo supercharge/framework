@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.0.0-alpha.8](https://github.com/supercharge/framework/compare/v2.0.0-alpha.6...v2.0.0-alpha.8) - 2021-10-xx
+## [2.0.0-alpha.8](https://github.com/supercharge/framework/compare/v2.0.0-alpha.6...v2.0.0-alpha.8) - 2021-12-xx
 
 ### Added
 - `@supercharge/contracts`
@@ -14,10 +14,18 @@
 
 ### Updated
 - bump dependencies
+- `@supercharge/database`
+    - bump to Objection.js 3.0
+    - remove duplicated model method `Model.findById` in base model
+    - remove not needed `Model.findByIdOrFail` method (see breaking changes)
 
 ### Deleted
 - `@supercharge/routing` is now merged into the `@supercharge/http` package
 
+### Breaking Changes
+- `@supercharge/database`
+    - remove `Model.findByIdOrFail()` method
+        - use query builder chain instead: `Model.findById().orFail()`
 
 ## [2.0.0-alpha.7](https://github.com/supercharge/framework/compare/v2.0.0-alpha.6...v2.0.0-alpha.7) - 2021-10-12
 
