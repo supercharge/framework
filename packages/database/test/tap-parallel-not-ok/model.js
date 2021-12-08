@@ -45,12 +45,6 @@ test('Model', async t => {
     t.same(await UserModel.findById(user.id).orFail(), user)
   })
 
-  t.test('fails when findByIdOrFail', async t => {
-    await t.rejects(async () => {
-      return await UserModel.findByIdOrFail(12345)
-    }, 'Cannot find instance for "UserModel"')
-  })
-
   t.teardown(async () => {
     const db = app.make('db')
 
