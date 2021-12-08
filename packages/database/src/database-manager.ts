@@ -60,7 +60,7 @@ export class DatabaseManager {
    */
   isMissingConnection (name: string): boolean {
     if (!name) {
-      throw new Error('You must provide a connection "name"')
+      throw new Error('You must provide a database connection "name"')
     }
 
     return !this.connections.has(name)
