@@ -1,6 +1,6 @@
 'use strict'
 
-import knex, * as Knex from 'knex'
+import { knex, Knex } from 'knex'
 import { DatabaseManagerProxy } from './database-manager-proxy'
 import { Application, ConfigStore } from '@supercharge/contracts'
 

@@ -13,27 +13,16 @@ export class Model extends BaseModel {
 
   /**
    * Find item of this model by the given `id`.
-   *
-   * @param id
-   * @param trx
-   *
-   * @returns {Model}
    */
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
-  static findById (id: MaybeCompositeId, trx: TransactionOrKnex): QueryBuilder<Model, Model> {
+  static findById (id: MaybeCompositeId, trx: TransactionOrKnex): QueryBuilder<Model, Model | undefined> {
     return this.query(trx).findById(id)
   }
 
   /**
    * Find item of this model by the given `id` or fail with a generic error.
-   *
-   * @param id
-   * @param trx
-   *
-   * @returns {Model}
    */
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
   static findByIdOrFail (id: MaybeCompositeId, trx: TransactionOrKnex): QueryBuilder<Model, Model> {
+    // @ts-expect-error
     return this.findById(id, trx).orFail()
   }
 }
