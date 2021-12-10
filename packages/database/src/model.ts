@@ -12,9 +12,16 @@ export class Model extends BaseModel {
   static QueryBuilder = QueryBuilder
 
   /**
-   * Find item of this model by the given `id`.
+   * Find an item of this model for the given `id`.
    */
   static findById (id: MaybeCompositeId, trx?: TransactionOrKnex): QueryBuilder<Model, Model | undefined> {
     return this.query(trx).findById(id)
+  }
+
+  /**
+   * Delete an item of this model for the given `id`.
+   */
+  static deleteById (id: MaybeCompositeId, trx?: TransactionOrKnex): QueryBuilder<Model, number> {
+    return this.query(trx).deleteById(id)
   }
 }
