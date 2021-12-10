@@ -5,6 +5,8 @@
 ### Added
 - `@supercharge/contracts`
     - extend the HTTP kernel contract with additional methods
+- `@supercharge/database`
+    - add static `Model.deleteById` method
 - `@supercharge/http`
     - use a `CookieBag` to set response cookies
     - refactor the `CookieBag#set(key, value, cookieBuilder)` method to support a `cookieBuilder` as the third argument
