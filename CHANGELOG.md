@@ -11,6 +11,7 @@
     - all classes from `@supercharge/routing` are now part of this ``@supercharge/http` package
     - exports all classes from the previous `@supercharge/routing` package
     - add `request.isMethodCacheable` and  `request.isMethodNotCacheable` methods
+    - add `logger()` method to HTTP controller
 
 ### Updated
 - bump dependencies
