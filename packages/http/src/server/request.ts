@@ -137,7 +137,7 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * Determine whether a request body exists.
    */
   hasPayload (): boolean {
-    return this.headers().has('transfer-encoding') || !isNaN(Number(this.header('content-length')))
+    return this.headers().has('transfer-encoding') || this.contentLength() > 0
   }
 
   /**
@@ -267,6 +267,20 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    */
   contentType (): IncomingHttpHeaders['content-type'] {
     return this.header('content-type')
+  }
+
+  /**
+   * Returns the request’s content size as a number retrieved from the `Content-Length` header field.
+   *
+   * @example
+   * ```
+   * request.contentLength()
+   * ```
+   */
+  contentLength (): number {
+    const length = this.header('content-length')
+
+    return Number(length) || 0
   }
 
   /**

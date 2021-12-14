@@ -125,4 +125,14 @@ export interface HttpRequest extends InteractsWithContentTypes {
    * @see https://tools.ietf.org/html/rfc7231#section-4.2.3
    */
   isMethodNotCacheable(): boolean
+
+  /**
+   * Returns the request’s content size as a number retrieved from the `Content-Length` header field.
+   *
+   * @example
+   * ```
+   * request.contentLength()
+   * ```
+   */
+  contentLength (): number
 }
