@@ -571,4 +571,23 @@ test('request.isMethodNotCacheable()', async () => {
     .expect(200, { notCacheable: true })
 })
 
+test('request.contentLength()', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload(
+      request.contentLength()
+    )
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .set('content-length', 123)
+    .expect(200, '123')
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(200, '0')
+})
+
 test.run()

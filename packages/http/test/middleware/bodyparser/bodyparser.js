@@ -82,7 +82,7 @@ test('proceeds request without a body', async () => {
   await Supertest(createHttpServer())
     .post('/')
     .set('Content-Type', 'application/json')
-    .expect(200, { payload: {}, files: {} })
+    .expect(200, { files: {} })
 })
 
 test('parse urlencoded body from string', async () => {
@@ -194,12 +194,6 @@ test('throws for unsupported content type', async () => {
     .set('Content-Type', 'unsupported/content-type')
     .send('hello Supercharge')
     .expect(415, 'Unsupported Content Type. Received "unsupported/content-type"')
-})
-
-test('fails when posting data without content-type headers', async () => {
-  await Supertest(createHttpServer())
-    .post('/')
-    .expect(415, 'Unsupported Content Type. Received ""')
 })
 
 test('skips parsing on GET request', async () => {
