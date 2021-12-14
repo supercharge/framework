@@ -97,7 +97,7 @@ export class BodyparserMiddleware implements Middleware {
       return await this.parseMultipart(request)
     }
 
-    throw HttpError.unsupportedMediaType(`Unsupported Content Type. Received "${request.contentType() ?? ''}"`)
+    throw HttpError.unsupportedMediaType(`Unsupported Content Type. Received "${request.contentType()}"`)
   }
 
   /**
@@ -124,7 +124,7 @@ export class BodyparserMiddleware implements Middleware {
     const body = await this.collectBodyFrom(request, { limit: this.options().json().limit() })
 
     request.setPayload(
-      JSON.parse(body) || {}
+      JSON.parse(body)
     )
   }
 
