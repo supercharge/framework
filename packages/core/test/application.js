@@ -106,4 +106,56 @@ test('app.environmentFilePath()', async () => {
   )
 })
 
+test('app.publicPath()', async () => {
+  const app = Application.createWithAppRoot(__dirname)
+
+  expect(app.publicPath()).toEqual(
+    Path.resolve(__dirname, 'public')
+  )
+})
+
+test('app.resourcePath()', async () => {
+  const app = Application.createWithAppRoot(__dirname)
+
+  expect(app.resourcePath()).toEqual(
+    Path.resolve(__dirname, 'resources')
+  )
+})
+
+test('app.storagePath()', async () => {
+  const app = Application.createWithAppRoot(__dirname)
+
+  expect(app.storagePath()).toEqual(
+    Path.resolve(__dirname, 'storage')
+  )
+})
+
+test('app.databasePath()', async () => {
+  const app = Application.createWithAppRoot(__dirname)
+
+  expect(app.databasePath()).toEqual(
+    Path.resolve(__dirname, 'database')
+  )
+})
+
+test('calls booting callbacks before booting service providers', async () => {
+  let called = false
+
+  const app = Application.createWithAppRoot(__dirname).booting(() => {
+    called = true
+  })
+
+  await app.bootstrapWith([])
+  expect(called).toBe(true)
+})
+
+test('app.isRunningInConsole()', async () => {
+  const app = Application.createWithAppRoot(__dirname)
+
+  expect(app.isRunningInConsole()).toBe(false)
+
+  app.markAsRunningInConsole()
+  expect(app.isRunningInConsole()).toBe(true)
+})
+
 test.run()
