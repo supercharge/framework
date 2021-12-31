@@ -1,12 +1,13 @@
 'use strict'
 
 const Path = require('path')
+const Sinon = require('sinon')
 const { test } = require('uvu')
 const expect = require('expect')
-const { Application } = require('../dist')
 const { Env } = require('@supercharge/env')
 const { Config } = require('@supercharge/config')
 const { LogManager } = require('@supercharge/logging')
+const { Application, ErrorHandler } = require('../dist')
 
 test('app.env()', async () => {
   const app = Application.createWithAppRoot(__dirname)
@@ -106,11 +107,35 @@ test('app.environmentFilePath()', async () => {
   )
 })
 
+test('app.configPath()', async () => {
+  const app = Application.createWithAppRoot(__dirname)
+
+  expect(app.configPath()).toEqual(
+    Path.resolve(__dirname, 'config')
+  )
+})
+
+test('resolves configPath for parameter', async () => {
+  const app = Application.createWithAppRoot(__dirname)
+
+  expect(app.configPath('service.js')).toEqual(
+    Path.resolve(__dirname, 'config/service.js')
+  )
+})
+
 test('app.publicPath()', async () => {
   const app = Application.createWithAppRoot(__dirname)
 
   expect(app.publicPath()).toEqual(
     Path.resolve(__dirname, 'public')
+  )
+})
+
+test('resolves publicPath for parameter', async () => {
+  const app = Application.createWithAppRoot(__dirname)
+
+  expect(app.publicPath('assets/font.woff2')).toEqual(
+    Path.resolve(__dirname, 'public/assets/font.woff2')
   )
 })
 
@@ -122,6 +147,14 @@ test('app.resourcePath()', async () => {
   )
 })
 
+test('resolves resourcePath for parameter', async () => {
+  const app = Application.createWithAppRoot(__dirname)
+
+  expect(app.resourcePath('views/mails/test.hbs')).toEqual(
+    Path.resolve(__dirname, 'resources/views/mails/test.hbs')
+  )
+})
+
 test('app.storagePath()', async () => {
   const app = Application.createWithAppRoot(__dirname)
 
@@ -130,11 +163,27 @@ test('app.storagePath()', async () => {
   )
 })
 
+test('resolves storagePath for parameter', async () => {
+  const app = Application.createWithAppRoot(__dirname)
+
+  expect(app.storagePath('cache/file.txt')).toEqual(
+    Path.resolve(__dirname, 'storage/cache/file.txt')
+  )
+})
+
 test('app.databasePath()', async () => {
   const app = Application.createWithAppRoot(__dirname)
 
   expect(app.databasePath()).toEqual(
     Path.resolve(__dirname, 'database')
+  )
+})
+
+test('resolves databasePath for parameter', async () => {
+  const app = Application.createWithAppRoot(__dirname)
+
+  expect(app.databasePath('migrations/file.sql')).toEqual(
+    Path.resolve(__dirname, 'database/migrations/file.sql')
   )
 })
 
@@ -156,6 +205,42 @@ test('app.isRunningInConsole()', async () => {
 
   app.markAsRunningInConsole()
   expect(app.isRunningInConsole()).toBe(true)
+})
+
+test('app.registerConfiguredProviders()', async () => {
+  const app = Application.createWithAppRoot(__dirname)
+
+  let called = false
+
+  class TestProvider {
+    register () {
+      called = true
+    }
+  }
+
+  const loadConfiguredProvidersStub = Sinon
+    .stub(app, 'loadConfiguredProviders')
+    .returns([TestProvider])
+
+  await app.registerConfiguredProviders()
+  expect(called).toBe(true)
+  expect(
+    !!app.serviceProviders().find(provider => {
+      return provider instanceof TestProvider
+    })
+  ).toBe(true)
+
+  loadConfiguredProvidersStub.restore()
+})
+
+test('app.withCustomErrorHandler()', async () => {
+  class CustomErrorHandler extends ErrorHandler { }
+
+  const app = Application
+    .createWithAppRoot(__dirname)
+    .withErrorHandler(CustomErrorHandler)
+
+  expect(app.make('error.handler')).toBeInstanceOf(CustomErrorHandler)
 })
 
 test.run()
