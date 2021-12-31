@@ -53,6 +53,6 @@ export class LoadEnvironmentVariables implements Bootstrapper {
    * Returns the application’s environment file. By default: `.env`.
    */
   environmentFile (): string {
-    return this.app.environmentFile()
+    return this.app.environmentFilePath()
   }
 }

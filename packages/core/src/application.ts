@@ -11,7 +11,7 @@ import { Container } from '@supercharge/container'
 import { HttpServiceProvider } from '@supercharge/http'
 import { esmRequire, tap, upon } from '@supercharge/goodies'
 import { LoggingServiceProvider } from '@supercharge/logging'
-import { EnvStore, ConfigStore, BootstrapperCtor, ServiceProvider, ServiceProviderCtor, Application as ApplicationContract, Logger, ErrorHandlerCtor } from '@supercharge/contracts'
+import { EnvStore, ConfigStore, BootstrapperCtor, Bootstrapper as BootstrapperContract, ServiceProvider, ServiceProviderCtor, Application as ApplicationContract, Logger, ErrorHandlerCtor } from '@supercharge/contracts'
 
 export class Application extends Container implements ApplicationContract {
   /**
@@ -46,7 +46,7 @@ export class Application extends Container implements ApplicationContract {
   }
 
   /**
-   * Create a new application instance.
+   * Create a new application instance with the given `basePath` as the app root.
    *
    * @param {String} basePath - absolute path to the application’s root directory
    *
@@ -88,8 +88,27 @@ export class Application extends Container implements ApplicationContract {
    * Register the base service provider into the container.
    */
   private registerBaseServiceProviders (): void {
-    this.register(new HttpServiceProvider(this))
-    this.register(new LoggingServiceProvider(this))
+    this
+      .register(new HttpServiceProvider(this))
+      .register(new LoggingServiceProvider(this))
+  }
+
+  /**
+   * Returns the env store instance.
+   *
+   * @returns {EnvStore}
+   */
+  env (): EnvStore {
+    return this.meta.env
+  }
+
+  /**
+   * Returns the config store instance.
+   *
+   * @returns {ConfigStore}
+   */
+  config (): ConfigStore {
+    return this.meta.config
   }
 
   /**
@@ -132,12 +151,21 @@ export class Application extends Container implements ApplicationContract {
    *
    * @returns {String}
    */
-  readPackageJson (): PackageJson {
+  private readPackageJson (): PackageJson {
     return JSON.parse(
       Fs.readFileSync(
         this.resolveFromBasePath('package.json')
       ).toString()
     )
+  }
+
+  /**
+   * Returns the root path of the application directory.
+   *
+   * @returns {String}
+   */
+  basePath (): string {
+    return this.meta.appRoot
   }
 
   /**
@@ -153,15 +181,6 @@ export class Application extends Container implements ApplicationContract {
   }
 
   /**
-   * Determine whether the application is in debug mode.
-   *
-   * @returns {Boolean}
-   */
-  debug (): boolean {
-    return !!this.config().get('app.debug')
-  }
-
-  /**
    * Resolves the absolute path from the given `destination` in the
    * application directory, starting from the application root.
    * The destination supports a glob format, like 'providers/**'.
@@ -174,24 +193,6 @@ export class Application extends Container implements ApplicationContract {
     return Glob.sync(
       this.resolveFromBasePath(...destination)
     )[0]
-  }
-
-  /**
-   * Returns the root path of the application directory.
-   *
-   * @returns {String}
-   */
-  basePath (): string {
-    return this.meta.appRoot
-  }
-
-  /**
-   * Returns the config store instance.
-   *
-   * @returns {ConfigStore}
-   */
-  config (): ConfigStore {
-    return this.meta.config
   }
 
   /**
@@ -250,12 +251,24 @@ export class Application extends Container implements ApplicationContract {
   }
 
   /**
-   * Returns the env store instance.
+   * Returns the path to directory of the environment file.
+   * By default, this is the application's base path.
    *
-   * @returns {EnvStore}
+   * @returns {String}
    */
-  env (): EnvStore {
-    return this.meta.env
+  environmentPath (): string {
+    return this.meta.environmentPath ?? this.basePath()
+  }
+
+  /**
+   * Set the directory for the environment file.
+   *
+   * @param {String} path
+   */
+  useEnvironmentPath (path: string): this {
+    return tap(this, () => {
+      this.meta.environmentPath = this.resolveFromBasePath(path)
+    })
   }
 
   /**
@@ -264,7 +277,7 @@ export class Application extends Container implements ApplicationContract {
    * @returns {String}
    */
   environmentFile (): string {
-    return this.meta.environmentFile || '.env'
+    return this.meta.environmentFile
   }
 
   /**
@@ -281,13 +294,14 @@ export class Application extends Container implements ApplicationContract {
   }
 
   /**
-   * Returns the path to directory of the environment file.
-   * By default, this is the application's base path.
+   * Returns the resolved path to the environment file.
    *
    * @returns {String}
    */
-  environmentPath (): string {
-    return this.basePath()
+  environmentFilePath (): string {
+    return this.resolveFromBasePath(
+      this.environmentPath(), this.environmentFile()
+    )
   }
 
   /**
@@ -319,43 +333,40 @@ export class Application extends Container implements ApplicationContract {
    * Register the configured user-land providers.
    */
   async registerConfiguredProviders (): Promise<void> {
-    await this.loadConfiguredProviders()
-    this.registerServiceProviders()
+    await Collect(
+      await this.loadConfiguredProviders()
+    ).forEach(Provider => {
+      this.register(new Provider(this))
+    })
   }
 
   /**
    * Resolve all registered user-land service providers from disk
    * and store them locally to registering and booting them.
    */
-  async loadConfiguredProviders (): Promise<void> {
+  async loadConfiguredProviders (): Promise<ServiceProviderCtor[]> {
     const { providers } = await this.require(
       this.resolveGlobFromBasePath('bootstrap/providers.**')
     )
 
-    Collect(
-      ([] as ServiceProviderCtor[]).concat(providers)
-    ).forEach(Provider => {
-      this.serviceProviders().push(
-        new Provider(this)
-      )
-    })
-  }
-
-  /**
-   * Register the configured service providers.
-   */
-  registerServiceProviders (): void {
-    this.serviceProviders().forEach(provider => {
-      this.register(provider)
-    })
+    return providers
   }
 
   /**
    * Call the `register` method on the given service `provider`.
    */
-  register (provider: ServiceProvider): ServiceProvider {
-    return tap(provider, () => {
-      provider.register(this)
+  register (provider: ServiceProvider): this {
+    provider.register(this)
+
+    return this.markAsRegistered(provider)
+  }
+
+  /**
+   * Mark the given `provider` as registered.
+   */
+  protected markAsRegistered (provider: ServiceProvider): this {
+    return tap(this, () => {
+      this.serviceProviders().push(provider)
     })
   }
 
@@ -405,8 +416,7 @@ export class Application extends Container implements ApplicationContract {
     await this.runAppCallbacks(this.bootingCallbacks())
 
     await Collect(bootstrappers).forEach(async (Bootstrapper: BootstrapperCtor) => {
-      // TODO: resolve the instance through the container?
-      await new Bootstrapper(this).bootstrap(this)
+      await this.make<BootstrapperContract>(Bootstrapper).bootstrap(this)
     })
   }
 
@@ -462,6 +472,11 @@ interface ApplicationMeta {
    * The environment file to load during application bootstrapping.
    */
   environmentFile: string
+
+  /**
+   * The directory for the environment file.
+   */
+  environmentPath?: string
 
   /**
    * Indicate whether the application runs in the console.

@@ -1,6 +1,5 @@
 'use strict'
 
-import Fs from '@supercharge/fs'
 import { tap } from '@supercharge/goodies'
 import { Server } from '@supercharge/http'
 import Collect from '@supercharge/collections'
@@ -58,6 +57,13 @@ export class HttpKernel implements HttpKernelContract {
    */
   static for (app: Application): HttpKernel {
     return new this(app)
+  }
+
+  /**
+   * Returns the app instance.
+   */
+  app (): Application {
+    return this.meta.app
   }
 
   /**
@@ -126,19 +132,10 @@ export class HttpKernel implements HttpKernelContract {
    * Returns the application’s global middleware stack. Every middleware
    * listed here runs on every request to the application.
    *
-   * @returns {MiddlewareCtor[]}
+   * @returns {{ [key: string]: MiddlewareCtor}}
    */
   routeMiddleware (): { [key: string]: MiddlewareCtor} {
     return {}
-  }
-
-  /**
-   * Returns the path to the HTTP controllers.
-   *
-   * @returns {String}
-   */
-  protected controllersLocation (): string {
-    return this.app().resolveFromBasePath('app/http/controllers')
   }
 
   /**
@@ -159,13 +156,6 @@ export class HttpKernel implements HttpKernelContract {
    */
   bootedCallbacks (): Callback[] {
     return this.meta.bootedCallbacks
-  }
-
-  /**
-   * Returns the app instance.
-   */
-  app (): Application {
-    return this.meta.app
   }
 
   /**
@@ -191,12 +181,32 @@ export class HttpKernel implements HttpKernelContract {
   /**
    * Start the HTTP instance listening for incoming requests.
    *
-   * @returns {Promise}
+   * @returns {Promise<this>}
    */
-  async startServer (): Promise<void> {
+  async startServer (): Promise<this> {
     await this.bootstrap()
     await this.listen()
     await this.runBootedCallbacks()
+
+    return this
+  }
+
+  /**
+   * Start the HTTP server to listen on a local port.
+   */
+  protected async listen (): Promise<void> {
+    await this.server().start()
+  }
+
+  /**
+   * Stop the HTTP instance.
+   *
+   * @returns {Promise<this>}
+   */
+  async stopServer (): Promise<this> {
+    return await tap(this, async () => {
+      await this.server().stop()
+    })
   }
 
   /**
@@ -257,24 +267,6 @@ export class HttpKernel implements HttpKernelContract {
     ).forEach(([name, middleware]) => {
       this.server().useRouteMiddleware(name, middleware)
     })
-  }
-
-  /**
-   * Returns an array of file paths to all controllers.
-   *
-   * @returns {String[]}
-   */
-  async controllerPaths (): Promise<string[]> {
-    return await Fs.allFiles(
-      this.controllersLocation()
-    )
-  }
-
-  /**
-   * Start the HTTP server to listen on a local port.
-   */
-  protected async listen (): Promise<void> {
-    await this.server().start()
   }
 
   /**
