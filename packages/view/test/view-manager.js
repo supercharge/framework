@@ -1,7 +1,10 @@
 'use strict'
 
-const { test } = require('tap')
+const { test } = require('uvu')
+const expect = require('expect')
 
-test('View Manager', async t => {
-  t.pass()
+test.skip('View Manager', async () => {
+  expect(true).toBe(false)
 })
+
+test.run()
