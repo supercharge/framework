@@ -1,6 +1,6 @@
 {
   "name": "@supercharge/container",
-  "nscription": "The Supercharge container package",
+  "description": "The Supercharge container package",
   "version": "2.0.0-alpha.7",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
@@ -19,14 +19,9 @@
     "@supercharge/strings": "~1.22.0"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "~4.33.0",
+    "@supercharge/eslint-config-typescript": "~1.0.1",
     "c8": "~7.10.0",
     "eslint": "~7.32.0",
-    "eslint-config-standard-with-typescript": "~21.0.1",
-    "eslint-plugin-import": "~2.25.2",
-    "eslint-plugin-node": "~11.1.0",
-    "eslint-plugin-promise": "~5.1.1",
-    "eslint-plugin-standard": "~4.1.0",
     "expect": "~27.3.1",
     "typescript": "~4.4.4",
     "uvu": "~0.5.2"

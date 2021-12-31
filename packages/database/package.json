@@ -1,6 +1,6 @@
 {
   "name": "@supercharge/database",
-  "nscription": "The Supercharge database package",
+  "description": "The Supercharge database package",
   "version": "2.0.0-alpha.7",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
@@ -21,13 +21,8 @@
   },
   "devDependencies": {
     "@supercharge/core": "^2.0.0-alpha.7",
-    "@typescript-eslint/eslint-plugin": "~4.27.0",
+    "@supercharge/eslint-config-typescript": "~1.0.1",
     "eslint": "~7.28.0",
-    "eslint-config-standard": "~16.0.3",
-    "eslint-config-standard-with-typescript": "~21.0.1",
-    "eslint-plugin-import": "~2.25.3",
-    "eslint-plugin-node": "~11.1.0",
-    "eslint-plugin-promise": "~4.3.1",
     "tap": "~15.1.5",
     "typescript": "~4.2.3"
   },

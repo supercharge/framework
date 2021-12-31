@@ -6,7 +6,7 @@ module.exports = {
     es2020: true
   },
   extends: [
-    'standard-with-typescript'
+    '@supercharge/typescript'
   ],
   parserOptions: {
     project: './tsconfig.json'

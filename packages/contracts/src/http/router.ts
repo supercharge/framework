@@ -125,12 +125,17 @@ export interface HttpRouter {
    * ```
    * // use the 'auth' middleware to require authentication for all requests in this group
    * Route.middleware('auth').group(() => {
-   *   Route.get('/user/profile', 'UserProfileController.index')
-   *   Route.get('/user/settings', 'UserSettingsController.index')
+   *   Route.get('/user/profile', UserProfileController)
+   *   Route.get('/user/settings', UserSettingsController)
    * })
    * ```
    */
   middleware(middleware: string | string[]): PendingRoute
+
+  /**
+   * Determine whether a middleware exists for the given `name`.
+   */
+  hasMiddleware(middleware: string | Class<MiddlewareCtor>): boolean
 
   /**
    * Register a named middleware.

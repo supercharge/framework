@@ -27,6 +27,8 @@
 - `@supercharge/routing` is now merged into the `@supercharge/http` package
 
 ### Breaking Changes
+- `@supercharge/core`
+  - removed `app.debug()` method
 - `@supercharge/database`
     - remove `Model.findByIdOrFail()` method
         - use query builder chain instead: `Model.findById().orFail()`
