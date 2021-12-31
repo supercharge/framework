@@ -11,7 +11,7 @@ import { Container } from '@supercharge/container'
 import { HttpServiceProvider } from '@supercharge/http'
 import { esmRequire, tap, upon } from '@supercharge/goodies'
 import { LoggingServiceProvider } from '@supercharge/logging'
-import { EnvStore, ConfigStore, BootstrapperCtor, ServiceProvider, ServiceProviderCtor, Application as ApplicationContract, Logger, ErrorHandlerCtor } from '@supercharge/contracts'
+import { EnvStore, ConfigStore, BootstrapperCtor, Bootstrapper as BootstrapperContract, ServiceProvider, ServiceProviderCtor, Application as ApplicationContract, Logger, ErrorHandlerCtor } from '@supercharge/contracts'
 
 export class Application extends Container implements ApplicationContract {
   /**
@@ -88,8 +88,9 @@ export class Application extends Container implements ApplicationContract {
    * Register the base service provider into the container.
    */
   private registerBaseServiceProviders (): void {
-    this.register(new HttpServiceProvider(this))
-    this.register(new LoggingServiceProvider(this))
+    this
+      .register(new HttpServiceProvider(this))
+      .register(new LoggingServiceProvider(this))
   }
 
   /**
@@ -332,43 +333,40 @@ export class Application extends Container implements ApplicationContract {
    * Register the configured user-land providers.
    */
   async registerConfiguredProviders (): Promise<void> {
-    await this.loadConfiguredProviders()
-    this.registerServiceProviders()
+    await Collect(
+      await this.loadConfiguredProviders()
+    ).forEach(Provider => {
+      this.register(new Provider(this))
+    })
   }
 
   /**
    * Resolve all registered user-land service providers from disk
    * and store them locally to registering and booting them.
    */
-  async loadConfiguredProviders (): Promise<void> {
+  async loadConfiguredProviders (): Promise<ServiceProviderCtor[]> {
     const { providers } = await this.require(
       this.resolveGlobFromBasePath('bootstrap/providers.**')
     )
 
-    Collect(
-      ([] as ServiceProviderCtor[]).concat(providers)
-    ).forEach(Provider => {
-      this.serviceProviders().push(
-        new Provider(this)
-      )
-    })
-  }
-
-  /**
-   * Register the configured service providers.
-   */
-  registerServiceProviders (): void {
-    this.serviceProviders().forEach(provider => {
-      this.register(provider)
-    })
+    return providers
   }
 
   /**
    * Call the `register` method on the given service `provider`.
    */
-  register (provider: ServiceProvider): ServiceProvider {
-    return tap(provider, () => {
-      provider.register(this)
+  register (provider: ServiceProvider): this {
+    provider.register(this)
+
+    return this.markAsRegistered(provider)
+  }
+
+  /**
+   * Mark the given `provider` as registered.
+   */
+  protected markAsRegistered (provider: ServiceProvider): this {
+    return tap(this, () => {
+      this.serviceProviders().push(provider)
     })
   }
 
@@ -418,8 +416,7 @@ export class Application extends Container implements ApplicationContract {
     await this.runAppCallbacks(this.bootingCallbacks())
 
     await Collect(bootstrappers).forEach(async (Bootstrapper: BootstrapperCtor) => {
-      // TODO: resolve the instance through the container?
-      await new Bootstrapper(this).bootstrap(this)
+      await this.make<BootstrapperContract>(Bootstrapper).bootstrap(this)
     })
   }
 
