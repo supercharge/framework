@@ -6,14 +6,14 @@ import { Application, ConfigStore } from '@supercharge/contracts'
 
 export class DatabaseManager {
   /**
-     * The application instance.
-     */
+   * The application instance.
+   */
   private readonly app: Application
 
   /**
-     * Stores the active database connections, like connections to
-     * SQLite, MySQL, MariaDB, PostgreSQL, and so on.
-     */
+   * Stores the active database connections, like connections to
+   * SQLite, MySQL, MariaDB, PostgreSQL, and so on.
+   */
   private readonly connections: Map<string, Knex>
 
   /**
