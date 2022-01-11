@@ -1,4 +1,5 @@
 'use strict'
 
-// export * from './middleware'
+export * from './manager'
 export * from './view-service-provider'
+export * from './engines'
