@@ -9,8 +9,8 @@ export interface InputBag<T> {
   all(...keys: Array<keyof Dict<T>> | Array<Array<keyof Dict<T>>>): Dict<T>
 
   /**
-   * Returns the input value for the given `name`. Returns `undefined`
-   * if the given `name` does not exist in the input bag.
+   * Returns the input value for the given `name`. This method returns
+   * `undefined` if the input bag doesn’t contain the given `name`.
    */
   get<Value = any, Header extends keyof Dict<T> = string> (name: Header, defaultValue?: Value): Value | Dict<T>[Header] | undefined
 
