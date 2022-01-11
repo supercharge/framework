@@ -70,7 +70,7 @@ export class HandlebarsCompiler implements ViewEngine {
    *
    * @returns {Handlebars}
    */
-  compiler (): typeof Handlebars {
+  handlebars (): typeof Handlebars {
     return this.meta.handlebars
   }
 
@@ -108,17 +108,6 @@ export class HandlebarsCompiler implements ViewEngine {
   }
 
   /**
-   * Determine whether a default layout is configured.
-   *
-   * @returns {Boolean}
-   */
-  hasDefaultLayout (): boolean {
-    return Str(
-      this.defaultLayout()
-    ).isNotEmpty()
-  }
-
-  /**
    * Returns the path to view templates.
    *
    * @returns {string}
@@ -134,7 +123,7 @@ export class HandlebarsCompiler implements ViewEngine {
   }
 
   /**
-   * Returns the path to the view helpers.
+   * Returns the path to the partial views.
    *
    * @returns {string}
    */
@@ -202,7 +191,7 @@ export class HandlebarsCompiler implements ViewEngine {
    */
   async registerPartial (file: string, basePath: string): Promise<void> {
     try {
-      this.compiler().registerPartial(
+      this.handlebars().registerPartial(
         this.partialNameFrom(file, basePath), await Fs.content(file)
       )
     } catch (error: any) {
@@ -266,7 +255,7 @@ export class HandlebarsCompiler implements ViewEngine {
       const name = await Fs.filename(file)
 
       typeof helper === 'function'
-        ? this.compiler().registerHelper(name, helper)
+        ? this.handlebars().registerHelper(name, helper)
         : this.logger().warning(`View helper "${file}" is not a function, received "${typeof helper}"`)
     } catch (error: any) {
       this.logger().warning(`WARNING: failed to load helper "${file}": ${String(error.message)}`)
@@ -364,7 +353,7 @@ export class HandlebarsCompiler implements ViewEngine {
    * @returns {Function}
    */
   async compile (view: string, options: ReadTemplateOptions = {}): Promise<HandlebarsTemplateDelegate> {
-    return this.compiler().compile(
+    return this.handlebars().compile(
       await this.readTemplate(view, options)
     )
   }
@@ -382,9 +371,24 @@ export class HandlebarsCompiler implements ViewEngine {
       ? Path.resolve(await this.layoutLocation(), template)
       : Path.resolve(await this.viewsLocation(), template)
 
+    await this.ensureViewExists(view)
+
     return await Fs.content(
       this.ensureHbs(view)
     )
+  }
+
+  /**
+   * Ensure the view file exists.
+   *
+   * @throws
+   */
+  async ensureViewExists (view: string): Promise<void> {
+    const file = this.ensureHbs(view)
+
+    if (await Fs.notExists(file)) {
+      throw new Error(`View file does not exist. Tried to load ${file}`)
+    }
   }
 
   /**
