@@ -22,6 +22,7 @@
     "handlebars": "~4.7.7"
   },
   "devDependencies": {
+    "@supercharge/core": "^2.0.0-alpha.7",
     "@supercharge/eslint-config-typescript": "~1.0.1",
     "@types/handlebars": "~4.1.0",
     "expect": "~27.4.2",
