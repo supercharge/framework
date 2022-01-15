@@ -1,7 +1,7 @@
 {
   "name": "@supercharge/logging",
   "description": "The Supercharge logging package",
-  "version": "2.0.0-alpha.7",
+  "version": "2.0.0-alpha.8",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
@@ -12,16 +12,16 @@
   "main": "dist",
   "types": "dist",
   "dependencies": {
-    "@supercharge/contracts": "^2.0.0-alpha.7",
+    "@supercharge/contracts": "^2.0.0-alpha.8",
     "@supercharge/goodies": "~1.10.0",
-    "@supercharge/manager": "^2.0.0-alpha.7",
-    "@supercharge/support": "^2.0.0-alpha.7",
+    "@supercharge/manager": "^2.0.0-alpha.8",
+    "@supercharge/support": "^2.0.0-alpha.8",
     "chalk": "~4.1.2",
     "winston": "~3.3.3"
   },
   "devDependencies": {
-    "@supercharge/fs": "~3.4.0",
     "@supercharge/eslint-config-typescript": "~1.0.1",
+    "@supercharge/fs": "~3.4.0",
     "c8": "~7.10.0",
     "eslint": "~7.32.0",
     "expect": "~27.3.1",

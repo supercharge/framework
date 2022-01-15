@@ -1,13 +1,13 @@
 {
   "name": "@supercharge/manager",
   "description": "The Supercharge manager package",
-  "version": "2.0.0-alpha.7",
+  "version": "2.0.0-alpha.8",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
   },
   "dependencies": {
-    "@supercharge/contracts": "^2.0.0-alpha.7",
+    "@supercharge/contracts": "^2.0.0-alpha.8",
     "@supercharge/strings": "~1.22.0"
   },
   "devDependencies": {
@@ -15,8 +15,8 @@
     "c8": "~7.10.0",
     "eslint": "~7.32.0",
     "expect": "~27.3.1",
-    "typescript": "~4.4.4",
     "sinon": "~11.1.2",
+    "typescript": "~4.4.4",
     "uvu": "~0.5.2"
   },
   "engines": {
