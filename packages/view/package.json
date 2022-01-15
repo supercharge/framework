@@ -12,7 +12,7 @@
     "dist"
   ],
   "dependencies": {
-    "@supercharge/collections": "~3.1.4",
+    "@supercharge/collections": "~3.2.1",
     "@supercharge/contracts": "^2.0.0-alpha.7",
     "@supercharge/fs": "~3.1.0",
     "@supercharge/goodies": "~1.9.0",
@@ -22,11 +22,14 @@
     "handlebars": "~4.7.7"
   },
   "devDependencies": {
+    "@supercharge/core": "^2.0.0-alpha.7",
     "@supercharge/eslint-config-typescript": "~1.0.1",
     "@types/handlebars": "~4.1.0",
-    "eslint": "~7.30.0",
-    "tap": "~15.0.9",
-    "typescript": "~4.3.5"
+    "expect": "~27.4.2",
+    "c8": "~7.11.0",
+    "eslint": "~7.32.0",
+    "typescript": "~4.4.4",
+    "uvu": "~0.5.2"
   },
   "engines": {
     "node": ">=12"
@@ -56,8 +59,9 @@
     "watch": "npm run dev",
     "lint": "eslint src --ext .js,.ts",
     "lint:fix": "npm run lint -- --fix",
-    "test": "npm run build && npm run lint && npm run test:run",
-    "test:run": "tap --no-check-coverage --test-ignore=helpers --reporter=dot",
-    "posttest": "tap --no-check-coverage --coverage-report=html --no-browser"
+    "test": "npm run build && npm run lint && npm run test:coverage",
+    "test:run": "uvu --ignore helpers --ignore fixtures",
+    "test:coverage": "c8 --include=dist npm run test:run && npm run test:report",
+    "test:report": "c8 report --reporter=html"
   }
 }

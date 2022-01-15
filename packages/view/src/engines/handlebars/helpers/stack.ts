@@ -10,13 +10,21 @@
  * @param {Object} context
  *
  * @returns {String} the stack’s content
+ *
+ * @example
+ * ```
+ * {{#stack "scripts"}}
+ *   <link href="#"> … this is the default content of this stack
+ * {{/stack}}
+ * ```
  */
 export default function stack (name: string, context: any): string {
   if (!context) {
     throw new Error('Provide a name when using the "stack" handlebars helper.')
   }
 
-  const stacks = context.data.root.stacks || {}
+  const data = context.data.root || {}
+  const stacks = data.stacks || {}
   const stack = stacks[name] || []
 
   const content = stack
@@ -32,7 +40,7 @@ export default function stack (name: string, context: any): string {
       return carry
       // @ts-expect-error
     }, [context.fn(this)])
-    .join('\n')
+    .join('')
 
   return content
 }
