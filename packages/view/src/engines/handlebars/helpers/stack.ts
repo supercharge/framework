@@ -40,7 +40,7 @@ export default function stack (name: string, context: any): string {
       return carry
       // @ts-expect-error
     }, [context.fn(this)])
-    .join('\n')
+    .join('')
 
   return content
 }
