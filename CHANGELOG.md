@@ -18,6 +18,8 @@
 
 ### Updated
 - bump dependencies
+- `@supercharge/contracts`
+    - refine typings of `ParameterBag#get` method
 - `@supercharge/database`
     - bump to Objection.js 3.0
     - remove duplicated model method `Model.findById` in base model
@@ -32,6 +34,7 @@
 - `@supercharge/database`
     - remove `Model.findByIdOrFail()` method
         - use query builder chain instead: `Model.findById().orFail()`
+
 
 ## [2.0.0-alpha.7](https://github.com/supercharge/framework/compare/v2.0.0-alpha.6...v2.0.0-alpha.7) - 2021-10-12
 
