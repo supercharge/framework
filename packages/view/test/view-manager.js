@@ -102,26 +102,6 @@ test('renders partials', async () => {
   ).toEqual('<p>Test View: Supercharge </p>\n<p>Test Partial</p>\n')
 })
 
-test('renders raw helper', async () => {
-  const app = makeApp()
-  const view = new ViewManager(app)
-  await view.boot()
-
-  expect(
-    await view.render('test-view-helper-raw')
-  ).toEqual('{{name}}\n')
-})
-
-test('renders stack helper', async () => {
-  const app = makeApp()
-  const view = new ViewManager(app)
-  await view.boot()
-
-  expect(
-    await view.render('test-view-helper-stack')
-  ).toEqual('  <p>part of test-stack</p>\n')
-})
-
 test('exists', async () => {
   const app = makeApp()
   const view = new ViewManager(app)
