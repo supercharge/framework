@@ -6,7 +6,8 @@
   "command": {
     "publish": {
       "ignoreChanges": [
-        "packages/app/"
+        "packages/app/",
+        "package-lock.json"
       ]
     },
     "bootstrap": {
