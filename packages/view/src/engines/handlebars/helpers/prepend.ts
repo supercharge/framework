@@ -12,6 +12,7 @@ export default function prepend (stackName: string, context: any): void {
     throw new Error('Provide a name when using the "prepend" handlebars helper.')
   }
 
+  context.data.root = context.data.root || {}
   const stacks = context.data.root.stacks || {}
   const stack = stacks[stackName] || []
 
