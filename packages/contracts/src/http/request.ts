@@ -37,7 +37,8 @@ export interface HttpRequest extends InteractsWithContentTypes {
    * Returns the path parameter for the given `name`. Returns the
    * `defaultValue` if a parameter for the name doesn’t exist.
    */
-  param (name: string, defaultValue?: string): string | undefined
+  param (name: string): string | undefined
+  param (name: string, defaultValue: string): string
 
   /**
    * Returns the cookie value for the given `name`. Supports an options

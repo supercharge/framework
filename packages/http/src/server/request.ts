@@ -85,6 +85,8 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * Returns the path parameter for the given `name`. Returns the
    * `defaultValue` if a parameter for the name doesn’t exist.
    */
+  param (name: string): string | undefined
+  param (name: string, defaultValue: string): string
   param (name: string, defaultValue?: string): string | undefined {
     return this.params().get(name, defaultValue)
   }

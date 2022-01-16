@@ -42,7 +42,9 @@ export class InputBag<T> implements InputBagContract<T> {
    *
    * @returns {Value | Dict<T>[Key] |undefined}
    */
-  get<Value = any, Key extends keyof Dict<T> = string> (name: Key, defaultValue?: Value): Value | Dict<T>[Key] | Value | undefined {
+  get<Value = any, Key extends keyof Dict<T> = string> (name: Key): Value | Dict<T>[Key] | undefined
+  get<Value = any, Key extends keyof Dict<T> = string> (name: Key, defaultValue: Value): Value | Dict<T>[Key]
+  get<Value = any, Key extends keyof Dict<T> = string> (name: Key, defaultValue?: Value): Value | Dict<T>[Key] | undefined {
     return this.attributes[name] ?? defaultValue
   }
 
