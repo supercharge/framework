@@ -19,7 +19,7 @@ export interface ServiceProvider {
   app (): Application
 
   /**
-   * Register application services to the container.
+   * Register application services into the container.
    *
    * @param {Application} app - the application instance
    */
