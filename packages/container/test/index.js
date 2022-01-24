@@ -90,6 +90,8 @@ test('make class', () => {
     constructor (app) {
       this.app = app
     }
+
+    hello () { return 'hello' }
   }
 
   const container = new Container()
@@ -97,6 +99,7 @@ test('make class', () => {
 
   expect(user instanceof User).toBe(true)
   expect(user.app).toBe(container)
+  expect(user.hello()).toBe('hello')
 })
 
 test('throws for missing namespace when binding a singleton', () => {

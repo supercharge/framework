@@ -44,9 +44,8 @@ export interface Container<ContainerBindings extends string | Class = any> {
   make<Namespace extends Extract<keyof ContainerBindings, string>> (
     namespace: Namespace
   ): Namespace extends keyof ContainerBindings ? ContainerBindings[Namespace] : InferMakeType<Namespace>
-  make<T = any> (
-    namespace: string | Class
-  ): T
+  make<T> (namespace: Class<T>): T
+  make<T = any> (namespace: string): T
 
   /**
    * Determine whether the given `namespace` is bound in the container.

@@ -138,6 +138,8 @@ export class Container implements ContainerContract {
    *
    * @returns {*}
    */
+  make<T = any> (namespace: string): T
+  make<T> (namespace: Class<T>): T
   make<T extends any>(namespace: string | Class): T {
     /**
      * If the namespace exists as a singleton, we’ll return the instance
