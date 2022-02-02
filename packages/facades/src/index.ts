@@ -18,4 +18,12 @@ const Config: ConfigStore = new ConfigFacade() as unknown as ConfigStore
 const Database: DatabaseContract = new DatabaseFacade() as unknown as DatabaseContract
 
 export * from './facade'
-export { App, Env, Config, Database, Log as Logger, Route, View }
+export {
+  App,
+  Env,
+  Config,
+  Database,
+  Log as Logger,
+  Route,
+  View
+}
