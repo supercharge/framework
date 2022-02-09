@@ -63,7 +63,7 @@ export interface HttpRequest extends InteractsWithContentTypes {
   /**
    * Returns the request payload.
    */
-  payload(): any
+  payload<T = any>(): T
 
   /**
    * Determine whether a request body exists.

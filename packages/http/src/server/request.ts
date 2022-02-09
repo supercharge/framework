@@ -110,7 +110,7 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
   /**
    * Returns the request payload.
    */
-  payload (): any {
+  payload<T = any> (): T {
     return this.ctx.request.body
   }
 
