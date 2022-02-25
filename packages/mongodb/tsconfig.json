@@ -1,0 +1,16 @@
+{
+  "extends": "@supercharge/tsconfig",
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "outDir": "./dist"
+  },
+  "include": [
+    "./**/*"
+  ],
+  "exclude": [
+    "./node_modules",
+    "./test",
+    "./dist"
+  ]
+}
