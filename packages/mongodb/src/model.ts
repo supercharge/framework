@@ -2,13 +2,12 @@
 
 import pluralize from 'pluralize'
 import { isObject } from './utils'
-import { Connection, Lookup } from '.'
 import Str from '@supercharge/strings'
-import { Arr } from '@supercharge/arrays'
 import { QueryBuilder } from './query/builder'
 import { MoonModel } from './contracts/model-contract'
 import { ModelObject } from './contracts/utils-contract'
 import { MoonDocument } from './contracts/document-contract'
+import { MongodbConnection, MongodbConnectionResolver } from './contracts/connection-contract'
 import { Collection, DeleteOptions, DeleteResult, Filter, FindOptions, ObjectId, UpdateFilter } from 'mongodb'
 
 function StaticImplements<T> () {
@@ -23,25 +22,25 @@ export class Model implements MoonDocument {
   public _id!: ObjectId
 
   /**
-   * Stores the database reference.
+   * Stores the connection reference.
    */
-  static database: Connection
+  static connection: string
 
   /**
-   * Stores relations to other models.
+   * Stores connection resolver.
    */
-  static relations: Lookup[]
+  protected static connectionResolver: MongodbConnectionResolver
 
-  /**
-   * Determine whether this model is booted.
-   */
-  private static isBooted: boolean = false
+  // /**
+  //  * Stores relations to other models.
+  //  */
+  // static relations: Lookup[]
 
   /**
    * Create a new document instance for this model.
    */
   constructor (values?: ModelObject) {
-    Object.assign(this, values ?? {})
+    this.fill(values ?? {})
   }
 
   /**
@@ -62,40 +61,12 @@ export class Model implements MoonDocument {
   }
 
   /**
-   * Boot this model.
-   */
-  static async boot (): Promise<void> {
-    if (this.isBooted) {
-      return
-    }
-
-    await this.ensureCollection()
-    this.markAsBooted()
-  }
-
-  /**
-   * Mark this model as booted.
-   */
-  static markAsBooted (): void {
-    this.isBooted = true
-  }
-
-  /**
-   * Create the collection if it doesn’t exist.
-   */
-  protected static async ensureCollection (): Promise<void> {
-    if (await this.database.isMissingCollection(this.collectionName())) {
-      await this.database.createCollection(this.collectionName())
-    }
-  }
-
-  /**
    * Assign the database connection resolve.
    *
-   * @param {Connection} database
+   * @param {Connection} resolver
    */
-  static withDatabase (database: Connection): typeof Model {
-    this.database = database
+  static setConnectionResolver (resolver: MongodbConnectionResolver): typeof Model {
+    this.connectionResolver = resolver
 
     return this
   }
@@ -103,60 +74,82 @@ export class Model implements MoonDocument {
   /**
    * Assign the database connection resolve.
    *
-   * @param {Connection} database
+   * @param {Connection} resolver
    */
-  withDatabase (database: Connection): this {
-    (this.constructor as typeof Model).withDatabase(database)
+  setConnectionResolver (resolver: MongodbConnectionResolver): this {
+    this.model().setConnectionResolver(resolver)
 
     return this
   }
 
   /**
-   * Returns the MongoDB connection.
+   * Returns the connection resolver instance.
    */
-  static collection (): Collection {
-    return this.resolveCollection(
-      this.collectionName()
+  static getConnectionResolver (): MongodbConnectionResolver {
+    return this.connectionResolver
+  }
+
+  /**
+   * Returns the connection resolver instance.
+   */
+  getConnectionResolver (): MongodbConnectionResolver {
+    return this.model().getConnectionResolver()
+  }
+
+  /**
+   * Resolve and return a connection instance.
+   *
+   * @param  {String|undefined} connection
+   *
+   * @return {MongodbConnection}
+   */
+  static async resolveConnection (connection?: string): Promise<MongodbConnection> {
+    return await this.getConnectionResolver().connection(connection)
+  }
+
+  /**
+   * Returns the database connection for the model.
+   *
+   * @return {MongodbConnection}
+   */
+  async getConnection (): Promise<MongodbConnection> {
+    return await this.model().resolveConnection(
+      this.model().connection
     )
   }
 
   /**
    * Returns the collection name.
-   *
-   * @returns {String}
    */
-  protected static collectionName (): string {
+  static get collection (): string {
     return Str(
       pluralize(this.name)
     ).snake().lower().get()
   }
 
   /**
-   * Returns the MongoDB connection.
-   *
-   * @returns {Db}
+   * Returns the database connection for the model.
    */
-  protected static resolveCollection (name: string): Collection {
-    return this.database.client().db().collection(name)
+  async getCollection (): Promise<Collection> {
+    const connection = await this.getConnection()
+
+    return connection.db().collection(
+      this.model().collection
+    )
   }
 
   /**
    * Save this document in the database.
    */
   async save (): Promise<this> {
-    // await Model.updateOne({ _id: this._id }, this)
-
-    return this
+    return await this.query().save(this)
   }
 
   /**
    * Update this document in the database.
    */
   async update ({ _id, ...values }: ModelObject): Promise<this> {
-    await (this.constructor as MoonModel).updateOne({ _id: this._id }, { $set: { ...values } })
-    Object.assign(this, values)
-
-    return this
+    return await this.fill({ ...values }).save()
   }
 
   /**
@@ -176,44 +169,32 @@ export class Model implements MoonDocument {
   }
 
   /**
-   * Load the given `relations` for this document.
+   * Creates and returns a new document instance for this model.
+   *
+   * @param attributes
    */
-  async load (...relations: string[]): Promise<void> {
-    this.ensureRelationsAreDefined(...relations)
+  newInstance<T extends MoonDocument> (attributes?: ModelObject): T {
+    const Ctor = this.model()
 
-    // TODO actually load relations
+    return new Ctor(attributes).setConnectionResolver(
+      this.getConnectionResolver()
+    ) as T
   }
 
   /**
    * Assign the given `values` to the document.
    */
-  private ensureRelationsAreDefined (...relations: string[]): void {
-    const missingRelations = Arr
-      .from(this.model().relations)
-      .map(relation => relation.name)
-      .diff(relations)
-
-    if (missingRelations.isNotEmpty()) {
-      throw new Error(`Cannot load undefined relationships: ${missingRelations.toArray().join(', ')}`)
-    }
-  }
-
-  /**
-   * Assign the given `values` to the document.
-   */
-  fill (values: Partial<MoonDocument>): this {
+  fill (values: ModelObject): this {
     return this.merge(values)
   }
 
   /**
     * Merge the given `values` into the document.
     */
-  merge (values: Partial<MoonDocument>): this {
+  merge (values: ModelObject): this {
     if (isObject(values)) {
-      // @ts-expect-error
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { _id, rest } = values
-      Object.assign(this, rest)
+      Object.assign(this, { ...values })
     }
 
     return this
@@ -223,31 +204,31 @@ export class Model implements MoonDocument {
    * Returns the collection name.
    */
   static async all<T extends MoonModel>(this: T): Promise<Array<InstanceType<T>>> {
-    return this.find()
+    return await this.find()
   }
 
   /**
    * Returns an array of documents maching the given `filter` and `options`.
    * Returns an empty array if no documents were found in the collection.
    */
-  static async find<T extends MoonModel>(this: T, filter?: Filter<T>, options?: FindOptions<T>): Promise<Array<InstanceType<T>>> {
-    return this.query().where(filter).find(options)
+  static async find<T extends MoonModel>(this: T, filter?: Filter<InstanceType<T>>, options?: FindOptions<InstanceType<T>>): Promise<Array<InstanceType<T>>> {
+    return await this.query().where(filter as InstanceType<T>).find(options) as Array<InstanceType<T>>
   }
 
   /**
    * Returns the first document maching the given `filter` and `options`.
    * Returns `undefined` if no document was found in the collection.
    */
-  static async findOne<T extends MoonModel>(this: T, filter?: Filter<T>, options?: FindOptions<T>): Promise<InstanceType<T> | undefined> {
-    return this.query().where(filter).findOne(options)
+  static async findOne<T extends MoonModel>(this: T, filter?: Filter<InstanceType<T>>, options?: FindOptions<InstanceType<T>>): Promise<InstanceType<T> | undefined> {
+    return await this.query().where(filter as InstanceType<T>).findOne(options) as InstanceType<T>
   }
 
   /**
    * Tba.
    */
-  static async findById<T extends MoonModel>(this: T, id: ObjectId | string, options?: FindOptions<T>): Promise<InstanceType<T> | undefined> {
+  static async findById<T extends MoonModel>(this: T, id: ObjectId | string, options?: FindOptions<InstanceType<T>>): Promise<InstanceType<T> | undefined> {
     return await this.findOne(
-      { _id: new ObjectId(id) } as unknown as Filter<T>,
+      { _id: new ObjectId(id) } as any,
       { ...options }
     )
   }
@@ -256,28 +237,16 @@ export class Model implements MoonDocument {
    * Returns the first document maching the given `filter` and `options`.
    * Returns undefined if no document was found in the collection.
    */
-  static async create<T extends MoonModel>(this: T, document: Omit<T, '_id'>): Promise<InstanceType<T>> {
-    const result = await this.collection().insertOne(document)
-
-    if (!result.acknowledged) {
-      throw new Error('Failed to insert document')
-    }
-
-    return new this({ ...document, _id: result.insertedId }).withDatabase(this.database) as InstanceType<T>
+  static async create<T extends MoonModel>(this: T, document: Omit<ModelObject, '_id'>): Promise<InstanceType<T>> {
+    return await this.query().create(document) as InstanceType<T>
   }
 
   /**
    * Returns the first document maching the given `filter` and `options`.
    * Returns undefined if no document was found in the collection.
    */
-  static async updateOne<T extends MoonModel>(this: T, filter: Filter<T>, update: UpdateFilter<T>): Promise<InstanceType<T>> {
-    const result = await this.collection().updateOne({ ...filter }, { ...update })
-
-    if (!result.acknowledged) {
-      throw new Error('Failed to update document')
-    }
-
-    return this.findById(result.upsertedId) as InstanceType<T>
+  static async updateOne<T extends MoonModel>(this: T, filter: Filter<InstanceType<T>>, update: UpdateFilter<InstanceType<T>>): Promise<InstanceType<T>> {
+    return await this.query().updateOne(filter as InstanceType<T>, update as any) as InstanceType<T>
   }
 
   /**
@@ -291,14 +260,8 @@ export class Model implements MoonDocument {
    * Deletes the documents matching the given `filter` and delete `options`.
    * Use the `Model.truncate` method to delete all documents in the collection.
    */
-  static async delete<T extends MoonModel>(this: T, filter: Filter<T>, options?: DeleteOptions): Promise<DeleteResult> {
-    const result = await this.collection().deleteMany({ ...filter }, { ...options })
-
-    if (!result.acknowledged) {
-      throw new Error('Failed to delete documents')
-    }
-
-    return result
+  static async delete<T extends MoonModel>(this: T, filter: Filter<InstanceType<T>>, options?: DeleteOptions): Promise<DeleteResult> {
+    return await this.query().delete(filter as InstanceType<T>, options)
   }
 
   /**
@@ -306,21 +269,29 @@ export class Model implements MoonDocument {
    * In case the `filter` and `options` are empty or an empty object,
    * this query deletes the first match.
    */
-  static async deleteOne<T extends MoonModel>(this: T, filter?: Filter<T>, options?: DeleteOptions): Promise<DeleteResult> {
-    return await this.collection().deleteOne({ ...filter }, { ...options })
-  }
-
-  /**
-   * Returns a query builder instance for this model.
-   */
-  static query<T extends MoonModel>(this: T): QueryBuilder<T> {
-    return new QueryBuilder(this)
+  static async deleteOne<T extends MoonModel>(this: T, filter?: Filter<InstanceType<T>>, options?: DeleteOptions): Promise<DeleteResult> {
+    return await this.query<T>().deleteOne(filter as InstanceType<T>, options)
   }
 
   /**
    * Eager load the given `relations`.
    */
-  static with<T extends MoonModel> (this: T, ...relations: string[]): QueryBuilder<T> {
-    return this.query().with(...relations)
+  static with<T extends MoonModel> (...relations: string[]): QueryBuilder<InstanceType<T>> {
+    return this.query<T>().with(...relations)
+  }
+
+  /**
+   * Returns a query builder instance for this model.
+   */
+  static query<T extends MoonModel>(): QueryBuilder<InstanceType<T>> {
+    return (new this() as unknown as InstanceType<T>).query()
+  }
+
+  /**
+   * Returns a new query builder for the model’s collection.
+   */
+  query<T extends MoonDocument> (this: T): QueryBuilder<T> {
+    return new QueryBuilder<T>(this)
+    // .with(this.with)
   }
 }

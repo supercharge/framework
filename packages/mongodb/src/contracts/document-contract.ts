@@ -1,7 +1,10 @@
 'use strict'
 
-import { Connection } from '../connection'
+import { QueryBuilder } from '../query/builder'
 import { ModelObject, HasId } from './utils-contract'
+import { MongodbConnectionResolver } from './connection-contract'
+import { MongodbConnection } from '.'
+import { Collection } from 'mongodb'
 
 export interface MoonDocument extends HasId {
   /**
@@ -10,11 +13,6 @@ export interface MoonDocument extends HasId {
   save(): Promise<this>
   update(values: Omit<Partial<MoonDocument>, '_id'>): Promise<this>
   delete(): Promise<this>
-
-  /**
-   * Load relationships onto the instance
-   */
-  load(...relationships: string[]): Promise<void>
 
   /**
    * Assign the given `values` to the document.
@@ -32,7 +30,32 @@ export interface MoonDocument extends HasId {
   toJSON(): ModelObject
 
   /**
-   * Assign the given `database` to the model.
+   * Create a new instance of the given model.
    */
-  withDatabase(db: Connection): this
+  newInstance<T extends MoonDocument>(attributes?: ModelObject): T
+
+  /**
+   * Assign the given connection `resolver`.
+   */
+  setConnectionResolver(resolver: MongodbConnectionResolver): this
+
+  /**
+   * Returns the connection `resolver`.
+   */
+  getConnectionResolver(): MongodbConnectionResolver
+
+  /**
+   * Returns the database connection for the model.
+   */
+  getConnection(): Promise<MongodbConnection>
+
+  /**
+   * Returns the database collection for the model.
+   */
+  getCollection(): Promise<Collection>
+
+  /**
+   * Returns a query builder instance for this model.
+   */
+  query<T extends MoonDocument>(): QueryBuilder<T>
 }
