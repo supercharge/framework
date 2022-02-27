@@ -1,24 +1,31 @@
 'use strict'
 
-const { Database } = require('../dist')
 const { test } = require('@japa/runner')
+const { makeApp } = require('./helpers')
+const { MongodbManager } = require('../dist')
 
-test('connect', async ({ expect }) => {
-  const db = new Database('mongodb://localhost')
-  await db.connect()
+const app = makeApp()
 
-  expect(db.isConnected()).toBe(true)
+test('boot', async ({ expect }) => {
+  const mongodb = new MongodbManager(app, app.config().get('mongodb'))
+  await mongodb.boot()
 
-  await db.disconnect()
+  const connection = await mongodb.connection()
+
+  expect(connection.isConnected()).toBe(true)
+  await connection.disconnect()
 })
 
 test('isDisconnected', async ({ expect }) => {
-  const db = new Database('mongodb://localhost')
-  expect(db.isDisconnected()).toBe(true)
+  const mongodb = new MongodbManager(app, app.config().get('mongodb'))
+  const connection = await mongodb.connection()
 
-  await db.connect()
+  // expect the connection to be established after retrieving it
+  expect(connection.isConnected()).toBe(true)
+  expect(connection.isDisconnected()).toBe(false)
 
-  expect(db.isConnected()).toBe(true)
+  await connection.disconnect()
 
-  await db.disconnect()
+  expect(connection.isConnected()).toBe(false)
+  expect(connection.isDisconnected()).toBe(true)
 })

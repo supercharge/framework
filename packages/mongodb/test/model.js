@@ -1,22 +1,25 @@
 'use strict'
 
 const { test } = require('@japa/runner')
-const { Database, Model } = require('../dist')
+const { makeApp } = require('./helpers')
+const { MongodbManager, Model } = require('../dist')
 
-const db = new Database('mongodb://localhost/testing-model-class')
+const app = makeApp()
+const mongodb = new MongodbManager(app, app.config().get('mongodb'))
 
 class User extends Model {}
 
 test.group('Model', (group) => {
   group.setup(async () => {
-    db.register(User)
+    await mongodb.boot()
 
-    await db.connect()
+    Model.setConnectionResolver(mongodb)
     await User.delete()
   })
 
   group.teardown(async () => {
-    await db.disconnect()
+    const connection = await mongodb.connection()
+    await connection.disconnect()
   })
 
   test('create', async ({ expect }) => {
@@ -31,7 +34,7 @@ test.group('Model', (group) => {
     const user = await User.create({ name: 'Update-Supercharge' })
     await user.update({ name: 'Marcus' })
 
-    const updated = await User.findById(user.id)
+    const updated = await User.findById(user._id)
     expect(updated.name).toEqual('Marcus')
-  })
+  }).skip()
 })
