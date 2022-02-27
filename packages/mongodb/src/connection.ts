@@ -1,29 +1,17 @@
 'use strict'
 
-import { Model } from './model'
 import { Arr } from '@supercharge/arrays'
-import { Collect } from '@supercharge/collections'
+import { tap } from '@supercharge/goodies'
 import { ConnectionState, MongodbConnection } from './contracts'
-import { MongoDbConnectionConfig } from './contracts/config-contract'
-import { Collection, CollectionInfo, ListDatabasesResult, MongoClient } from 'mongodb'
+import { Collection, CollectionInfo, ListDatabasesResult, MongoClient, MongoClientOptions } from 'mongodb'
 
-export class Connection implements MongodbConnection {
+export class Connection extends MongoClient implements MongodbConnection {
   /**
    * Stores the database details.
    */
   private readonly meta: {
     /**
-     * An array of registered models.
-     */
-    models: Array<typeof Model>
-
-    /**
-     * The MongoDB client instance.
-     */
-    mongoClient: MongoClient
-
-    /**
-     * The MongoDB client connection state.
+     * The client connection state, determining whether it’s connected or not.
      */
     state: ConnectionState
   }
@@ -31,47 +19,17 @@ export class Connection implements MongodbConnection {
   /**
    * Create a new database instance.
    */
-  constructor (config: MongoDbConnectionConfig) {
-    this.meta = {
-      models: [],
-      state: 'disconnected',
-      mongoClient: this.createMongoClient(config)
-    }
-  }
+  constructor (url: string, options?: MongoClientOptions) {
+    super(url, options)
 
-  private createMongoClient (config: MongoDbConnectionConfig): MongoClient {
-    const url = this.createDsnFrom(config)
-
-    return new MongoClient(url, config.clientOptions)
-  }
-
-  private createDsnFrom (config: MongoDbConnectionConfig): string {
-    if (config.url) {
-      return config.url
-    }
-
-    return `${config.protocol ?? ''}` // this.createConnectionUrl(config)
-  }
-
-  /**
-   * Returns the registered models.
-   */
-  models (): Array<typeof Model> {
-    return this.meta.models
-  }
-
-  /**
-   * Returns the MongoDB client instance.
-   */
-  client (): MongoClient {
-    return this.meta.mongoClient
+    this.meta = { state: 'disconnected' }
   }
 
   /**
    * Returns the configured MongoDB database name.
    */
   databaseName (): string {
-    return this.client().db().databaseName
+    return this.db().databaseName
   }
 
   /**
@@ -79,31 +37,12 @@ export class Connection implements MongodbConnection {
    *
    * @returns {String}
    */
-  async connect (): Promise<void> {
+  override async connect (): Promise<this> {
     this.markAsConnecting()
-    await this.client().connect()
-    this.markAsConnected()
+    await super.connect()
 
-    await this.boot()
-  }
-
-  /**
-   * Returns the collection name.
-   *
-   * @returns {String}
-   */
-  protected async boot (): Promise<void> {
-    await this.bootModels()
-  }
-
-  /**
-   * Boot all registered models.
-   */
-  protected async bootModels (): Promise<void> {
-    await Collect(this.models()).forEach(async model => {
-      await model
-        .withDatabase(this)
-        .boot()
+    return tap(this, () => {
+      this.markAsConnected()
     })
   }
 
@@ -113,7 +52,7 @@ export class Connection implements MongodbConnection {
    * @returns {String}
    */
   async disconnect (): Promise<void> {
-    await this.client().close()
+    await super.close()
     this.markAsDisconnected()
   }
 
@@ -123,7 +62,7 @@ export class Connection implements MongodbConnection {
    * @returns {String}
    */
   async databases (): Promise<ListDatabasesResult> {
-    return this.client().db().admin().listDatabases()
+    return this.db().admin().listDatabases()
   }
 
   /**
@@ -136,7 +75,7 @@ export class Connection implements MongodbConnection {
    */
   async collections (databaseName?: string): Promise<Arr<CollectionInfo>> {
     return Arr.from(
-      await this.client().db(databaseName).listCollections().toArray()
+      await this.db(databaseName).listCollections().toArray()
     )
   }
 
@@ -148,7 +87,7 @@ export class Connection implements MongodbConnection {
    * @returns {Collection}
    */
   async createCollection (name: string): Promise<Collection> {
-    return await this.client().db().createCollection(name)
+    return await this.db().createCollection(name)
   }
 
   /**
@@ -207,6 +146,15 @@ export class Connection implements MongodbConnection {
   }
 
   /**
+   * Determine whether a connection to MongoDB is currently established.
+   *
+   * @returns {Boolean}
+   */
+  isConnecting (): boolean {
+    return this.isState('connecting')
+  }
+
+  /**
    * Determine whether a connection to MongoDB does not exists.
    *
    * @returns {Boolean}
@@ -244,19 +192,6 @@ export class Connection implements MongodbConnection {
    */
   protected markAsDisconnected (): this {
     this.meta.state = 'disconnected'
-
-    return this
-  }
-
-  /**
-   * Register the given `ModelClass` to this database.
-   *
-   * @param ModelClass
-   *
-   * @returns {this}
-   */
-  register (ModelClass: typeof Model): this {
-    this.models().push(ModelClass)
 
     return this
   }
