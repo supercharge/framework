@@ -1,7 +1,7 @@
 'use strict'
 
-import { Model } from '.'
 import { MongodbManager } from './mongodb-manager'
+import { Model, MongodbConnectionResolver } from '.'
 import { ServiceProvider } from '@supercharge/support'
 import { ServiceProvider as ServiceProviderContract } from '@supercharge/contracts'
 
@@ -25,6 +25,9 @@ export class MongodbServiceProvider extends ServiceProvider implements ServicePr
    * Boot MongoDB services.
    */
   override async boot (): Promise<void> {
-    Model.database = this.app().make('mongodb')
+    const db = this.app().make<MongodbConnectionResolver>('mongodb')
+    await db.boot()
+
+    Model.setConnectionResolver(db)
   }
 }

@@ -1,21 +1,33 @@
 'use strict'
 
 import { Connection } from '.'
+import Map from '@supercharge/map'
+import { tap } from '@supercharge/goodies'
 import { Manager } from '@supercharge/manager'
 import { Application } from '@supercharge/contracts'
-import { MongodbManagerContract } from './contracts/mongodb-manager-contract'
-import { MongodbConnection, MongoDbConfig, MongoDbConnectionConfig } from './contracts'
+import { MongodbConnection, MongoDbConfig, MongoDbConnectionConfig, MongodbConnectionResolver } from './contracts'
 
-export class MongodbManager extends Manager implements MongodbManagerContract {
+export class MongodbManager extends Manager implements MongodbConnectionResolver {
   private readonly meta: {
+    /**
+     * Stores the MongoDB configuration.
+     */
     config: MongoDbConfig
+
+    /**
+     * Cache for MongoDB connections.
+     */
+    connections: Map<string, MongodbConnection>
   }
 
+  /**
+   * Create a new instance.
+   */
   constructor (app: Application, config: MongoDbConfig) {
     super(app)
 
     this.validateConfig()
-    this.meta = { config }
+    this.meta = { config, connections: new Map() }
   }
 
   /**
@@ -31,41 +43,114 @@ export class MongodbManager extends Manager implements MongodbManagerContract {
     this.ensureConfig('mongodb.default', () => {
       throw new Error('Missing default MongoDB connection name. Please configure the "default" setting inside of the "config/mongodb.ts" configuration file.')
     })
+
+    this.ensureConfig('mongodb.connections', () => {
+      throw new Error('Missing MongoDB connections configuration. Please configure the "connections" setting inside of the "config/mongodb.ts" configuration file.')
+    })
   }
 
   /**
-   * Returns the default MongoDB driver name.
+   * Returns the default MongoDB connection name.
    *
    * @returns {String}
    */
   protected defaultDriver (): string {
+    return this.defaultConnection()
+  }
+
+  /**
+   * Returns the default MongoDB connection name.
+   *
+   * @returns {String}
+   */
+  protected defaultConnection (): string {
     return this.meta.config.default
   }
 
   /**
-   * Returns the driver instance. This method exists to retrieve
-   * IntelliSense because of the method’s specific return value.
+   * Returns the cached MongoDB connections.
+   *
+   * @returns {String}
+   */
+  protected connections (): Map<string, MongodbConnection> {
+    return this.meta.connections
+  }
+
+  /**
+   * Boot the connection resolver.
+   */
+  async boot (): Promise<void> {
+    await this.ensureDefaultConnection()
+  }
+
+  /**
+   * Make sure the default connection is connectable.
+   */
+  private async ensureDefaultConnection (): Promise<void> {
+    await this.connection(
+      this.defaultConnection()
+    )
+  }
+
+  /**
+   * Returns a MongoDB connection for the given `name`. Returns the
+   * default connection when not providing the `name` parameter.
    *
    * @param {String} name
    *
-   * @returns {ViewEngine}
+   * @returns {MongodbConnection}
    */
-  connection (): MongodbConnection
-  connection (name: string): MongodbConnection
-  connection (name?: any): MongodbConnection {
-    // TODO cache connections
+  async connection (name?: string): Promise<MongodbConnection> {
+    const connectionName = name ?? this.defaultConnection()
 
-    return this.createMongodbConnection(
-      this.meta.config.connections[name] ?? this.meta.config.connections[this.defaultDriver()]
-    )
+    if (this.connections().isMissing(connectionName)) {
+      await this.createMongodbConnection(connectionName)
+    }
+
+    return this.connections().get(connectionName)!
   }
 
   /**
    * Create a MongoDB connection for the given .
    *
-   * @returns {FileLogger}
+   * @returns {MongodbConnection}
    */
-  protected createMongodbConnection (config: MongoDbConnectionConfig): MongodbConnection {
-    return new Connection(config)
+  protected async createMongodbConnection (name: string): Promise<MongodbConnection> {
+    const config = this.meta.config.connections[name]
+
+    if (!config) {
+      throw new Error(`Missing MongoDB connection configuration for key "${name}"`)
+    }
+
+    const connection = new Connection(
+      this.createConnectionUri(config), config.clientOptions
+    )
+
+    return tap(connection, async () => {
+      this.connections().set(name, await connection.connect())
+    })
+  }
+
+  /**
+   * Returns the connection URL.
+   *
+   * @param config
+   *
+   * @returns
+   */
+  private createConnectionUri (config: MongoDbConnectionConfig): string {
+    const { url, host, port, database = '', protocol = 'mongodb' } = config
+
+    if (url) {
+      return String(url)
+    }
+
+    if (!host) {
+      throw new Error('Missing MongoDB host')
+    }
+
+    return host && port
+      ? `${protocol}://${host}:${port}/${database}`
+      : `${protocol}://${host}/${database}`
   }
 }
