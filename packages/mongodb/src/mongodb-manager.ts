@@ -37,7 +37,7 @@ export class MongodbManager extends Manager implements MongodbConnectionResolver
    */
   private validateConfig (): void {
     this.ensureConfig('mongodb', () => {
-      throw new Error('Missing mongodb configuration file. Make sure the "config/mongodb.ts" file exists.')
+      throw new Error('Missing "mongodb" configuration file. Make sure the "config/mongodb.ts" file exists.')
     })
 
     this.ensureConfig('mongodb.default', () => {
