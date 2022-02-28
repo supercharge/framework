@@ -1,10 +1,10 @@
 'use strict'
 
 const { test } = require('@japa/runner')
-const { makeApp } = require('./helpers')
 const { MongodbManager, Model } = require('../dist')
+const { makeAppWithMongodbConfig } = require('./helpers')
 
-const app = makeApp()
+const app = makeAppWithMongodbConfig()
 const mongodb = new MongodbManager(app, app.config().get('mongodb'))
 
 class User extends Model {}

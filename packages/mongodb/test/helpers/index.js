@@ -8,7 +8,16 @@ const { Application } = require('@supercharge/core')
  * @returns {Application}
  */
 exports.makeApp = function makeApp () {
-  const app = Application.createWithAppRoot(__dirname)
+  return Application.createWithAppRoot(__dirname)
+}
+
+/**
+ * Returns a test application.
+ *
+ * @returns {Application}
+ */
+exports.makeAppWithMongodbConfig = function makeAppWithMongodbConfig () {
+  const app = exports.makeApp()
 
   app.config().set('mongodb', {
     default: 'local',
