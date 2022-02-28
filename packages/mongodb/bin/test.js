@@ -23,7 +23,10 @@ configure({
     files: ['test/**/*.js'],
     plugins: [expect()],
     reporters: [specReporter()],
-    importer: (filePath) => require(filePath)
+    importer: (filePath) => require(filePath),
+    filters: {
+      // files: ['mongodb-service-provider.js']
+    }
   }
 })
 
