@@ -13,7 +13,10 @@ export class MongodbServiceProvider extends ServiceProvider implements ServicePr
     this.registerDatabase()
   }
 
-  registerDatabase (): void {
+  /**
+   * Register the MongoDB database.
+   */
+  private registerDatabase (): void {
     this.app().singleton('mongodb', () => {
       return new MongodbManager(
         this.app(), this.app().config().get('mongodb')
