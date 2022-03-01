@@ -3,7 +3,9 @@
 ## [2.0.0-alpha.9](https://github.com/supercharge/framework/compare/v2.0.0-alpha.8...v2.0.0-alpha.9) - 2022-xx-xx
 
 ### Updated
-- `@supercharge/container `
+- `@supercharge/console`
+  - bump dependencies
+- `@supercharge/container`
   - refine container contracts: retrieve the resolved type when using a class in `make`
 - `@supercharge/http`
   - refine input bag contracts: detect whether the `get` method retrieves a default value

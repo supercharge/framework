@@ -1,6 +1,5 @@
 'use strict'
 
-import { tap } from '@supercharge/goodies'
 import { Application } from '@supercharge/contracts'
 import { Command as CedarCommand } from '@supercharge/cedar'
 
@@ -31,8 +30,8 @@ export class Command extends CedarCommand {
    * @returns {Command}
    */
   setSupercharge (app: Application): Command {
-    return tap(this, () => {
-      this._supercharge = app
-    })
+    this._supercharge = app
+
+    return this
   }
 }
