@@ -1,7 +1,7 @@
 {
   "name": "@supercharge/env",
   "description": "The Supercharge environment package",
-  "version": "2.0.0-alpha.8",
+  "version": "2.0.0-alpha.9",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
@@ -12,7 +12,7 @@
   "main": "dist",
   "types": "dist",
   "dependencies": {
-    "@supercharge/contracts": "^2.0.0-alpha.8",
+    "@supercharge/contracts": "^2.0.0-alpha.9",
     "@supercharge/fs": "~3.4.0",
     "@supercharge/strings": "~1.22.0",
     "dotenv": "~10.0.0",
