@@ -292,6 +292,5 @@ export class Model implements MongodbDocument {
    */
   query<T extends MongodbDocument> (this: T): QueryBuilder<T> {
     return new QueryBuilder<T>(this)
-    // .with(this.with)
   }
 }
