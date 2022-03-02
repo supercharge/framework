@@ -36,5 +36,49 @@ test.group('Model', (group) => {
 
     const updated = await User.findById(user._id)
     expect(updated.name).toEqual('Marcus')
-  }).skip()
+  })
+
+  test('toJSON', async ({ expect }) => {
+    const user = await User.create({ name: 'Supercharge' })
+
+    expect(JSON.stringify(user)).toEqual(JSON.stringify({
+      name: 'Supercharge', _id: user.id
+    }))
+  })
+
+  test('all', async ({ expect }) => {
+    //
+  }).skip(true)
+
+  test('find', async ({ expect }) => {
+    //
+  }).skip(true)
+
+  test('findOne', async ({ expect }) => {
+    //
+  }).skip(true)
+
+  test('findById', async ({ expect }) => {
+    //
+  }).skip(true)
+
+  test('create', async ({ expect }) => {
+    //
+  }).skip(true)
+
+  test('updateOne', async ({ expect }) => {
+    //
+  }).skip(true)
+
+  test('truncate', async ({ expect }) => {
+    //
+  }).skip(true)
+
+  test('delete', async ({ expect }) => {
+    //
+  }).skip(true)
+
+  test('deleteOne', async ({ expect }) => {
+    //
+  }).skip(true)
 })
