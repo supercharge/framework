@@ -120,7 +120,14 @@ export class QueryBuilder<T extends MongodbDocument> {
   /**
    * Creates the given `document` in the database.
    */
-  async create (document: Omit<ModelObject, '_id'>): Promise<T> {
+  async create (document: ModelObject): Promise<T> {
+    return await this.insertOne(document)
+  }
+
+  /**
+   * Insert the given `document` into the database.
+   */
+  async insertOne (document: ModelObject): Promise<T> {
     const collection = await this.collection()
     const result = await collection.insertOne(document)
 
@@ -129,6 +136,25 @@ export class QueryBuilder<T extends MongodbDocument> {
     }
 
     return this.model.newInstance<T>({ ...document, _id: result.insertedId })
+  }
+
+  /**
+   * Creates the given `documents` in the database.
+   */
+  async createMany (documents: ModelObject[]): Promise<void> {
+    return await this.insertMany(documents)
+  }
+
+  /**
+   * Insert the given `documents` into the database.
+   */
+  async insertMany (documents: ModelObject[]): Promise<void> {
+    const collection = await this.collection()
+    const result = await collection.insertMany(documents)
+
+    if (!result.acknowledged) {
+      throw new Error('Failed to insert documents')
+    }
   }
 
   /**

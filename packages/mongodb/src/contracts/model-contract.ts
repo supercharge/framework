@@ -55,15 +55,19 @@ export interface MongodbModel {
   findOne<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: FindOptions<InstanceType<T>>): Promise<InstanceType<T> | undefined>
 
   /**
-   * Tba.
+   * Returns the document for the given `id` or `undefined` if no document with that ID is available.
    */
   findById<T extends MongodbModel>(this: T, id: ObjectId | string, options?: FindOptions<InstanceType<T>>): Promise<InstanceType<T> | undefined>
 
   /**
-   * Returns the first document maching the given `filter` and `options`.
-   * Returns undefined if no document was found in the collection.
+   * Creates the given `document` in the database.
    */
   create<T extends MongodbModel>(this: T, document: T): Promise<InstanceType<T>>
+
+  /**
+   * Creates the given `documents` in the database.
+   */
+  createMany<T extends MongodbModel>(this: T, documents: T[]): Promise<void>
 
   /**
    * Updates the updated document maching the given `filter` and `options`.
@@ -87,6 +91,11 @@ export interface MongodbModel {
    * this query deletes the first match.
    */
   deleteOne<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: DeleteOptions): Promise<DeleteResult>
+
+  /**
+   * Delete the document for the given `id`. Does nothing if no document with that ID is available.
+   */
+  deleteById<T extends MongodbModel>(this: T, id: ObjectId | string, options?: DeleteOptions): Promise<DeleteResult>
 
   /**
    * Returns a query builder instance for this model.

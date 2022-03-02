@@ -234,11 +234,17 @@ export class Model implements MongodbDocument {
   }
 
   /**
-   * Returns the first document maching the given `filter` and `options`.
-   * Returns undefined if no document was found in the collection.
+   * Creates the given `document` in the database.
    */
-  static async create<T extends MongodbModel>(this: T, document: Omit<ModelObject, '_id'>): Promise<InstanceType<T>> {
+  static async create<T extends MongodbModel>(this: T, document: ModelObject): Promise<InstanceType<T>> {
     return await this.query().create(document) as InstanceType<T>
+  }
+
+  /**
+   * Creates the given `documents` in the database.
+   */
+  static async createMany<T extends MongodbModel>(this: T, documents: ModelObject[]): Promise<void> {
+    return await this.query().createMany(documents)
   }
 
   /**
@@ -271,6 +277,13 @@ export class Model implements MongodbDocument {
    */
   static async deleteOne<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: DeleteOptions): Promise<DeleteResult> {
     return await this.query<T>().deleteOne(filter as InstanceType<T>, options)
+  }
+
+  /**
+   * Delete the document for the given `id`. Does nothing if no document with that ID is available.
+   */
+  static async deleteById<T extends MongodbModel>(this: T, id: ObjectId | string, options?: DeleteOptions): Promise<DeleteResult> {
+    return await this.query<T>().deleteOne({ _id: new ObjectId(id) } as any, options)
   }
 
   /**
