@@ -23,7 +23,7 @@ exports.makeAppWithMongodbConfig = function makeAppWithMongodbConfig () {
     default: 'local',
     connections: {
       local: {
-        url: 'mongodb://localhost'
+        url: 'mongodb://localhost/testing'
       }
     }
   })
