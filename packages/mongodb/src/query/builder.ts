@@ -45,9 +45,9 @@ export class QueryBuilder<T extends MongodbDocument> {
    * @returns {this}
    */
   with (...relations: string[]): this {
-    this.eagerLoad.push(...relations)
-
-    return this
+    return tap(this, () => {
+      this.eagerLoad.push(...relations)
+    })
   }
 
   /**
@@ -58,9 +58,9 @@ export class QueryBuilder<T extends MongodbDocument> {
    * @returns {this}
    */
   where (filter?: Filter<T>): this {
-    this.filter = { ...filter }
-
-    return this
+    return tap(this, () => {
+      this.filter = { ...filter }
+    })
   }
 
   /**
