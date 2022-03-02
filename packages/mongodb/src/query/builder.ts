@@ -45,9 +45,9 @@ export class QueryBuilder<T extends MongodbDocument> {
    * @returns {this}
    */
   with (...relations: string[]): this {
-    return tap(this, () => {
-      this.eagerLoad.push(...relations)
-    })
+    this.eagerLoad.push(...relations)
+
+    return this
   }
 
   /**
@@ -58,9 +58,9 @@ export class QueryBuilder<T extends MongodbDocument> {
    * @returns {this}
    */
   where (filter?: Filter<T>): this {
-    return tap(this, () => {
-      this.filter = { ...filter }
-    })
+    this.filter = Object.assign(this.filter, { ...filter })
+
+    return this
   }
 
   /**
@@ -118,8 +118,7 @@ export class QueryBuilder<T extends MongodbDocument> {
   }
 
   /**
-   * Returns the first document maching the given `filter` and `options`.
-   * Returns undefined if no document was found in the collection.
+   * Creates the given `document` in the database.
    */
   async create (document: Omit<ModelObject, '_id'>): Promise<T> {
     const collection = await this.collection()
@@ -129,13 +128,11 @@ export class QueryBuilder<T extends MongodbDocument> {
       throw new Error('Failed to insert document')
     }
 
-    // return await this.findById(result.insertedId) as T
     return this.model.newInstance<T>({ ...document, _id: result.insertedId })
   }
 
   /**
-   * Returns the first document maching the given `filter` and `options`.
-   * Returns undefined if no document was found in the collection.
+   * Updates the first document matching the given `filter` with the values in `update`.
    */
   async updateOne (filter: Filter<T>, update: UpdateFilter<T>): Promise<T> {
     const collection = await this.collection()
