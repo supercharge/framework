@@ -4,9 +4,9 @@ import pluralize from 'pluralize'
 import { isObject } from './utils'
 import Str from '@supercharge/strings'
 import { QueryBuilder } from './query/builder'
-import { MoonModel } from './contracts/model-contract'
+import { MongodbModel } from './contracts/model-contract'
 import { ModelObject } from './contracts/utils-contract'
-import { MoonDocument } from './contracts/document-contract'
+import { MongodbDocument } from './contracts/document-contract'
 import { MongodbConnection, MongodbConnectionResolver } from './contracts/connection-contract'
 import { Collection, DeleteOptions, DeleteResult, Filter, FindOptions, ObjectId, UpdateFilter } from 'mongodb'
 
@@ -14,8 +14,8 @@ function StaticImplements<T> () {
   return (_t: T) => {}
 }
 
-@StaticImplements<MoonModel>()
-export class Model implements MoonDocument {
+@StaticImplements<MongodbModel>()
+export class Model implements MongodbDocument {
   /**
    * Stores the document ID.
    */
@@ -164,8 +164,8 @@ export class Model implements MoonDocument {
   /**
    * Returns the model constructor.
    */
-  private model (): MoonModel {
-    return this.constructor as MoonModel
+  private model (): MongodbModel {
+    return this.constructor as MongodbModel
   }
 
   /**
@@ -173,7 +173,7 @@ export class Model implements MoonDocument {
    *
    * @param attributes
    */
-  newInstance<T extends MoonDocument> (attributes?: ModelObject): T {
+  newInstance<T extends MongodbDocument> (attributes?: ModelObject): T {
     const Ctor = this.model()
 
     return new Ctor(attributes).setConnectionResolver(
@@ -203,7 +203,7 @@ export class Model implements MoonDocument {
   /**
    * Returns the collection name.
    */
-  static async all<T extends MoonModel>(this: T): Promise<Array<InstanceType<T>>> {
+  static async all<T extends MongodbModel>(this: T): Promise<Array<InstanceType<T>>> {
     return await this.find()
   }
 
@@ -211,7 +211,7 @@ export class Model implements MoonDocument {
    * Returns an array of documents maching the given `filter` and `options`.
    * Returns an empty array if no documents were found in the collection.
    */
-  static async find<T extends MoonModel>(this: T, filter?: Filter<InstanceType<T>>, options?: FindOptions<InstanceType<T>>): Promise<Array<InstanceType<T>>> {
+  static async find<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: FindOptions<InstanceType<T>>): Promise<Array<InstanceType<T>>> {
     return await this.query().where(filter as InstanceType<T>).find(options) as Array<InstanceType<T>>
   }
 
@@ -219,14 +219,14 @@ export class Model implements MoonDocument {
    * Returns the first document maching the given `filter` and `options`.
    * Returns `undefined` if no document was found in the collection.
    */
-  static async findOne<T extends MoonModel>(this: T, filter?: Filter<InstanceType<T>>, options?: FindOptions<InstanceType<T>>): Promise<InstanceType<T> | undefined> {
+  static async findOne<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: FindOptions<InstanceType<T>>): Promise<InstanceType<T> | undefined> {
     return await this.query().where(filter as InstanceType<T>).findOne(options) as InstanceType<T>
   }
 
   /**
    * Tba.
    */
-  static async findById<T extends MoonModel>(this: T, id: ObjectId | string, options?: FindOptions<InstanceType<T>>): Promise<InstanceType<T> | undefined> {
+  static async findById<T extends MongodbModel>(this: T, id: ObjectId | string, options?: FindOptions<InstanceType<T>>): Promise<InstanceType<T> | undefined> {
     return await this.findOne(
       { _id: new ObjectId(id) } as any,
       { ...options }
@@ -237,7 +237,7 @@ export class Model implements MoonDocument {
    * Returns the first document maching the given `filter` and `options`.
    * Returns undefined if no document was found in the collection.
    */
-  static async create<T extends MoonModel>(this: T, document: Omit<ModelObject, '_id'>): Promise<InstanceType<T>> {
+  static async create<T extends MongodbModel>(this: T, document: Omit<ModelObject, '_id'>): Promise<InstanceType<T>> {
     return await this.query().create(document) as InstanceType<T>
   }
 
@@ -245,14 +245,14 @@ export class Model implements MoonDocument {
    * Returns the first document maching the given `filter` and `options`.
    * Returns undefined if no document was found in the collection.
    */
-  static async updateOne<T extends MoonModel>(this: T, filter: Filter<InstanceType<T>>, update: UpdateFilter<InstanceType<T>>): Promise<InstanceType<T>> {
+  static async updateOne<T extends MongodbModel>(this: T, filter: Filter<InstanceType<T>>, update: UpdateFilter<InstanceType<T>>): Promise<InstanceType<T>> {
     return await this.query().updateOne(filter as InstanceType<T>, update as any) as InstanceType<T>
   }
 
   /**
    * Deletes all documents in the collection.
    */
-  static async truncate<T extends MoonModel>(this: T, options?: DeleteOptions): Promise<DeleteResult> {
+  static async truncate<T extends MongodbModel>(this: T, options?: DeleteOptions): Promise<DeleteResult> {
     return await this.delete({}, options)
   }
 
@@ -260,7 +260,7 @@ export class Model implements MoonDocument {
    * Deletes the documents matching the given `filter` and delete `options`.
    * Use the `Model.truncate` method to delete all documents in the collection.
    */
-  static async delete<T extends MoonModel>(this: T, filter: Filter<InstanceType<T>>, options?: DeleteOptions): Promise<DeleteResult> {
+  static async delete<T extends MongodbModel>(this: T, filter: Filter<InstanceType<T>>, options?: DeleteOptions): Promise<DeleteResult> {
     return await this.query().delete(filter as InstanceType<T>, options)
   }
 
@@ -269,28 +269,28 @@ export class Model implements MoonDocument {
    * In case the `filter` and `options` are empty or an empty object,
    * this query deletes the first match.
    */
-  static async deleteOne<T extends MoonModel>(this: T, filter?: Filter<InstanceType<T>>, options?: DeleteOptions): Promise<DeleteResult> {
+  static async deleteOne<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: DeleteOptions): Promise<DeleteResult> {
     return await this.query<T>().deleteOne(filter as InstanceType<T>, options)
   }
 
   /**
    * Eager load the given `relations`.
    */
-  static with<T extends MoonModel> (...relations: string[]): QueryBuilder<InstanceType<T>> {
+  static with<T extends MongodbModel> (...relations: string[]): QueryBuilder<InstanceType<T>> {
     return this.query<T>().with(...relations)
   }
 
   /**
    * Returns a query builder instance for this model.
    */
-  static query<T extends MoonModel>(): QueryBuilder<InstanceType<T>> {
+  static query<T extends MongodbModel>(): QueryBuilder<InstanceType<T>> {
     return (new this() as unknown as InstanceType<T>).query()
   }
 
   /**
    * Returns a new query builder for the model’s collection.
    */
-  query<T extends MoonDocument> (this: T): QueryBuilder<T> {
+  query<T extends MongodbDocument> (this: T): QueryBuilder<T> {
     return new QueryBuilder<T>(this)
     // .with(this.with)
   }

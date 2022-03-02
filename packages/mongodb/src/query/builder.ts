@@ -1,10 +1,10 @@
 'use strict'
 
 import { tap } from '@supercharge/goodies'
-import { MoonDocument, ModelObject } from '../contracts'
+import { MongodbDocument, ModelObject } from '../contracts'
 import { Collection, DeleteOptions, DeleteResult, Filter, FindOptions, ObjectId, UpdateFilter } from 'mongodb'
 
-export class QueryBuilder<T extends MoonDocument> {
+export class QueryBuilder<T extends MongodbDocument> {
   /**
    * The model being queried.
    */
@@ -73,7 +73,7 @@ export class QueryBuilder<T extends MoonDocument> {
   /**
    * Save this document in the database.
    */
-  async save (document: Partial<MoonDocument>): Promise<T> {
+  async save (document: Partial<MongodbDocument>): Promise<T> {
     const { _id, ...values } = document
     const collection = await this.collection()
 
