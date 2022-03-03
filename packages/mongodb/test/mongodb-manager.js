@@ -1,5 +1,6 @@
 'use strict'
 
+const expect = require('expect')
 const { test } = require('@japa/runner')
 const { MongodbManager } = require('../dist')
 const { makeApp, makeAppWithMongodbConfig } = require('./helpers')
@@ -7,7 +8,7 @@ const { makeApp, makeAppWithMongodbConfig } = require('./helpers')
 const app = makeAppWithMongodbConfig()
 
 test.group('MongoDB Manager', async () => {
-  test('boot', async ({ expect }) => {
+  test('boot', async () => {
     const mongodb = new MongodbManager(app, app.config().get('mongodb'))
     await mongodb.boot()
 
@@ -17,7 +18,7 @@ test.group('MongoDB Manager', async () => {
     await connection.disconnect()
   })
 
-  test('isDisconnected', async ({ expect }) => {
+  test('isDisconnected', async () => {
     const mongodb = new MongodbManager(app, app.config().get('mongodb'))
     const connection = await mongodb.connection()
 
@@ -33,7 +34,7 @@ test.group('MongoDB Manager', async () => {
 })
 
 test.group('createMongodbConnection', async () => {
-  test('creates connection', async ({ expect }) => {
+  test('creates connection', async () => {
     const app = makeAppWithMongodbConfig()
     app.config().set('mongodb.connections.testing', { url: 'mongodb://localhost' })
 
@@ -44,7 +45,7 @@ test.group('createMongodbConnection', async () => {
     await connection.disconnect()
   })
 
-  test('creates connection from host and database', async ({ expect }) => {
+  test('creates connection from host and database', async () => {
     const app = makeAppWithMongodbConfig()
     app.config().set('mongodb.connections.host-and-db', { host: 'localhost', database: 'testing' })
 
@@ -55,7 +56,7 @@ test.group('createMongodbConnection', async () => {
     await connection.disconnect()
   })
 
-  test('creates connection from host, port, and database', async ({ expect }) => {
+  test('creates connection from host, port, and database', async () => {
     const app = makeAppWithMongodbConfig()
     app.config().set('mongodb.connections.host-port-db', { host: 'localhost', port: 27017, database: 'testing' })
 
@@ -66,7 +67,7 @@ test.group('createMongodbConnection', async () => {
     await connection.disconnect()
   })
 
-  test('throws when not providing a host', async ({ expect }) => {
+  test('throws when not providing a host', async () => {
     const app = makeAppWithMongodbConfig()
     app.config().set('mongodb.connections.no-host', { database: 'testing' })
 
@@ -76,7 +77,7 @@ test.group('createMongodbConnection', async () => {
     ).rejects.toThrow('Missing MongoDB host')
   })
 
-  test('throws when creating non-existing connection', async ({ expect }) => {
+  test('throws when creating non-existing connection', async () => {
     const app = makeAppWithMongodbConfig()
 
     const mongodb = new MongodbManager(app, app.config().get('mongodb'))
@@ -87,7 +88,7 @@ test.group('createMongodbConnection', async () => {
 })
 
 test.group('validateConfig', async () => {
-  test('throws when missing mongodb configuration', async ({ expect }) => {
+  test('throws when missing mongodb configuration', async () => {
     const app = makeApp()
 
     expect(() => {
@@ -95,7 +96,7 @@ test.group('validateConfig', async () => {
     }).toThrow('Missing "mongodb" configuration file')
   })
 
-  test('throws when missing mongodb default connection', async ({ expect }) => {
+  test('throws when missing mongodb default connection', async () => {
     app.config().set('mongodb', { })
 
     expect(() => {
@@ -103,7 +104,7 @@ test.group('validateConfig', async () => {
     }).toThrow('Missing default MongoDB connection name')
   })
 
-  test('throws when missing mongodb connections', async ({ expect }) => {
+  test('throws when missing mongodb connections', async () => {
     app.config().set('mongodb', { default: 'local' })
 
     expect(() => {
