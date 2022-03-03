@@ -2,9 +2,10 @@
 
 import { tap, isNotNullish } from '@supercharge/goodies'
 import { MongodbDocument, ModelObject } from '../contracts'
-import { Document, Collection, CountDocumentsOptions, DeleteOptions, DeleteResult, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions, WithId } from 'mongodb'
+import { Document, Collection, DeleteOptions, DeleteResult, Filter, FindOptions, UpdateFilter, UpdateOptions, WithId, CountDocumentsOptions } from 'mongodb'
 
 export type OrFailCallback = () => Error
+export type QueryOptions = FindOptions | UpdateOptions | DeleteOptions | CountDocumentsOptions
 
 export class QueryBuilder<T extends MongodbDocument> {
   /**
@@ -16,6 +17,11 @@ export class QueryBuilder<T extends MongodbDocument> {
    * The query filter.
    */
   private filter: Filter<T>
+
+  /**
+   * The query options.
+   */
+  private options: QueryOptions
 
   /**
    * The relationships that should be eager loaded.
@@ -34,14 +40,8 @@ export class QueryBuilder<T extends MongodbDocument> {
     this.model = model
 
     this.filter = {}
+    this.options = {}
     this.eagerLoad = []
-  }
-
-  /**
-   * Required when promises are extended.
-   */
-  get [Symbol.toStringTag] (): string {
-    return this.constructor.name
   }
 
   /**
@@ -52,9 +52,9 @@ export class QueryBuilder<T extends MongodbDocument> {
    * @returns {this}
    */
   with (...relations: string[]): this {
-    this.eagerLoad.push(...relations)
-
-    return this
+    return tap(this, () => {
+      this.eagerLoad.push(...relations)
+    })
   }
 
   /**
@@ -65,9 +65,22 @@ export class QueryBuilder<T extends MongodbDocument> {
    * @returns {this}
    */
   where (filter?: Filter<T>): this {
-    this.filter = Object.assign(this.filter, { ...filter })
+    return tap(this, () => {
+      this.filter = Object.assign(this.filter, { ...filter })
+    })
+  }
 
-    return this
+  /**
+   * Eager load the given `relations`.
+   *
+   * @param relations
+   *
+   * @returns {this}
+   */
+  withOptions (options?: QueryOptions): this {
+    return tap(this, () => {
+      this.options = Object.assign(this.options, { ...options })
+    })
   }
 
   /**
@@ -78,9 +91,9 @@ export class QueryBuilder<T extends MongodbDocument> {
    * @returns {this}
    */
   orFail (handler: () => Error): this {
-    this.orFailCallback = handler
-
-    return this
+    return tap(this, () => {
+      this.orFailCallback = handler
+    })
   }
 
   /**
@@ -126,9 +139,9 @@ export class QueryBuilder<T extends MongodbDocument> {
    * Returns an array of documents maching the given `filter` and `options`.
    * Returns an empty array if no documents were found in the collection.
    */
-  async find (options?: FindOptions<T>): Promise<T[]> {
+  async find (): Promise<T[]> {
     const collection = await this.collection()
-    const results = await collection.find({ ...this.filter }, { ...options }).toArray()
+    const results = await collection.find({ ...this.filter }, { ...this.options }).toArray()
 
     if (results.length === 0) {
       this.maybeFail()
@@ -143,9 +156,9 @@ export class QueryBuilder<T extends MongodbDocument> {
    * Returns the first document maching the given `filter` and `options`.
    * Returns `undefined` if no document was found in the collection.
    */
-  async findOne (options?: FindOptions<T>): Promise<T | undefined> {
+  async findOne (): Promise<T | undefined> {
     const collection = await this.collection()
-    const document = await collection.findOne({ ...this.filter }, { ...options })
+    const document = await collection.findOne({ ...this.filter }, { ...this.options })
 
     return this.createInstanceIfNotNull(document)
   }
@@ -153,10 +166,8 @@ export class QueryBuilder<T extends MongodbDocument> {
   /**
    * Find a document for the given `id`. Returns `undefined` if no document is available.
    */
-  async findById (id: ObjectId | string, options?: FindOptions<T>): Promise<T | undefined> {
-    return await this
-      .where({ _id: new ObjectId(id) } as unknown as Filter<T>)
-      .findOne({ ...options })
+  async findById (): Promise<T | undefined> {
+    return await this.findOne()
   }
 
   /**
@@ -202,9 +213,9 @@ export class QueryBuilder<T extends MongodbDocument> {
   /**
    * Updates all documents maching the given `filter` with values from `update`.
    */
-  async update (filter: Filter<T>, values: UpdateFilter<T>, options?: UpdateOptions): Promise<void> {
+  async update (values: UpdateFilter<T>): Promise<void> {
     const collection = await this.collection()
-    const result = await collection.updateMany({ ...filter }, { ...values } as any, { ...options })
+    const result = await collection.updateMany({ ...this.filter }, { ...values } as any, { ...this.options })
 
     if (!result.acknowledged) {
       throw new Error('Failed to run "update" query')
@@ -214,9 +225,9 @@ export class QueryBuilder<T extends MongodbDocument> {
   /**
    * Updates the first document matching the given `filter` with the values in `update`.
    */
-  async updateOne (filter: Filter<T>, update: UpdateFilter<T>, options?: UpdateOptions): Promise<void> {
+  async updateOne (values: UpdateFilter<T>): Promise<void> {
     const collection = await this.collection()
-    const result = await collection.updateOne({ ...filter }, { ...update }, { ...options })
+    const result = await collection.updateOne({ ...this.filter }, { ...values }, { ...this.options })
 
     if (!result.acknowledged) {
       throw new Error('Failed to update the document')
@@ -227,9 +238,9 @@ export class QueryBuilder<T extends MongodbDocument> {
    * Deletes the documents matching the given `filter` and delete `options`.
    * Use the `Model.truncate` method to delete all documents in the collection.
    */
-  async delete (filter?: Filter<T>, options?: DeleteOptions): Promise<DeleteResult> {
+  async delete (): Promise<DeleteResult> {
     const collection = await this.collection()
-    const result = await collection.deleteMany({ ...filter }, { ...options })
+    const result = await collection.deleteMany({ ...this.filter }, { ...this.options })
 
     if (!result.acknowledged) {
       throw new Error('Failed to delete documents')
@@ -243,53 +254,25 @@ export class QueryBuilder<T extends MongodbDocument> {
    * In case the `filter` and `options` are empty or an empty object,
    * this query deletes the first match.
    */
-  async deleteOne (filter: Filter<T>, options?: DeleteOptions): Promise<DeleteResult> {
+  async deleteOne (): Promise<DeleteResult> {
     const collection = await this.collection()
 
-    return await collection.deleteOne({ ...filter }, { ...options })
+    return await collection.deleteOne({ ...this.filter }, { ...this.options })
   }
 
   /**
    * Deletes a document for the given `id`. Returns `undefined` if no document is available.
    */
-  async deleteById (id: ObjectId | string, options?: DeleteOptions): Promise<void> {
-    await this.deleteOne({ _id: new ObjectId(id) } as unknown as Filter<T>, { ...options })
+  async deleteById (): Promise<void> {
+    await this.deleteOne()
   }
 
   /**
    * Returns the number of documents in the model’s collection.
    */
-  async count (filter?: Filter<T>, options?: CountDocumentsOptions): Promise<number> {
+  async count (): Promise<number> {
     const collection = await this.collection()
 
-    return collection.countDocuments({ ...filter }, { ...options })
-  }
-
-  /**
-   * Run the query.
-   */
-  async run (): Promise<any[]> {
-    return await this.find()
-  }
-
-  /**
-   * Implementation of the promise `then` method.
-   */
-  then (onFulfilled: any, onRejected?: any): any {
-    return this.run().then(onFulfilled, onRejected)
-  }
-
-  /**
-   * Implementation of the promise `catch` method.
-   */
-  catch (onRejected: any): any {
-    return this.run().catch(onRejected)
-  }
-
-  /**
-   * Implementation of the promise `finally` method.
-   */
-  finally (onFinally: any): any {
-    return this.run().finally(onFinally)
+    return collection.countDocuments({ ...this.filter }, { ...this.options })
   }
 }

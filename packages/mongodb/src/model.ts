@@ -4,9 +4,11 @@ import pluralize from 'pluralize'
 import { isObject } from './utils'
 import Str from '@supercharge/strings'
 import { QueryBuilder } from './query/builder'
+import { PendingQuery } from './query/pending'
 import { MongodbModel } from './contracts/model-contract'
 import { ModelObject } from './contracts/utils-contract'
 import { MongodbDocument } from './contracts/document-contract'
+import { QueryBuilderContract } from './contracts/query-builder-contract'
 import { MongodbConnection, MongodbConnectionResolver } from './contracts/connection-contract'
 import { Collection, CountDocumentsOptions, DeleteOptions, DeleteResult, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
 
@@ -156,7 +158,7 @@ export class Model implements MongodbDocument {
    * Delete this document from the database.
    */
   async delete (): Promise<this> {
-    await this.query().deleteById(this._id)
+    await (this.pendingQuery().deleteById(this._id) as any)
 
     return this
   }
@@ -201,33 +203,33 @@ export class Model implements MongodbDocument {
   }
 
   /**
-   * Returns the collection name.
+   * This method is an alias for `.find()` returning all documents matching the given `filters`.
    */
-  static async all<T extends MongodbModel>(this: T): Promise<Array<InstanceType<T>>> {
-    return await this.find()
+  static all<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: FindOptions<InstanceType<T>>): QueryBuilderContract<InstanceType<T>, Array<InstanceType<T> | undefined>> {
+    return this.find(filter, options)
   }
 
   /**
    * Returns an array of documents maching the given `filter` and `options`.
    * Returns an empty array if no documents were found in the collection.
    */
-  static async find<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: FindOptions<InstanceType<T>>): Promise<Array<InstanceType<T>>> {
-    return await this.query().where(filter as InstanceType<T>).find(options) as Array<InstanceType<T>>
+  static find<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: FindOptions<InstanceType<T>>): QueryBuilderContract<InstanceType<T>, Array<InstanceType<T> | undefined>> {
+    return this.pendingQuery<T>().find(filter, options)
   }
 
   /**
    * Returns the first document maching the given `filter` and `options`.
    * Returns `undefined` if no document was found in the collection.
    */
-  static async findOne<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: FindOptions<InstanceType<T>>): Promise<InstanceType<T> | undefined> {
-    return await this.query().where(filter as InstanceType<T>).findOne(options) as InstanceType<T>
+  static findOne<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: FindOptions<InstanceType<T>>): QueryBuilderContract<InstanceType<T>, InstanceType<T> | undefined> {
+    return this.pendingQuery<T>().findOne(filter, options)
   }
 
   /**
    * Tba.
    */
-  static async findById<T extends MongodbModel>(this: T, id: ObjectId | string, options?: FindOptions<InstanceType<T>>): Promise<InstanceType<T> | undefined> {
-    return await this.query().findById(id, options) as InstanceType<T> | undefined
+  static findById<T extends MongodbModel>(this: T, id: ObjectId | string, options?: FindOptions<InstanceType<T>>): QueryBuilderContract<InstanceType<T>, InstanceType<T> | undefined> {
+    return this.pendingQuery<T>().findById(id, options)
   }
 
   /**
@@ -247,30 +249,30 @@ export class Model implements MongodbDocument {
   /**
    * Updates all documents maching the given `filter` with values from `update`.
    */
-  static async update<T extends MongodbModel>(this: T, filter: Filter<InstanceType<T>>, values: UpdateFilter<InstanceType<T>>, options: UpdateOptions): Promise<void> {
-    return await this.query().update(filter as any, values as any, options)
+  static update<T extends MongodbModel>(this: T, values: UpdateFilter<InstanceType<T>>, options: UpdateOptions): PendingQuery<InstanceType<T>> {
+    return this.pendingQuery().update(values as any, options) as PendingQuery<InstanceType<T>>
   }
 
   /**
    * Updates the first document maching the given `filter` with values from `update`.
    */
-  static async updateOne<T extends MongodbModel>(this: T, filter: Filter<InstanceType<T>>, update: UpdateFilter<InstanceType<T>>, options?: UpdateOptions): Promise<void> {
-    return await this.query().updateOne(filter as InstanceType<T>, update as any, options)
+  static updateOne<T extends MongodbModel>(this: T, values: UpdateFilter<InstanceType<T>>, options?: UpdateOptions): PendingQuery<InstanceType<T>> {
+    return this.pendingQuery<T>().updateOne(values, options)
   }
 
   /**
    * Deletes all documents in the collection.
    */
-  static async truncate<T extends MongodbModel>(this: T, options?: DeleteOptions): Promise<DeleteResult> {
-    return await this.delete({}, options)
+  static truncate<T extends MongodbModel>(this: T, options?: DeleteOptions): QueryBuilderContract<InstanceType<T>, DeleteResult> {
+    return this.delete({}, options)
   }
 
   /**
    * Deletes the documents matching the given `filter` and delete `options`.
    * Use the `Model.truncate` method to delete all documents in the collection.
    */
-  static async delete<T extends MongodbModel>(this: T, filter: Filter<InstanceType<T>>, options?: DeleteOptions): Promise<DeleteResult> {
-    return await this.query().delete(filter as InstanceType<T>, options)
+  static delete<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: DeleteOptions): PendingQuery<InstanceType<T>> {
+    return this.pendingQuery().where(filter as any).delete(options) as PendingQuery<InstanceType<T>>
   }
 
   /**
@@ -278,22 +280,22 @@ export class Model implements MongodbDocument {
    * In case the `filter` and `options` are empty or an empty object,
    * this query deletes the first match.
    */
-  static async deleteOne<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: DeleteOptions): Promise<DeleteResult> {
-    return await this.query<T>().deleteOne(filter as InstanceType<T>, options)
+  static deleteOne<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: DeleteOptions): QueryBuilderContract<InstanceType<T>, DeleteResult> {
+    return this.pendingQuery<T>().deleteOne(filter, options)
   }
 
   /**
    * Delete the document for the given `id`. Does nothing if no document with that ID is available.
    */
-  static async deleteById<T extends MongodbModel>(this: T, id: ObjectId | string, options?: DeleteOptions): Promise<DeleteResult> {
-    return await this.query<T>().deleteOne({ _id: new ObjectId(id) } as any, options)
+  static deleteById<T extends MongodbModel>(this: T, id: ObjectId | string, options?: DeleteOptions): QueryBuilderContract<InstanceType<T>, void> {
+    return this.pendingQuery<T>().deleteOne({ _id: new ObjectId(id) } as any, options)
   }
 
   /**
    * Eager load the given `relations`.
    */
-  static async count<T extends MongodbModel> (this: T, filter?: Filter<InstanceType<T>>, options?: CountDocumentsOptions): Promise<number> {
-    return this.query<T>().count(filter, options)
+  static count<T extends MongodbModel> (this: T, filter?: Filter<InstanceType<T>>, options?: CountDocumentsOptions): QueryBuilderContract<InstanceType<T>, number> {
+    return this.pendingQuery<T>().count(filter, options)
   }
 
   /**
@@ -301,6 +303,22 @@ export class Model implements MongodbDocument {
    */
   static with<T extends MongodbModel> (...relations: string[]): QueryBuilder<InstanceType<T>> {
     return this.query<T>().with(...relations)
+  }
+
+  /**
+   * Returns a pending query instance for this model.
+   */
+  static pendingQuery<T extends MongodbModel, ReturnType = any>(): PendingQuery<InstanceType<T>, ReturnType> {
+    return (new this() as unknown as InstanceType<T>).pendingQuery<InstanceType<T>, ReturnType>()
+  }
+
+  /**
+   * Returns a pending query instance for this model.
+   */
+  pendingQuery<T extends MongodbDocument, ReturnType = any>(this: T): PendingQuery<T, ReturnType> {
+    return new PendingQuery<T, ReturnType>(
+      this.query<T>()
+    )
   }
 
   /**

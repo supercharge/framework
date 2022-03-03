@@ -2,6 +2,7 @@
 
 import { Collection } from 'mongodb'
 import { QueryBuilder } from '../query/builder'
+import { PendingQuery } from '../query/pending'
 import { ModelObject, HasId } from './utils-contract'
 import { MongodbConnection, MongodbConnectionResolver } from './connection-contract'
 
@@ -57,4 +58,9 @@ export interface MongodbDocument extends HasId {
    * Returns a query builder instance for this model.
    */
   query<T extends MongodbDocument>(): QueryBuilder<T>
+
+  /**
+   * Returns a pending query instance for this model.
+   */
+  pendingQuery<T extends MongodbDocument, ReturnType = any>(): PendingQuery<T, ReturnType>
 }

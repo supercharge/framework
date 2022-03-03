@@ -53,7 +53,7 @@ test.group('Model', (group) => {
     expect(users.has(user => user.name === 'Supercharge')).toBe(true)
   })
 
-  test('find | returns filtered documents', async () => {
+  test('find | with filter object', async () => {
     await User.createMany([
       { name: 'Marcus' },
       { name: 'Supercharge' }
@@ -69,28 +69,44 @@ test.group('Model', (group) => {
     expect(notExistingUsers.length()).toBe(0)
   })
 
+  test('find | applies where filter', async () => {
+    await User.createMany([
+      { name: 'Marcus' },
+      { name: 'Supercharge' }
+    ])
+
+    const users = Arr.from(await User.find().where({ name: 'Marcus' }))
+
+    expect(users.length()).toBe(1)
+    expect(users.has(user => user.name === 'Marcus')).toBe(true)
+    expect(users.has(user => user.name === 'Supercharge')).toBe(false)
+
+    const notExistingUsers = Arr.from(await User.find({ name: 'NotExisting' }))
+    expect(notExistingUsers.length()).toBe(0)
+  })
+
   test('findOne', async () => {
     await User.create({ name: 'Marcus', isActive: true })
     await User.create({ name: 'Supercharge', isActive: true })
 
-    const user = await User.findOne({ name: 'Marcus' })
-    expect(user.name).toEqual('Marcus')
+    const user = await User.findOne().where({ name: 'Supercharge' })
+    expect(user.name).toEqual('Supercharge')
   })
 
   test('findOne | returns the first match', async () => {
-    await User.create({ name: 'Marcus', isActive: true })
+    await User.create({ name: 'Marcus', isActive: false })
     await User.create({ name: 'Supercharge', isActive: true })
 
-    const user = await User.findOne({ isActive: true })
+    const user = await User.findOne().where({ isActive: true })
     expect(user._id).toBeDefined()
-    expect(user.name).toEqual('Marcus')
+    expect(user.name).toEqual('Supercharge')
     expect(user.isActive).toEqual(true)
   })
 
   test('findOne | returns undefined', async () => {
     await User.create({ name: 'Supercharge', isActive: true })
 
-    const user = await User.findOne({ isActive: false })
+    const user = await User.findOne().where({ isActive: false })
     expect(user).toBeUndefined()
   })
 
@@ -126,7 +142,7 @@ test.group('Model', (group) => {
       { name: 'Supercharge' }
     ])
 
-    await User.update({}, { $set: { name: 'Updated' } })
+    await User.update({ $set: { name: 'Updated' } })
 
     const all = await User.all()
     expect(all).toMatchObject([
@@ -138,7 +154,7 @@ test.group('Model', (group) => {
   test('updateOne', async () => {
     const user = await User.create({ name: 'Supercharge' })
 
-    await User.updateOne({ _id: user._id }, { $set: { name: 'Updated' } })
+    await User.updateOne({ $set: { name: 'Updated' } }).where({ _id: user._id })
 
     const updated = await User.findById(user._id)
     expect(updated.name).toEqual('Updated')
@@ -149,7 +165,7 @@ test.group('Model', (group) => {
     await User.deleteById(user._id)
 
     expect(
-      await User.updateOne({ _id: user._id }, { $set: { name: 'Updated' } })
+      await User.updateOne({ $set: { name: 'Updated' } }).where({ _id: user._id })
     ).toBeUndefined()
   })
 
