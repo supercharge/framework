@@ -15,11 +15,11 @@
     "@supercharge/map": "~1.5.0",
     "@supercharge/strings": "~1.25.0",
     "@supercharge/support": "^2.0.0-alpha.8",
+    "expect": "~27.5.1",
     "mongodb": "~4.4.0",
     "pluralize": "~8.0.0"
   },
   "devDependencies": {
-    "@japa/expect": "~1.1.1",
     "@japa/runner": "~1.2.0",
     "@japa/spec-reporter": "~1.1.7",
     "@supercharge/core": "^2.0.0-alpha.8",

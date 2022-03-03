@@ -1,6 +1,5 @@
 'use strict'
 
-const { expect } = require('@japa/expect')
 const { specReporter } = require('@japa/spec-reporter')
 const { processCliArgs, configure, run } = require('@japa/runner')
 
@@ -21,7 +20,7 @@ configure({
   ...processCliArgs(process.argv.slice(2)),
   ...{
     files: ['test/**/*.js'],
-    plugins: [expect()],
+    plugins: [],
     reporters: [specReporter()],
     importer: (filePath) => require(filePath),
     filters: {
