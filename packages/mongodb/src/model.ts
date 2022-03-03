@@ -8,7 +8,7 @@ import { MongodbModel } from './contracts/model-contract'
 import { ModelObject } from './contracts/utils-contract'
 import { MongodbDocument } from './contracts/document-contract'
 import { MongodbConnection, MongodbConnectionResolver } from './contracts/connection-contract'
-import { Collection, DeleteOptions, DeleteResult, Filter, FindOptions, ObjectId, UpdateFilter } from 'mongodb'
+import { Collection, CountDocumentsOptions, DeleteOptions, DeleteResult, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
 
 function StaticImplements<T> () {
   return (_t: T) => {}
@@ -156,7 +156,7 @@ export class Model implements MongodbDocument {
    * Delete this document from the database.
    */
   async delete (): Promise<this> {
-    // TODO
+    await this.query().deleteById(this._id)
 
     return this
   }
@@ -227,10 +227,7 @@ export class Model implements MongodbDocument {
    * Tba.
    */
   static async findById<T extends MongodbModel>(this: T, id: ObjectId | string, options?: FindOptions<InstanceType<T>>): Promise<InstanceType<T> | undefined> {
-    return await this.findOne(
-      { _id: new ObjectId(id) } as any,
-      { ...options }
-    )
+    return await this.query().findById(id, options) as InstanceType<T> | undefined
   }
 
   /**
@@ -248,11 +245,17 @@ export class Model implements MongodbDocument {
   }
 
   /**
-   * Returns the first document maching the given `filter` and `options`.
-   * Returns undefined if no document was found in the collection.
+   * Updates all documents maching the given `filter` with values from `update`.
    */
-  static async updateOne<T extends MongodbModel>(this: T, filter: Filter<InstanceType<T>>, update: UpdateFilter<InstanceType<T>>): Promise<InstanceType<T>> {
-    return await this.query().updateOne(filter as InstanceType<T>, update as any) as InstanceType<T>
+  static async update<T extends MongodbModel>(this: T, filter: Filter<InstanceType<T>>, values: UpdateFilter<InstanceType<T>>, options: UpdateOptions): Promise<void> {
+    return await this.query().update(filter as any, values as any, options)
+  }
+
+  /**
+   * Updates the first document maching the given `filter` with values from `update`.
+   */
+  static async updateOne<T extends MongodbModel>(this: T, filter: Filter<InstanceType<T>>, update: UpdateFilter<InstanceType<T>>, options?: UpdateOptions): Promise<void> {
+    return await this.query().updateOne(filter as InstanceType<T>, update as any, options)
   }
 
   /**
@@ -284,6 +287,13 @@ export class Model implements MongodbDocument {
    */
   static async deleteById<T extends MongodbModel>(this: T, id: ObjectId | string, options?: DeleteOptions): Promise<DeleteResult> {
     return await this.query<T>().deleteOne({ _id: new ObjectId(id) } as any, options)
+  }
+
+  /**
+   * Eager load the given `relations`.
+   */
+  static async count<T extends MongodbModel> (this: T, filter?: Filter<InstanceType<T>>, options?: CountDocumentsOptions): Promise<number> {
+    return this.query<T>().count(filter, options)
   }
 
   /**

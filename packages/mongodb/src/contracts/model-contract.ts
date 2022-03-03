@@ -4,7 +4,7 @@ import { ModelObject } from './utils-contract'
 import { QueryBuilder } from '../query/builder'
 import { MongodbDocument } from './document-contract'
 import { MongodbConnectionResolver, MongodbConnection } from './connection-contract'
-import { DeleteOptions, DeleteResult, Filter, FindOptions, ObjectId, UpdateFilter } from 'mongodb'
+import { CountDocumentsOptions, DeleteOptions, DeleteResult, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
 
 export interface MongodbModel {
   /**
@@ -70,9 +70,14 @@ export interface MongodbModel {
   createMany<T extends MongodbModel>(this: T, documents: T[]): Promise<void>
 
   /**
-   * Updates the updated document maching the given `filter` and `options`.
+   * Updates the first document maching the given `filter` with values from `update`.
    */
-  updateOne<T extends MongodbModel>(this: T, filter: Filter<InstanceType<T>>, update: UpdateFilter<InstanceType<T>> | Partial<T>): Promise<InstanceType<T>>
+  update<T extends MongodbModel>(this: T, filter: Filter<InstanceType<T>>, values: UpdateFilter<InstanceType<T>>, options: UpdateOptions): Promise<void>
+
+  /**
+   * Updates the first document maching the given `filter` with values from `update`.
+   */
+  updateOne<T extends MongodbModel>(this: T, filter: Filter<InstanceType<T>>, values: UpdateFilter<InstanceType<T>>, options?: UpdateOptions): Promise<void>
 
   /**
    * Deletes all documents in the collection.
@@ -101,6 +106,11 @@ export interface MongodbModel {
    * Returns a query builder instance for this model.
    */
   query<T extends MongodbModel>(): QueryBuilder<InstanceType<T>>
+
+  /**
+   * Returns the number of documents in the model’s collection.
+   */
+  count<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: CountDocumentsOptions): Promise<number>
 
   /**
    * Eager load the given `relations`.
