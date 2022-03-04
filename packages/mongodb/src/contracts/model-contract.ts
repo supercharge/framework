@@ -35,7 +35,7 @@ export interface MongodbModel {
   getConnectionResolver(): MongodbConnectionResolver
 
   /**
-   * Returns the MongoDB connection.
+   * Returns a resolved MongoDB connection for the given `name`.
    */
   resolveConnection (name?: string): Promise<MongodbConnection>
 
