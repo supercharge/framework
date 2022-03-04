@@ -101,13 +101,25 @@ export class MongodbManager extends Manager implements MongodbConnectionResolver
    * @returns {MongodbConnection}
    */
   async connection (name?: string): Promise<MongodbConnection> {
-    const connectionName = name ?? this.defaultConnection()
+    const connectionName = this.resolveConnectionName(name)
 
     if (this.connections().isMissing(connectionName)) {
       await this.createMongodbConnection(connectionName)
     }
 
     return this.connections().get(connectionName)!
+  }
+
+  /**
+   * Returns the given connection `name` if it’s not nullish,
+   * otherwise returns the default connection name.
+   *
+   * @param {String} name
+   *
+   * @returns {String}
+   */
+  private resolveConnectionName (name?: string): string {
+    return name ?? this.defaultConnection()
   }
 
   /**
@@ -152,5 +164,26 @@ export class MongodbManager extends Manager implements MongodbConnectionResolver
     return host && port
       ? `${protocol}://${host}:${port}/${database}`
       : `${protocol}://${host}/${database}`
+  }
+
+  /**
+   * Closes the connection for the given `name`. Closes
+   * the default connection not providing a `name`.
+   */
+  async disconnect (name?: string): Promise<void> {
+    const connectionName = this.resolveConnectionName(name)
+
+    if (this.connections().has(connectionName)) {
+      await this.connections().get(connectionName)!.close()
+    }
+  }
+
+  /**
+    * Closes all opened connections.
+    */
+  async disconnectAll (): Promise<void> {
+    for (const connection of this.connections().values()) {
+      await connection.disconnect()
+    }
   }
 }

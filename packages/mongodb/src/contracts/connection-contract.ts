@@ -15,6 +15,17 @@ export interface MongodbConnectionResolver {
    * the default connection when not providing a `name`.
    */
   connection(name?: string): Promise<MongodbConnection>
+
+  /**
+   * Closes the connection for the given `name`. Closes
+   * the default connection not providing a `name`.
+   */
+  disconnect(name?: string): Promise<void>
+
+  /**
+   * Closes all opened connections.
+   */
+  disconnectAll(): Promise<void>
 }
 
 /**
