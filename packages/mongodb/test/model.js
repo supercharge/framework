@@ -9,9 +9,9 @@ const { makeAppWithMongodbConfig } = require('./helpers')
 const app = makeAppWithMongodbConfig()
 const mongodb = new MongodbManager(app, app.config().get('mongodb'))
 
-class User extends Model {}
-
 test.group('Model', (group) => {
+  class User extends Model {}
+
   group.setup(async () => {
     await mongodb.boot()
 
@@ -240,5 +240,47 @@ test.group('Model', (group) => {
     ])
 
     expect(await User.count({ name: 'Supercharge' })).toBe(1)
+  })
+})
+
+test.group('Model Connections', (group) => {
+  class User extends Model {
+    static get connection () {
+      return 'testing'
+    }
+  }
+
+  const mongodb = new MongodbManager(app, app.config().get('mongodb'))
+
+  group.setup(async () => {
+    Model.setConnectionResolver(mongodb)
+  })
+
+  group.each.setup(async () => {
+    await User.delete()
+  })
+
+  group.teardown(async () => {
+    await mongodb.disconnectAll()
+  })
+
+  test('uses configured connection', async () => {
+    const user = new User({})
+    const connection = await user.getConnection()
+
+    expect(connection.db().databaseName).toBe('supercharge-testing-connections')
+  })
+
+  test('can create documents on configured connection', async () => {
+    await User.createMany([
+      { name: 'Marcus' },
+      { name: 'Supercharge' }
+    ])
+
+    const users = Arr.from(await User.all())
+
+    expect(users.length()).toBe(2)
+    expect(users.has(user => user.name === 'Marcus')).toBe(true)
+    expect(users.has(user => user.name === 'Supercharge')).toBe(true)
   })
 })
