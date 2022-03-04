@@ -24,6 +24,9 @@ exports.makeAppWithMongodbConfig = function makeAppWithMongodbConfig () {
     connections: {
       local: {
         url: 'mongodb://localhost/testing'
+      },
+      testing: {
+        url: 'mongodb://localhost/supercharge-testing-connections'
       }
     }
   })
