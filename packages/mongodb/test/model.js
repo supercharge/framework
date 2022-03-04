@@ -241,6 +241,29 @@ test.group('Model', (group) => {
 
     expect(await User.count({ name: 'Supercharge' })).toBe(1)
   })
+
+  test('where', async () => {
+    await User.createMany([
+      { name: 'Marcus' },
+      { name: 'Supercharge' }
+    ])
+
+    const users = await User.where({ name: 'Supercharge' })
+    expect(Array.isArray(users)).toBe(true)
+    expect(users.length).toBe(1)
+    expect(users[0].name).toBe('Supercharge')
+  })
+
+  test('where | chainable', async () => {
+    await User.createMany([
+      { name: 'Marcus' },
+      { name: 'Supercharge' }
+    ])
+
+    const user = await User.where({ name: 'Supercharge' }).findOne()
+    expect(typeof user === 'object').toBe(true)
+    expect(user.name).toBe('Supercharge')
+  })
 })
 
 test.group('Model Connections', (group) => {

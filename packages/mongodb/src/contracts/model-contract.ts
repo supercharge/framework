@@ -48,7 +48,7 @@ export interface MongodbModel {
    * Returns an array of documents maching the given `filter` and `options`.
    * Returns an empty array if no documents were found in the collection.
    */
-  find<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: FindOptions<InstanceType<T>>): QueryBuilderContract<InstanceType<T>, Array<InstanceType<T> | undefined>>
+  find<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: FindOptions<InstanceType<T>>): QueryBuilderContract<InstanceType<T>, Array<InstanceType<T>>>
 
   /**
    * Returns the first document maching the given `filter` and `options`.
@@ -118,6 +118,11 @@ export interface MongodbModel {
    * Returns the number of documents in the model’s collection.
    */
   count<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: CountDocumentsOptions): QueryBuilderContract<InstanceType<T>, number>
+
+  /**
+   * Returns a query builder instance containing the given `filter`.
+   */
+  where<T extends MongodbModel>(this: T, filter: Filter<InstanceType<T>>): QueryBuilderContract<InstanceType<T>, Array<InstanceType<T>>>
 
   /**
    * Eager load the given `relations`.

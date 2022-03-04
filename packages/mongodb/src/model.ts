@@ -5,8 +5,8 @@ import { isObject } from './utils'
 import Str from '@supercharge/strings'
 import { QueryBuilder } from './query/builder'
 import { PendingQuery } from './query/pending'
-import { MongodbModel } from './contracts/model-contract'
 import { ModelObject } from './contracts/utils-contract'
+import { MongodbModel } from './contracts/model-contract'
 import { MongodbDocument } from './contracts/document-contract'
 import { QueryBuilderContract } from './contracts/query-builder-contract'
 import { MongodbConnection, MongodbConnectionResolver } from './contracts/connection-contract'
@@ -213,7 +213,7 @@ export class Model implements MongodbDocument {
    * Returns an array of documents maching the given `filter` and `options`.
    * Returns an empty array if no documents were found in the collection.
    */
-  static find<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: FindOptions<InstanceType<T>>): QueryBuilderContract<InstanceType<T>, Array<InstanceType<T> | undefined>> {
+  static find<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: FindOptions<InstanceType<T>>): QueryBuilderContract<InstanceType<T>, Array<InstanceType<T>>> {
     return this.pendingQuery<T>().find(filter, options)
   }
 
@@ -303,6 +303,13 @@ export class Model implements MongodbDocument {
    */
   static with<T extends MongodbModel> (...relations: string[]): QueryBuilder<InstanceType<T>> {
     return this.query<T>().with(...relations)
+  }
+
+  /**
+   * Returns a query builder instance containing the given `filter`.
+   */
+  static where<T extends MongodbModel>(this: T, filter: Filter<InstanceType<T>>): QueryBuilderContract<InstanceType<T>, Array<InstanceType<T>>> {
+    return this.pendingQuery<T>().where(filter)
   }
 
   /**
