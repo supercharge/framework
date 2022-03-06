@@ -30,6 +30,11 @@ export interface MongodbDocument extends HasId {
   toJSON(): ModelObject
 
   /**
+   * Returns a plain JavaScript object.
+   */
+  toObject<T = ModelObject>(): T
+
+  /**
    * Create a new instance of the given model.
    */
   newInstance<T extends MongodbDocument>(attributes?: ModelObject): T
