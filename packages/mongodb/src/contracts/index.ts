@@ -1,5 +1,6 @@
 'use strict'
 
+export * from './aggregate-builder-contract'
 export * from './config-contract'
 export * from './connection-contract'
 export * from './document-contract'
