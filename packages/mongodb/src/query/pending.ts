@@ -1,11 +1,13 @@
 'use strict'
 
-import { QueryBuilder } from './builder'
+import { QueryBuilder, QueryOptions } from './builder'
 import { MongodbDocument, QueryBuilderContract } from '../contracts'
-import { CountDocumentsOptions, DeleteOptions, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
+import { AggregateBuilderCallback, AggregatePipeline } from '../contracts/aggregate-builder-contract'
+import { AggregateOptions, CountDocumentsOptions, DeleteOptions, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
+import { AggregateBuilder } from './aggregate-builder'
 
 export type OrFailCallback = () => Error
-export type QueryMethod = 'find' | 'findById' | 'findOne' | 'update' | 'updateOne' | 'delete' | 'deleteById' | 'deleteOne' | 'count' | 'with'
+export type QueryMethod = 'find' | 'findById' | 'findOne' | 'update' | 'updateOne' | 'delete' | 'deleteById' | 'deleteOne' | 'count' | 'with' | 'aggregate'
 
 export class PendingQuery<T extends MongodbDocument, ResultType = T> implements QueryBuilderContract<T, ResultType> {
   /**
@@ -27,8 +29,8 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
    * Create a new document instance for this model.
    */
   constructor (queryBuilder: QueryBuilder<T>) {
-    this.method = 'find'
     this.values = {}
+    this.method = 'find'
     this.queryBuilder = queryBuilder
   }
 
@@ -37,6 +39,19 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
    */
   get [Symbol.toStringTag] (): string {
     return this.constructor.name
+  }
+
+  /**
+   * Assign the given `method`
+   *
+   * @param relations
+   *
+   * @returns {this}
+   */
+  withMethod (method: QueryMethod): this {
+    this.method = method
+
+    return this
   }
 
   /**
@@ -72,6 +87,32 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
    *
    * @returns {this}
    */
+  withOptions (options?: QueryOptions): this {
+    this.queryBuilder.withOptions(options)
+
+    return this
+  }
+
+  /**
+   * Eager load the given `relations`.
+   *
+   * @param relations
+   *
+   * @returns {this}
+   */
+  withAggregation (pipeline: AggregatePipeline): this {
+    this.queryBuilder.withAggregation(pipeline)
+
+    return this
+  }
+
+  /**
+   * Eager load the given `relations`.
+   *
+   * @param relations
+   *
+   * @returns {this}
+   */
   orFail (handler: () => Error): this {
     this.queryBuilder.orFail(handler)
 
@@ -83,8 +124,8 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
    * Returns an empty array if no documents were found in the collection.
    */
   find (filter?: Filter<T>, options?: FindOptions<T>): this {
-    this.method = 'find'
-    this.queryBuilder
+    this
+      .withMethod('find')
       .where(filter)
       .withOptions(options)
 
@@ -96,8 +137,8 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
    * Returns `undefined` if no document was found in the collection.
    */
   findOne (filter?: Filter<T>, options?: FindOptions<T>): this {
-    this.method = 'findOne'
-    this.queryBuilder
+    this
+      .withMethod('findOne')
       .where(filter)
       .withOptions(options)
 
@@ -108,8 +149,8 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
    * Find a document for the given `id`. Returns `undefined` if no document is available.
    */
   findById (id: ObjectId | string, options?: FindOptions<T>): this {
-    this.method = 'findById'
-    this.queryBuilder
+    this
+      .withMethod('findById')
       .withOptions(options)
       .where({ _id: new ObjectId(id) } as unknown as Filter<T>)
 
@@ -120,9 +161,8 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
    * Updates all documents maching the given `filter` with values from `update`.
    */
   update (values: UpdateFilter<T>, options?: UpdateOptions): this {
-    this.method = 'update'
     this.values = values
-    this.queryBuilder.withOptions(options)
+    this.withMethod('update').withOptions(options)
 
     return this
   }
@@ -131,9 +171,8 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
    * Updates the first document matching the given `filter` with the values in `update`.
    */
   updateOne (values: UpdateFilter<T>, options?: UpdateOptions): this {
-    this.method = 'updateOne'
     this.values = values
-    this.queryBuilder.withOptions(options)
+    this.withMethod('updateOne').withOptions(options)
 
     return this
   }
@@ -151,10 +190,7 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
    * Use the `Model.truncate` method to delete all documents in the collection.
    */
   delete (filter?: Filter<T>, options?: DeleteOptions): this {
-    this.method = 'delete'
-    this.queryBuilder
-      .where(filter)
-      .withOptions(options)
+    this.withMethod('delete').where(filter).withOptions(options)
 
     return this
   }
@@ -165,10 +201,7 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
    * this query deletes the first match.
    */
   deleteOne (filter?: Filter<T>, options?: DeleteOptions): this {
-    this.method = 'deleteOne'
-    this.queryBuilder
-      .where(filter)
-      .withOptions(options)
+    this.withMethod('deleteOne').where(filter).withOptions(options)
 
     return this
   }
@@ -184,10 +217,22 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
    * Returns the number of documents in the model’s collection.
    */
   count (filter?: Filter<T>, options?: CountDocumentsOptions): this {
-    this.method = 'count'
-    this.queryBuilder
-      .where(filter)
+    this.withMethod('count').where(filter).withOptions(options)
+
+    return this
+  }
+
+  /**
+   * Returns an aggregate query. Use the aggregate `builder` to customize the query.
+   */
+  aggregate (callback: AggregateBuilderCallback, options?: AggregateOptions): this {
+    const aggregationBuilder = new AggregateBuilder()
+    callback(aggregationBuilder)
+
+    this
+      .withMethod('aggregate')
       .withOptions(options)
+      .withAggregation(aggregationBuilder.pipeline())
 
     return this
   }
@@ -195,7 +240,7 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
   /**
    * Run the query.
    */
-  async run (): Promise<any> {
+  async get (): Promise<any> {
     return await (this.queryBuilder[this.method] as unknown as Function)(this.values)
   }
 
@@ -203,15 +248,16 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
    * Implementation of the promise `then` method.
    */
   // eslint-disable-next-line @typescript-eslint/promise-function-async
+  // then (onFulfilled: (value: unknown) => ResultType | PromiseLike<ResultType>, onRejected?: any): Promise<ResultType> {
   then (onFulfilled: any, onRejected?: any): any {
-    return this.run().then(onFulfilled, onRejected)
+    return this.get().then(onFulfilled, onRejected)
   }
 
   /**
    * Implementation of the promise `catch` method.
    */
   catch (onRejected: any): any {
-    return this.run().catch(onRejected)
+    return this.get().catch(onRejected)
   }
 
   /**
@@ -219,6 +265,6 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
    */
   // eslint-disable-next-line @typescript-eslint/promise-function-async
   finally (onFinally: any): any {
-    return this.run().finally(onFinally)
+    return this.get().finally(onFinally)
   }
 }

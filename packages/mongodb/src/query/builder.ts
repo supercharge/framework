@@ -1,11 +1,11 @@
 'use strict'
 
 import { tap, isNotNullish } from '@supercharge/goodies'
-import { MongodbDocument, ModelObject } from '../contracts'
-import { Document, Collection, DeleteOptions, DeleteResult, Filter, FindOptions, UpdateFilter, UpdateOptions, WithId, CountDocumentsOptions } from 'mongodb'
+import { MongodbDocument, ModelObject, AggregatePipeline } from '../contracts'
+import { Document, Collection, DeleteOptions, DeleteResult, Filter, FindOptions, UpdateFilter, UpdateOptions, WithId, CountDocumentsOptions, AggregateOptions } from 'mongodb'
 
 export type OrFailCallback = () => Error
-export type QueryOptions = FindOptions | UpdateOptions | DeleteOptions | CountDocumentsOptions
+export type QueryOptions = FindOptions | UpdateOptions | DeleteOptions | CountDocumentsOptions | AggregateOptions
 
 export class QueryBuilder<T extends MongodbDocument> {
   /**
@@ -22,6 +22,11 @@ export class QueryBuilder<T extends MongodbDocument> {
    * The query options.
    */
   private options: QueryOptions
+
+  /**
+   * The query options.
+   */
+  private aggregationPipeline: AggregatePipeline
 
   /**
    * The relationships that should be eager loaded.
@@ -42,6 +47,7 @@ export class QueryBuilder<T extends MongodbDocument> {
     this.filter = {}
     this.options = {}
     this.eagerLoad = []
+    this.aggregationPipeline = []
   }
 
   /**
@@ -80,6 +86,19 @@ export class QueryBuilder<T extends MongodbDocument> {
   withOptions (options?: QueryOptions): this {
     return tap(this, () => {
       this.options = Object.assign(this.options, { ...options })
+    })
+  }
+
+  /**
+   * Eager load the given `relations`.
+   *
+   * @param relations
+   *
+   * @returns {this}
+   */
+  withAggregation (pipeline: AggregatePipeline): this {
+    return tap(this, () => {
+      this.aggregationPipeline = pipeline
     })
   }
 
@@ -274,5 +293,14 @@ export class QueryBuilder<T extends MongodbDocument> {
     const collection = await this.collection()
 
     return collection.countDocuments({ ...this.filter }, { ...this.options })
+  }
+
+  /**
+   * Creates the given `documents` in the database.
+   */
+  async aggregate (): Promise<any> {
+    const collection = await this.collection()
+
+    return await collection.aggregate(this.aggregationPipeline, { ...this.options })
   }
 }

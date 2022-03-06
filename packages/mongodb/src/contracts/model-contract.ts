@@ -5,8 +5,9 @@ import { QueryBuilder } from '../query/builder'
 import { PendingQuery } from '../query/pending'
 import { MongodbDocument } from './document-contract'
 import { QueryBuilderContract } from './query-builder-contract'
+import { AggregateBuilderCallback } from './aggregate-builder-contract'
 import { MongodbConnectionResolver, MongodbConnection } from './connection-contract'
-import { CountDocumentsOptions, DeleteOptions, DeleteResult, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
+import { AggregateOptions, CountDocumentsOptions, DeleteOptions, DeleteResult, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
 
 export interface MongodbModel {
   /**
@@ -128,4 +129,9 @@ export interface MongodbModel {
    * Eager load the given `relations`.
    */
   with<T extends MongodbModel> (this: T, ...relations: string[]): QueryBuilder<InstanceType<T>>
+
+  /**
+   * Returns an aggregate query. Use the aggregate `builder` to customize the query.
+   */
+  aggregate<T extends MongodbModel, ResultType = Array<InstanceType<T>>>(this: T, builder: AggregateBuilderCallback, options?: AggregateOptions): QueryBuilderContract<InstanceType<T>, ResultType>
 }
