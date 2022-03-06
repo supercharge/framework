@@ -9,8 +9,9 @@ import { ModelObject } from './contracts/utils-contract'
 import { MongodbModel } from './contracts/model-contract'
 import { MongodbDocument } from './contracts/document-contract'
 import { QueryBuilderContract } from './contracts/query-builder-contract'
+import { AggregateBuilderCallback } from './contracts/aggregate-builder-contract'
 import { MongodbConnection, MongodbConnectionResolver } from './contracts/connection-contract'
-import { Collection, CountDocumentsOptions, DeleteOptions, DeleteResult, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
+import { AggregateOptions, Collection, CountDocumentsOptions, DeleteOptions, DeleteResult, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
 
 function StaticImplements<T> () {
   return (_t: T) => {}
@@ -59,7 +60,14 @@ export class Model implements MongodbDocument {
    * Returns a JSON object.
    */
   toJSON (): ModelObject {
-    return this
+    return this.toObject()
+  }
+
+  /**
+   * Returns a plain JavaScript object.
+   */
+  toObject<T = ModelObject> (): T {
+    return { ...this } as unknown as T
   }
 
   /**
@@ -249,14 +257,14 @@ export class Model implements MongodbDocument {
   /**
    * Updates all documents maching the given `filter` with values from `update`.
    */
-  static update<T extends MongodbModel>(this: T, values: UpdateFilter<InstanceType<T>>, options: UpdateOptions): PendingQuery<InstanceType<T>> {
-    return this.pendingQuery().update(values as any, options) as PendingQuery<InstanceType<T>>
+  static update<T extends MongodbModel>(this: T, values: UpdateFilter<InstanceType<T>>, options: UpdateOptions): QueryBuilderContract<InstanceType<T>, void> {
+    return this.pendingQuery<T>().update(values as any, options)
   }
 
   /**
    * Updates the first document maching the given `filter` with values from `update`.
    */
-  static updateOne<T extends MongodbModel>(this: T, values: UpdateFilter<InstanceType<T>>, options?: UpdateOptions): PendingQuery<InstanceType<T>> {
+  static updateOne<T extends MongodbModel>(this: T, values: UpdateFilter<InstanceType<T>>, options?: UpdateOptions): QueryBuilderContract<InstanceType<T>> {
     return this.pendingQuery<T>().updateOne(values, options)
   }
 
@@ -271,7 +279,7 @@ export class Model implements MongodbDocument {
    * Deletes the documents matching the given `filter` and delete `options`.
    * Use the `Model.truncate` method to delete all documents in the collection.
    */
-  static delete<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: DeleteOptions): PendingQuery<InstanceType<T>> {
+  static delete<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: DeleteOptions): QueryBuilderContract<InstanceType<T>, DeleteResult> {
     return this.pendingQuery().where(filter as any).delete(options) as PendingQuery<InstanceType<T>>
   }
 
@@ -340,5 +348,16 @@ export class Model implements MongodbDocument {
    */
   query<T extends MongodbDocument> (this: T): QueryBuilder<T> {
     return new QueryBuilder<T>(this)
+  }
+
+  /**
+   * Returns an aggregate query. Use the aggregate `builder` to customize the query.
+   */
+  static aggregate<T extends MongodbModel, ResultType = Array<InstanceType<T>>>(this: T, callback: AggregateBuilderCallback, options?: AggregateOptions): QueryBuilderContract<InstanceType<T>, ResultType> {
+    if (typeof callback !== 'function') {
+      throw new Error(`You must provide a function as the first argument when calling ${this.name}.aggregate`)
+    }
+
+    return this.pendingQuery<T>().aggregate(callback, options)
   }
 }
