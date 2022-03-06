@@ -1,6 +1,7 @@
 'use strict'
 
-import { CountDocumentsOptions, DeleteOptions, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
+import { AggregateBuilderCallback } from './aggregate-builder-contract'
+import { AggregateOptions, CountDocumentsOptions, DeleteOptions, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
 
 export interface Lookup {
   name: string
@@ -10,10 +11,13 @@ export interface Lookup {
   as: string
 }
 
-export interface QueryBuilderContract<DocType, ResultType> {
-  count(filter?: Filter<DocType>, options?: CountDocumentsOptions): Promise<ResultType>
+export interface QueryBuilderContract<DocType, ResultType = DocType> {
+  aggregate(builder: AggregateBuilderCallback, options?: AggregateOptions): this
 
-  delete(): Promise<ResultType>
+  count(filter?: Filter<DocType>, options?: CountDocumentsOptions): this
+  count(filter?: Filter<DocType>, options?: CountDocumentsOptions): this
+
+  delete(): QueryBuilderContract<DocType, void>
   deleteOne(filter?: Filter<DocType>, options?: DeleteOptions): Promise<ResultType>
   deleteById(id: ObjectId | string, options?: DeleteOptions): Promise<ResultType>
 
@@ -27,7 +31,7 @@ export interface QueryBuilderContract<DocType, ResultType> {
 
   where(filter?: Filter<DocType>): this
 
-  run(): Promise<ResultType>
+  get(): Promise<ResultType>
 
   truncate(options?: DeleteOptions): Promise<ResultType>
 
@@ -42,5 +46,4 @@ export interface QueryBuilderContract<DocType, ResultType> {
    */
   then: Promise<ResultType>['then']
   catch: Promise<ResultType>['catch']
-
 }
