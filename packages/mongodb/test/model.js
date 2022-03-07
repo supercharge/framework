@@ -355,7 +355,7 @@ test.group('Model', (group) => {
     expect(descending[1].name).toBe('Marcus')
   })
 
-  test('aggregate', async () => {
+  test('aggregate | ascending using column', async () => {
     await User.createMany([
       { name: 'Marcus', age: 987 },
       { name: 'Norman', age: 456 },
@@ -363,11 +363,59 @@ test.group('Model', (group) => {
     ])
 
     const users = await User.aggregate(builder => {
-      builder.sort({ age: 1 }).limit(1)
+      builder.sort('age', 'asc').limit(1)
+    })
+
+    expect(users.length).toBe(1)
+    expect(users[0].age).toBe(123)
+    expect(users[0].name).toBe('Christian')
+  })
+
+  test('aggregate | ascending using an object', async () => {
+    await User.createMany([
+      { name: 'Marcus', age: 987 },
+      { name: 'Norman', age: 456 },
+      { name: 'Christian', age: 123 }
+    ])
+
+    const users = await User.aggregate(builder => {
+      builder.sort({ age: 'asc' }).limit(1)
     })
 
     expect(users.length).toBe(1)
     expect(users[0].name).toBe('Christian')
+  })
+
+  test('aggregate | descending using column', async () => {
+    await User.createMany([
+      { name: 'Norman', age: 456 },
+      { name: 'Marcus', age: 987 },
+      { name: 'Christian', age: 123 }
+    ])
+
+    const users = await User.aggregate(builder => {
+      builder.sort('age', 'desc').limit(1)
+    })
+
+    expect(users.length).toBe(1)
+    expect(users[0].age).toBe(987)
+    expect(users[0].name).toBe('Marcus')
+  })
+
+  test('aggregate | descending using an object', async () => {
+    await User.createMany([
+      { name: 'Norman', age: 456 },
+      { name: 'Marcus', age: 987 },
+      { name: 'Christian', age: 123 }
+    ])
+
+    const users = await User.aggregate(builder => {
+      builder.sort({ age: 'desc' }).limit(1)
+    })
+
+    expect(users.length).toBe(1)
+    expect(users[0].age).toBe(987)
+    expect(users[0].name).toBe('Marcus')
   })
 
   test('aggregate | fails when not providing a callback function', async () => {
