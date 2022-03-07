@@ -2,14 +2,13 @@
 
 import { tap } from '@supercharge/goodies'
 import { ModelObject } from '../contracts'
-import { AggregateBuilder as AggregateBuilderContract, AggregatePipeline } from '../contracts/aggregate-builder-contract'
+import { AggregationBuilder as AggregateBuilderContract, AggregatePipeline, AggregatePipelineSort } from '../contracts/aggregation-builder-contract'
 
-export class AggregateBuilder implements AggregateBuilderContract {
+export class AggregationBuilder implements AggregateBuilderContract {
   /**
    *
    */
   private readonly meta: {
-
     pipeline: AggregatePipeline
   }
 
@@ -28,6 +27,34 @@ export class AggregateBuilder implements AggregateBuilderContract {
   }
 
   /**
+   * Limit the number of returned entries to the given `limit`
+   */
+
+  limit (limit: number): this {
+    return tap(this, () => {
+      this.pipeline().push({ $limit: limit })
+    })
+  }
+
+  /**
+   * Sort the result by the given `columns`.
+   */
+  skip (amount: number): this {
+    return tap(this, () => {
+      this.pipeline().push({ $skip: amount })
+    })
+  }
+
+  /**
+   * Appends a $limit operator to this aggregate pipeline.
+   */
+  sort (options: AggregatePipelineSort['$sort']): this {
+    return tap(this, () => {
+      this.pipeline().push({ $sort: options })
+    })
+  }
+
+  /**
    * Appends the given lookup `filter`.
    */
   lookup (filter: { from: string, as: string, localField?: string | undefined, foreignField?: string | undefined, let?: Record<string, any> | undefined, pipeline?: any[] | undefined }): this {
@@ -39,12 +66,6 @@ export class AggregateBuilder implements AggregateBuilderContract {
   match (options: ModelObject): this {
     return tap(this, () => {
       this.pipeline().push({ $match: options })
-    })
-  }
-
-  limit (limit: number): this {
-    return tap(this, () => {
-      this.pipeline().push({ $limit: limit })
     })
   }
 }
