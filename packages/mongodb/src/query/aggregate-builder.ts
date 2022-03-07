@@ -63,9 +63,12 @@ export class AggregationBuilder implements AggregateBuilderContract {
     })
   }
 
-  match (options: ModelObject): this {
+  /**
+   * Filter the documents to match the given `criteria`.
+   */
+  match (criteria: ModelObject): this {
     return tap(this, () => {
-      this.pipeline().push({ $match: options })
+      this.pipeline().push({ $match: criteria })
     })
   }
 }
