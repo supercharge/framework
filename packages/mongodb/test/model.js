@@ -264,46 +264,117 @@ test.group('Model', (group) => {
     expect(typeof user === 'object').toBe(true)
     expect(user.name).toBe('Supercharge')
   })
-})
 
-test.group('Model Connections', (group) => {
-  class User extends Model {
-    static get connection () {
-      return 'testing'
-    }
-  }
-
-  const mongodb = new MongodbManager(app, app.config().get('mongodb'))
-
-  group.setup(async () => {
-    Model.setConnectionResolver(mongodb)
+  test('orFail | throws when not finding a document', async () => {
+    await expect(
+      User.find().orFail(() => {
+        throw new Error('Failed from orFail')
+      }).get()
+    ).rejects.toThrow('Failed from orFail')
   })
 
-  group.each.setup(async () => {
-    await User.delete()
-  })
-
-  group.teardown(async () => {
-    await mongodb.disconnectAll()
-  })
-
-  test('uses configured connection', async () => {
-    const user = new User({})
-    const connection = await user.getConnection()
-
-    expect(connection.db().databaseName).toBe('supercharge-testing-connections')
-  })
-
-  test('can create documents on configured connection', async () => {
+  test('orFail | chainable and resolves', async () => {
     await User.createMany([
       { name: 'Marcus' },
       { name: 'Supercharge' }
     ])
 
-    const users = Arr.from(await User.all())
+    const user = await User.findOne().where({ name: 'Supercharge' }).orFail(() => {
+      throw new Error('Failed from orFail')
+    })
+    expect(typeof user === 'object').toBe(true)
+    expect(user.name).toBe('Supercharge')
+  })
 
-    expect(users.length()).toBe(2)
-    expect(users.has(user => user.name === 'Marcus')).toBe(true)
-    expect(users.has(user => user.name === 'Supercharge')).toBe(true)
+  test('oldest', async () => {
+    await User.create({ name: 'Marcus' })
+    await User.create({ name: 'Supercharge' })
+
+    const [marcus, supercharge] = await User.find().oldest()
+    expect(marcus.name).toBe('Marcus')
+    expect(supercharge.name).toBe('Supercharge')
+  })
+
+  test('latest', async () => {
+    await User.create({ name: 'Marcus' })
+    await User.create({ name: 'Supercharge' })
+
+    const [supercharge, marcus] = await User.find().latest()
+    expect(supercharge.name).toBe('Supercharge')
+    expect(marcus.name).toBe('Marcus')
+  })
+
+  test('sort | ascending by default', async () => {
+    await User.createMany([
+      { name: 'Marcus', age: 987 },
+      { name: 'Norman', age: 456 },
+      { name: 'Christian', age: 123 }
+    ])
+
+    const [christian, norman, marcus] = await User.find().sort('age')
+    expect(christian.name).toBe('Christian')
+    expect(norman.name).toBe('Norman')
+    expect(marcus.name).toBe('Marcus')
+  })
+
+  test('sort | asc(ending) using an object', async () => {
+    await User.createMany([
+      { name: 'Marcus', age: 123 },
+      { name: 'Supercharge', age: 987 }
+    ])
+
+    const num = await User.find().sort({ age: 1 })
+    expect(num[0].name).toBe('Marcus')
+    expect(num[1].name).toBe('Supercharge')
+
+    const desc = await User.find().sort({ age: 'asc' })
+    expect(desc[0].name).toBe('Marcus')
+    expect(desc[1].name).toBe('Supercharge')
+
+    const descending = await User.find().sort({ age: 'ascending' })
+    expect(descending[0].name).toBe('Marcus')
+    expect(descending[1].name).toBe('Supercharge')
+  })
+
+  test('sort | desc(ending) using an object', async () => {
+    await User.createMany([
+      { name: 'Marcus', age: 123 },
+      { name: 'Supercharge', age: 987 }
+    ])
+
+    const num = await User.find().sort({ age: -1 })
+    expect(num[0].name).toBe('Supercharge')
+    expect(num[1].name).toBe('Marcus')
+
+    const desc = await User.find().sort({ age: 'desc' })
+    expect(desc[0].name).toBe('Supercharge')
+    expect(desc[1].name).toBe('Marcus')
+
+    const descending = await User.find().sort({ age: 'descending' })
+    expect(descending[0].name).toBe('Supercharge')
+    expect(descending[1].name).toBe('Marcus')
+  })
+
+  test('aggregate', async () => {
+    await User.createMany([
+      { name: 'Marcus', age: 987 },
+      { name: 'Norman', age: 456 },
+      { name: 'Christian', age: 123 }
+    ])
+
+    const users = await User.aggregate(builder => {
+      builder.sort({ age: 1 }).limit(1)
+    })
+
+    expect(users.length).toBe(1)
+    expect(users[0].name).toBe('Christian')
+  })
+
+  test('aggregate | fails when not providing a callback function', async () => {
+    expect(() => {
+      User.aggregate().orFail(() => {
+        throw new Error('not called')
+      })
+    }).toThrow('You must provide a callback function as the first argument when calling Model.aggregate')
   })
 })
