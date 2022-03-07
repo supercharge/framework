@@ -134,48 +134,14 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
   }
 
   /**
-   * Sort the result by the given `columns`.
+   * Sort the result by a given column or an object.
    */
   sort (columns: Record<string, AggregatePipelineSortDirection>): this
   sort (column: string, direction?: AggregatePipelineSortDirection): this
   sort (column: string | Record<string, AggregatePipelineSortDirection>, direction?: AggregatePipelineSortDirection): this {
-    if (typeof column === 'string') {
-      return this.aggregate(builder => {
-        builder.sort({ [column]: this.sortDirection(direction) })
-      })
-    }
-
-    const sorting = Object
-      .entries(column)
-      .reduce<Record<string, 1 | -1>>((sorting, [column, direction]) => {
-      sorting[column] = this.sortDirection(direction)
-
-      return sorting
-    }, {})
-
     return this.aggregate(builder => {
-      builder.sort(sorting)
+      builder.sort(column, direction)
     })
-  }
-
-  /**
-   * Returns the resolved sort direction. MongoDB expects the sort direction to
-   * be an integer. The integer value `1` represents an ascending sort order
-   * whereas `-1` represents a descending sort order. This gets resolved.
-   */
-  private sortDirection (direction: AggregatePipelineSortDirection = 'asc'): -1 | 1 {
-    switch (direction) {
-      case 'asc':
-      case 'ascending':
-        return 1
-
-      case 'desc':
-      case 'descending':
-        return -1
-
-      default:
-        return direction
-    }
   }
 
   /**
