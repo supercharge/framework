@@ -9,7 +9,7 @@ import { ModelObject } from './contracts/utils-contract'
 import { MongodbModel } from './contracts/model-contract'
 import { MongodbDocument } from './contracts/document-contract'
 import { QueryBuilderContract } from './contracts/query-builder-contract'
-import { AggregateBuilderCallback } from './contracts/aggregate-builder-contract'
+import { AggregateBuilderCallback } from './contracts/aggregation-builder-contract'
 import { MongodbConnection, MongodbConnectionResolver } from './contracts/connection-contract'
 import { AggregateOptions, Collection, CountDocumentsOptions, DeleteOptions, DeleteResult, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
 
@@ -354,10 +354,6 @@ export class Model implements MongodbDocument {
    * Returns an aggregate query. Use the aggregate `builder` to customize the query.
    */
   static aggregate<T extends MongodbModel, ResultType = Array<InstanceType<T>>>(this: T, callback: AggregateBuilderCallback, options?: AggregateOptions): QueryBuilderContract<InstanceType<T>, ResultType> {
-    if (typeof callback !== 'function') {
-      throw new Error(`You must provide a function as the first argument when calling ${this.name}.aggregate`)
-    }
-
     return this.pendingQuery<T>().aggregate(callback, options)
   }
 }
