@@ -2,9 +2,9 @@
 
 import { QueryBuilder, QueryOptions } from './builder'
 import { MongodbDocument, QueryBuilderContract } from '../contracts'
-import { AggregateBuilderCallback, AggregatePipeline } from '../contracts/aggregate-builder-contract'
+import { AggregationBuilder } from './aggregate-builder'
+import { AggregateBuilderCallback, AggregatePipeline, AggregatePipelineSortDirection } from '../contracts/aggregation-builder-contract'
 import { AggregateOptions, CountDocumentsOptions, DeleteOptions, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
-import { AggregateBuilder } from './aggregate-builder'
 
 export type OrFailCallback = () => Error
 export type QueryMethod = 'find' | 'findById' | 'findOne' | 'update' | 'updateOne' | 'delete' | 'deleteById' | 'deleteOne' | 'count' | 'with' | 'aggregate'
@@ -61,32 +61,6 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
    *
    * @returns {this}
    */
-  with (...relations: string[]): this {
-    this.queryBuilder.with(...relations)
-
-    return this
-  }
-
-  /**
-   * Eager load the given `relations`.
-   *
-   * @param relations
-   *
-   * @returns {this}
-   */
-  where (filter?: Filter<T>): this {
-    this.queryBuilder.where(filter)
-
-    return this
-  }
-
-  /**
-   * Eager load the given `relations`.
-   *
-   * @param relations
-   *
-   * @returns {this}
-   */
   withOptions (options?: QueryOptions): this {
     this.queryBuilder.withOptions(options)
 
@@ -113,10 +87,95 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
    *
    * @returns {this}
    */
+  with (...relations: string[]): this {
+    this.queryBuilder.with(...relations)
+
+    return this
+  }
+
+  /**
+   * Eager load the given `relations`.
+   *
+   * @param relations
+   *
+   * @returns {this}
+   */
+  where (filter?: Filter<T>): this {
+    this.queryBuilder.where(filter)
+
+    return this
+  }
+
+  /**
+   * Eager load the given `relations`.
+   *
+   * @param relations
+   *
+   * @returns {this}
+   */
   orFail (handler: () => Error): this {
     this.queryBuilder.orFail(handler)
 
     return this
+  }
+
+  /**
+   * Add a descending "order by" sorting to the query.
+   */
+  latest (): this {
+    return this.sort('_id', 'desc')
+  }
+
+  /**
+   * Add an ascending "order by" sorting to the query.
+   */
+  oldest (): this {
+    return this.sort('_id', 'asc')
+  }
+
+  /**
+   * Sort the result by the given `columns`.
+   */
+  sort (columns: Record<string, AggregatePipelineSortDirection>): this
+  sort (column: string, direction?: AggregatePipelineSortDirection): this
+  sort (column: string | Record<string, AggregatePipelineSortDirection>, direction?: AggregatePipelineSortDirection): this {
+    if (typeof column === 'string') {
+      return this.aggregate(builder => {
+        builder.sort({ [column]: this.sortDirection(direction) })
+      })
+    }
+
+    const sorting = Object
+      .entries(column)
+      .reduce<Record<string, 1 | -1>>((sorting, [column, direction]) => {
+      sorting[column] = this.sortDirection(direction)
+
+      return sorting
+    }, {})
+
+    return this.aggregate(builder => {
+      builder.sort(sorting)
+    })
+  }
+
+  /**
+   * Returns the resolved sort direction. MongoDB expects the sort direction to
+   * be an integer. The integer value `1` represents an ascending sort order
+   * whereas `-1` represents a descending sort order. This gets resolved.
+   */
+  private sortDirection (direction: AggregatePipelineSortDirection = 'asc'): -1 | 1 {
+    switch (direction) {
+      case 'asc':
+      case 'ascending':
+        return 1
+
+      case 'desc':
+      case 'descending':
+        return -1
+
+      default:
+        return direction
+    }
   }
 
   /**
@@ -226,7 +285,11 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
    * Returns an aggregate query. Use the aggregate `builder` to customize the query.
    */
   aggregate (callback: AggregateBuilderCallback, options?: AggregateOptions): this {
-    const aggregationBuilder = new AggregateBuilder()
+    if (typeof callback !== 'function') {
+      throw new Error('You must provide a callback function as the first argument when calling Model.aggregate')
+    }
+
+    const aggregationBuilder = new AggregationBuilder()
     callback(aggregationBuilder)
 
     this
