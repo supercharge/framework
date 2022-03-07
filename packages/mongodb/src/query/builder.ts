@@ -301,6 +301,14 @@ export class QueryBuilder<T extends MongodbDocument> {
   async aggregate (): Promise<any> {
     const collection = await this.collection()
 
-    return await collection.aggregate(this.aggregationPipeline, { ...this.options })
+    const results = await collection.aggregate(this.aggregationPipeline, { ...this.options }).toArray()
+
+    if (results.length === 0) {
+      this.maybeFail()
+    }
+
+    return results.map(result => {
+      return this.model.newInstance<T>(result)
+    })
   }
 }
