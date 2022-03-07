@@ -4,31 +4,40 @@ import { ModelObject } from '.'
 
 export type AggregateBuilderCallback = (builder: AggregationBuilder) => unknown
 
-export type AggregatePipeline = Array<AggregatePipelineLimit| AggregatePipelineLookup | AggregatePipelineMatch | AggregatePipelineSkip | AggregatePipelineSort>
+export type AggregatePipeline =
+  Array<
+  AggregatePipelineLimit
+  | AggregatePipelineLookup
+  | AggregatePipelineMatch
+  | AggregatePipelineSkip
+  | AggregatePipelineSort
+  >
 
 export interface AggregationBuilder {
   /**
    * Limit the number of returned entries to the given `limit`
    */
-  limit(limit: AggregatePipelineLimit['$limit']): this
+  limit(limit: number): this
 
   /**
    * Skip the given `amount` of documents in the query.
    */
-  skip(amount: AggregatePipelineSkip['$skip']): this
+  skip(amount: number): this
 
   /**
-   * Sort the result by the given `columns`.
+   * Sort the result by a given column or an object.
    */
-  sort(options: AggregatePipelineSort['$sort']): this
+  sort(column: Record<string, AggregatePipelineSortDirection>): this
+  sort(column: string, direction?: AggregatePipelineSortDirection): this
+  sort(column: string | Record<string, AggregatePipelineSortDirection>, direction?: AggregatePipelineSortDirection): this
 
   /**
-   * Appends a $lookup operator to this aggregate pipeline.
+   * Appends a $lookup operator to this aggregation pipeline.
    */
   lookup(options: AggregatePipelineLookup['$lookup']): this
 
   /**
-   * Appends a $match operator to this aggregate pipeline.
+   * Appends a $match operator to this aggregation  pipeline.
    */
   match(options: AggregatePipelineMatch['$match']): this
 }
@@ -44,6 +53,7 @@ export interface AggregatePipelineSkip {
 }
 
 export type AggregatePipelineSortDirection = -1 | 1 | 'asc' | 'ascending' | 'desc' | 'descending'
+
 export interface AggregatePipelineSort {
   /** [`$sort` reference](https://docs.mongodb.com/manual/reference/operator/aggregation/sort/) */
   $sort: Record<string, 1 | -1 | { $meta: 'textScore' }>
