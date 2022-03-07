@@ -1,6 +1,6 @@
 'use strict'
 
-import { AggregateBuilderCallback } from './aggregate-builder-contract'
+import { AggregateBuilderCallback, AggregatePipelineSortDirection } from './aggregation-builder-contract'
 import { AggregateOptions, CountDocumentsOptions, DeleteOptions, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
 
 export interface Lookup {
@@ -29,9 +29,16 @@ export interface QueryBuilderContract<DocType, ResultType = DocType> {
 
   findById(id: ObjectId | string, options?: FindOptions<DocType>): Promise<ResultType>
 
-  where(filter?: Filter<DocType>): this
-
   get(): Promise<ResultType>
+
+  latest(): this
+  oldest(): this
+
+  sort(columns: Record<string, AggregatePipelineSortDirection>): this
+  sort(column: string, direction?: AggregatePipelineSortDirection): this
+
+  orFail(handler: () => Error): this
+  where(filter?: Filter<DocType>): this
 
   truncate(options?: DeleteOptions): Promise<ResultType>
 
