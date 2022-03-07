@@ -1,8 +1,8 @@
 'use strict'
 
 import { QueryBuilder, QueryOptions } from './builder'
+import { AggregationBuilder } from './aggregation-builder'
 import { MongodbDocument, QueryBuilderContract } from '../contracts'
-import { AggregationBuilder } from './aggregate-builder'
 import { AggregateBuilderCallback, AggregatePipeline, AggregatePipelineSortDirection } from '../contracts/aggregation-builder-contract'
 import { AggregateOptions, CountDocumentsOptions, DeleteOptions, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
 

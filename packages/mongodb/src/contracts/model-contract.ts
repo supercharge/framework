@@ -5,7 +5,7 @@ import { QueryBuilder } from '../query/builder'
 import { PendingQuery } from '../query/pending'
 import { MongodbDocument } from './document-contract'
 import { QueryBuilderContract } from './query-builder-contract'
-import { AggregateBuilderCallback } from './aggregate-builder-contract'
+import { AggregateBuilderCallback } from './aggregation-builder-contract'
 import { MongodbConnectionResolver, MongodbConnection } from './connection-contract'
 import { AggregateOptions, CountDocumentsOptions, DeleteOptions, DeleteResult, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
 
