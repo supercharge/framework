@@ -2,63 +2,37 @@
 
 import { tap } from '@supercharge/goodies'
 import { ModelObject } from '../contracts'
-import { AggregationStageBuilder } from './aggregation-stage-builder'
-import { AggregationBuilderContract, AggregationStageBuilderContract, AggregatePipeline, AggregatePipelineSortDirection } from '../contracts/aggregation-builder-contract'
+import { AggregationStageBuilderContract, AggregateStage, AggregatePipelineSortDirection } from '../contracts/aggregation-builder-contract'
 
-export class AggregationBuilder implements AggregationBuilderContract {
+export class AggregationStageBuilder implements AggregationStageBuilderContract {
   /**
-   * Stores the aggregation pipeline details.
+   * Stores the aggregation’s stage details.
    */
   private readonly meta: {
-    stageBuilders: AggregationStageBuilderContract[]
+    stage: AggregateStage
   }
 
   /**
-   * Create a new document instance for this model.
+   * Create a new instance.
    */
   constructor () {
-    this.meta = { stageBuilders: [] }
+    this.meta = { stage: {} }
   }
 
   /**
-   * Returns the aggregation pipeline.
+   * Returns the plain aggregation stage object.
    */
-  pipeline (): AggregatePipeline {
-    return this.meta.stageBuilders.map(stageBuilder => {
-      return stageBuilder.get()
-    })
+  get (): AggregateStage {
+    return this.meta.stage
   }
 
   /**
-   * Returns the aggregation stage builder instances.
+   * Merge the given `stage` to this aggregation stage.
    */
-  stageBuilders (): AggregationStageBuilderContract[] {
-    return this.meta.stageBuilders
-  }
+  merge (stage: AggregateStage): this {
+    Object.assign(this.get(), stage)
 
-  /**
-   * Creates and returns a new aggregation stage and also adds it to the pipeline.
-   */
-  stage (): AggregationStageBuilderContract {
-    return tap(this.stageBuilder(), stageBuilder => {
-      this.append(stageBuilder)
-    })
-  }
-
-  /**
-   * Returns a new aggregation stage instance.
-   */
-  stageBuilder (): AggregationStageBuilderContract {
-    return new AggregationStageBuilder()
-  }
-
-  /**
-   * Assign the given aggregation `stage` to the pipeline.
-   */
-  private append (stageBuilder: AggregationStageBuilderContract): this {
-    return tap(this, () => {
-      this.stageBuilders().push(stageBuilder)
-    })
+    return this
   }
 
   /**
@@ -66,7 +40,7 @@ export class AggregationBuilder implements AggregationBuilderContract {
    */
   limit (limit: number): this {
     return tap(this, () => {
-      this.stage().limit(limit)
+      this.merge({ $limit: limit })
     })
   }
 
@@ -75,7 +49,7 @@ export class AggregationBuilder implements AggregationBuilderContract {
    */
   skip (amount: number): this {
     return tap(this, () => {
-      this.stage().skip(amount)
+      this.merge({ $skip: amount })
     })
   }
 
@@ -96,7 +70,7 @@ export class AggregationBuilder implements AggregationBuilderContract {
    */
   private sortByColumn (column: string, direction?: AggregatePipelineSortDirection): this {
     return tap(this, () => {
-      this.stage().sort(column, this.sortDirection(direction))
+      this.merge({ $sort: { [column]: this.sortDirection(direction) } })
     })
   }
 
@@ -113,7 +87,7 @@ export class AggregationBuilder implements AggregationBuilderContract {
     }, {})
 
     return tap(this, () => {
-      this.stage().sort(sorting)
+      this.merge({ $sort: sorting })
     })
   }
 
@@ -142,7 +116,7 @@ export class AggregationBuilder implements AggregationBuilderContract {
    */
   lookup (filter: { from: string, as: string, localField?: string | undefined, foreignField?: string | undefined, let?: Record<string, any> | undefined, pipeline?: any[] | undefined }): this {
     return tap(this, () => {
-      this.stage().lookup(filter)
+      this.merge({ $lookup: filter })
     })
   }
 
@@ -151,7 +125,7 @@ export class AggregationBuilder implements AggregationBuilderContract {
    */
   match (criteria: ModelObject): this {
     return tap(this, () => {
-      this.stage().match(criteria)
+      this.merge({ $match: criteria })
     })
   }
 }

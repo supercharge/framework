@@ -4,16 +4,31 @@ import { ModelObject } from '.'
 
 export type AggregateBuilderCallback = (builder: AggregationBuilderContract) => unknown
 
-export type AggregatePipeline =
-  Array<
+export type AggregatePipeline = AggregateStage[]
+
+export type AggregateStage =
   AggregatePipelineLimit
   | AggregatePipelineLookup
   | AggregatePipelineMatch
   | AggregatePipelineSkip
   | AggregatePipelineSort
-  >
+  | {}
 
-export interface AggregationBuilderContract {
+export interface AggregationBuilderContract extends BaseAggregationBuilderContract {
+  /**
+   * Returns the aggregation pipeline.
+   */
+  pipeline(): AggregatePipeline
+}
+
+export interface AggregationStageBuilderContract extends BaseAggregationBuilderContract {
+  /**
+   * Returns the aggregation stage object.
+   */
+  get(): AggregateStage
+}
+
+export interface BaseAggregationBuilderContract {
   /**
    * Limit the number of returned entries to the given `limit`
    */
