@@ -107,6 +107,10 @@ export class QueryBuilder<T extends MongodbDocument> {
    * @returns {this}
    */
   orFail (handler: () => Error): this {
+    if (typeof handler !== 'function') {
+      throw new Error('The orFail method requires a callback function as a parameter.')
+    }
+
     return tap(this, () => {
       this.orFailCallback = handler
     })

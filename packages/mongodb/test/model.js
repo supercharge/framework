@@ -273,6 +273,12 @@ test.group('Model', (group) => {
     ).rejects.toThrow('Failed from orFail')
   })
 
+  test('orFail | throws when not providing a callback', async () => {
+    expect(() => {
+      User.find().orFail()
+    }).toThrow('The orFail method requires a callback function as a parameter.')
+  })
+
   test('orFail | chainable and resolves', async () => {
     await User.createMany([
       { name: 'Marcus' },
