@@ -148,12 +148,10 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
    * Returns an empty array if no documents were found in the collection.
    */
   find (filter?: Filter<T>, options?: FindOptions<T>): this {
-    this
+    return this
       .withMethod('find')
       .where(filter)
       .withOptions(options)
-
-    return this
   }
 
   /**
@@ -161,24 +159,20 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
    * Returns `undefined` if no document was found in the collection.
    */
   findOne (filter?: Filter<T>, options?: FindOptions<T>): this {
-    this
+    return this
       .withMethod('findOne')
       .where(filter)
       .withOptions(options)
-
-    return this
   }
 
   /**
    * Find a document for the given `id`. Returns `undefined` if no document is available.
    */
   findById (id: ObjectId | string, options?: FindOptions<T>): this {
-    this
+    return this
       .withMethod('findById')
       .withOptions(options)
       .where({ _id: new ObjectId(id) } as unknown as Filter<T>)
-
-    return this
   }
 
   /**
@@ -186,9 +180,8 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
    */
   update (values: UpdateFilter<T>, options?: UpdateOptions): this {
     this.values = values
-    this.withMethod('update').withOptions(options)
 
-    return this
+    return this.withMethod('update').withOptions(options)
   }
 
   /**
@@ -196,9 +189,8 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
    */
   updateOne (values: UpdateFilter<T>, options?: UpdateOptions): this {
     this.values = values
-    this.withMethod('updateOne').withOptions(options)
 
-    return this
+    return this.withMethod('updateOne').withOptions(options)
   }
 
   /**
@@ -214,9 +206,10 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
    * Use the `Model.truncate` method to delete all documents in the collection.
    */
   delete (filter?: Filter<T>, options?: DeleteOptions): this {
-    this.withMethod('delete').where(filter).withOptions(options)
-
     return this
+      .where(filter)
+      .withMethod('delete')
+      .withOptions(options)
   }
 
   /**
@@ -225,9 +218,10 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
    * this query deletes the first match.
    */
   deleteOne (filter?: Filter<T>, options?: DeleteOptions): this {
-    this.withMethod('deleteOne').where(filter).withOptions(options)
-
     return this
+      .where(filter)
+      .withMethod('deleteOne')
+      .withOptions(options)
   }
 
   /**
@@ -241,9 +235,10 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
    * Returns the number of documents in the model’s collection.
    */
   count (filter?: Filter<T>, options?: CountDocumentsOptions): this {
-    this.withMethod('count').where(filter).withOptions(options)
-
     return this
+      .where(filter)
+      .withMethod('count')
+      .withOptions(options)
   }
 
   /**
@@ -257,12 +252,10 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
     const aggregationBuilder = new AggregationBuilder()
     callback(aggregationBuilder)
 
-    this
+    return this
       .withMethod('aggregate')
       .withOptions(options)
       .withAggregation(aggregationBuilder.pipeline())
-
-    return this
   }
 
   /**
