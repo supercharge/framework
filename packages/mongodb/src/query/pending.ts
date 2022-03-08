@@ -1,12 +1,11 @@
 'use strict'
 
-import { QueryBuilder, QueryOptions } from './builder'
+import { QueryBuilder } from './builder'
 import { AggregationBuilder } from './aggregation-builder'
-import { MongodbDocument, QueryBuilderContract } from '../contracts'
-import { AggregateBuilderCallback, AggregatePipeline, AggregatePipelineSortDirection } from '../contracts/aggregation-builder-contract'
+import { MongodbDocument, QueryBuilderContract, QueryOptions } from '../contracts'
+import { AggregateStageBuilderCallback, AggregatePipeline, AggregatePipelineSortDirection } from '../contracts/aggregation-builder-contract'
 import { AggregateOptions, CountDocumentsOptions, DeleteOptions, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
 
-export type OrFailCallback = () => Error
 export type QueryMethod = 'find' | 'findById' | 'findOne' | 'update' | 'updateOne' | 'delete' | 'deleteById' | 'deleteOne' | 'count' | 'with' | 'aggregate'
 
 export class PendingQuery<T extends MongodbDocument, ResultType = T> implements QueryBuilderContract<T, ResultType> {
@@ -250,7 +249,7 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
   /**
    * Returns an aggregate query. Use the aggregate `builder` to customize the query.
    */
-  aggregate (callback: AggregateBuilderCallback, options?: AggregateOptions): this {
+  aggregate (callback: AggregateStageBuilderCallback, options?: AggregateOptions): this {
     if (typeof callback !== 'function') {
       throw new Error('You must provide a callback function as the first argument when calling Model.aggregate')
     }
