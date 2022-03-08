@@ -2,7 +2,8 @@
 
 import { tap } from '@supercharge/goodies'
 import { ModelObject } from '../contracts'
-import { AggregationStageBuilderContract, AggregateStage, AggregatePipelineSortDirection } from '../contracts/aggregation-builder-contract'
+import { AggregationLookupBuilder } from './aggregation-lookup-builder'
+import { AggregationStageBuilderContract, AggregateStage, AggregatePipelineSortDirection, AggregatePipelineLookupBuilderCallback, AggregatePipelineLookupOptions } from '../contracts/aggregation-builder-contract'
 
 export class AggregationStageBuilder implements AggregationStageBuilderContract {
   /**
@@ -112,11 +113,36 @@ export class AggregationStageBuilder implements AggregationStageBuilderContract 
   }
 
   /**
-   * Appends the given lookup `filter`.
+   * Perform a join to a foreign collection. Use the lookup builder by
+   * providing a callback function or define the lookup as an object.
    */
-  lookup (filter: { from: string, as: string, localField?: string | undefined, foreignField?: string | undefined, let?: Record<string, any> | undefined, pipeline?: any[] | undefined }): this {
+  lookup (callback: AggregatePipelineLookupBuilderCallback): this
+  lookup (options: AggregatePipelineLookupOptions): this
+  lookup (callbackOrOptions: AggregatePipelineLookupBuilderCallback | AggregatePipelineLookupOptions): this {
+    return typeof callbackOrOptions === 'function'
+      ? this.builderLookup(callbackOrOptions)
+      : this.objectLookup(callbackOrOptions)
+  }
+
+  /**
+   * Compose the lookup options using a fluent builder.
+   */
+  private builderLookup (callback: AggregatePipelineLookupBuilderCallback): this {
+    const options = {}
+    const lookupBuilder = new AggregationLookupBuilder(options)
+    callback(lookupBuilder)
+
     return tap(this, () => {
-      this.merge({ $lookup: filter })
+      this.merge({ $lookup: options })
+    })
+  }
+
+  /**
+   * Directly provide the lookup `options`.
+   */
+  private objectLookup (options: AggregatePipelineLookupOptions): this {
+    return tap(this, () => {
+      this.merge({ $lookup: options })
     })
   }
 

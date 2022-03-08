@@ -3,7 +3,7 @@
 import { tap } from '@supercharge/goodies'
 import { ModelObject } from '../contracts'
 import { AggregationStageBuilder } from './aggregation-stage-builder'
-import { AggregationBuilderContract, AggregationStageBuilderContract, AggregatePipeline, AggregatePipelineSortDirection } from '../contracts/aggregation-builder-contract'
+import { AggregationBuilderContract, AggregationStageBuilderContract, AggregatePipeline, AggregatePipelineSortDirection, AggregatePipelineLookupBuilderCallback, AggregatePipelineLookupOptions } from '../contracts/aggregation-builder-contract'
 
 export class AggregationBuilder implements AggregationBuilderContract {
   /**
@@ -14,7 +14,7 @@ export class AggregationBuilder implements AggregationBuilderContract {
   }
 
   /**
-   * Create a new document instance for this model.
+   * Create a new instance.
    */
   constructor () {
     this.meta = { stageBuilders: [] }
@@ -138,11 +138,14 @@ export class AggregationBuilder implements AggregationBuilderContract {
   }
 
   /**
-   * Appends the given lookup `filter`.
+   * Appends a given lookup operation for the given `filter`
+   * or by using the provided builder in the `callback`.
    */
-  lookup (filter: { from: string, as: string, localField?: string | undefined, foreignField?: string | undefined, let?: Record<string, any> | undefined, pipeline?: any[] | undefined }): this {
+  lookup (callback: AggregatePipelineLookupBuilderCallback): this
+  lookup (options: AggregatePipelineLookupOptions): this
+  lookup (callbackOrOptions: AggregatePipelineLookupBuilderCallback | AggregatePipelineLookupOptions): this {
     return tap(this, () => {
-      this.stage().lookup(filter)
+      this.stage().lookup(callbackOrOptions)
     })
   }
 

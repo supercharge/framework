@@ -3,6 +3,7 @@
 import { ModelObject } from '.'
 
 export type AggregateBuilderCallback = (builder: AggregationBuilderContract) => unknown
+export type AggregatePipelineLookupBuilderCallback = (builder: AggregatePipelineLookupBuilder) => unknown
 
 export type AggregatePipeline = AggregateStage[]
 
@@ -49,7 +50,9 @@ export interface BaseAggregationBuilderContract {
   /**
    * Appends a $lookup operator to this aggregation pipeline.
    */
-  lookup(options: AggregatePipelineLookup['$lookup']): this
+  lookup(callback: AggregatePipelineLookupBuilderCallback): this
+  lookup(filter: AggregatePipelineLookupOptions): this
+  lookup(callbackOrOptions: AggregatePipelineLookupBuilderCallback | AggregatePipelineLookupOptions): this
 
   /**
    * Appends a $match operator to this aggregation  pipeline.
@@ -74,16 +77,27 @@ export interface AggregatePipelineSort {
   $sort: Record<string, 1 | -1 | { $meta: 'textScore' }>
 }
 
+export interface AggregatePipelineLookupBuilder {
+  from(from: string): this
+  as(from: string): this
+  localField(field: string): this
+  foreignField(field: string): this
+  let(assignments: Record<string, any>): this
+  pipeline(pipeline: any[]): this
+}
+
+export interface AggregatePipelineLookupOptions {
+  from: string
+  as: string
+  localField?: string
+  foreignField?: string
+  let?: Record<string, any>
+  pipeline?: any[]
+}
+
 export interface AggregatePipelineLookup {
   /** [`$lookup` reference](https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/) */
-  $lookup: {
-    from: string
-    as: string
-    localField?: string
-    foreignField?: string
-    let?: Record<string, any>
-    pipeline?: any[]
-  }
+  $lookup: AggregatePipelineLookupOptions
 }
 
 export interface AggregatePipelineMatch {
