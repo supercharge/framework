@@ -3,6 +3,9 @@
 import { AggregateBuilderCallback, AggregatePipelineSortDirection } from './aggregation-builder-contract'
 import { AggregateOptions, CountDocumentsOptions, DeleteOptions, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
 
+export type OrFailCallback = () => Error
+export type QueryOptions = FindOptions | UpdateOptions | DeleteOptions | CountDocumentsOptions | AggregateOptions
+
 export interface Lookup {
   name: string
   from: string
