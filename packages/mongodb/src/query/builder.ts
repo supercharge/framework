@@ -1,11 +1,8 @@
 'use strict'
 
 import { tap, isNotNullish } from '@supercharge/goodies'
-import { MongodbDocument, ModelObject, AggregatePipeline } from '../contracts'
-import { Document, Collection, DeleteOptions, DeleteResult, Filter, FindOptions, UpdateFilter, UpdateOptions, WithId, CountDocumentsOptions, AggregateOptions } from 'mongodb'
-
-export type OrFailCallback = () => Error
-export type QueryOptions = FindOptions | UpdateOptions | DeleteOptions | CountDocumentsOptions | AggregateOptions
+import { Document, Collection, DeleteResult, Filter, UpdateFilter, WithId } from 'mongodb'
+import { MongodbDocument, ModelObject, AggregatePipeline, QueryOptions, OrFailCallback } from '../contracts'
 
 export class QueryBuilder<T extends MongodbDocument> {
   /**
