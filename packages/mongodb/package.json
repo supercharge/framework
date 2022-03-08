@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "@japa/runner": "~2.0.3",
+    "@japa/run-failed-tests": "~1.0.5",
     "@japa/spec-reporter": "~1.1.10",
     "@supercharge/core": "^2.0.0-alpha.8",
     "@supercharge/eslint-config-typescript": "~1.0.1",

@@ -1,6 +1,7 @@
 'use strict'
 
 const { specReporter } = require('@japa/spec-reporter')
+const { runFailedTests } = require('@japa/run-failed-tests')
 const { processCliArgs, configure, run } = require('@japa/runner')
 
 /*
@@ -16,11 +17,18 @@ const { processCliArgs, configure, run } = require('@japa/runner')
 |
 | Please consult japa.dev/runner-config for the config docs.
 */
+
+const plugins = []
+
+if (!process.env.CI) {
+  plugins.push(runFailedTests())
+}
+
 configure({
   ...processCliArgs(process.argv.slice(2)),
   ...{
+    plugins,
     files: ['test/**/*.js'],
-    plugins: [],
     reporters: [specReporter()],
     importer: (filePath) => require(filePath),
     filters: {
