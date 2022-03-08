@@ -361,6 +361,46 @@ test.group('Model', (group) => {
     expect(descending[1].name).toBe('Marcus')
   })
 
+  test('aggregate | order matters', async () => {
+    await User.createMany([
+      { name: 'Marcus', age: 987 },
+      { name: 'Norman', age: 456 },
+      { name: 'Christian', age: 123 }
+    ])
+
+    /**
+     * This aggregation pipeline uses two stages:
+     *   - stage 1: limit the result to one item
+     *   - stage 2: sort results from stage 1 by age
+     *
+     * The two stages in this pipeline returns the first found user
+     * and the sorting does nothing because of the single result item.
+     */
+    const users = await User.aggregate(builder => {
+      builder.limit(1).sort('age', 'asc')
+    })
+
+    expect(users.length).toBe(1)
+    expect(users[0].age).toBe(987)
+    expect(users[0].name).toBe('Marcus')
+  })
+
+  test('aggregate | order matters part 2', async () => {
+    await User.createMany([
+      { name: 'Marcus', age: 987 },
+      { name: 'Norman', age: 456 },
+      { name: 'Christian', age: 123 }
+    ])
+
+    const users = await User.aggregate(builder => {
+      builder.sort('age', 'asc').limit(1)
+    })
+
+    expect(users.length).toBe(1)
+    expect(users[0].age).toBe(123)
+    expect(users[0].name).toBe('Christian')
+  })
+
   test('aggregate | ascending using column', async () => {
     await User.createMany([
       { name: 'Marcus', age: 987 },
