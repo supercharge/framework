@@ -2,7 +2,7 @@
 
 import { ModelObject } from '.'
 
-export type AggregateBuilderCallback = (builder: AggregationBuilder) => unknown
+export type AggregateBuilderCallback = (builder: AggregationBuilderContract) => unknown
 
 export type AggregatePipeline =
   Array<
@@ -13,7 +13,7 @@ export type AggregatePipeline =
   | AggregatePipelineSort
   >
 
-export interface AggregationBuilder {
+export interface AggregationBuilderContract {
   /**
    * Limit the number of returned entries to the given `limit`
    */

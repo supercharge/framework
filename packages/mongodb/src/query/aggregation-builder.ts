@@ -2,9 +2,9 @@
 
 import { tap } from '@supercharge/goodies'
 import { ModelObject } from '../contracts'
-import { AggregationBuilder as AggregateBuilderContract, AggregatePipeline, AggregatePipelineSortDirection } from '../contracts/aggregation-builder-contract'
+import { AggregationBuilderContract, AggregatePipeline, AggregatePipelineSortDirection } from '../contracts/aggregation-builder-contract'
 
-export class AggregationBuilder implements AggregateBuilderContract {
+export class AggregationBuilder implements AggregationBuilderContract {
   /**
    *
    */
