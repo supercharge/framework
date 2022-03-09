@@ -296,7 +296,7 @@ export class Model implements MongodbDocument {
    * Delete the document for the given `id`. Does nothing if no document with that ID is available.
    */
   static deleteById<T extends MongodbModel>(this: T, id: ObjectId | string, options?: DeleteOptions): QueryBuilderContract<InstanceType<T>, void> {
-    return this.pendingQuery<T>().deleteOne({ _id: new ObjectId(id) } as any, options)
+    return this.pendingQuery<T>().deleteOne({ _id: id } as any, options)
   }
 
   /**

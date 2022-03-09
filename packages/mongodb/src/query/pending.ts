@@ -172,7 +172,7 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
     return this
       .withMethod('findById')
       .withOptions(options)
-      .where({ _id: new ObjectId(id) } as unknown as Filter<T>)
+      .where({ _id: id } as unknown as Filter<T>)
   }
 
   /**
@@ -228,7 +228,7 @@ export class PendingQuery<T extends MongodbDocument, ResultType = T> implements 
    * Deletes a document for the given `id`. Returns `undefined` if no document is available.
    */
   deleteById (id: ObjectId | string, options?: DeleteOptions): this {
-    return this.deleteOne({ _id: new ObjectId(id) } as unknown as Filter<T>, options)
+    return this.deleteOne({ _id: id } as unknown as Filter<T>, options)
   }
 
   /**
