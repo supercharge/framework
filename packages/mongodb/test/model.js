@@ -113,7 +113,7 @@ test.group('Model', (group) => {
   test('findById', async () => {
     const supercharge = await User.create({ name: 'Supercharge' })
 
-    const user = await User.findById(supercharge.id)
+    const user = await User.findById(supercharge._id)
     expect(user).toBeDefined()
     expect(user.name).toEqual('Supercharge')
   })
@@ -290,6 +290,31 @@ test.group('Model', (group) => {
     })
     expect(typeof user === 'object').toBe(true)
     expect(user.name).toBe('Supercharge')
+  })
+
+  test('custom queries | findByIdOrFail', async () => {
+    class CustomUser extends User {
+      static findByIdOrFail (id) {
+        return this.findById(id).orFail(() => {
+          throw new Error('findByIdOrFail failed')
+        })
+      }
+    }
+
+    await CustomUser.truncate()
+
+    await CustomUser.createMany([
+      { _id: 1, name: 'Marcus' },
+      { _id: 2, name: 'Supercharge' }
+    ])
+
+    const user = await CustomUser.findByIdOrFail(1)
+    expect(typeof user === 'object').toBe(true)
+    expect(user.name).toBe('Marcus')
+
+    await expect(
+      CustomUser.findByIdOrFail(123).get()
+    ).rejects.toThrow('findByIdOrFail failed')
   })
 
   test('oldest', async () => {
