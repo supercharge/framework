@@ -3,8 +3,8 @@
 import pluralize from 'pluralize'
 import { isObject } from './utils'
 import Str from '@supercharge/strings'
+import { QueryProcessor } from './query/processor'
 import { QueryBuilder } from './query/builder'
-import { PendingQuery } from './query/pending'
 import { ModelObject } from './contracts/utils-contract'
 import { MongodbModel } from './contracts/model-contract'
 import { MongodbDocument } from './contracts/document-contract'
@@ -152,7 +152,9 @@ export class Model implements MongodbDocument {
    * Save this document in the database.
    */
   async save (): Promise<this> {
-    return await this.query().save(this)
+    await this.queryProcessor().save(this)
+
+    return this
   }
 
   /**
@@ -166,7 +168,7 @@ export class Model implements MongodbDocument {
    * Delete this document from the database.
    */
   async delete (): Promise<this> {
-    await (this.pendingQuery().deleteById(this._id) as any)
+    await (this.query().deleteById(this._id) as any)
 
     return this
   }
@@ -222,7 +224,7 @@ export class Model implements MongodbDocument {
    * Returns an empty array if no documents were found in the collection.
    */
   static find<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: FindOptions<InstanceType<T>>): QueryBuilderContract<InstanceType<T>, Array<InstanceType<T>>> {
-    return this.pendingQuery<T>().find(filter, options)
+    return this.query<T>().find(filter, options)
   }
 
   /**
@@ -230,42 +232,42 @@ export class Model implements MongodbDocument {
    * Returns `undefined` if no document was found in the collection.
    */
   static findOne<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: FindOptions<InstanceType<T>>): QueryBuilderContract<InstanceType<T>, InstanceType<T> | undefined> {
-    return this.pendingQuery<T>().findOne(filter, options)
+    return this.query<T>().findOne(filter, options)
   }
 
   /**
    * Tba.
    */
   static findById<T extends MongodbModel>(this: T, id: ObjectId | string, options?: FindOptions<InstanceType<T>>): QueryBuilderContract<InstanceType<T>, InstanceType<T> | undefined> {
-    return this.pendingQuery<T>().findById(id, options)
+    return this.query<T>().findById(id, options)
   }
 
   /**
    * Creates the given `document` in the database.
    */
   static async create<T extends MongodbModel>(this: T, document: ModelObject): Promise<InstanceType<T>> {
-    return await this.query().create(document) as InstanceType<T>
+    return await this.query().insertOne(document).get()
   }
 
   /**
    * Creates the given `documents` in the database.
    */
   static async createMany<T extends MongodbModel>(this: T, documents: ModelObject[]): Promise<void> {
-    return await this.query().createMany(documents)
+    await this.query().insertMany(documents).get()
   }
 
   /**
    * Updates all documents maching the given `filter` with values from `update`.
    */
   static update<T extends MongodbModel>(this: T, values: UpdateFilter<InstanceType<T>>, options: UpdateOptions): QueryBuilderContract<InstanceType<T>, void> {
-    return this.pendingQuery<T>().update(values as any, options)
+    return this.query<T>().update(values as any, options)
   }
 
   /**
    * Updates the first document maching the given `filter` with values from `update`.
    */
   static updateOne<T extends MongodbModel>(this: T, values: UpdateFilter<InstanceType<T>>, options?: UpdateOptions): QueryBuilderContract<InstanceType<T>> {
-    return this.pendingQuery<T>().updateOne(values, options)
+    return this.query<T>().updateOne(values, options)
   }
 
   /**
@@ -280,7 +282,7 @@ export class Model implements MongodbDocument {
    * Use the `Model.truncate` method to delete all documents in the collection.
    */
   static delete<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: DeleteOptions): QueryBuilderContract<InstanceType<T>, DeleteResult> {
-    return this.pendingQuery().where(filter as any).delete(options) as PendingQuery<InstanceType<T>>
+    return this.query().where(filter as any).delete(options) as QueryBuilder<InstanceType<T>>
   }
 
   /**
@@ -289,27 +291,27 @@ export class Model implements MongodbDocument {
    * this query deletes the first match.
    */
   static deleteOne<T extends MongodbModel>(this: T, filter?: Filter<InstanceType<T>>, options?: DeleteOptions): QueryBuilderContract<InstanceType<T>, DeleteResult> {
-    return this.pendingQuery<T>().deleteOne(filter, options)
+    return this.query<T>().deleteOne(filter, options)
   }
 
   /**
    * Delete the document for the given `id`. Does nothing if no document with that ID is available.
    */
   static deleteById<T extends MongodbModel>(this: T, id: ObjectId | string, options?: DeleteOptions): QueryBuilderContract<InstanceType<T>, void> {
-    return this.pendingQuery<T>().deleteOne({ _id: id } as any, options)
+    return this.query<T>().deleteOne({ _id: id } as any, options)
   }
 
   /**
    * Eager load the given `relations`.
    */
   static count<T extends MongodbModel> (this: T, filter?: Filter<InstanceType<T>>, options?: CountDocumentsOptions): QueryBuilderContract<InstanceType<T>, number> {
-    return this.pendingQuery<T>().count(filter, options)
+    return this.query<T>().count(filter, options)
   }
 
   /**
    * Eager load the given `relations`.
    */
-  static with<T extends MongodbModel> (...relations: string[]): QueryBuilder<InstanceType<T>> {
+  static with<T extends MongodbModel> (...relations: string[]): QueryBuilder<InstanceType<T>, Array<InstanceType<T>>> {
     return this.query<T>().with(...relations)
   }
 
@@ -317,43 +319,36 @@ export class Model implements MongodbDocument {
    * Returns a query builder instance containing the given `filter`.
    */
   static where<T extends MongodbModel>(this: T, filter: Filter<InstanceType<T>>): QueryBuilderContract<InstanceType<T>, Array<InstanceType<T>>> {
-    return this.pendingQuery<T>().where(filter)
+    return this.query<T>().where(filter)
   }
 
   /**
    * Returns a pending query instance for this model.
    */
-  static pendingQuery<T extends MongodbModel, ReturnType = any>(): PendingQuery<InstanceType<T>, ReturnType> {
-    return (new this() as unknown as InstanceType<T>).pendingQuery<InstanceType<T>, ReturnType>()
+  static query<T extends MongodbModel, ReturnType = any>(): QueryBuilder<InstanceType<T>, ReturnType> {
+    return (new this() as unknown as InstanceType<T>).query<InstanceType<T>, ReturnType>()
   }
 
   /**
    * Returns a pending query instance for this model.
    */
-  pendingQuery<T extends MongodbDocument, ReturnType = any>(this: T): PendingQuery<T, ReturnType> {
-    return new PendingQuery<T, ReturnType>(
-      this.query<T>()
+  query<T extends MongodbDocument, ReturnType = any>(this: T): QueryBuilder<T, ReturnType> {
+    return new QueryBuilder<T, ReturnType>(
+      this.queryProcessor()
     )
   }
 
   /**
-   * Returns a query builder instance for this model.
+   * Returns a query processor instance for this model.
    */
-  static query<T extends MongodbModel>(): QueryBuilder<InstanceType<T>> {
-    return (new this() as unknown as InstanceType<T>).query()
-  }
-
-  /**
-   * Returns a new query builder for the model’s collection.
-   */
-  query<T extends MongodbDocument> (this: T): QueryBuilder<T> {
-    return new QueryBuilder<T>(this)
+  queryProcessor<T extends MongodbDocument>(): QueryProcessor<T> {
+    return new QueryProcessor(this as unknown as T)
   }
 
   /**
    * Returns an aggregate query. Use the aggregate `builder` to customize the query.
    */
   static aggregate<T extends MongodbModel, ResultType = Array<InstanceType<T>>>(this: T, callback: AggregateBuilderCallback, options?: AggregateOptions): QueryBuilderContract<InstanceType<T>, ResultType> {
-    return this.pendingQuery<T>().aggregate(callback, options)
+    return this.query<T>().aggregate(callback, options)
   }
 }

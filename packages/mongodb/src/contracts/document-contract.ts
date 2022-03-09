@@ -2,9 +2,9 @@
 
 import { Collection } from 'mongodb'
 import { QueryBuilder } from '../query/builder'
-import { PendingQuery } from '../query/pending'
 import { ModelObject, HasId } from './utils-contract'
 import { MongodbConnection, MongodbConnectionResolver } from './connection-contract'
+import { QueryProcessor } from '../query'
 
 export interface MongodbDocument extends HasId {
   /**
@@ -60,12 +60,13 @@ export interface MongodbDocument extends HasId {
   getCollection(): Promise<Collection>
 
   /**
-   * Returns a query builder instance for this model.
-   */
-  query<T extends MongodbDocument>(): QueryBuilder<T>
-
-  /**
    * Returns a pending query instance for this model.
    */
-  pendingQuery<T extends MongodbDocument, ReturnType = any>(): PendingQuery<T, ReturnType>
+  query<T extends MongodbDocument, ReturnType = any>(): QueryBuilder<T, ReturnType>
+
+  /**
+   * Returns a query processor instance for this model.
+   */
+  queryProcessor<T extends MongodbDocument>(): QueryProcessor<T>
+
 }

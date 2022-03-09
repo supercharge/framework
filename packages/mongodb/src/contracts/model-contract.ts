@@ -2,7 +2,6 @@
 
 import { ModelObject } from './utils-contract'
 import { QueryBuilder } from '../query/builder'
-import { PendingQuery } from '../query/pending'
 import { MongodbDocument } from './document-contract'
 import { QueryBuilderContract } from './query-builder-contract'
 import { AggregateBuilderCallback } from './aggregation-builder-contract'
@@ -106,14 +105,9 @@ export interface MongodbModel {
   deleteById<T extends MongodbModel>(this: T, id: ObjectId | string, options?: DeleteOptions): QueryBuilderContract<InstanceType<T>, void>
 
   /**
-   * Returns a query builder instance for this model.
-   */
-  query<T extends MongodbModel>(): QueryBuilder<InstanceType<T>>
-
-  /**
    * Returns a pending query instance for this model.
    */
-  pendingQuery<T extends MongodbModel, ReturnType = any>(): PendingQuery<InstanceType<T>, ReturnType>
+  query<T extends MongodbModel, ReturnType = any>(): QueryBuilder<InstanceType<T>, ReturnType>
 
   /**
    * Returns the number of documents in the model’s collection.
@@ -128,7 +122,7 @@ export interface MongodbModel {
   /**
    * Eager load the given `relations`.
    */
-  with<T extends MongodbModel> (this: T, ...relations: string[]): QueryBuilder<InstanceType<T>>
+  with<T extends MongodbModel> (this: T, ...relations: string[]): QueryBuilderContract<InstanceType<T>, Array<InstanceType<T>>>
 
   /**
    * Returns an aggregate query. Use the aggregate `builder` to customize the query.

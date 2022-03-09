@@ -1,76 +1,56 @@
 'use strict'
 
-import { tap, isNotNullish } from '@supercharge/goodies'
-import { Document, Collection, DeleteResult, Filter, UpdateFilter, WithId } from 'mongodb'
-import { MongodbDocument, ModelObject, AggregatePipeline, QueryOptions, OrFailCallback } from '../contracts'
+import { QueryProcessor } from './processor'
+import { AggregationBuilder } from './aggregation-builder'
+import { ModelObject, MongodbDocument, QueryBuilderContract, QueryOptions } from '../contracts'
+import { AggregateBuilderCallback, AggregatePipeline, AggregatePipelineSortDirection } from '../contracts/aggregation-builder-contract'
+import { AggregateOptions, CountDocumentsOptions, DeleteOptions, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
 
-export class QueryBuilder<T extends MongodbDocument> {
-  /**
-   * The model being queried.
-   */
-  private readonly model: T
+export type QueryMethod = 'find' | 'findById' | 'findOne' | 'update' | 'updateOne' | 'delete' | 'deleteById' | 'deleteOne' | 'count' | 'with' | 'aggregate' | 'insertOne' | 'insertMany'
 
+export class QueryBuilder<T extends MongodbDocument, ResultType = T> implements QueryBuilderContract<T, ResultType> {
   /**
-   * The query filter.
+   * The query builder instance.
    */
-  private filter: Filter<T>
-
-  /**
-   * The query options.
-   */
-  private options: QueryOptions
+  private readonly queryProcessor: QueryProcessor<T>
 
   /**
-   * The query options.
+   * The method to run.
    */
-  private aggregationPipeline: AggregatePipeline
+  private method: QueryMethod
 
   /**
-   * The relationships that should be eager loaded.
+   * The method to run.
    */
-  private readonly eagerLoad: string[]
+  private values: UpdateFilter<T>
 
   /**
-   * The callback function used when no documents match a query.
+   * Create a new instance.
    */
-  private orFailCallback?: OrFailCallback
-
-  /**
-   * Create a new document instance for this model.
-   */
-  constructor (model: T) {
-    this.model = model
-
-    this.filter = {}
-    this.options = {}
-    this.eagerLoad = []
-    this.aggregationPipeline = []
+  constructor (processor: QueryProcessor<T>) {
+    this.values = {}
+    this.method = 'find'
+    this.queryProcessor = processor
   }
 
   /**
-   * Eager load the given `relations`.
+   * Required when promises are extended.
+   */
+  get [Symbol.toStringTag] (): string {
+    return this.constructor.name
+  }
+
+  /**
+   * Assign the given `method`
    *
    * @param relations
    *
    * @returns {this}
    */
-  with (...relations: string[]): this {
-    return tap(this, () => {
-      this.eagerLoad.push(...relations)
-    })
-  }
+  withMethod (method: QueryMethod): this {
+    this.method = method
 
-  /**
-   * Eager load the given `relations`.
-   *
-   * @param relations
-   *
-   * @returns {this}
-   */
-  where (filter?: Filter<T>): this {
-    return tap(this, () => {
-      this.filter = Object.assign(this.filter, { ...filter })
-    })
+    return this
   }
 
   /**
@@ -81,9 +61,9 @@ export class QueryBuilder<T extends MongodbDocument> {
    * @returns {this}
    */
   withOptions (options?: QueryOptions): this {
-    return tap(this, () => {
-      this.options = Object.assign(this.options, { ...options })
-    })
+    this.queryProcessor.withOptions(options)
+
+    return this
   }
 
   /**
@@ -94,9 +74,35 @@ export class QueryBuilder<T extends MongodbDocument> {
    * @returns {this}
    */
   withAggregation (pipeline: AggregatePipeline): this {
-    return tap(this, () => {
-      this.aggregationPipeline = pipeline
-    })
+    this.queryProcessor.withAggregation(pipeline)
+
+    return this
+  }
+
+  /**
+   * Eager load the given `relations`.
+   *
+   * @param relations
+   *
+   * @returns {this}
+   */
+  with (...relations: string[]): this {
+    this.queryProcessor.with(...relations)
+
+    return this
+  }
+
+  /**
+   * Eager load the given `relations`.
+   *
+   * @param relations
+   *
+   * @returns {this}
+   */
+  where (filter?: Filter<T>): this {
+    this.queryProcessor.where(filter)
+
+    return this
   }
 
   /**
@@ -107,166 +113,121 @@ export class QueryBuilder<T extends MongodbDocument> {
    * @returns {this}
    */
   orFail (handler: () => Error): this {
-    if (typeof handler !== 'function') {
-      throw new Error('The orFail method requires a callback function as a parameter.')
-    }
+    this.queryProcessor.orFail(handler)
 
-    return tap(this, () => {
-      this.orFailCallback = handler
+    return this
+  }
+
+  /**
+   * Add a descending "order by" sorting to the query.
+   */
+  latest (): this {
+    return this.sort('_id', 'desc')
+  }
+
+  /**
+   * Add an ascending "order by" sorting to the query.
+   */
+  oldest (): this {
+    return this.sort('_id', 'asc')
+  }
+
+  /**
+   * Sort the result by a given column or an object.
+   */
+  sort (columns: Record<string, AggregatePipelineSortDirection>): this
+  sort (column: string, direction?: AggregatePipelineSortDirection): this
+  sort (column: string | Record<string, AggregatePipelineSortDirection>, direction?: AggregatePipelineSortDirection): this {
+    return this.aggregate(builder => {
+      builder.sort(column, direction)
     })
-  }
-
-  /**
-   * Calls the orFail callback if it’s defined or returns the provided `documents`.
-   */
-  maybeFail (): void {
-    if (this.orFailCallback) {
-      throw this.orFailCallback()
-    }
-  }
-
-  /**
-   * Returns a new model instance if the given `document` is not empty.
-   */
-  createInstanceIfNotNull (values: WithId<Document> | null): T | undefined {
-    if (isNotNullish(values)) {
-      return this.model.newInstance<T>(values)
-    }
-
-    this.maybeFail()
-  }
-
-  /**
-   * Returns the MongoDB collection for the related model.
-   */
-  async collection (): Promise<Collection> {
-    return this.model.getCollection()
-  }
-
-  /**
-   * Save this document in the database.
-   */
-  async save (document: Partial<MongodbDocument>): Promise<T> {
-    const { _id, ...values } = document
-    const collection = await this.collection()
-
-    return await tap(document, async () => {
-      await collection.updateOne({ _id }, { $set: { ...values } })
-    }) as T
   }
 
   /**
    * Returns an array of documents maching the given `filter` and `options`.
    * Returns an empty array if no documents were found in the collection.
    */
-  async find (): Promise<T[]> {
-    const collection = await this.collection()
-    const results = await collection.find({ ...this.filter }, { ...this.options }).toArray()
-
-    if (results.length === 0) {
-      this.maybeFail()
-    }
-
-    return results.map(result => {
-      return this.model.newInstance<T>(result)
-    })
+  find (filter?: Filter<T>, options?: FindOptions<T>): this {
+    return this
+      .withMethod('find')
+      .where(filter)
+      .withOptions(options)
   }
 
   /**
    * Returns the first document maching the given `filter` and `options`.
    * Returns `undefined` if no document was found in the collection.
    */
-  async findOne (): Promise<T | undefined> {
-    const collection = await this.collection()
-    const document = await collection.findOne({ ...this.filter }, { ...this.options })
-
-    return this.createInstanceIfNotNull(document)
+  findOne (filter?: Filter<T>, options?: FindOptions<T>): this {
+    return this
+      .withMethod('findOne')
+      .where(filter)
+      .withOptions(options)
   }
 
   /**
    * Find a document for the given `id`. Returns `undefined` if no document is available.
    */
-  async findById (): Promise<T | undefined> {
-    return await this.findOne()
-  }
-
-  /**
-   * Creates the given `document` in the database.
-   */
-  async create (document: ModelObject): Promise<T> {
-    return await this.insertOne(document)
-  }
-
-  /**
-   * Insert the given `document` into the database.
-   */
-  async insertOne (document: ModelObject): Promise<T> {
-    const collection = await this.collection()
-    const result = await collection.insertOne(document)
-
-    if (!result.acknowledged) {
-      throw new Error('Failed to insert document')
-    }
-
-    return this.model.newInstance<T>({ ...document, _id: result.insertedId })
-  }
-
-  /**
-   * Creates the given `documents` in the database.
-   */
-  async createMany (documents: ModelObject[]): Promise<void> {
-    return await this.insertMany(documents)
-  }
-
-  /**
-   * Insert the given `documents` into the database.
-   */
-  async insertMany (documents: ModelObject[]): Promise<void> {
-    const collection = await this.collection()
-    const result = await collection.insertMany(documents)
-
-    if (!result.acknowledged) {
-      throw new Error('Failed to insert documents')
-    }
+  findById (id: ObjectId | string, options?: FindOptions<T>): this {
+    return this
+      .withMethod('findById')
+      .withOptions(options)
+      .where({ _id: id } as unknown as Filter<T>)
   }
 
   /**
    * Updates all documents maching the given `filter` with values from `update`.
    */
-  async update (values: UpdateFilter<T>): Promise<void> {
-    const collection = await this.collection()
-    const result = await collection.updateMany({ ...this.filter }, { ...values } as any, { ...this.options })
+  insertOne (document: ModelObject): this {
+    this.values = document
 
-    if (!result.acknowledged) {
-      throw new Error('Failed to run "update" query')
-    }
+    return this.withMethod('insertOne')
+  }
+
+  /**
+   * Updates all documents maching the given `filter` with values from `update`.
+   */
+  insertMany (documents: ModelObject[]): this {
+    this.values = documents
+
+    return this.withMethod('insertMany')
+  }
+
+  /**
+   * Updates all documents maching the given `filter` with values from `update`.
+   */
+  update (values: UpdateFilter<T>, options?: UpdateOptions): this {
+    this.values = values
+
+    return this.withMethod('update').withOptions(options)
   }
 
   /**
    * Updates the first document matching the given `filter` with the values in `update`.
    */
-  async updateOne (values: UpdateFilter<T>): Promise<void> {
-    const collection = await this.collection()
-    const result = await collection.updateOne({ ...this.filter }, { ...values }, { ...this.options })
+  updateOne (values: UpdateFilter<T>, options?: UpdateOptions): this {
+    this.values = values
 
-    if (!result.acknowledged) {
-      throw new Error('Failed to update the document')
-    }
+    return this.withMethod('updateOne').withOptions(options)
   }
 
   /**
    * Deletes the documents matching the given `filter` and delete `options`.
    * Use the `Model.truncate` method to delete all documents in the collection.
    */
-  async delete (): Promise<DeleteResult> {
-    const collection = await this.collection()
-    const result = await collection.deleteMany({ ...this.filter }, { ...this.options })
+  truncate (options?: DeleteOptions): this {
+    return this.delete({}, options)
+  }
 
-    if (!result.acknowledged) {
-      throw new Error('Failed to delete documents')
-    }
-
-    return result
+  /**
+   * Deletes the documents matching the given `filter` and delete `options`.
+   * Use the `Model.truncate` method to delete all documents in the collection.
+   */
+  delete (filter?: Filter<T>, options?: DeleteOptions): this {
+    return this
+      .where(filter)
+      .withMethod('delete')
+      .withOptions(options)
   }
 
   /**
@@ -274,42 +235,75 @@ export class QueryBuilder<T extends MongodbDocument> {
    * In case the `filter` and `options` are empty or an empty object,
    * this query deletes the first match.
    */
-  async deleteOne (): Promise<DeleteResult> {
-    const collection = await this.collection()
-
-    return await collection.deleteOne({ ...this.filter }, { ...this.options })
+  deleteOne (filter?: Filter<T>, options?: DeleteOptions): this {
+    return this
+      .where(filter)
+      .withMethod('deleteOne')
+      .withOptions(options)
   }
 
   /**
    * Deletes a document for the given `id`. Returns `undefined` if no document is available.
    */
-  async deleteById (): Promise<void> {
-    await this.deleteOne()
+  deleteById (id: ObjectId | string, options?: DeleteOptions): this {
+    return this.deleteOne({ _id: id } as unknown as Filter<T>, options)
   }
 
   /**
    * Returns the number of documents in the model’s collection.
    */
-  async count (): Promise<number> {
-    const collection = await this.collection()
-
-    return collection.countDocuments({ ...this.filter }, { ...this.options })
+  count (filter?: Filter<T>, options?: CountDocumentsOptions): this {
+    return this
+      .where(filter)
+      .withMethod('count')
+      .withOptions(options)
   }
 
   /**
-   * Creates the given `documents` in the database.
+   * Returns an aggregate query. Use the aggregate `builder` to customize the query.
    */
-  async aggregate (): Promise<any> {
-    const collection = await this.collection()
-
-    const results = await collection.aggregate(this.aggregationPipeline, { ...this.options }).toArray()
-
-    if (results.length === 0) {
-      this.maybeFail()
+  aggregate (callback: AggregateBuilderCallback, options?: AggregateOptions): this {
+    if (typeof callback !== 'function') {
+      throw new Error('You must provide a callback function as the first argument when calling Model.aggregate')
     }
 
-    return results.map(result => {
-      return this.model.newInstance<T>(result)
-    })
+    const aggregationBuilder = new AggregationBuilder()
+    callback(aggregationBuilder)
+
+    return this
+      .withMethod('aggregate')
+      .withOptions(options)
+      .withAggregation(aggregationBuilder.pipeline())
+  }
+
+  /**
+   * Run the query.
+   */
+  async get (): Promise<any> {
+    return await (this.queryProcessor[this.method] as unknown as Function)(this.values)
+  }
+
+  /**
+   * Implementation of the promise `then` method.
+   */
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
+  // then (onFulfilled: (value: unknown) => ResultType | PromiseLike<ResultType>, onRejected?: any): Promise<ResultType> {
+  then (onFulfilled: any, onRejected?: any): any {
+    return this.get().then(onFulfilled, onRejected)
+  }
+
+  /**
+   * Implementation of the promise `catch` method.
+   */
+  catch (onRejected: any): any {
+    return this.get().catch(onRejected)
+  }
+
+  /**
+   * Implementation of the promise `finally` method.
+   */
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
+  finally (onFinally: any): any {
+    return this.get().finally(onFinally)
   }
 }
