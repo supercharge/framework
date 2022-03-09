@@ -28,7 +28,7 @@ export class QueryProcessor<T extends MongodbDocument> {
   /**
    * The relationships that should be eager loaded.
    */
-  private readonly eagerLoad: string[]
+  private readonly eagerLoads: string[]
 
   /**
    * The callback function used when no documents match a query.
@@ -43,8 +43,21 @@ export class QueryProcessor<T extends MongodbDocument> {
 
     this.filter = {}
     this.options = {}
-    this.eagerLoad = []
+    this.eagerLoads = []
     this.aggregationPipeline = []
+  }
+
+  /**
+   * Eager load the given `relations` when searching for documents.
+   *
+   * @param relations
+   *
+   * @returns {this}
+   */
+  with (...relations: string[]): this {
+    return tap(this, () => {
+      this.eagerLoads.push(...relations)
+    })
   }
 
   /**
@@ -54,10 +67,8 @@ export class QueryProcessor<T extends MongodbDocument> {
    *
    * @returns {this}
    */
-  with (...relations: string[]): this {
-    return tap(this, () => {
-      this.eagerLoad.push(...relations)
-    })
+  shouldEagerload (): boolean {
+    return this.eagerLoads.length > 0
   }
 
   /**
