@@ -176,8 +176,8 @@ export class Model implements MongodbDocument {
   /**
    * Returns the model constructor.
    */
-  private model (): MongodbModel {
-    return this.constructor as MongodbModel
+  model<T extends MongodbModel> (): T {
+    return this.constructor as T
   }
 
   /**

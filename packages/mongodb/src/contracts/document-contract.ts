@@ -1,10 +1,11 @@
 'use strict'
 
 import { Collection } from 'mongodb'
+import { QueryProcessor } from '../query'
+import { MongodbModel } from './model-contract'
 import { QueryBuilder } from '../query/builder'
 import { ModelObject, HasId } from './utils-contract'
 import { MongodbConnection, MongodbConnectionResolver } from './connection-contract'
-import { QueryProcessor } from '../query'
 
 export interface MongodbDocument extends HasId {
   /**
@@ -33,6 +34,11 @@ export interface MongodbDocument extends HasId {
    * Returns a plain JavaScript object.
    */
   toObject<T = ModelObject>(): T
+
+  /**
+   * Returns the model constructor.
+   */
+  model<T extends MongodbModel>(): T
 
   /**
    * Create a new instance of the given model.
@@ -68,5 +74,4 @@ export interface MongodbDocument extends HasId {
    * Returns a query processor instance for this model.
    */
   queryProcessor<T extends MongodbDocument>(): QueryProcessor<T>
-
 }
