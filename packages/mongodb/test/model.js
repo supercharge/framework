@@ -181,6 +181,22 @@ test.group('Model', (group) => {
     expect(await User.count()).toBe(0)
   })
 
+  test('truncate | where', async () => {
+    await User.createMany([
+      { name: 'Marcus', isActive: true },
+      { name: 'Supercharge', isActive: false },
+      { name: 'Supercharged', isActive: true }
+    ])
+
+    expect(await User.count()).toBe(3)
+
+    await User.where({ isActive: true }).truncate()
+
+    const users = await User.all()
+    expect(users.length).toBe(1)
+    expect(users[0].name).toBe('Supercharge')
+  })
+
   test('delete | truncates all documents without filter', async () => {
     await User.createMany([
       { name: 'Marcus' },
