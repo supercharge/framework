@@ -2,13 +2,14 @@
 
 import { ModelObject } from './utils-contract'
 import { QueryBuilder } from '../query/builder'
+import { HasRelations } from './relations-contract'
 import { MongodbDocument } from './document-contract'
 import { QueryBuilderContract } from './query-builder-contract'
 import { AggregateBuilderCallback } from './aggregation-builder-contract'
 import { MongodbConnectionResolver, MongodbConnection } from './connection-contract'
 import { AggregateOptions, CountDocumentsOptions, DeleteOptions, DeleteResult, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
 
-export interface MongodbModel {
+export interface MongodbModel extends HasRelations {
   /**
    * Create a new instance.
    */
