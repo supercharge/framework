@@ -1,52 +1,52 @@
 'use strict'
 
 import { tap } from '@supercharge/goodies'
-import { MongodbDocument, MongodbModel, RelationBuilderContract, RelationContract } from '../contracts'
+import { MongodbModel, RelationBuilderContract, RelationBuilderResult } from '../contracts'
 
-export class RelationBuilder<ParentClass extends MongodbDocument, T extends MongodbModel> implements RelationBuilderContract {
-  private readonly parent: ParentClass
-  private readonly related: T
+export class RelationBuilder<ParentModel extends MongodbModel, RelatedModel extends MongodbModel> implements RelationBuilderContract {
+  protected readonly parent: ParentModel
+  protected readonly related: RelatedModel
 
-  private readonly relation: Partial<RelationContract>
+  protected readonly relation: Partial<RelationBuilderResult>
 
-  constructor (parent: any, related: T | (() => T)) {
+  /**
+   * Create a new instance.
+   */
+  constructor (parent: ParentModel, related: RelatedModel) {
     this.relation = {}
     this.parent = parent
-    this.related = this.resolveRelated(related)
+    this.related = related
   }
 
-  private resolveRelated (related: T | (() => T)): T {
-    return typeof related !== 'function'
-      ? related
-      : related() as any
-  }
-
-  from (collection: string): this {
-    return tap(this, () => {
-      this.relation.collection = collection
-    })
-  }
-
-  remoteField (field: string): this {
-    return tap(this, () => {
-      this.relation.localField = field
-    })
-  }
-
+  /**
+   * Assign the local `field` identifier in the local collection for this relationship.
+   */
   localField (field: string): this {
     return tap(this, () => {
       this.relation.localField = field
     })
   }
 
-  resolve (): any {
-    // return {
-    //   collection: this.parent.model().collection,
-    //   localField?: this.relation.localField,
-    //   foreignField: this.relation.foreignField ?? '',
-    //   ownerModelClass: MongodbModel,
-    //   remoteModelClass: this.parent.model()
+  /**
+   * Assign the foreign `field` identifier in the remote collection for this relationship.
+   */
+  foreignField (field: string): this {
+    return tap(this, () => {
+      this.relation.foreignField = field
+    })
+  }
 
-    // }
+  /**
+   * Returns the resolved relation object.
+   */
+  resolve (): RelationBuilderResult {
+    return {
+      justOne: false,
+      collection: this.parent.collection,
+      localField: this.relation.localField ?? '_id',
+      foreignField: this.relation.foreignField ?? '',
+      ownerModelClass: this.parent,
+      remoteModelClass: this.related
+    }
   }
 }

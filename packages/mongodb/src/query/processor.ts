@@ -8,7 +8,7 @@ export class QueryProcessor<T extends MongodbDocument> {
   /**
    * The model being queried.
    */
-  private readonly model: T
+  public readonly model: T
 
   /**
    * The query filter.
@@ -61,9 +61,7 @@ export class QueryProcessor<T extends MongodbDocument> {
   }
 
   /**
-   * Eager load the given `relations`.
-   *
-   * @param relations
+   * Determine whether eager loads are configured for this query.
    *
    * @returns {this}
    */
@@ -72,9 +70,9 @@ export class QueryProcessor<T extends MongodbDocument> {
   }
 
   /**
-   * Eager load the given `relations`.
+   * Assign the given `filter` to the query.
    *
-   * @param relations
+   * @param filter
    *
    * @returns {this}
    */
@@ -85,9 +83,9 @@ export class QueryProcessor<T extends MongodbDocument> {
   }
 
   /**
-   * Eager load the given `relations`.
+   * Assign the given `options` to the query.
    *
-   * @param relations
+   * @param options
    *
    * @returns {this}
    */
@@ -98,9 +96,9 @@ export class QueryProcessor<T extends MongodbDocument> {
   }
 
   /**
-   * Eager load the given `relations`.
+   * Assign the given aggregation `pipeline` to the query.
    *
-   * @param relations
+   * @param pipeline
    *
    * @returns {this}
    */
@@ -111,9 +109,9 @@ export class QueryProcessor<T extends MongodbDocument> {
   }
 
   /**
-   * Eager load the given `relations`.
+   * Assign the given orFail `handler` to the query.
    *
-   * @param relations
+   * @param handler
    *
    * @returns {this}
    */

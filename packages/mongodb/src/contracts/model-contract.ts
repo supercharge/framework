@@ -2,9 +2,9 @@
 
 import { ModelObject } from './utils-contract'
 import { QueryBuilder } from '../query/builder'
-import { HasRelations } from './relations-contract'
 import { MongodbDocument } from './document-contract'
 import { QueryBuilderContract } from './query-builder-contract'
+import { HasRelations, RelationMappings } from './relations-contract'
 import { AggregateBuilderCallback } from './aggregation-builder-contract'
 import { MongodbConnectionResolver, MongodbConnection } from './connection-contract'
 import { AggregateOptions, CountDocumentsOptions, DeleteOptions, DeleteResult, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
@@ -24,6 +24,11 @@ export interface MongodbModel extends HasRelations {
    * Returns the collection name.
    */
   collection: string
+
+  /**
+   * Stores relations to other models.
+   */
+  relations: RelationMappings
 
   /**
    * Assign the connection resolver.

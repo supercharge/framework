@@ -8,6 +8,12 @@ import { ModelObject, HasId } from './utils-contract'
 import { MongodbConnection, MongodbConnectionResolver } from './connection-contract'
 
 export interface MongodbDocument extends HasId {
+  // Idea:
+  // /**
+  //  * The relationships that should always be loaded.
+  //  */
+  // with: string[]
+
   /**
    * Actions to perform on this document instance.
    */

@@ -8,12 +8,12 @@ import { QueryBuilder } from './query/builder'
 import { ModelObject } from './contracts/utils-contract'
 import { MongodbModel } from './contracts/model-contract'
 import { MongodbDocument } from './contracts/document-contract'
-import { RelationMappings } from './contracts/relations-contract'
+import { RelationBuilder, HasOneRelationBuilder } from './relations'
 import { QueryBuilderContract } from './contracts/query-builder-contract'
 import { AggregateBuilderCallback } from './contracts/aggregation-builder-contract'
+import { RelationMappings, RelationBuilderContract } from './contracts/relations-contract'
 import { MongodbConnection, MongodbConnectionResolver } from './contracts/connection-contract'
 import { AggregateOptions, Collection, CountDocumentsOptions, DeleteOptions, DeleteResult, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
-import { RelationBuilder } from './relations/relation-builder'
 
 function StaticImplements<T> () {
   return (_t: T) => {}
@@ -354,10 +354,20 @@ export class Model implements MongodbDocument {
     return this.query<T>().aggregate(callback, options)
   }
 
-  static hasOne<T extends MongodbModel>(ModelClass: T | (() => T)): any {
+  // static hasOne<T extends MongodbModel>(ModelClass: T | (() => T)): RelationBuilderContract {
+  static hasOne<T extends MongodbModel>(ModelClass: T): RelationBuilderContract {
+    return new HasOneRelationBuilder(this, ModelClass)
+  }
+
+  static hasMany<T extends MongodbModel>(ModelClass: T): RelationBuilderContract {
+    // TODO
+
     return new RelationBuilder(this, ModelClass)
   }
 
-  hasMany<T extends MongodbModel>(_ModelClass: T): any {}
-  belongsTo<T extends MongodbModel>(_ModelClass: T): any {}
+  static belongsTo<T extends MongodbModel>(ModelClass: T): RelationBuilderContract {
+    // TODO
+
+    return new RelationBuilder(this, ModelClass)
+  }
 }

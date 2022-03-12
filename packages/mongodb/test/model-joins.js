@@ -61,4 +61,44 @@ test.group('Model Joins (Lookup)', (group) => {
       { _id: 3, userId: 2, quantity: 4, price: 20, item: 'headphones' }
     ])
   })
+
+  test('with | resolves hasOne relation', async () => {
+    class User extends Model {
+      static get relations () {
+        return {
+          order: this.hasOne(Order).localField('_id').foreignField('userId')
+        }
+      }
+    }
+    await User.createMany([
+      { _id: 1, name: 'Marcus' },
+      { _id: 2, name: 'Supercharge' }
+    ])
+
+    await Order.createMany([
+      { _id: 1, userId: 1, quantity: 2, price: 10, item: 'shoes' },
+      { _id: 2, userId: 1, quantity: 1, price: 15, item: 'phones' },
+      { _id: 3, userId: 2, quantity: 4, price: 20, item: 'headphones' }
+    ])
+
+    const marcus = await User.findById(1).with('order')
+    console.log({ marcus })
+
+    expect(marcus instanceof User).toBe(true)
+    expect(marcus.order instanceof Order).toBe(true)
+  })
+
+  test('with | fails for missing relation', async () => {
+    class User extends Model {
+      static get relations () {
+        return {
+          order: this.hasOne()
+        }
+      }
+    }
+
+    expect(() => {
+      User.with('notDefined')
+    }).toThrow('Cannot find relations "notDefined" on your "User" model')
+  })
 })

@@ -42,6 +42,7 @@ export interface QueryBuilderContract<DocType, ResultType = DocType> {
 
   orFail(handler: () => Error): this
   where(filter?: Filter<DocType>): this
+  with(...relations: string[]): this
 
   truncate(options?: DeleteOptions): Promise<ResultType>
 

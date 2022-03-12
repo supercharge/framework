@@ -1,44 +1,20 @@
 'use strict'
 
-import { tap } from '@supercharge/goodies'
-import { MongodbDocument, RelationBuilderContract, RelationContract } from '../contracts'
+import { RelationBuilder } from './relation-builder'
+import { MongodbModel, RelationBuilderResult } from '../contracts'
 
-export class RelationBuilder<ParentClass extends MongodbDocument> implements RelationBuilderContract {
-  private readonly parent: ParentClass
-
-  private readonly relation: Partial<RelationContract>
-
-  constructor (parent: ParentClass) {
-    this.relation = {}
-    this.parent = parent
-  }
-
-  from (collection: string): this {
-    return tap(this, () => {
-      this.relation.collection = collection
-    })
-  }
-
-  remoteField (field: string): this {
-    return tap(this, () => {
-      this.relation.localField = field
-    })
-  }
-
-  localField (field: string): this {
-    return tap(this, () => {
-      this.relation.localField = field
-    })
-  }
-
-  resolve (): RelationContract {
+export class HasOneRelationBuilder<ParentModel extends MongodbModel, RelatedModel extends MongodbModel> extends RelationBuilder<ParentModel, RelatedModel> {
+  /**
+   * Returns the resolved relation object.
+   */
+  override resolve (): RelationBuilderResult {
     return {
-      collection: this.parent.model().collection,
-      localField?: this.relation.localField,
+      justOne: true,
+      collection: this.parent.collection,
+      localField: this.relation.localField ?? '_id',
       foreignField: this.relation.foreignField ?? '',
-      ownerModelClass: MongodbModel,
-      remoteModelClass: this.parent.model()
-
+      ownerModelClass: this.parent,
+      remoteModelClass: this.related
     }
   }
 }

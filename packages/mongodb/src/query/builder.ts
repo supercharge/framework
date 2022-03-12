@@ -1,10 +1,12 @@
 'use strict'
 
+import { Arr } from '@supercharge/arrays'
 import { QueryProcessor } from './processor'
 import { AggregationBuilder } from './aggregation-builder'
-import { ModelObject, MongodbDocument, QueryBuilderContract, QueryOptions } from '../contracts'
+import { ModelObject, MongodbDocument, QueryBuilderContract, QueryOptions, RelationBuilderResult } from '../contracts'
 import { AggregateBuilderCallback, AggregatePipeline, AggregatePipelineSortDirection } from '../contracts/aggregation-builder-contract'
 import { AggregateOptions, CountDocumentsOptions, DeleteOptions, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
+import { RelationBuilder } from '../relations'
 
 export type QueryMethod = 'find' | 'findById' | 'findOne' | 'update' | 'updateOne' | 'delete' | 'deleteById' | 'deleteOne' | 'count' | 'with' | 'aggregate' | 'insertOne' | 'insertMany'
 
@@ -87,7 +89,64 @@ export class QueryBuilder<T extends MongodbDocument, ResultType = T> implements 
    * @returns {this}
    */
   with (...relations: string[]): this {
+    this
+      .ensureRelationsExist(...relations)
+      .createLookupsForRelations(...relations)
+
     this.queryProcessor.with(...relations)
+
+    return this
+  }
+
+  /**
+   * Ensure the given `relations` are defined on the model.
+   *
+   * @param relations
+   */
+  private ensureRelationsExist (...relations: string[]): this {
+    const missingRelations = Arr
+      .from(relations)
+      .diff(Object.keys(this.queryProcessor.model.model().relations))
+
+    if (missingRelations.isNotEmpty()) {
+      throw new Error(`Cannot find relations "${missingRelations.join(', ')}" on your "${this.queryProcessor.model.model().name}" model`)
+    }
+
+    return this
+  }
+
+  /**
+   * Tba.
+   *
+   * @param relations
+   */
+  private createLookupsForRelations (...relations: string[]): this {
+    relations.forEach(relation => this.createLookupForRelation(relation))
+
+    return this
+  }
+
+  /**
+   * Tba.
+   *
+   * @param relations
+   */
+  private createLookupForRelation (relationName: string): this {
+    const mapping = this.queryProcessor.model.model().relations[relationName]
+
+    const relationResult = mapping instanceof RelationBuilder
+      ? mapping.resolve()
+      : mapping as RelationBuilderResult
+
+    this.aggregate(builder => {
+      builder.lookup(lookup => {
+        lookup
+          .as(relationName)
+          .from(relationResult.collection)
+          .localField(relationResult.localField)
+          .foreignField(relationResult.foreignField)
+      })
+    })
 
     return this
   }
@@ -280,7 +339,11 @@ export class QueryBuilder<T extends MongodbDocument, ResultType = T> implements 
    * Run the query.
    */
   async get (): Promise<any> {
-    return await (this.queryProcessor[this.method] as unknown as Function)(this.values)
+    const method = this.queryProcessor.shouldEagerload()
+      ? 'aggregate'
+      : this.method
+
+    return await (this.queryProcessor[method] as unknown as Function)(this.values)
   }
 
   /**
