@@ -2,11 +2,10 @@
 
 import { Arr } from '@supercharge/arrays'
 import { QueryProcessor } from './processor'
-import { AggregationBuilder } from './aggregation-builder'
-import { ModelObject, MongodbDocument, QueryBuilderContract, QueryOptions, RelationBuilderResult } from '../contracts'
-import { AggregateBuilderCallback, AggregatePipeline, AggregatePipelineSortDirection } from '../contracts/aggregation-builder-contract'
-import { AggregateOptions, CountDocumentsOptions, DeleteOptions, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
 import { RelationBuilder } from '../relations'
+import { AggregateBuilderCallback, AggregatePipelineSortDirection } from '../contracts/aggregation-builder-contract'
+import { ModelObject, MongodbDocument, QueryBuilderContract, QueryOptions, RelationBuilderResult } from '../contracts'
+import { AggregateOptions, CountDocumentsOptions, DeleteOptions, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
 
 export type QueryMethod = 'find' | 'findById' | 'findOne' | 'update' | 'updateOne' | 'delete' | 'deleteById' | 'deleteOne' | 'count' | 'with' | 'aggregate' | 'insertOne' | 'insertMany'
 
@@ -75,8 +74,8 @@ export class QueryBuilder<T extends MongodbDocument, ResultType = T> implements 
    *
    * @returns {this}
    */
-  withAggregation (pipeline: AggregatePipeline): this {
-    this.queryProcessor.withAggregation(pipeline)
+  withAggregation (callback: AggregateBuilderCallback): this {
+    this.queryProcessor.withAggregationFrom(callback)
 
     return this
   }
@@ -325,25 +324,17 @@ export class QueryBuilder<T extends MongodbDocument, ResultType = T> implements 
     if (typeof callback !== 'function') {
       throw new Error('You must provide a callback function as the first argument when calling Model.aggregate')
     }
-
-    const aggregationBuilder = new AggregationBuilder()
-    callback(aggregationBuilder)
-
     return this
       .withMethod('aggregate')
       .withOptions(options)
-      .withAggregation(aggregationBuilder.pipeline())
+      .withAggregation(callback)
   }
 
   /**
    * Run the query.
    */
   async get (): Promise<any> {
-    const method = this.queryProcessor.shouldEagerload()
-      ? 'aggregate'
-      : this.method
-
-    return await (this.queryProcessor[method] as unknown as Function)(this.values)
+    return await (this.queryProcessor[this.method] as unknown as Function)(this.values)
   }
 
   /**
