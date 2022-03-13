@@ -1,8 +1,9 @@
 'use strict'
 
 import { tap, isNotNullish } from '@supercharge/goodies'
+import { AggregationBuilder } from './aggregation-builder'
 import { Document, Collection, DeleteResult, Filter, UpdateFilter, WithId } from 'mongodb'
-import { MongodbDocument, ModelObject, AggregatePipeline, QueryOptions, OrFailCallback } from '../contracts'
+import { MongodbDocument, ModelObject, AggregatePipeline, QueryOptions, OrFailCallback, AggregateBuilderCallback } from '../contracts'
 
 export class QueryProcessor<T extends MongodbDocument> {
   /**
@@ -102,6 +103,22 @@ export class QueryProcessor<T extends MongodbDocument> {
    *
    * @returns {this}
    */
+  withAggregationFrom (callback: AggregateBuilderCallback): this {
+    const aggregationBuilder = new AggregationBuilder()
+    callback(aggregationBuilder)
+
+    return this.withAggregation(
+      aggregationBuilder.pipeline()
+    )
+  }
+
+  /**
+   * Assign the given aggregation `pipeline` to the query.
+   *
+   * @param pipeline
+   *
+   * @returns {this}
+   */
   withAggregation (pipeline: AggregatePipeline): this {
     return tap(this, () => {
       this.aggregationPipeline = pipeline
@@ -187,6 +204,9 @@ export class QueryProcessor<T extends MongodbDocument> {
    */
   async findOne (): Promise<T | undefined> {
     const collection = await this.collection()
+
+    // TODO check for eagerloads
+
     const document = await collection.findOne({ ...this.filter }, { ...this.options })
 
     return this.createInstanceIfNotNull(document)
