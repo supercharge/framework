@@ -10,7 +10,7 @@ export class HasOneRelationBuilder<ParentModel extends MongodbModel, RelatedMode
   override resolve (): RelationBuilderResult {
     return {
       justOne: true,
-      collection: this.parent.collection,
+      collection: this.related.collection,
       localField: this.relation.localField ?? '_id',
       foreignField: this.relation.foreignField ?? '',
       ownerModelClass: this.parent,

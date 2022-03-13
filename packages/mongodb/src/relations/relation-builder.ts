@@ -42,7 +42,7 @@ export class RelationBuilder<ParentModel extends MongodbModel, RelatedModel exte
   resolve (): RelationBuilderResult {
     return {
       justOne: false,
-      collection: this.parent.collection,
+      collection: this.related.collection,
       localField: this.relation.localField ?? '_id',
       foreignField: this.relation.foreignField ?? '',
       ownerModelClass: this.parent,
