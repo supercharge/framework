@@ -23,7 +23,7 @@ export class AggregationUnwindBuilder implements AggregatePipelineUnwindBuilder 
    */
   path (path: string): this {
     return tap(this, () => {
-      this.unwind.path = path
+      this.unwind.path = Str(path).ltrim('$').start('$').get()
     })
   }
 
