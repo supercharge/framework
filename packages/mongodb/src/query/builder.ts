@@ -137,7 +137,7 @@ export class QueryBuilder<T extends MongodbDocument, ResultType = T> implements 
       ? mapping.resolve()
       : mapping as RelationBuilderResult
 
-    this.aggregate(builder => {
+    this.queryProcessor.withAggregationFrom(builder => {
       builder.lookup(lookup => {
         lookup
           .as(relationName)
@@ -324,6 +324,7 @@ export class QueryBuilder<T extends MongodbDocument, ResultType = T> implements 
     if (typeof callback !== 'function') {
       throw new Error('You must provide a callback function as the first argument when calling Model.aggregate')
     }
+
     return this
       .withMethod('aggregate')
       .withOptions(options)
