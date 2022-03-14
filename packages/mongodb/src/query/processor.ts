@@ -206,6 +206,21 @@ export class QueryProcessor<T extends MongodbDocument> {
     const collection = await this.collection()
 
     // TODO check for eagerloads
+    if (this.shouldEagerload()) {
+      this.withAggregationFrom(builder => {
+        builder.match({ ...this.filter })
+      })
+
+      this.eagerLoads.forEach(relation => {
+        this.withAggregationFrom(builder => {
+          builder.unwind(builder => builder.path(relation))
+        })
+      })
+
+      const result = await this.aggregate()
+
+      return this.createInstanceIfNotNull(result[0])
+    }
 
     const document = await collection.findOne({ ...this.filter }, { ...this.options })
 
