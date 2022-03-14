@@ -24,7 +24,7 @@ export class QueryProcessor<T extends MongodbDocument> {
   /**
    * The query options.
    */
-  private aggregationPipeline: AggregatePipeline
+  private readonly aggregationPipeline: AggregatePipeline
 
   /**
    * The relationships that should be eager loaded.
@@ -121,7 +121,7 @@ export class QueryProcessor<T extends MongodbDocument> {
    */
   withAggregation (pipeline: AggregatePipeline): this {
     return tap(this, () => {
-      this.aggregationPipeline = pipeline
+      this.aggregationPipeline.push(...pipeline)
     })
   }
 
