@@ -3,7 +3,8 @@
 import { tap } from '@supercharge/goodies'
 import { ModelObject } from '../contracts'
 import { AggregationLookupBuilder } from './aggregation-lookup-builder'
-import { AggregationStageBuilderContract, AggregateStage, AggregatePipelineSortDirection, AggregatePipelineLookupBuilderCallback, AggregatePipelineLookupOptions } from '../contracts/aggregation-builder-contract'
+import { AggregationStageBuilderContract, AggregateStage, AggregatePipelineSortDirection, AggregatePipelineLookupBuilderCallback, AggregatePipelineLookupOptions, AggregatePipelineUnwindBuilderCallback, AggregatePipelineUnwindOptions } from '../contracts/aggregation-builder-contract'
+import { AggregationUnwindBuilder } from './aggregation-unwind-builder'
 
 export class AggregationStageBuilder implements AggregationStageBuilderContract {
   /**
@@ -152,6 +153,35 @@ export class AggregationStageBuilder implements AggregationStageBuilderContract 
   match (criteria: ModelObject): this {
     return tap(this, () => {
       this.merge({ $match: criteria })
+    })
+  }
+
+  /**
+   * Unwind a given path in the aggregation pipeline.
+   */
+  unwind (callback: AggregatePipelineUnwindBuilderCallback): this
+  unwind (path: string): this
+  unwind (options: AggregatePipelineUnwindOptions): this
+  unwind (callbackOrPathOrOptions: AggregatePipelineUnwindBuilderCallback | string | AggregatePipelineUnwindOptions): this {
+    if (typeof callbackOrPathOrOptions === 'function') {
+      return this.runUnwindBuilder(callbackOrPathOrOptions)
+    }
+
+    return tap(this, () => {
+      this.merge({ $unwind: callbackOrPathOrOptions })
+    })
+  }
+
+  /**
+   * Compose the $unwind options using a fluent builder.
+   */
+  private runUnwindBuilder (callback: AggregatePipelineUnwindBuilderCallback): this {
+    const options = {}
+    const unwindBuilder = new AggregationUnwindBuilder(options)
+    callback(unwindBuilder)
+
+    return tap(this, () => {
+      this.merge({ $unwind: options })
     })
   }
 }

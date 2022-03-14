@@ -4,6 +4,7 @@ import { ModelObject } from '.'
 
 export type AggregateBuilderCallback = (builder: AggregationBuilderContract) => unknown
 export type AggregatePipelineLookupBuilderCallback = (builder: AggregatePipelineLookupBuilder) => unknown
+export type AggregatePipelineUnwindBuilderCallback = (builder: AggregatePipelineUnwindBuilder) => unknown
 
 export type AggregatePipeline = AggregateStage[]
 
@@ -13,6 +14,7 @@ export type AggregateStage =
   | AggregatePipelineMatch
   | AggregatePipelineSkip
   | AggregatePipelineSort
+  | AggregatePipelineUnwind
   | {}
 
 export interface AggregationBuilderContract extends BaseAggregationBuilderContract {
@@ -58,6 +60,14 @@ export interface BaseAggregationBuilderContract {
    * Appends a $match operator to this aggregation  pipeline.
    */
   match(options: AggregatePipelineMatch['$match']): this
+
+  /**
+   * Appends an $unwind operator to this aggregation  pipeline.
+   */
+  unwind(callback: AggregatePipelineUnwindBuilderCallback): this
+  unwind(path: string): this
+  unwind(options: AggregatePipelineUnwindOptions): this
+  unwind(callbackOrPathOrOptions: AggregatePipelineUnwindBuilderCallback | string | AggregatePipelineUnwindOptions): this
 }
 
 export interface AggregatePipelineLimit {
@@ -103,4 +113,21 @@ export interface AggregatePipelineLookup {
 export interface AggregatePipelineMatch {
   /** [`$match` reference](https://docs.mongodb.com/manual/reference/operator/aggregation/match/) */
   $match: ModelObject
+}
+
+export interface AggregatePipelineUnwindBuilder {
+  path(path: string): this
+  preserveNullAndEmptyArrays(): this
+  includeArrayIndexForField(index: string): this
+}
+
+export interface AggregatePipelineUnwindOptions {
+  path: string
+  includeArrayIndex: string
+  preserveNullAndEmptyArrays: boolean
+}
+
+export interface AggregatePipelineUnwind {
+  /** [`$unwind` reference](https://docs.mongodb.com/manual/reference/operator/aggregation/unwind/) */
+  $unwind: string | AggregatePipelineUnwindOptions
 }

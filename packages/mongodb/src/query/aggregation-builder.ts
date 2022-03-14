@@ -3,7 +3,7 @@
 import { tap } from '@supercharge/goodies'
 import { ModelObject } from '../contracts'
 import { AggregationStageBuilder } from './aggregation-stage-builder'
-import { AggregationBuilderContract, AggregationStageBuilderContract, AggregatePipeline, AggregatePipelineSortDirection, AggregatePipelineLookupBuilderCallback, AggregatePipelineLookupOptions } from '../contracts/aggregation-builder-contract'
+import { AggregationBuilderContract, AggregationStageBuilderContract, AggregatePipeline, AggregatePipelineSortDirection, AggregatePipelineLookupBuilderCallback, AggregatePipelineLookupOptions, AggregatePipelineUnwindBuilderCallback, AggregatePipelineUnwindOptions } from '../contracts/aggregation-builder-contract'
 
 export class AggregationBuilder implements AggregationBuilderContract {
   /**
@@ -155,6 +155,18 @@ export class AggregationBuilder implements AggregationBuilderContract {
   match (criteria: ModelObject): this {
     return tap(this, () => {
       this.stage().match(criteria)
+    })
+  }
+
+  /**
+   * Unwind a given path in the aggregation pipeline.
+   */
+  unwind (callback: AggregatePipelineUnwindBuilderCallback): this
+  unwind (path: string): this
+  unwind (options: AggregatePipelineUnwindOptions): this
+  unwind (callbackOrPathOrOptions: AggregatePipelineUnwindBuilderCallback | string | AggregatePipelineUnwindOptions): this {
+    return tap(this, () => {
+      this.stage().unwind(callbackOrPathOrOptions)
     })
   }
 }
