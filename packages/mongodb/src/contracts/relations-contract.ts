@@ -9,20 +9,20 @@ export interface HasRelations {
 }
 
 export interface RelationMappings {
-  [relationName: string]: RelationBuilderContract | RelationBuilderResult
+  [relationName: string]: RelationBuilderContract | Relation
 }
 
 export interface RelationBuilderContract {
   localField(field: string): this
   foreignField(field: string): this
-  resolve(): RelationBuilderResult
+  resolve(): Relation
 }
 
-export interface RelationBuilderResult {
+export interface Relation {
   justOne: boolean
   collection: string
   localField: string
   foreignField: string
   ownerModelClass: MongodbModel
-  remoteModelClass: MongodbModel
+  foreignModelClass: MongodbModel
 }
