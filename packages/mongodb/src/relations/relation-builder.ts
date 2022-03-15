@@ -1,13 +1,13 @@
 'use strict'
 
 import { tap } from '@supercharge/goodies'
-import { MongodbModel, RelationBuilderContract, RelationBuilderResult } from '../contracts'
+import { MongodbModel, RelationBuilderContract, Relation } from '../contracts'
 
 export class RelationBuilder<ParentModel extends MongodbModel, RelatedModel extends MongodbModel> implements RelationBuilderContract {
   protected readonly parent: ParentModel
   protected readonly related: RelatedModel
 
-  protected readonly relation: Partial<RelationBuilderResult>
+  protected readonly relation: Partial<Relation>
 
   /**
    * Create a new instance.
@@ -39,14 +39,14 @@ export class RelationBuilder<ParentModel extends MongodbModel, RelatedModel exte
   /**
    * Returns the resolved relation object.
    */
-  resolve (): RelationBuilderResult {
+  resolve (): Relation {
     return {
       justOne: false,
       collection: this.related.collection,
       localField: this.relation.localField ?? '_id',
       foreignField: this.relation.foreignField ?? '',
       ownerModelClass: this.parent,
-      remoteModelClass: this.related
+      foreignModelClass: this.related
     }
   }
 }
