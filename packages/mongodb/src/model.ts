@@ -3,8 +3,9 @@
 import pluralize from 'pluralize'
 import { isObject } from './utils'
 import Str from '@supercharge/strings'
-import { QueryProcessor } from './query/processor'
 import { QueryBuilder } from './query/builder'
+import { isNullish } from '@supercharge/goodies'
+import { QueryProcessor } from './query/processor'
 import { ModelObject } from './contracts/utils-contract'
 import { MongodbModel } from './contracts/model-contract'
 import { MongodbDocument } from './contracts/document-contract'
@@ -356,16 +357,28 @@ export class Model implements MongodbDocument {
 
   // static hasOne<T extends MongodbModel>(ModelClass: T | (() => T)): RelationBuilderContract {
   static hasOne<T extends MongodbModel>(ModelClass: T): RelationBuilderContract {
+    if (isNullish(ModelClass)) {
+      throw new Error(`Missing model class argument in one of your "hasOne" relations inside the "${this.name}" model`)
+    }
+
     return new HasOneRelationBuilder(this, ModelClass)
   }
 
   static hasMany<T extends MongodbModel>(ModelClass: T): RelationBuilderContract {
+    if (isNullish(ModelClass)) {
+      throw new Error(`Missing model class argument in one of your "hasMany" relations inside the "${this.name}" model`)
+    }
+
     // TODO
 
     return new RelationBuilder(this, ModelClass)
   }
 
   static belongsTo<T extends MongodbModel>(ModelClass: T): RelationBuilderContract {
+    if (isNullish(ModelClass)) {
+      throw new Error(`Missing model class argument in one of your "belongsTo" relations inside the "${this.name}" model`)
+    }
+
     // TODO
 
     return new RelationBuilder(this, ModelClass)
