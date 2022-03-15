@@ -2,9 +2,8 @@
 
 import { Arr } from '@supercharge/arrays'
 import { QueryProcessor } from './processor'
-import { RelationBuilder } from '../relations'
+import { ModelObject, MongodbDocument, QueryBuilderContract, QueryOptions } from '../contracts'
 import { AggregateBuilderCallback, AggregatePipelineSortDirection } from '../contracts/aggregation-builder-contract'
-import { ModelObject, MongodbDocument, QueryBuilderContract, QueryOptions, RelationBuilderResult } from '../contracts'
 import { AggregateOptions, CountDocumentsOptions, DeleteOptions, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
 
 export type QueryMethod = 'find' | 'findById' | 'findOne' | 'update' | 'updateOne' | 'delete' | 'deleteById' | 'deleteOne' | 'count' | 'with' | 'aggregate' | 'insertOne' | 'insertMany'
@@ -131,19 +130,15 @@ export class QueryBuilder<T extends MongodbDocument, ResultType = T> implements 
    * @param relations
    */
   private createLookupForRelation (relationName: string): this {
-    const mapping = this.queryProcessor.model.model().relations[relationName]
-
-    const relationResult = mapping instanceof RelationBuilder
-      ? mapping.resolve()
-      : mapping as RelationBuilderResult
+    const relation = this.queryProcessor.model.resolveRelation(relationName)
 
     this.queryProcessor.withAggregationFrom(builder => {
       builder.lookup(lookup => {
         lookup
           .as(relationName)
-          .from(relationResult.collection)
-          .localField(relationResult.localField)
-          .foreignField(relationResult.foreignField)
+          .from(relation.collection)
+          .localField(relation.localField)
+          .foreignField(relation.foreignField)
       })
     })
 
