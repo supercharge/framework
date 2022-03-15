@@ -109,7 +109,9 @@ test.group('Model Joins (Lookup)', (group) => {
 
     const marcus = await User.findById(1).with('orders')
     expect(marcus instanceof User).toBe(true)
+
     expect(Array.isArray(marcus.orders)).toBe(true)
+    expect(marcus.orders.length).toBe(2)
     expect(marcus.orders.every(order => order instanceof Order)).toBe(true)
   })
 
