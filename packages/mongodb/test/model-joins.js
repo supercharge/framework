@@ -70,6 +70,7 @@ test.group('Model Joins (Lookup)', (group) => {
         }
       }
     }
+
     await User.createMany([
       { _id: 1, name: 'Marcus' },
       { _id: 2, name: 'Supercharge' }
@@ -82,10 +83,34 @@ test.group('Model Joins (Lookup)', (group) => {
     ])
 
     const marcus = await User.findById(1).with('order')
-    console.log({ marcus })
-
     expect(marcus instanceof User).toBe(true)
     expect(marcus.order instanceof Order).toBe(true)
+  })
+
+  test('with | resolves hasMany relation', async () => {
+    class User extends Model {
+      static get relations () {
+        return {
+          orders: this.hasMany(Order).localField('_id').foreignField('userId')
+        }
+      }
+    }
+
+    await User.createMany([
+      { _id: 1, name: 'Marcus' },
+      { _id: 2, name: 'Supercharge' }
+    ])
+
+    await Order.createMany([
+      { _id: 1, userId: 1, quantity: 2, price: 10, item: 'shoes' },
+      { _id: 2, userId: 1, quantity: 1, price: 15, item: 'phones' },
+      { _id: 3, userId: 2, quantity: 4, price: 20, item: 'headphones' }
+    ])
+
+    const marcus = await User.findById(1).with('orders')
+    expect(marcus instanceof User).toBe(true)
+    expect(Array.isArray(marcus.orders)).toBe(true)
+    expect(marcus.orders.every(order => order instanceof Order)).toBe(true)
   })
 
   test('with | fails for missing relation', async () => {
