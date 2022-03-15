@@ -2,6 +2,7 @@
 
 import { Collection } from 'mongodb'
 import { QueryProcessor } from '../query'
+import { Relation } from './relations-contract'
 import { MongodbModel } from './model-contract'
 import { QueryBuilder } from '../query/builder'
 import { ModelObject, HasId } from './utils-contract'
@@ -13,6 +14,12 @@ export interface MongodbDocument extends HasId {
   //  * The relationships that should always be loaded.
   //  */
   // with: string[]
+
+  /**
+   * Returns the resolved relation for the given `name`. Throws
+   * an exception if no relation is defined for the `name`.
+   */
+  resolveRelation(name: string): Relation
 
   /**
    * Actions to perform on this document instance.

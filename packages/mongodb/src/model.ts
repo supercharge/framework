@@ -11,8 +11,8 @@ import { MongodbDocument } from './contracts/document-contract'
 import { RelationBuilder, HasOneRelationBuilder } from './relations'
 import { QueryBuilderContract } from './contracts/query-builder-contract'
 import { AggregateBuilderCallback } from './contracts/aggregation-builder-contract'
-import { RelationMappings, RelationBuilderContract } from './contracts/relations-contract'
 import { MongodbConnection, MongodbConnectionResolver } from './contracts/connection-contract'
+import { RelationMappings, RelationBuilderContract, Relation } from './contracts/relations-contract'
 import { AggregateOptions, Collection, CountDocumentsOptions, DeleteOptions, DeleteResult, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
 
 function StaticImplements<T> () {
@@ -369,5 +369,17 @@ export class Model implements MongodbDocument {
     // TODO
 
     return new RelationBuilder(this, ModelClass)
+  }
+
+  /**
+   * Returns the resolved relation for the given `name`. Throws
+   * an exception if no relation is defined for the `name`.
+   */
+  resolveRelation (name: string): Relation {
+    const mapping = this.model().relations[name]
+
+    return mapping instanceof RelationBuilder
+      ? mapping.resolve()
+      : mapping as Relation
   }
 }
