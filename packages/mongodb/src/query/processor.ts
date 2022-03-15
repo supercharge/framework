@@ -71,6 +71,17 @@ export class QueryProcessor<T extends MongodbDocument> {
   }
 
   /**
+   * Returns the relation names that should return a single value.
+   *
+   * @returns {String[]}
+   */
+  justOneRelationNames (): string[] {
+    return this.eagerLoads.filter(eagerLoad => {
+      return this.model.resolveRelation(eagerLoad).justOne
+    })
+  }
+
+  /**
    * Assign the given `filter` to the query.
    *
    * @param filter
@@ -239,15 +250,13 @@ export class QueryProcessor<T extends MongodbDocument> {
         builder.match({ ...this.filter })
       })
 
-      this.eagerLoads
-        .filter(relationName => {
-          return this.model.resolveRelation(relationName).justOne
+      this.justOneRelationNames().forEach(relationName => {
+        this.withAggregationFrom(builder => {
+          builder
+            .limit(1)
+            .unwind(builder => builder.path(relationName))
         })
-        .forEach(relationName => {
-          this.withAggregationFrom(builder => {
-            builder.unwind(builder => builder.path(relationName))
-          })
-        })
+      })
 
       const result = await this.aggregate()
 
