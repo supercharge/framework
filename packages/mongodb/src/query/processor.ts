@@ -160,7 +160,7 @@ export class QueryProcessor<T extends MongodbDocument> {
     }
 
     return documents.map(document => {
-      return this.createInstance(document)
+      return this.createInstanceWithResolvedRelations(document)
     })
   }
 
@@ -169,7 +169,7 @@ export class QueryProcessor<T extends MongodbDocument> {
    */
   createInstanceIfNotNull (values: WithId<Document> | null): T | undefined {
     if (isNotNullish(values)) {
-      return this.createInstance(values)
+      return this.createInstanceWithResolvedRelations(values)
     }
 
     this.maybeFail()
@@ -178,8 +178,23 @@ export class QueryProcessor<T extends MongodbDocument> {
   /**
    * Returns a new model instance if the given `document` is not empty.
    */
-  createInstance (document: WithId<Document>): T {
-    return this.model.newInstance<T>(document)
+  createInstanceWithResolvedRelations (document: WithId<Document>): T {
+    const instance = this.model.newInstance<T>(document)
+
+    Object.keys(instance.model().relations).forEach((name) => {
+      const related = document[name]
+      const relation = instance.resolveRelation(name)
+
+      if (isNotNullish(related)) {
+        (instance as any)[name] = Array.isArray(related)
+          // eslint-disable-next-line new-cap
+          ? related.map(relate => new relation.foreignModelClass(relate))
+          // eslint-disable-next-line new-cap
+          : new relation.foreignModelClass(related)
+      }
+    })
+
+    return instance
   }
 
   /**
@@ -219,17 +234,20 @@ export class QueryProcessor<T extends MongodbDocument> {
   async findOne (): Promise<T | undefined> {
     const collection = await this.collection()
 
-    // TODO check for eagerloads
     if (this.shouldEagerload()) {
       this.withAggregationFrom(builder => {
         builder.match({ ...this.filter })
       })
 
-      this.eagerLoads.forEach(relation => {
-        this.withAggregationFrom(builder => {
-          builder.unwind(builder => builder.path(relation))
+      this.eagerLoads
+        .filter(relationName => {
+          return this.model.resolveRelation(relationName).justOne
         })
-      })
+        .forEach(relationName => {
+          this.withAggregationFrom(builder => {
+            builder.unwind(builder => builder.path(relationName))
+          })
+        })
 
       const result = await this.aggregate()
 
@@ -266,7 +284,7 @@ export class QueryProcessor<T extends MongodbDocument> {
       throw new Error('Failed to insert document')
     }
 
-    return this.createInstance({ ...document, _id: result.insertedId })
+    return this.createInstanceWithResolvedRelations({ ...document, _id: result.insertedId })
   }
 
   /**
