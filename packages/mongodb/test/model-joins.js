@@ -62,7 +62,7 @@ test.group('Model Joins (Lookup)', (group) => {
     ])
   })
 
-  test('with | resolves hasOne relation', async () => {
+  test('findById with | resolves hasOne relation', async () => {
     class User extends Model {
       static get relations () {
         return {
@@ -87,7 +87,7 @@ test.group('Model Joins (Lookup)', (group) => {
     expect(marcus.order instanceof Order).toBe(true)
   })
 
-  test('with | resolves hasMany relation', async () => {
+  test('findById with | resolves hasMany relation', async () => {
     class User extends Model {
       static get relations () {
         return {
@@ -115,7 +115,7 @@ test.group('Model Joins (Lookup)', (group) => {
     expect(marcus.orders.every(order => order instanceof Order)).toBe(true)
   })
 
-  test('with | resolves hasMany to empty array when not finding matches', async () => {
+  test('findById with | resolves hasMany to empty array when not finding matches', async () => {
     class User extends Model {
       static get relations () {
         return {
