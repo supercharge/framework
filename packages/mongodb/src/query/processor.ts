@@ -152,14 +152,34 @@ export class QueryProcessor<T extends MongodbDocument> {
   }
 
   /**
+   * Returns new model instances  the given `document` is not empty.
+   */
+  createInstancesOrFailIfEmpty (documents: Array<WithId<Document>>): T[] {
+    if (documents.length === 0) {
+      this.maybeFail()
+    }
+
+    return documents.map(document => {
+      return this.createInstance(document)
+    })
+  }
+
+  /**
    * Returns a new model instance if the given `document` is not empty.
    */
   createInstanceIfNotNull (values: WithId<Document> | null): T | undefined {
     if (isNotNullish(values)) {
-      return this.model.newInstance<T>(values)
+      return this.createInstance(values)
     }
 
     this.maybeFail()
+  }
+
+  /**
+   * Returns a new model instance if the given `document` is not empty.
+   */
+  createInstance (document: WithId<Document>): T {
+    return this.model.newInstance<T>(document)
   }
 
   /**
@@ -187,15 +207,9 @@ export class QueryProcessor<T extends MongodbDocument> {
    */
   async find (): Promise<T[]> {
     const collection = await this.collection()
-    const results = await collection.find({ ...this.filter }, { ...this.options }).toArray()
+    const documents = await collection.find({ ...this.filter }, { ...this.options }).toArray()
 
-    if (results.length === 0) {
-      this.maybeFail()
-    }
-
-    return results.map(result => {
-      return this.model.newInstance<T>(result)
-    })
+    return this.createInstancesOrFailIfEmpty(documents)
   }
 
   /**
@@ -219,7 +233,7 @@ export class QueryProcessor<T extends MongodbDocument> {
 
       const result = await this.aggregate()
 
-      return this.createInstanceIfNotNull(result[0])
+      return this.createInstanceIfNotNull(result[0] as WithId<T>)
     }
 
     const document = await collection.findOne({ ...this.filter }, { ...this.options })
@@ -252,7 +266,7 @@ export class QueryProcessor<T extends MongodbDocument> {
       throw new Error('Failed to insert document')
     }
 
-    return this.model.newInstance<T>({ ...document, _id: result.insertedId })
+    return this.createInstance({ ...document, _id: result.insertedId })
   }
 
   /**
@@ -343,17 +357,10 @@ export class QueryProcessor<T extends MongodbDocument> {
   /**
    * Creates the given `documents` in the database.
    */
-  async aggregate (): Promise<any> {
+  async aggregate (): Promise<T[]> {
     const collection = await this.collection()
+    const documents = await collection.aggregate<WithId<T>>(this.aggregationPipeline, { ...this.options }).toArray()
 
-    const results = await collection.aggregate(this.aggregationPipeline, { ...this.options }).toArray()
-
-    if (results.length === 0) {
-      this.maybeFail()
-    }
-
-    return results.map(result => {
-      return this.model.newInstance<T>(result)
-    })
+    return this.createInstancesOrFailIfEmpty(documents)
   }
 }
