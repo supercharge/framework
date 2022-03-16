@@ -62,6 +62,47 @@ test.group('Model Joins (Lookup)', (group) => {
     ])
   })
 
+  test('aggregate with where', async () => {
+    class User extends Model {
+      static get relations () {
+        return {
+          orders: this.hasMany(Order).localField('_id').foreignField('userId')
+        }
+      }
+    }
+
+    await User.createMany([
+      { _id: 1, name: 'Marcus' },
+      { _id: 2, name: 'Supercharge' }
+    ])
+
+    await Order.createMany([
+      { _id: 1, userId: 1, quantity: 2, price: 10, item: 'shoes' },
+      { _id: 2, userId: 2, quantity: 1, price: 15, item: 'phones' },
+      { _id: 3, userId: 2, quantity: 4, price: 20, item: 'headphones' }
+    ])
+
+    const users = await User
+      .where({
+        $or: [
+          { _id: 1 },
+          { name: 'Supercharge' }
+        ]
+      })
+      .with('orders')
+      .aggregate(builder => {
+        builder.skip(1)
+      })
+
+    expect(users.length).toBe(1)
+    expect(users[0].name).toEqual('Supercharge')
+    expect(users[0].orders.length).toBe(2)
+    expect(users[0].orders).toEqual([
+      { _id: 2, userId: 2, quantity: 1, price: 15, item: 'phones' },
+      { _id: 3, userId: 2, quantity: 4, price: 20, item: 'headphones' }
+    ])
+  })
+
   test('findById with | resolves hasOne relation', async () => {
     class User extends Model {
       static get relations () {
@@ -381,10 +422,11 @@ test.group('Model Joins (Lookup)', (group) => {
     expect(Array.isArray(users)).toBe(true)
     expect(users.length).toBe(1)
 
-    const marcus = users[0]
-    expect(marcus.name).toEqual('Marcus')
-    expect(Array.isArray(marcus.orders)).toBe(true)
-    expect(marcus.orders.length).toBe(1)
-    expect(marcus.orders[0].item).toBe('shoes')
+    const supercharge = users[0]
+    expect(supercharge.name).toEqual('Supercharge')
+    expect(Array.isArray(supercharge.orders)).toBe(true)
+    expect(supercharge.orders.length).toBe(2)
+    expect(supercharge.orders[0].item).toBe('phones')
+    expect(supercharge.orders[1].item).toBe('headphones')
   })
 })
