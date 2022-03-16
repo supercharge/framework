@@ -267,4 +267,124 @@ test.group('Model Joins (Lookup)', (group) => {
     expect(supercharge instanceof User).toBe(true)
     expect(supercharge.orders).toEqual([])
   })
+
+  test('find with | resolves hasOne relation', async () => {
+    class User extends Model {
+      static get relations () {
+        return {
+          order: this.hasOne(Order).localField('_id').foreignField('userId')
+        }
+      }
+    }
+
+    await User.createMany([
+      { _id: 1, name: 'Marcus' },
+      { _id: 2, name: 'Supercharge' }
+    ])
+
+    await Order.createMany([
+      { _id: 1, userId: 1, quantity: 2, price: 10, item: 'shoes' },
+      { _id: 2, userId: 1, quantity: 1, price: 15, item: 'phones' },
+      { _id: 3, userId: 2, quantity: 4, price: 20, item: 'headphones' }
+    ])
+
+    const users = await User.find().with('order')
+    expect(Array.isArray(users)).toBe(true)
+    expect(users.every(user => user instanceof User)).toBe(true)
+    expect(users.every(user => user.order instanceof Order)).toBe(true)
+  })
+
+  test('find with | resolves hasMany relation', async () => {
+    class User extends Model {
+      static get relations () {
+        return {
+          orders: this.hasMany(Order).localField('_id').foreignField('userId')
+        }
+      }
+    }
+
+    await User.createMany([
+      { _id: 1, name: 'Marcus' },
+      { _id: 2, name: 'Supercharge' }
+    ])
+
+    await Order.createMany([
+      { _id: 1, userId: 1, quantity: 2, price: 10, item: 'shoes' },
+      { _id: 2, userId: 2, quantity: 1, price: 15, item: 'phones' },
+      { _id: 3, userId: 2, quantity: 4, price: 20, item: 'headphones' }
+    ])
+
+    const users = await await User.find().with('orders')
+    expect(Array.isArray(users)).toBe(true)
+    expect(users.length).toBe(2)
+    expect(users.every(user => user instanceof User)).toBe(true)
+    expect(users.every(user => Array.isArray(user.orders))).toBe(true)
+
+    expect(users[0].orders.length).toBe(1)
+    expect(users[1].orders.length).toBe(2)
+  })
+
+  test('find with | resolves hasMany to empty array when not finding matches', async () => {
+    class User extends Model {
+      static get relations () {
+        return {
+          orders: this.hasMany(Order).localField('_id').foreignField('userId')
+        }
+      }
+    }
+
+    await User.createMany([
+      { _id: 1, name: 'Marcus' },
+      { _id: 2, name: 'Supercharge' }
+    ])
+
+    await Order.createMany([
+      { _id: 1, userId: 1, quantity: 2, price: 10, item: 'shoes' }
+    ])
+
+    const users = await User.find().with('orders')
+    expect(Array.isArray(users)).toBe(true)
+
+    const marcus = users[0]
+    expect(marcus.name).toEqual('Marcus')
+    expect(Array.isArray(marcus.orders)).toBe(true)
+    expect(marcus.orders.length).toBe(1)
+    expect(marcus.orders[0].item).toBe('shoes')
+
+    const supercharge = users[1]
+    expect(supercharge.name).toEqual('Supercharge')
+    expect(Array.isArray(supercharge.orders)).toBe(true)
+    expect(supercharge.orders.length).toBe(0)
+  })
+
+  test('find where with | resolves hasMany to empty array when not finding matches', async () => {
+    class User extends Model {
+      static get relations () {
+        return {
+          orders: this.hasMany(Order).localField('_id').foreignField('userId')
+        }
+      }
+    }
+
+    await User.createMany([
+      { _id: 1, name: 'Marcus' },
+      { _id: 2, name: 'Supercharge' }
+    ])
+
+    await Order.createMany([
+      { _id: 1, userId: 1, quantity: 2, price: 10, item: 'shoes' },
+      { _id: 2, userId: 2, quantity: 1, price: 15, item: 'phones' },
+      { _id: 3, userId: 2, quantity: 4, price: 20, item: 'headphones' }
+    ])
+
+    const users = await User.find().with('orders').where({ name: 'Supercharge' })
+    expect(Array.isArray(users)).toBe(true)
+    expect(users.length).toBe(1)
+
+    const marcus = users[0]
+    expect(marcus.name).toEqual('Marcus')
+    expect(Array.isArray(marcus.orders)).toBe(true)
+    expect(marcus.orders.length).toBe(1)
+    expect(marcus.orders[0].item).toBe('shoes')
+  })
 })
