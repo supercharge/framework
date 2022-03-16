@@ -233,6 +233,25 @@ export class QueryProcessor<T extends MongodbDocument> {
    */
   async find (): Promise<T[]> {
     const collection = await this.collection()
+
+    if (this.shouldEagerload()) {
+      this.withAggregationFrom(builder => {
+        builder.match({ ...this.filter })
+      })
+
+      this.justOneRelationNames().forEach(relationName => {
+        this.withAggregationFrom(builder => {
+          builder
+            .limit(1)
+            .unwind(builder => builder.path(relationName))
+        })
+      })
+
+      const documents = await this.aggregate()
+
+      return this.createInstancesOrFailIfEmpty(documents as Array<WithId<T>>)
+    }
+
     const documents = await collection.find({ ...this.filter }, { ...this.options }).toArray()
 
     return this.createInstancesOrFailIfEmpty(documents)
