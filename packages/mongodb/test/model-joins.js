@@ -190,4 +190,81 @@ test.group('Model Joins (Lookup)', (group) => {
     expect(marcus instanceof User).toBe(true)
     expect(marcus.order instanceof Order).toBe(true)
   })
+
+  test('findOne with | resolves hasOne relation', async () => {
+    class User extends Model {
+      static get relations () {
+        return {
+          order: this.hasOne(Order).localField('_id').foreignField('userId')
+        }
+      }
+    }
+
+    await User.createMany([
+      { _id: 1, name: 'Marcus' },
+      { _id: 2, name: 'Supercharge' }
+    ])
+
+    await Order.createMany([
+      { _id: 1, userId: 1, quantity: 2, price: 10, item: 'shoes' },
+      { _id: 2, userId: 2, quantity: 1, price: 15, item: 'phones' },
+      { _id: 3, userId: 2, quantity: 4, price: 20, item: 'headphones' }
+    ])
+
+    const supercharge = await User.findOne({ name: 'Supercharge' }).with('order')
+    expect(supercharge instanceof User).toBe(true)
+    expect(supercharge.order instanceof Order).toBe(true)
+    expect(supercharge.order.item).toBe('phones')
+  })
+
+  test('findOne with | resolves hasMany relation', async () => {
+    class User extends Model {
+      static get relations () {
+        return {
+          orders: this.hasMany(Order).localField('_id').foreignField('userId')
+        }
+      }
+    }
+
+    await User.createMany([
+      { _id: 1, name: 'Marcus' },
+      { _id: 2, name: 'Supercharge' }
+    ])
+
+    await Order.createMany([
+      { _id: 1, userId: 1, quantity: 2, price: 10, item: 'shoes' },
+      { _id: 2, userId: 2, quantity: 1, price: 15, item: 'phones' },
+      { _id: 3, userId: 2, quantity: 4, price: 20, item: 'headphones' }
+    ])
+
+    const supercharge = await await User.findOne({ name: 'Supercharge' }).with('orders')
+    expect(supercharge instanceof User).toBe(true)
+
+    expect(Array.isArray(supercharge.orders)).toBe(true)
+    expect(supercharge.orders.length).toBe(2)
+    expect(supercharge.orders.every(order => order instanceof Order)).toBe(true)
+  })
+
+  test('findOne with | resolves hasMany to empty array when not finding matches', async () => {
+    class User extends Model {
+      static get relations () {
+        return {
+          orders: this.hasMany(Order).localField('_id').foreignField('userId')
+        }
+      }
+    }
+
+    await User.createMany([
+      { _id: 1, name: 'Marcus' },
+      { _id: 2, name: 'Supercharge' }
+    ])
+
+    await Order.createMany([
+      { _id: 1, userId: 1, quantity: 2, price: 10, item: 'shoes' }
+    ])
+
+    const supercharge = await User.findOne({ _id: 2 }).with('orders')
+    expect(supercharge instanceof User).toBe(true)
+    expect(supercharge.orders).toEqual([])
+  })
 })
