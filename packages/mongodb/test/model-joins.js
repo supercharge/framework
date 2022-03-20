@@ -8,7 +8,7 @@ const { makeAppWithMongodbConfig } = require('./helpers')
 const app = makeAppWithMongodbConfig()
 const mongodb = new MongodbManager(app, app.config().get('mongodb'))
 
-test.group('Model Joins (Lookup)', (group) => {
+test.group('Model Joins/Lookups', (group) => {
   class User extends Model {}
   class Order extends Model {}
 
