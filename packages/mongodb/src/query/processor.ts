@@ -108,19 +108,30 @@ export class QueryProcessor<T extends MongodbDocument> {
   }
 
   /**
-   * Assign the given aggregation `pipeline` to the query.
+   * Create a new aggregation pipeline using the given aggration builder `callback`.
    *
-   * @param pipeline
+   * @param {AggregateBuilderCallback} callback
    *
    * @returns {this}
    */
   withAggregationFrom (callback: AggregateBuilderCallback): this {
+    return this.withAggregation(
+      this.createAggregationPipelineUsing(callback)
+    )
+  }
+
+  /**
+   * Assign the given aggregation `pipeline` to the query.
+   *
+   * @param pipeline
+   *
+   * @returns {AggregatePipeline}
+   */
+  createAggregationPipelineUsing (callback: AggregateBuilderCallback): AggregatePipeline {
     const aggregationBuilder = new AggregationBuilder()
     callback(aggregationBuilder)
 
-    return this.withAggregation(
-      aggregationBuilder.pipeline()
-    )
+    return aggregationBuilder.pipeline()
   }
 
   /**
