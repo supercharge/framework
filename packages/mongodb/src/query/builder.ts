@@ -1,8 +1,9 @@
 'use strict'
 
+import Str from '@supercharge/strings'
 import { Arr } from '@supercharge/arrays'
 import { QueryProcessor } from './processor'
-import { ModelObject, MongodbDocument, QueryBuilderContract, QueryOptions } from '../contracts'
+import { ModelObject, MongodbDocument, MongodbModel, QueryBuilderContract, QueryOptions } from '../contracts'
 import { AggregateBuilderCallback, AggregatePipelineSortDirection } from '../contracts/aggregation-builder-contract'
 import { AggregateOptions, CountDocumentsOptions, DeleteOptions, Filter, FindOptions, ObjectId, UpdateFilter, UpdateOptions } from 'mongodb'
 
@@ -91,8 +92,6 @@ export class QueryBuilder<T extends MongodbDocument, ResultType = T> implements 
       .ensureRelationsExist(...relations)
       .createLookupsForRelations(...relations)
 
-    this.queryProcessor.with(...relations)
-
     return this
   }
 
@@ -102,13 +101,9 @@ export class QueryBuilder<T extends MongodbDocument, ResultType = T> implements 
    * @param relations
    */
   private ensureRelationsExist (...relations: string[]): this {
-    const missingRelations = Arr
-      .from(relations)
-      .diff(Object.keys(this.queryProcessor.model.model().relations))
-
-    if (missingRelations.isNotEmpty()) {
-      throw new Error(`Cannot find relations "${missingRelations.join(', ')}" on your "${this.queryProcessor.model.model().name}" model`)
-    }
+    Arr.from(relations).forEach(relation => {
+      this.queryProcessor.model.ensureRelation(relation)
+    })
 
     return this
   }
@@ -130,19 +125,58 @@ export class QueryBuilder<T extends MongodbDocument, ResultType = T> implements 
    * @param relations
    */
   private createLookupForRelation (relationName: string): this {
-    const relation = this.queryProcessor.model.resolveRelation(relationName)
+    const relationNames = Str(relationName).split('.')
+    const root = relationNames.splice(0, 1)[0]
+    const nested = relationNames.join('.')
+
+    const relation = this.queryProcessor.model.resolveRelation(root)
 
     this.queryProcessor.withAggregationFrom(builder => {
       builder.lookup(lookup => {
         lookup
-          .as(relationName)
+          .as(root)
           .from(relation.collection)
           .localField(relation.localField)
           .foreignField(relation.foreignField)
+          .let({ [relation.foreignField]: '$_id' })
+          .pipeline(
+            this.createNestedLookup(nested, relation.foreignModelClass)
+          )
       })
     })
 
+    this.queryProcessor.with(root)
+
     return this
+  }
+
+  /**
+   * Tba.
+   */
+  private createNestedLookup (relationName: string, ModelClass: MongodbModel): any {
+    if (Str(relationName).isEmpty()) {
+      return []
+    }
+
+    const relationNames = Str(relationName).split('.')
+    const root = relationNames.splice(0, 1)[0]
+    const nested = relationNames.join('.')
+
+    const relation = new ModelClass().resolveRelation(root)
+
+    return this.queryProcessor.createAggregationPipelineUsing(builder => {
+      builder.lookup(lookup => {
+        lookup
+          .as(root)
+          .from(relation.collection)
+          .localField(relation.localField)
+          .foreignField(relation.foreignField)
+          .let({ [relation.foreignField]: '$_id' })
+          .pipeline(
+            this.createNestedLookup(nested, relation.foreignModelClass)
+          )
+      })
+    })
   }
 
   /**
