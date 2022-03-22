@@ -22,6 +22,13 @@ export interface MongodbDocument extends HasId {
   resolveRelation(name: string): Relation
 
   /**
+   * Determine whether the relation for the given `name` is defined on the model.
+   */
+  hasRelation(name: string): boolean
+  isMissingRelation(name: string): boolean
+  ensureRelation (name: string): void
+
+  /**
    * Actions to perform on this document instance.
    */
   save(): Promise<this>

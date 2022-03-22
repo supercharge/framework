@@ -395,4 +395,40 @@ export class Model implements MongodbDocument {
       ? mapping.resolve()
       : mapping as Relation
   }
+
+  /**
+   * Determine whether the relation for the given `name` is not defined on the model.
+   */
+  isMissingRelation (name: string): boolean {
+    return !this.hasRelation(name)
+  }
+
+  /**
+   * Determine whether the relation for the given `name` is defined on the model.
+   */
+  hasRelation (name: string): boolean {
+    return !!this.model().relations[name]
+  }
+
+  /**
+   * Tba.
+   */
+  ensureRelation (relationName: string): void {
+    if (Str(relationName).isEmpty()) {
+      return
+    }
+
+    const relationNames = Str(relationName).split('.')
+    const root = relationNames.splice(0, 1)[0]
+    const nested = relationNames.join('.')
+
+    const relation = this.resolveRelation(root)
+
+    if (this.isMissingRelation(root)) {
+      throw new Error(`Cannot find relation "${root}" on your "${this.model().name}" model`)
+    }
+
+    // eslint-disable-next-line new-cap
+    new relation.foreignModelClass().ensureRelation(nested)
+  }
 }
