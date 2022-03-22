@@ -61,7 +61,8 @@ test.group('Model Nested Joins/Lookups', (group) => {
     await Comment.createMany([
       { _id: 1, postId: 1, title: 'Yeah agree, MongoDB is the best' },
       { _id: 2, postId: 1, title: 'Nah, it is coming along and can be improved' },
-      { _id: 3, postId: 2, title: 'Dude, this is so true. Cannot live without Supercharge!' }
+      { _id: 3, postId: 2, title: 'Dude, this is so true. Cannot live without Supercharge!' },
+      { _id: 4, postId: 3, title: 'This comment should not be fetched during any nested lookup' }
     ])
 
     const marcus = await User.findById(1).with('posts.comments')
