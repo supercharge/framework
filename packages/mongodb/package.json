@@ -7,7 +7,7 @@
     "url": "https://github.com/supercharge/mongodb/issues"
   },
   "dependencies": {
-    "@supercharge/arrays": "~3.0.0",
+    "@supercharge/arrays": "~3.1.0",
     "@supercharge/contracts": "^2.0.0-alpha.9",
     "@supercharge/goodies": "~1.10.0",
     "@supercharge/manager": "^2.0.0-alpha.9",
