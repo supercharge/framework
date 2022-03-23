@@ -385,15 +385,28 @@ export class Model implements MongodbDocument {
   }
 
   /**
-   * Returns the resolved relation for the given `name`. Throws
-   * an exception if no relation is defined for the `name`.
+   * Returns the resolved relation for the given `name`.
    */
   resolveRelation (name: string): Relation {
-    const mapping = this.model().relations[name]
+    const mapping = this.getRelation(name)
 
     return mapping instanceof RelationBuilder
       ? mapping.resolve()
       : mapping as Relation
+  }
+
+  /**
+   * Returns the resolved relation for the given `name`. Throws
+   * an exception if no relation is defined for the `name`.
+   */
+  getRelation (name: string): RelationBuilderContract | Relation {
+    const mapping = this.model().relations[name]
+
+    if (!mapping) {
+      throw new Error(`Relation "${name}" is not defined on your "${this.model().name}" model`)
+    }
+
+    return mapping
   }
 
   /**
