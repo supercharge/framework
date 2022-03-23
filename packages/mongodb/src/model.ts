@@ -420,7 +420,11 @@ export class Model implements MongodbDocument {
    * Determine whether the relation for the given `name` is defined on the model.
    */
   hasRelation (name: string): boolean {
-    return !!this.model().relations[name]
+    try {
+      return !!this.getRelation(name)
+    } catch (error) {
+      return false
+    }
   }
 
   /**
