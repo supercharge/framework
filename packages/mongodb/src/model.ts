@@ -437,10 +437,6 @@ export class Model implements MongodbDocument {
 
     const relation = this.resolveRelation(root)
 
-    if (this.isMissingRelation(root)) {
-      throw new Error(`Cannot find relation "${root}" on your "${this.model().name}" model`)
-    }
-
     // eslint-disable-next-line new-cap
     new relation.foreignModelClass().ensureRelation(nested)
   }
