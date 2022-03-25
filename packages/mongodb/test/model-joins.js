@@ -190,7 +190,7 @@ test.group('Model Joins/Lookups', (group) => {
 
     expect(() => {
       User.with('notDefined')
-    }).toThrow('Cannot find relation "notDefined" on your "User" model')
+    }).toThrow('Relation "notDefined" is not defined on your "User" model')
   })
 
   test('relation builder | fails when not providing a related model', async () => {
