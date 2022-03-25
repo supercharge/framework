@@ -9,6 +9,8 @@ import { ModelObject, HasId } from './utils-contract'
 import { MongodbConnection, MongodbConnectionResolver } from './connection-contract'
 
 export interface MongodbDocument extends HasId {
+  [key: string]: any
+
   // Idea:
   // /**
   //  * The relationships that should always be loaded.
