@@ -92,6 +92,8 @@ export class QueryBuilder<T extends MongodbDocument, ResultType = T> implements 
       .ensureRelationsExist(...relations)
       .createLookupsForRelations(...relations)
 
+    this.queryProcessor.with(...relations)
+
     return this
   }
 
@@ -114,7 +116,9 @@ export class QueryBuilder<T extends MongodbDocument, ResultType = T> implements 
    * @param relations
    */
   private createLookupsForRelations (...relations: string[]): this {
-    relations.forEach(relation => this.createLookupForRelation(relation))
+    relations.forEach(relation => {
+      this.createLookupForRelation(relation)
+    })
 
     return this
   }
@@ -145,8 +149,6 @@ export class QueryBuilder<T extends MongodbDocument, ResultType = T> implements 
       })
     })
 
-    this.queryProcessor.with(root)
-
     return this
   }
 
@@ -176,6 +178,10 @@ export class QueryBuilder<T extends MongodbDocument, ResultType = T> implements 
             this.createNestedLookup(nested, relation.foreignModelClass)
           )
       })
+
+      if (relation.justOne) {
+        builder.limit(1).unwind(builder => builder.path(root))
+      }
     })
   }
 

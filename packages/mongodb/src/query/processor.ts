@@ -77,9 +77,13 @@ export class QueryProcessor<T extends MongodbDocument> {
    * @returns {String[]}
    */
   justOneRelationNames (): string[] {
-    return this.eagerLoads.filter(eagerLoad => {
-      return this.model.resolveRelation(eagerLoad).justOne
-    })
+    return this.eagerLoads
+      .map(eagerLoad => {
+        return eagerLoad.split('.')[0]
+      })
+      .filter(eagerLoad => {
+        return this.model.resolveRelation(eagerLoad).justOne
+      })
   }
 
   /**
@@ -211,11 +215,9 @@ export class QueryProcessor<T extends MongodbDocument> {
    * Tba.
    */
   resolveRelationsOn (instance: T): T {
-    Object
-      .keys(instance.model().relations)
-      .forEach(relationName => {
-        this.resolveRelationOn(instance, relationName)
-      })
+    this.eagerLoads.forEach(relationName => {
+      this.resolveRelationOn(instance, relationName)
+    })
 
     return instance
   }
@@ -232,11 +234,11 @@ export class QueryProcessor<T extends MongodbDocument> {
     const root = relationNames.splice(0, 1)[0]
     const nested = relationNames.join('.')
 
-    const related = instance[relationName]
+    const related = instance[root]
     const relation = instance.resolveRelation(root)
 
     if (isNotNullish(related)) {
-      (instance as any)[relationName] = Array.isArray(related)
+      (instance as any)[root] = Array.isArray(related)
         ? related.map(relatedDoc => {
           // eslint-disable-next-line new-cap
           return this.resolveRelationOn(new relation.foreignModelClass(relatedDoc), nested)
