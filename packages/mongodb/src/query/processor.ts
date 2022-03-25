@@ -1,5 +1,6 @@
 'use strict'
 
+import Str from '@supercharge/strings'
 import { tap, isNotNullish } from '@supercharge/goodies'
 import { AggregationBuilder } from './aggregation-builder'
 import { Document, Collection, DeleteResult, Filter, UpdateFilter, WithId } from 'mongodb'
@@ -198,23 +199,51 @@ export class QueryProcessor<T extends MongodbDocument> {
   }
 
   /**
-   * Returns a new model instance if the given `document` is not empty.
+   * Returns a new model instance for the given `document`.
    */
   createInstanceWithResolvedRelations (document: WithId<Document>): T {
-    const instance = this.model.newInstance<T>(document)
+    return this.resolveRelationsOn(
+      this.model.newInstance<T>(document)
+    )
+  }
 
-    Object.keys(instance.model().relations).forEach((name) => {
-      const related = document[name]
-      const relation = instance.resolveRelation(name)
+  /**
+   * Tba.
+   */
+  resolveRelationsOn (instance: T): T {
+    Object
+      .keys(instance.model().relations)
+      .forEach(relationName => {
+        this.resolveRelationOn(instance, relationName)
+      })
 
-      if (isNotNullish(related)) {
-        (instance as any)[name] = Array.isArray(related)
+    return instance
+  }
+
+  /**
+   * Tba.
+   */
+  resolveRelationOn (instance: MongodbDocument, relationName: string): MongodbDocument {
+    if (Str(relationName).isEmpty()) {
+      return instance
+    }
+
+    const relationNames = Str(relationName).split('.')
+    const root = relationNames.splice(0, 1)[0]
+    const nested = relationNames.join('.')
+
+    const related = instance[relationName]
+    const relation = instance.resolveRelation(root)
+
+    if (isNotNullish(related)) {
+      (instance as any)[relationName] = Array.isArray(related)
+        ? related.map(relatedDoc => {
           // eslint-disable-next-line new-cap
-          ? related.map(relate => new relation.foreignModelClass(relate))
-          // eslint-disable-next-line new-cap
-          : new relation.foreignModelClass(related)
-      }
-    })
+          return this.resolveRelationOn(new relation.foreignModelClass(relatedDoc), nested)
+        })
+        // eslint-disable-next-line new-cap
+        : this.resolveRelationOn(new relation.foreignModelClass(related), nested)
+    }
 
     return instance
   }
