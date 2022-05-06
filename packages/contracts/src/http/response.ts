@@ -6,7 +6,7 @@ import { InteractsWithState } from './concerns/interacts-with-state'
 
 export type ViewBuilderCallback = (viewBuilder: ViewConfigBuilder) => unknown
 
-export interface HttpResponse extends InteractsWithState {
+export interface HttpResponse<T = any> extends InteractsWithState {
   /**
    * Set a response header.
    *
@@ -15,7 +15,7 @@ export interface HttpResponse extends InteractsWithState {
    * response.header('x-app-name', 'Supercharge')
    * ```
    */
-  header(key: string, value: string | string[] | number): this
+  header (key: string, value: string | string[] | number): this
 
   /**
    * Returns the response headers.
@@ -27,7 +27,7 @@ export interface HttpResponse extends InteractsWithState {
    * ```
    */
   // headers(): HeaderBag<string | string[] | number>
-  headers(): any
+  headers (): any
 
   /**
    * Assign the object’s key-value pairs as response headers.
@@ -40,7 +40,7 @@ export interface HttpResponse extends InteractsWithState {
    * })
    * ```
    */
-  withHeaders(headers: Record<string, string | string[] | number>): this
+  withHeaders (headers: Record<string, string | string[] | number>): this
 
   /**
    * Append a header to the response. If you want to replance a possibly
@@ -52,7 +52,7 @@ export interface HttpResponse extends InteractsWithState {
    * response.appendHeader('Link', ['<http://localhost/>', '<http://localhost:3000/>']);
    * ```
    */
-  appendHeader(key: string, value: string | string[] | number): this
+  appendHeader (key: string, value: string | string[] | number): this
 
   /**
    * Remove a header field from the response.
@@ -62,7 +62,7 @@ export interface HttpResponse extends InteractsWithState {
    * response.removeHeader('content-type')
    * ```
    */
-  removeHeader(key: string): this
+  removeHeader (key: string): this
 
   /**
    * Assign the given cookie to the response.
@@ -74,7 +74,7 @@ export interface HttpResponse extends InteractsWithState {
    * })
    * ```
    */
-  cookie(key: string, value?: string | null, cookieBuilder?: ResponseCookieBuilderCallback): this
+  cookie (key: string, value?: string | null, cookieBuilder?: ResponseCookieBuilderCallback): this
 
   /**
    * Set the response payload.
@@ -86,7 +86,7 @@ export interface HttpResponse extends InteractsWithState {
    * response.payload([{ id: 1, name: 'Marcus' }, { id: 2, name: 'Supercharge' }])
    * ```
    */
-  payload(payload: any): this
+  payload (payload: T): this
 
   /**
    * Set a response status.
