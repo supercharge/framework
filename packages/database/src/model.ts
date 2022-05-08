@@ -14,14 +14,14 @@ export class Model extends BaseModel {
   /**
    * Find an item of this model for the given `id`.
    */
-  static findById (id: MaybeCompositeId, trx?: TransactionOrKnex): QueryBuilder<Model, Model | undefined> {
-    return this.query(trx).findById(id)
+  static findById<M extends Model> (this: typeof Model, id: MaybeCompositeId, trx?: TransactionOrKnex): QueryBuilder<M, M | undefined> {
+    return this.query(trx).findById(id) as any
   }
 
   /**
    * Delete an item of this model for the given `id`.
    */
-  static deleteById (id: MaybeCompositeId, trx?: TransactionOrKnex): QueryBuilder<Model, number> {
-    return this.query(trx).deleteById(id)
+  static deleteById<M extends Model> (this: typeof Model, id: MaybeCompositeId, trx?: TransactionOrKnex): QueryBuilder<M, number> {
+    return this.query(trx).deleteById(id) as any
   }
 }
