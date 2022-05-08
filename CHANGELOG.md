@@ -1,12 +1,11 @@
 # Changelog
 
-## [2.0.0-alpha.10](https://github.com/supercharge/framework/compare/v2.0.0-alpha.9...v2.0.0-alpha.10) - 2022-xx-xx
-
-### Added
-- tba.
+## [2.0.0-alpha.10](https://github.com/supercharge/framework/compare/v2.0.0-alpha.9...v2.0.0-alpha.10) - 2022-05-08
 
 ### Updated
-- tba.
+- `@supercharge/database`
+  - bump dependencies
+  - refine typings for Model methods `findById` and `deleteById`
 
 
 ## [2.0.0-alpha.9](https://github.com/supercharge/framework/compare/v2.0.0-alpha.8...v2.0.0-alpha.9) - 2022-03-01
