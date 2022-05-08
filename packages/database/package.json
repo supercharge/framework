@@ -15,9 +15,9 @@
     "@supercharge/contracts": "^2.0.0-alpha.9",
     "@supercharge/manager": "^2.0.0-alpha.9",
     "@supercharge/support": "^2.0.0-alpha.9",
-    "knex": "~0.95.14",
-    "objection": "~3.0.0",
-    "sqlite3": "~5.0.2"
+    "knex": "~2.0.0",
+    "objection": "~3.0.1",
+    "sqlite3": "~5.0.8"
   },
   "devDependencies": {
     "@supercharge/core": "^2.0.0-alpha.9",
