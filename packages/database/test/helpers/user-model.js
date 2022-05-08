@@ -19,6 +19,8 @@ module.exports = class UserModel extends Model {
   }
 
   static get relationMappings () {
+    const PostModel = require('./post-model')
+
     return {
       posts: {
         relation: Model.HasManyRelation,
@@ -28,5 +30,3 @@ module.exports = class UserModel extends Model {
     }
   }
 }
-
-const PostModel = require('./post-model')
