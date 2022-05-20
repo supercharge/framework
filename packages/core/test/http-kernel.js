@@ -3,7 +3,7 @@
 const Path = require('path')
 const Sinon = require('sinon')
 const { test } = require('uvu')
-const expect = require('expect')
+const { expect } = require('expect')
 const Supertest = require('supertest')
 const { Server } = require('@supercharge/http')
 const { HttpKernel, Application } = require('../dist')

@@ -8,9 +8,6 @@ module.exports = {
   extends: [
     '@supercharge/typescript'
   ],
-  parserOptions: {
-    project: './tsconfig.json'
-  },
   rules: {
     '@typescript-eslint/no-var-requires': 0,
     '@typescript-eslint/triple-slash-reference': 0,

@@ -3,7 +3,7 @@
 const Path = require('path')
 const Sinon = require('sinon')
 const { test } = require('uvu')
-const expect = require('expect')
+const { expect } = require('expect')
 const { Env } = require('@supercharge/env')
 const { Config } = require('@supercharge/config')
 const { LogManager } = require('@supercharge/logging')

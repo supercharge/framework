@@ -8,7 +8,7 @@ export class LogFacade extends Facade {
    *
    * @returns {String}
    */
-  getContainerNamespace (): string {
+  override getContainerNamespace (): string {
     return 'logger'
   }
 }

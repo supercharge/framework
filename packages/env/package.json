@@ -14,21 +14,21 @@
   "dependencies": {
     "@supercharge/contracts": "^2.0.0-alpha.9",
     "@supercharge/fs": "~3.4.0",
-    "@supercharge/strings": "~1.22.0",
-    "dotenv": "~10.0.0",
-    "dotenv-expand": "~5.1.0"
+    "@supercharge/strings": "~1.27.1",
+    "dotenv": "~16.0.1",
+    "dotenv-expand": "~8.0.3"
   },
   "devDependencies": {
-    "@supercharge/eslint-config-typescript": "~1.0.1",
-    "@types/lodash": "~4.14.176",
-    "c8": "~7.10.0",
-    "eslint": "~7.32.0",
-    "expect": "~27.3.1",
-    "typescript": "~4.4.4",
-    "uvu": "~0.5.2"
+    "@supercharge/eslint-config-typescript": "~2.0.0",
+    "@types/lodash": "~4.14.182",
+    "c8": "~7.11.3",
+    "eslint": "~8.15.0",
+    "expect": "~28.1.0",
+    "typescript": "~4.6.4",
+    "uvu": "~0.5.3"
   },
   "engines": {
-    "node": ">=12"
+    "node": ">=14"
   },
   "homepage": "https://superchargejs.com",
   "keywords": [

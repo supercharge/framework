@@ -1,57 +1,57 @@
 {
-	"name": "@supercharge/config",
-	"description": "The Supercharge config package",
-	"version": "2.0.0-alpha.9",
-	"author": "Marcus Pöhls <marcus@superchargejs.com>",
-	"bugs": {
-		"url": "https://github.com/supercharge/framework/issues"
-	},
-	"files": [
-		"dist"
-	],
-	"main": "dist",
-	"types": "dist",
-	"dependencies": {
-		"@supercharge/contracts": "^2.0.0-alpha.9",
-		"lodash": "~4.17.21"
-	},
-	"devDependencies": {
-		"@supercharge/eslint-config-typescript": "~1.0.1",
-		"@types/lodash": "~4.14.176",
-		"c8": "~7.10.0",
-		"eslint": "~7.32.0",
-		"expect": "~27.4.2",
-		"typescript": "~4.4.4",
-		"uvu": "~0.5.2"
-	},
-	"engines": {
-		"node": ">=12"
-	},
-	"homepage": "https://superchargejs.com",
-	"keywords": [
-		"config",
-		"supercharge",
-		"superchargejs",
-		"nodejs"
-	],
-	"license": "MIT",
-	"publishConfig": {
-		"access": "public"
-	},
-	"repository": {
-		"type": "git",
-		"directory": "packages/config",
-		"url": "git+https://github.com/supercharge/framework.git"
-	},
-	"scripts": {
-		"build": "tsc --build tsconfig.json",
-		"dev": "npm run build -- --watch",
-		"watch": "npm run dev",
-		"lint": "eslint src --ext .js,.ts",
-		"lint:fix": "npm run lint -- --fix",
-		"test": "npm run build && npm run lint && npm run test:coverage",
-		"test:run": "uvu --ignore helpers --ignore fixtures",
-		"test:coverage": "c8 --include=dist npm run test:run && npm run test:report",
-		"test:report": "c8 report --reporter=html"
-	}
+    "name": "@supercharge/config",
+    "description": "The Supercharge config package",
+    "version": "2.0.0-alpha.9",
+    "author": "Marcus Pöhls <marcus@superchargejs.com>",
+    "bugs": {
+        "url": "https://github.com/supercharge/framework/issues"
+    },
+    "files": [
+        "dist"
+    ],
+    "main": "dist",
+    "types": "dist",
+    "dependencies": {
+        "@supercharge/contracts": "^2.0.0-alpha.9",
+        "lodash": "~4.17.21"
+    },
+    "devDependencies": {
+        "@supercharge/eslint-config-typescript": "~2.0.0",
+        "@types/lodash": "~4.14.182",
+        "c8": "~7.11.3",
+        "eslint": "~8.15.0",
+        "expect": "~28.1.0",
+        "typescript": "~4.6.4",
+        "uvu": "~0.5.3"
+    },
+    "engines": {
+        "node": ">=14"
+    },
+    "homepage": "https://superchargejs.com",
+    "keywords": [
+        "config",
+        "supercharge",
+        "superchargejs",
+        "nodejs"
+    ],
+    "license": "MIT",
+    "publishConfig": {
+        "access": "public"
+    },
+    "repository": {
+        "type": "git",
+        "directory": "packages/config",
+        "url": "git+https://github.com/supercharge/framework.git"
+    },
+    "scripts": {
+        "build": "tsc --build tsconfig.json",
+        "dev": "npm run build -- --watch",
+        "watch": "npm run dev",
+        "lint": "eslint src --ext .js,.ts",
+        "lint:fix": "npm run lint -- --fix",
+        "test": "npm run build && npm run lint && npm run test:coverage",
+        "test:run": "uvu --ignore helpers --ignore fixtures",
+        "test:coverage": "c8 --include=dist npm run test:run && npm run test:report",
+        "test:report": "c8 report --reporter=html"
+    }
 }

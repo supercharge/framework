@@ -9,7 +9,7 @@ export class BodyparserJsonOptions extends BodyparserBaseOptions {
    *
    * @returns {String|Number}
    */
-  limit (): number {
+  override limit (): number {
     return Bytes.parse(this.options.limit ?? '1mb')
   }
 }

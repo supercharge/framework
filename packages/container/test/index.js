@@ -1,7 +1,7 @@
 'use strict'
 
 const { test } = require('uvu')
-const expect = require('expect')
+const { expect } = require('expect')
 const { Container } = require('../dist')
 
 test('throws for invalid namespace when binding an instance', () => {

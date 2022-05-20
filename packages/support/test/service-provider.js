@@ -2,7 +2,7 @@
 
 const Path = require('path')
 const { test } = require('uvu')
-const expect = require('expect')
+const { expect } = require('expect')
 const { ServiceProvider } = require('../dist')
 
 let config = {}

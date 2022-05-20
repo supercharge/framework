@@ -21,13 +21,13 @@
   },
   "devDependencies": {
     "@supercharge/core": "^2.0.0-alpha.9",
-    "@supercharge/eslint-config-typescript": "~1.0.1",
-    "eslint": "~7.28.0",
-    "tap": "~15.1.5",
-    "typescript": "~4.2.3"
+    "@supercharge/eslint-config-typescript": "~2.0.0",
+    "eslint": "~8.15.0",
+    "tap": "~16.2.0",
+    "typescript": "~4.6.4"
   },
   "engines": {
-    "node": ">=12"
+    "node": ">=14"
   },
   "homepage": "https://superchargejs.com",
   "keywords": [

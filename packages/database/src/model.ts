@@ -8,8 +8,8 @@ export class Model extends BaseModel {
    * Both of these type definitions are needed to make sure that every model
    * inheriting from this base class has the fluent query builder available.
    */
-  QueryBuilderType!: QueryBuilder<this>
-  static QueryBuilder = QueryBuilder
+  override QueryBuilderType!: QueryBuilder<this>
+  static override QueryBuilder = QueryBuilder
 
   /**
    * Find an item of this model for the given `id`.

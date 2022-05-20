@@ -8,7 +8,7 @@ export class BodyparserMultipartOptions extends BodyparserBaseOptions {
   /**
    * The bodyparser multipart options object.
    */
-  protected readonly options: BodyparserOptionsContract['multipart']
+  protected override readonly options: BodyparserOptionsContract['multipart']
 
   /**
     * Create a new instance.

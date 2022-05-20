@@ -12,7 +12,7 @@ export class HttpServiceProvider extends ServiceProvider {
   /**
    * Register application services to the container.
    */
-  register (): void {
+  override register (): void {
     this.bindRouter()
   }
 

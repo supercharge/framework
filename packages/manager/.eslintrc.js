@@ -8,9 +8,6 @@ module.exports = {
   extends: [
     '@supercharge/typescript'
   ],
-  parserOptions: {
-    project: './tsconfig.json'
-  },
   rules: {
     '@typescript-eslint/strict-boolean-expressions': 0
   }

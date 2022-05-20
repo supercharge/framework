@@ -4,7 +4,7 @@
 const Path = require('path')
 const Sinon = require('sinon')
 const { test } = require('uvu')
-const expect = require('expect')
+const { expect } = require('expect')
 const { Application, ConsoleKernel } = require('../dist')
 
 const app = Application.createWithAppRoot(Path.resolve(__dirname, 'fixtures'))

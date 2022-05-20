@@ -2,7 +2,7 @@
 
 const Path = require('path')
 const { test } = require('uvu')
-const expect = require('expect')
+const { expect } = require('expect')
 const Fs = require('@supercharge/fs')
 const { FileLogger } = require('../dist/file-logger')
 

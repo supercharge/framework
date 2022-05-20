@@ -1,7 +1,7 @@
 'use strict'
 
 const { test } = require('uvu')
-const expect = require('expect')
+const { expect } = require('expect')
 const { makeApp } = require('./helpers')
 const { Application } = require('@supercharge/core')
 const { ViewServiceProvider, ViewManager } = require('../dist')

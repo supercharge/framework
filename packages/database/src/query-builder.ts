@@ -6,11 +6,11 @@ export class QueryBuilder<M extends Model, R = M[]> extends BaseQueryBuilder<M, 
   /**
    * The following properties are necessary to have proper TypeScript support.
    */
-  ArrayQueryBuilderType!: QueryBuilder<M, M[]>
-  SingleQueryBuilderType!: QueryBuilder<M, M>
-  MaybeSingleQueryBuilderType!: QueryBuilder<M, M | undefined>
-  NumberQueryBuilderType!: QueryBuilder<M, number>
-  PageQueryBuilderType!: QueryBuilder<M, Page<M>>
+  override ArrayQueryBuilderType!: QueryBuilder<M, M[]>
+  override SingleQueryBuilderType!: QueryBuilder<M, M>
+  override MaybeSingleQueryBuilderType!: QueryBuilder<M, M | undefined>
+  override NumberQueryBuilderType!: QueryBuilder<M, number>
+  override PageQueryBuilderType!: QueryBuilder<M, Page<M>>
 
   /**
    * Fails the query if the result set is empty. Use the given `callback` to

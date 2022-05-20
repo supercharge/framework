@@ -95,7 +95,7 @@ export class LogManager extends Manager implements LoggingContract {
    *
    * @returns {ViewEngine}
    */
-  driver (name?: string): LoggingContract {
+  override driver (name?: string): LoggingContract {
     return super.driver(name)
   }
 

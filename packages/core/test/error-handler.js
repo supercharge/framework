@@ -1,7 +1,7 @@
 'use strict'
 
 const { test } = require('uvu')
-const expect = require('expect')
+const { expect } = require('expect')
 const Supertest = require('supertest')
 const { Server } = require('@supercharge/http')
 const { Application, ErrorHandler } = require('../dist')

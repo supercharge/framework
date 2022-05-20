@@ -2,7 +2,7 @@
 
 const Sinon = require('sinon')
 const { test } = require('uvu')
-const expect = require('expect')
+const { expect } = require('expect')
 const { ConsoleLogger } = require('../dist/console-logger')
 
 test('logs debug message to console', () => {

@@ -9,7 +9,7 @@ export class RouteServiceProvider extends ServiceProvider {
   /**
    * Register application services to the container.
    */
-  register (): void {
+  override register (): void {
     this.booted(() => {
       this.runRouteLoadingCallbacks()
     })

@@ -24,5 +24,5 @@ export interface UploadedFile {
   /**
    * Return a `Date` instance containing the time this file was last written to.
    */
-  lastModified(): Date
+  lastModified(): Date | null | undefined
 }

@@ -2,7 +2,7 @@
 
 const Koa = require('koa')
 const { test } = require('uvu')
-const expect = require('expect')
+const { expect } = require('expect')
 const Supertest = require('supertest')
 const { HttpContext } = require('../dist')
 

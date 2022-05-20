@@ -4,7 +4,7 @@ import { Route } from './route'
 import Map from '@supercharge/map'
 import { RouteGroup } from './group'
 import Str from '@supercharge/strings'
-import Collect from '@supercharge/collections'
+import { Arr } from '@supercharge/arrays'
 import { PendingRoute } from './pending-route'
 import { RouteCollection } from './route-collection'
 import KoaRouter, { RouterContext } from '@koa/router'
@@ -381,7 +381,7 @@ export class Router implements HttpRouter {
    * @returns {Boolean}
    */
   hasGroupStack (): boolean {
-    return Collect(
+    return Arr.from(
       this.getLastGroup()
     ).isNotEmpty()
   }
@@ -392,7 +392,7 @@ export class Router implements HttpRouter {
    * @returns {RouteGroup | undefined}
    */
   getLastGroup (): RouteGroup | undefined {
-    return Collect(
+    return Arr.from(
       this.groupStack()
     ).last()
   }

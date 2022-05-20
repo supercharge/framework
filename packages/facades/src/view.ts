@@ -8,7 +8,7 @@ export class ViewFacade extends Facade {
    *
    * @returns {String}
    */
-  getContainerNamespace (): string {
+  override getContainerNamespace (): string {
     return 'view'
   }
 }

@@ -12,7 +12,7 @@ export class DatabaseServiceProvider extends ServiceProvider {
   /**
    * Register application services into the container.
    */
-  register (): void {
+  override register (): void {
     this.app().singleton('db', () => {
       return new DatabaseManager(this.app())
     })

@@ -46,7 +46,7 @@ export class ViewManager extends Manager implements ViewEngine {
    *
    * @returns {ViewEngine}
    */
-  protected driver (name?: string): ViewEngine {
+  protected override driver (name?: string): ViewEngine {
     return super.driver(name)
   }
 

@@ -3,7 +3,7 @@
 const Koa = require('koa')
 const Path = require('path')
 const { test } = require('uvu')
-const expect = require('expect')
+const { expect } = require('expect')
 const deepmerge = require('deepmerge')
 const Supertest = require('supertest')
 const { BodyparserMiddleware, HttpContext } = require('../../../dist')

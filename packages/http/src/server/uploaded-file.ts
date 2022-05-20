@@ -20,8 +20,8 @@ export class UploadedFile implements UploadedFileContract {
    * Returns the file name (according to the uploading client).
    */
   name (): string | undefined {
-    if (this.file.name) {
-      return this.file.name
+    if (this.file.newFilename) {
+      return this.file.newFilename
     }
   }
 
@@ -30,7 +30,7 @@ export class UploadedFile implements UploadedFileContract {
    * are stored in a temporary location of the operating system.
    */
   path (): string {
-    return this.file.path
+    return this.file.filepath
   }
 
   /**
@@ -44,16 +44,16 @@ export class UploadedFile implements UploadedFileContract {
    * Returns the file’s mime type (according to the uploading client).
    */
   mimeType (): string | undefined {
-    if (this.file.type) {
-      return this.file.type
+    if (this.file.mimetype) {
+      return this.file.mimetype
     }
   }
 
   /**
    * Return a `Date` instance containing the time this file was last written to.
    */
-  lastModified (): Date {
-    return this.file.lastModifiedDate as Date
+  lastModified (): Date | null | undefined {
+    return this.file.mtime
   }
 
   /**

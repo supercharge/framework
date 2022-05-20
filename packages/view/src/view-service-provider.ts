@@ -11,7 +11,7 @@ export class ViewServiceProvider extends ServiceProvider {
   /**
    * Register application services to the container.
    */
-  register (): void {
+  override register (): void {
     this.app().singleton('view', () => {
       return new ViewManager(this.app())
     })
@@ -20,7 +20,7 @@ export class ViewServiceProvider extends ServiceProvider {
   /**
    * Boot application services.
    */
-  async boot (): Promise<void> {
+  override async boot (): Promise<void> {
     await this.app().make<ViewManager>('view').boot()
   }
 }

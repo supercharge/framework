@@ -2,7 +2,7 @@
 
 const Sinon = require('sinon')
 const { test } = require('uvu')
-const expect = require('expect')
+const { expect } = require('expect')
 const { Manager } = require('../dist')
 
 test('fails for missing createDriver function', () => {

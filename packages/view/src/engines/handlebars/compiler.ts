@@ -2,10 +2,10 @@
 
 import Path from 'path'
 import Fs from '@supercharge/fs'
-import Handlebars from 'handlebars'
 import Str from '@supercharge/strings'
 import Collect from '@supercharge/collections'
 import { esmResolve } from '@supercharge/goodies'
+import Handlebars, { HelperDelegate } from 'handlebars'
 import { Application, ConfigStore, Logger, ViewConfig, ViewEngine } from '@supercharge/contracts'
 
 export class HandlebarsCompiler implements ViewEngine {
@@ -132,7 +132,7 @@ export class HandlebarsCompiler implements ViewEngine {
       this.config().get<string[]>('view.handlebars.partials')
     ).filter(async path => {
       return await Fs.exists(path)
-    })
+    }).all()
   }
 
   /**
@@ -145,7 +145,7 @@ export class HandlebarsCompiler implements ViewEngine {
       .concat(this.config().get('view.handlebars.helpers'))
       .filter(async path => {
         return await Fs.exists(path)
-      })
+      }).all()
   }
 
   /**
@@ -255,7 +255,7 @@ export class HandlebarsCompiler implements ViewEngine {
       const name = await Fs.filename(file)
 
       typeof helper === 'function'
-        ? this.handlebars().registerHelper(name, helper)
+        ? this.handlebars().registerHelper(name, helper as HelperDelegate)
         : this.logger().warning(`View helper "${file}" is not a function, received "${typeof helper}"`)
     } catch (error: any) {
       this.logger().warning(`WARNING: failed to load helper "${file}": ${String(error.message)}`)

@@ -12,27 +12,27 @@
     "dist"
   ],
   "dependencies": {
-    "@supercharge/collections": "~3.2.1",
+    "@supercharge/collections": "~4.3.0",
     "@supercharge/contracts": "^2.0.0-alpha.9",
-    "@supercharge/fs": "~3.1.0",
-    "@supercharge/goodies": "~1.9.0",
+    "@supercharge/fs": "~3.4.0",
+    "@supercharge/goodies": "~1.10.1",
     "@supercharge/manager": "^2.0.0-alpha.9",
-    "@supercharge/strings": "~1.18.0",
+    "@supercharge/strings": "~1.27.1",
     "@supercharge/support": "^2.0.0-alpha.9",
     "handlebars": "~4.7.7"
   },
   "devDependencies": {
     "@supercharge/core": "^2.0.0-alpha.9",
-    "@supercharge/eslint-config-typescript": "~1.0.1",
+    "@supercharge/eslint-config-typescript": "~2.0.0",
     "@types/handlebars": "~4.1.0",
-    "c8": "~7.11.0",
-    "eslint": "~7.32.0",
-    "expect": "~27.4.2",
-    "typescript": "~4.4.4",
-    "uvu": "~0.5.2"
+    "c8": "~7.11.3",
+    "eslint": "~8.15.0",
+    "expect": "~28.1.0",
+    "typescript": "~4.6.4",
+    "uvu": "~0.5.3"
   },
   "engines": {
-    "node": ">=12"
+    "node": ">=14"
   },
   "homepage": "https://superchargejs.com",
   "keywords": [

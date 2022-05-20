@@ -18,7 +18,7 @@ export class TestCommand extends Command {
     `
   }
 
-  async handle (): Promise<any> {
+  override async handle (): Promise<any> {
     return true
   }
 }

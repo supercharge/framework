@@ -8,7 +8,7 @@ export class AppFacade extends Facade {
    *
    * @returns {String}
    */
-  getContainerNamespace (): string {
+  override getContainerNamespace (): string {
     return 'app'
   }
 }

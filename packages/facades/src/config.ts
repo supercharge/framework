@@ -8,7 +8,7 @@ export class ConfigFacade extends Facade {
    *
    * @returns {String}
    */
-  getContainerNamespace (): string {
+  override getContainerNamespace (): string {
     return 'config'
   }
 }
