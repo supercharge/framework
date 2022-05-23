@@ -81,8 +81,9 @@
 		"dev": "tsc --watch",
 		"lint": "eslint src --ext .js,.ts",
 		"lint:fix": "npm run lint -- --fix",
-		"test": "npm run build && npm run lint && npm run test:coverage",
+		"test": "npm run build && npm run lint && npm run test:run",
 		"test:run": "uvu --ignore fixtures --ignore helpers",
+		"posttest": "npm run test:coverage",
 		"test:coverage": "c8 --include=dist npm run test:run && npm run test:report",
 		"test:report": "c8 report --reporter=html"
 	}
