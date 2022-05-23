@@ -44,7 +44,7 @@ export class FileBag implements FileBagContract {
   /**
    * Returns an object of all uploaded files.
    */
-  all (...keys: string[]|string[][]): { [name: string]: UploadedFile | UploadedFile[] | undefined } {
+  all (...keys: string[] | string[][]): { [name: string]: UploadedFile | UploadedFile[] | undefined } {
     if (keys.length === 0) {
       return this.files
     }

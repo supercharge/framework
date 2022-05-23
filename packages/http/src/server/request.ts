@@ -307,7 +307,7 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    */
   isContentType (types: string[]): boolean
   isContentType (...types: string[]): boolean
-  isContentType (...types: string[]|string[][]): boolean {
+  isContentType (...types: string[] | string[][]): boolean {
     return !!this.ctx.request.is(
       ([] as string[]).concat(...types)
     )

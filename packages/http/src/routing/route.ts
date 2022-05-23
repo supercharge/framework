@@ -82,7 +82,7 @@ export class Route implements HttpRoute {
    *
    * @returns Route
    */
-  middleware (middleware?: string|string[]): this {
+  middleware (middleware?: string | string[]): this {
     return tap(this, () => {
       if (middleware) {
         this.attributes.middleware = this.attributes.middleware.concat(middleware)

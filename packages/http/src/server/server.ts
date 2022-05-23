@@ -168,7 +168,7 @@ export class Server implements HttpServerContract {
    */
   protected async runCallbacks (callbacks: Callback[]): Promise<void> {
     await Collect(callbacks).forEach(async callback => {
-      // eslint-disable-next-line node/no-callback-literal
+      // eslint-disable-next-line n/no-callback-literal
       await callback(this)
     })
   }

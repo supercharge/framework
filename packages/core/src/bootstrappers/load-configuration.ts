@@ -54,7 +54,7 @@ export class LoadConfiguration implements Bootstrapper {
    * @returns {object}
    */
   async resolve (configurationFiles: string[]): Promise<any> {
-    return Collect(configurationFiles)
+    return await Collect(configurationFiles)
       .filter(configFile => {
         /**
          * This `filter` method allows us to change the property name for

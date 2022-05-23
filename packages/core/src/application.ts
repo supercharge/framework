@@ -427,6 +427,7 @@ export class Application extends Container implements ApplicationContract {
    */
   async runAppCallbacks (callbacks: Callback[]): Promise<void> {
     await Collect(callbacks).forEach(async callback => {
+      // eslint-disable-next-line n/no-callback-literal
       await callback(this)
     })
   }
