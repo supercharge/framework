@@ -30,15 +30,17 @@ export class FileBag implements FileBagContract {
    * @returns {FileBag}
    */
   static createFromBase (files?: Files): FileBag {
-    return new this(
-      Object.entries(files ?? {}).reduce((carry: UploadedFileType, [name, value]) => {
+    const uploadedFiles = Object
+      .entries(files ?? {})
+      .reduce((carry: UploadedFileType, [name, value]) => {
         carry[name] = Array.isArray(value)
           ? value.map(file => new UploadedFile(file))
           : new UploadedFile(value)
 
         return carry
       }, {})
-    )
+
+    return new this(uploadedFiles)
   }
 
   /**
