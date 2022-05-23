@@ -20,8 +20,8 @@ export class UploadedFile implements UploadedFileContract {
    * Returns the file name (according to the uploading client).
    */
   name (): string | undefined {
-    if (this.file.newFilename) {
-      return this.file.newFilename
+    if (this.file.originalFilename) {
+      return this.file.originalFilename
     }
   }
 
