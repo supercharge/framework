@@ -215,7 +215,7 @@ export class BodyparserMiddleware implements Middleware {
     const { files, fields }: { fields: Fields, files: Files } = await new Promise((resolve, reject) => {
       form.parse(request.req(), (error, fields: Fields, files: Files) => {
         if (error) {
-          return String(error.message).includes('maxFileSize exceeded')
+          return Str(error.message).includesAll('maxFileSize', 'exceeded')
             ? reject(HttpError.payloadTooLarge('maxFileSize exceeded'))
             : reject(error)
         }
