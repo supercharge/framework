@@ -47,7 +47,7 @@ test('request.all() returns merged query params, payload, and files', async () =
 
     request
       .setPayload({ supercharge: 'is cool' })
-      .setFiles({ upload: { name: 'UploadedFile' } })
+      .setFiles({ upload: { originalFilename: 'UploadedFile' } })
 
     return response.payload({
       all: request.all(),
@@ -117,7 +117,7 @@ test('request.input() returns a single key from files', async () => {
   const app = new Koa().use(ctx => {
     const { request, response } = HttpContext.wrap(ctx, appMock)
 
-    request.setFiles({ upload: { name: 'UploadedFile' } })
+    request.setFiles({ upload: { originalFilename: 'UploadedFile' } })
 
     return response.payload({
       input: request.input('upload')
