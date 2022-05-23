@@ -104,8 +104,8 @@ export class ConsoleKernel implements ConsoleKernelContract {
       .flatMap(async (path: string) => {
         return await Fs.allFiles(path)
       })
-      .map((commandFile: string) => {
-        return this.resolve(commandFile) as any // TODO fix this typing issue in @supercharge/collections
+      .map(async (commandFile: string) => {
+        return await this.resolve(commandFile)
       })
       .forEach((command: Command) => {
         this.craft().add(command)
