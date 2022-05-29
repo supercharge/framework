@@ -1,0 +1,65 @@
+{
+	"name": "@supercharge/session",
+	"description": "The Supercharge session package",
+	"version": "2.0.0-alpha.9",
+	"author": "Marcus Pöhls <marcus@superchargejs.com>",
+	"bugs": {
+		"url": "https://github.com/supercharge/framework/issues"
+	},
+	"files": [
+		"dist"
+	],
+	"main": "dist",
+	"types": "dist",
+	"dependencies": {
+		"@supercharge/contracts": "^2.0.0-alpha.9",
+		"@supercharge/manager": "^2.0.0-alpha.9",
+		"@supercharge/support": "^2.0.0-alpha.9"
+	},
+	"devDependencies": {
+		"@supercharge/eslint-config-typescript": "~2.1.0",
+		"@supercharge/http": "^2.0.0-alpha.9",
+		"c8": "~7.11.3",
+		"deepmerge": "~4.2.2",
+		"eslint": "~8.16.0",
+		"expect": "~28.1.0",
+		"supertest": "~6.2.3",
+		"typescript": "~4.7.2",
+		"uvu": "~0.5.3"
+	},
+	"engines": {
+		"node": ">=14"
+	},
+	"homepage": "https://superchargejs.com",
+	"keywords": [
+		"http",
+		"http-server",
+		"route",
+		"router",
+		"routing",
+		"nodejs",
+		"supercharge",
+		"superchargejs"
+	],
+	"license": "MIT",
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"directory": "packages/session",
+		"url": "git+https://github.com/supercharge/framework.git"
+	},
+	"scripts": {
+		"build:force": "npm run build -- --force",
+		"build": "tsc --build tsconfig.json",
+		"dev": "tsc --watch",
+		"lint": "eslint src --ext .js,.ts",
+		"lint:fix": "npm run lint -- --fix",
+		"test": "npm run build && npm run lint && npm run test:run",
+		"test:run": "uvu --ignore fixtures --ignore helpers",
+		"posttest": "npm run test:coverage",
+		"test:coverage": "c8 --include=dist npm run test:run && npm run test:report",
+		"test:report": "c8 report --reporter=html"
+	}
+}
