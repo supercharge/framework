@@ -8,6 +8,7 @@ import { CookieBag } from './cookie-bag'
 import { tap } from '@supercharge/goodies'
 import { RouterContext } from '@koa/router'
 import { ParameterBag } from './parameter-bag'
+import { Macroable } from '@supercharge/macroable'
 import { RequestHeaderBag } from './request-header-bag'
 import { IncomingHttpHeaders, IncomingMessage } from 'http'
 import { CookieOptions, HttpRequest, InteractsWithContentTypes, RequestCookieBuilderCallback } from '@supercharge/contracts'
@@ -20,7 +21,7 @@ declare module 'koa' {
   }
 }
 
-export class Request implements HttpRequest, InteractsWithContentTypes {
+export class Request extends Macroable implements HttpRequest, InteractsWithContentTypes {
   /**
    * The route context object from Koa.
    */
@@ -38,6 +39,8 @@ export class Request implements HttpRequest, InteractsWithContentTypes {
    * @param cookieOptions
    */
   constructor (ctx: RouterContext, cookieOptions: CookieOptions) {
+    super()
+
     this.ctx = ctx
     this.cookieOptions = cookieOptions
   }
