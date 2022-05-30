@@ -14,11 +14,14 @@
 	"dependencies": {
 		"@supercharge/contracts": "^2.0.0-alpha.9",
 		"@supercharge/manager": "^2.0.0-alpha.9",
-		"@supercharge/support": "^2.0.0-alpha.9"
+		"@supercharge/strings": "~1.28.0",
+		"@supercharge/support": "^2.0.0-alpha.9",
+		"lodash": "~4.17.21"
 	},
 	"devDependencies": {
 		"@supercharge/eslint-config-typescript": "~2.1.0",
 		"@supercharge/http": "^2.0.0-alpha.9",
+		"@types/lodash": "~4.14.182",
 		"c8": "~7.11.3",
 		"deepmerge": "~4.2.2",
 		"eslint": "~8.16.0",
