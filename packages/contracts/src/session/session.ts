@@ -17,6 +17,12 @@ export interface Session {
   get<R = any | undefined> (key: string, defaultValue?: R): R
 
   /**
+   * Put a key-value-pair or an object of key-value-pairs into the session.
+   */
+  set(key: string, value: any): this
+  set(values: Record<string, any>): this
+
+  /**
    * Determine whether the session contains an entry for the given `key`.
    */
   has(key: string): boolean
@@ -27,15 +33,9 @@ export interface Session {
   pull<R = any | undefined> (key: string, defaultValue?: R): R
 
   /**
-   * Put a key-value-pair or an object of key-value-pairs into the session.
-   */
-  put(key: string, value: any): this
-  put(values: Record<string, any>): this
-
-  /**
    * Remove one or more items from the session.
    */
-  forget(...keys: string[] | string[][]): this
+  delete(...keys: string[] | string[][]): this
 
   /**
    * Removes all items from the session.
