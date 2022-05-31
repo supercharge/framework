@@ -2,18 +2,20 @@
 
 import _ from 'lodash'
 import Str from '@supercharge/strings'
-import { Session as SessionContract } from '@supercharge/contracts'
+import { Session as SessionContract, SessionDriver } from '@supercharge/contracts'
 
 export class Session implements SessionContract {
   private sessionId: string
+  private readonly driver: SessionDriver
   private attributes: Record<string, any>
 
   /**
    * Create a new session instance.
    */
-  constructor (id?: string) {
+  constructor (driver: SessionDriver, id?: string) {
     this.sessionId = ''
     this.attributes = {}
+    this.driver = driver
 
     this.setId(id)
   }
@@ -33,7 +35,7 @@ export class Session implements SessionContract {
   setId (id?: string): this {
     this.sessionId = this.isValidId(id)
       ? id
-      : this.generateSessionId()
+      : this.generateRandomToken()
 
     return this
   }
@@ -115,7 +117,7 @@ export class Session implements SessionContract {
     // TODO trace regenerated session and delete old session
 
     this.setId(
-      this.generateSessionId()
+      this.generateRandomToken()
     )
 
     return this
@@ -138,27 +140,46 @@ export class Session implements SessionContract {
   }
 
   /**
-   * Returns a new, random session ID.
+   * Returns a new, random alpha-numeric token.
    *
    * @returns {String}
    */
-  protected generateSessionId (): string {
+  protected generateRandomToken (): string {
     return Str.random(use => {
       return use.characters().numbers().length(40)
     })
   }
 
   /**
+   * Regenerate the CSRF token value.
+   *
+   * @returns {this}
+   */
+  regenerateToken (): this {
+    this.set('_token', this.generateRandomToken())
+
+    return this
+  }
+
+  /**
    * Starte the session and read the session from a storage.
    */
   async start (): Promise<this> {
-    throw new Error('Method not implemented.')
+    this.attributes = await this.driver.read(this.sessionId) ?? {}
+
+    if (!this.has('_token')) {
+      this.regenerateToken()
+    }
+
+    return this
   }
 
   /**
    * Save the session data to a storage.
    */
   async commit (): Promise<this> {
-    throw new Error('Method not implemented.')
+    await this.driver.write(this.sessionId, this.attributes)
+
+    return this
   }
 }
