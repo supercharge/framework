@@ -95,19 +95,26 @@ export class Request extends Macroable implements HttpRequest, InteractsWithCont
   }
 
   /**
+   * Returns the cookie bag.
+   */
+  cookies (): CookieBag {
+    return new CookieBag(this.ctx.cookies, this.cookieOptions)
+  }
+
+  /**
    * Returns the cookie value for the given `name`. Supports an options
    * builder as the second argument allowing you to change whether you
    * want to retrieve the cookie `unsigned` from the incomig request.
    */
   cookie (name: string, cookieBuilder?: RequestCookieBuilderCallback): string | undefined {
-    return new CookieBag(this.ctx.cookies, this.cookieOptions).get(name, cookieBuilder)
+    return this.cookies().get(name, cookieBuilder)
   }
 
   /**
    * Determine whether a cookie exists for the given `name`.
    */
   hasCookie (name: string): boolean {
-    return new CookieBag(this.ctx.cookies, this.cookieOptions).has(name)
+    return this.cookies().has(name)
   }
 
   /**
