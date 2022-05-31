@@ -1,9 +1,11 @@
 'use strict'
 
 import { Manager } from '@supercharge/manager'
-import { Application, SessionDriver } from '@supercharge/contracts'
+import { Application, HttpRequest, SessionConfig, SessionDriver } from '@supercharge/contracts'
+import { CookieSessionDriver } from './drivers/cookie'
+import { Session } from './session'
 
-export class ViewManager extends Manager {
+export class SessionManager extends Manager {
   /**
    * Create a new view manager instance.
    *
@@ -29,6 +31,24 @@ export class ViewManager extends Manager {
   }
 
   /**
+   * Returns the session config.
+   */
+  private sessionConfig (): SessionConfig {
+    return this.config().get('session')
+  }
+
+  /**
+   * Returns a new session instance for the given `request`.
+   *
+   * @param {HttpRequest} request
+   *
+   * @returns {Session}
+   */
+  from (request: HttpRequest): Session {
+    return new Session()
+  }
+
+  /**
    * Returns the default driver name.
    *
    * @returns {String}
@@ -45,7 +65,7 @@ export class ViewManager extends Manager {
    *
    * @returns {ViewEngine}
    */
-  protected override driver (name?: string): ViewEngine {
+  protected override driver (name?: string): SessionDriver {
     return super.driver(name)
   }
 
@@ -55,6 +75,8 @@ export class ViewManager extends Manager {
    * @returns {ViewEngine}
    */
   protected createCookieDriver (): SessionDriver {
-    //
+    return new CookieSessionDriver(
+      // this.sessionConfig()
+    )
   }
 }
