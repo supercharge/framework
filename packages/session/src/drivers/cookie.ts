@@ -2,7 +2,7 @@
 
 import { SessionDriver, SessionConfig } from '@supercharge/contracts'
 
-export class CookieDriver implements SessionDriver {
+export class CookieSessionDriver implements SessionDriver {
   private readonly config: SessionConfig
 
   /**
