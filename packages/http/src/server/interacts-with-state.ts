@@ -50,7 +50,7 @@ export class InteractsWithState implements InteractsWithStateContract {
    *
    * @returns {Boolean}
    */
-  private isObject (input: any): boolean {
+  private isObject (input: any): input is Record<string, any> {
     return !!input && input.constructor.name === 'Object'
   }
 }
