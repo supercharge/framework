@@ -2,6 +2,7 @@
 
 import { FileBag } from './file-bag'
 import { IncomingMessage } from 'http'
+import { CookieBag } from './cookie-bag'
 import { ParameterBag } from './parameter-bag'
 import { Macroable } from '@supercharge/macroable'
 import { InteractsWithContentTypes } from './concerns'
@@ -42,11 +43,21 @@ export interface HttpRequest extends InteractsWithContentTypes, Macroable {
   param (name: string, defaultValue: string): string
 
   /**
+   * Returns the cookie bag.
+   */
+  cookies (): CookieBag
+
+  /**
    * Returns the cookie value for the given `name`. Supports an options
    * builder as the second argument allowing you to change whether you
    * want to retrieve the cookie `unsigned` from the incomig request.
    */
   cookie(name: string, cookieBuilder?: RequestCookieBuilderCallback): string | undefined
+
+  /**
+   * Determine whether a cookie exists for the given `name`.
+   */
+  hasCookie (name: string): boolean
 
   /**
    * Returns the merged request payload, files and query parameters. The query parameters
