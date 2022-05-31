@@ -5,7 +5,7 @@ const deepmerge = require('deepmerge')
 const Supertest = require('supertest')
 const { isConstructor } = require('@supercharge/classes')
 const defaultCorsConfig = require('./fixtures/cors-config')
-const { HandleCorsMiddleware, Server, Router } = require('../../../dist')
+const { HandleCorsMiddleware, Server, Router, Response, Request } = require('../../../dist')
 
 function createAppMock (corsConfig = {}) {
   return {
@@ -20,6 +20,14 @@ function createAppMock (corsConfig = {}) {
 
       if (key === 'route') {
         return new Router()
+      }
+
+      if (key === 'request') {
+        return Request
+      }
+
+      if (key === 'response') {
+        return Response
       }
     },
     singleton () {},

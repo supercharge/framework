@@ -6,7 +6,7 @@ const deepmerge = require('deepmerge')
 const Supertest = require('supertest')
 const { isConstructor } = require('@supercharge/classes')
 const defaultStaticAssetsConfig = require('./fixtures/static-assets')
-const { ServeStaticAssetsMiddleware, Server, Router } = require('../../../dist')
+const { ServeStaticAssetsMiddleware, Server, Router, Request, Response } = require('../../../dist')
 
 function createAppMock (staticAssetsConfig = {}) {
   return {
@@ -24,6 +24,14 @@ function createAppMock (staticAssetsConfig = {}) {
 
       if (key === 'route') {
         return new Router()
+      }
+
+      if (key === 'request') {
+        return Request
+      }
+
+      if (key === 'response') {
+        return Response
       }
     },
     singleton () {},

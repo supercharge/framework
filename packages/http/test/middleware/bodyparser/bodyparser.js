@@ -6,15 +6,23 @@ const { test } = require('uvu')
 const { expect } = require('expect')
 const deepmerge = require('deepmerge')
 const Supertest = require('supertest')
-const { BodyparserMiddleware, HttpContext } = require('../../../dist')
 const defaultBodyparserConfig = require('./fixtures/bodyparser-config')
+const { BodyparserMiddleware, HttpContext, Response, Request } = require('../../../dist')
 
 const testFile1Path = Path.resolve(__dirname, 'fixtures', 'test-multipart-file-1.txt')
 const testFile2Path = Path.resolve(__dirname, 'fixtures', 'test-multipart-file-2.txt')
 
 function createAppMock (bodyparserConfig = {}) {
   return {
-    make () {},
+    make (key) {
+      if (key === 'request') {
+        return Request
+      }
+
+      if (key === 'response') {
+        return Response
+      }
+    },
     config () {
       return {
         get () {

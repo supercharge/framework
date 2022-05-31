@@ -17,6 +17,10 @@ const appMock = {
     if (key === 'view') {
       return viewMock
     }
+
+    if (key === 'response') {
+      return Response
+    }
   },
   config () {
     return {

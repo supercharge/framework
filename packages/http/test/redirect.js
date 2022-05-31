@@ -4,10 +4,14 @@ const Koa = require('koa')
 const { test } = require('uvu')
 const { expect } = require('expect')
 const Supertest = require('supertest')
-const { HttpContext } = require('../dist')
+const { HttpContext, Response } = require('../dist')
 
 const appMock = {
-  make () {},
+  make (key) {
+    if (key === 'response') {
+      return Response
+    }
+  },
   config () {
     return {
       get () { }
