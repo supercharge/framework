@@ -1,6 +1,6 @@
 'use strict'
 
-import { SessionDriver } from '@supercharge/contracts'
+import { SessionConfig, SessionDriver } from '@supercharge/contracts'
 
 export class MemorySessionDriver implements SessionDriver {
   /**
@@ -9,9 +9,15 @@ export class MemorySessionDriver implements SessionDriver {
   private readonly sessions: Map<string, any>
 
   /**
+   * Stores the session config.
+   */
+  private readonly config: SessionConfig
+
+  /**
    * Create a new memory session driver instance.
    */
-  constructor () {
+  constructor (config: SessionConfig) {
+    this.config = config
     this.sessions = new Map<string, any>()
   }
 
