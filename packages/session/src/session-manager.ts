@@ -1,11 +1,18 @@
 'use strict'
 
-import { Manager } from '@supercharge/manager'
-import { Application, HttpRequest, SessionConfig, SessionDriver } from '@supercharge/contracts'
-import { CookieSessionDriver } from './drivers/cookie'
 import { Session } from './session'
+import { Manager } from '@supercharge/manager'
+import { MemorySessionDriver } from './drivers/memory'
+import { CookieSessionDriver } from './drivers/cookie'
+import { Application, HttpRequest, SessionConfig, SessionDriver } from '@supercharge/contracts'
 
 export class SessionManager extends Manager {
+  /**
+   * Stores the HTTP request instance. The cookie driver needs the request
+   * instance to properly write the session values into the session cookie.
+   */
+  private request?: HttpRequest
+
   /**
    * Create a new view manager instance.
    *
@@ -45,7 +52,9 @@ export class SessionManager extends Manager {
    * @returns {Session}
    */
   from (request: HttpRequest): Session {
-    return new Session()
+    this.request = request
+
+    return new Session(this.driver())
   }
 
   /**
@@ -54,7 +63,7 @@ export class SessionManager extends Manager {
    * @returns {String}
    */
   defaultDriver (): string {
-    return this.config().get('view.driver')
+    return this.config().get('session.driver')
   }
 
   /**
@@ -63,20 +72,31 @@ export class SessionManager extends Manager {
    *
    * @param {String} name
    *
-   * @returns {ViewEngine}
+   * @returns {SessionDriver}
    */
   protected override driver (name?: string): SessionDriver {
     return super.driver(name)
   }
 
   /**
-   * Create a Handlebars view renderer instance.
+   * Returns a cookie session driver instance.
    *
-   * @returns {ViewEngine}
+   * @returns {SessionDriver}
    */
   protected createCookieDriver (): SessionDriver {
     return new CookieSessionDriver(
-      // this.sessionConfig()
+      this.sessionConfig(), this.request as HttpRequest
+    )
+  }
+
+  /**
+   * Returns a memory session driver instance.
+   *
+   * @returns {SessionDriver}
+   */
+  protected createMemoryDriver (): SessionDriver {
+    return new MemorySessionDriver(
+      this.sessionConfig()
     )
   }
 }
