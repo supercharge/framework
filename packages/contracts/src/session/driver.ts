@@ -2,7 +2,7 @@
 
 export interface SessionDriver {
   /**
-   * Read the session from the store.
+   * Read the session data.
    */
   read (sessionId: string): Promise<Record<string, any> | undefined>
 
@@ -12,12 +12,7 @@ export interface SessionDriver {
   write(sessionId: string, values: Record<string, any>): Promise<this>
 
   /**
-   * Delete the session from the store.
+   * Delete the session data for the given `sessionId`.
    */
   destroy(sessionId: string): Promise<this>
-
-  /**
-   * Keep session fresh.
-   */
-  touch(sessionId: string): Promise<this>
 }
