@@ -22,11 +22,6 @@ export interface SessionConfig {
   // encrypt:
 
   /**
-   * Stores the session files location.
-   */
-  files: string
-
-  /**
    * Stores the session cookie options.
    */
   cookie: {
@@ -60,15 +55,4 @@ export interface SessionConfig {
      */
     sameSite: string
   }
-  /**
-   * Config for the file driver
-   */
-  file?: {
-    location: string
-  }
-
-  /**
-   * The redis connection to use from the `config/redis` file
-   */
-  redisConnection?: string
 }
