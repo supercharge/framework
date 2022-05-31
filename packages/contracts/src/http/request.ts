@@ -3,11 +3,12 @@
 import { FileBag } from './file-bag'
 import { IncomingMessage } from 'http'
 import { ParameterBag } from './parameter-bag'
+import { Macroable } from '@supercharge/macroable'
 import { InteractsWithContentTypes } from './concerns'
 import { RequestHeaderBag } from './request-header-bag'
 import { RequestCookieBuilderCallback } from './cookie-options-builder'
 
-export interface HttpRequest extends InteractsWithContentTypes {
+export interface HttpRequest extends InteractsWithContentTypes, Macroable {
   /**
    * Returns the raw Node.js request.
    */
