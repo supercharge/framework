@@ -242,15 +242,27 @@ export class Server implements HttpServerContract {
    */
   private bindAndRegisterMiddlewareClass (Middleware: MiddlewareCtor): void {
     this.ensureHandleMethod(Middleware)
-
-    this.app().singleton(Middleware, () => {
-      return new Middleware(this.app())
-    })
+    this.bindMiddlewareClass(Middleware)
 
     this.koa().use(async (ctx, next) => {
       return this.app().make<MiddlewareContract>(Middleware).handle(
         this.createContext(ctx), next
       )
+    })
+  }
+
+  /**
+   * Bind the given `Middleware` into the container if it’s not already bound.
+   *
+   * @param Middleware BaseMiddleware
+   */
+  private bindMiddlewareClass (Middleware: MiddlewareCtor): void {
+    if (this.app().hasBinding(Middleware)) {
+      return
+    }
+
+    this.app().singleton(Middleware, () => {
+      return new Middleware(this.app())
     })
   }
 
