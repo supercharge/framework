@@ -12,6 +12,9 @@ function createAppMock (corsConfig = {}) {
     key () {
       return 1234
     },
+    hasBinding () {
+      return false
+    },
     make (key) {
       if (isConstructor(key)) {
         // eslint-disable-next-line new-cap

@@ -8,6 +8,9 @@ const { Server, Router, Request, Response } = require('../dist')
 
 const app = {
   bindings: {},
+  hasBinding (key) {
+    return !!this.bindings[key]
+  },
   make (key) {
     if (isConstructor(key)) {
       // eslint-disable-next-line new-cap

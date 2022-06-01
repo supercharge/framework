@@ -34,6 +34,9 @@ function createAppMock (staticAssetsConfig = {}) {
         return Response
       }
     },
+    hasBinding () {
+      return false
+    },
     singleton () {},
     config () {
       return {
