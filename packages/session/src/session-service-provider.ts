@@ -1,11 +1,24 @@
 'use strict'
 
 import { SessionManager } from './session-manager'
-import { HttpRequest } from '@supercharge/contracts'
+import { HttpRequest, Session } from '@supercharge/contracts'
 import { ServiceProvider } from '@supercharge/support'
+import { StartSessionMiddleware } from './middleware/start-session'
 
+/**
+ * Add container bindings for the session service.
+ */
 export interface ContainerBindings {
   'session': SessionManager
+}
+
+/**
+ * Extend the supercharge request interface with the session property.
+ */
+declare module '@supercharge/contracts' {
+  export interface HttpRequest {
+    session (): Session
+  }
 }
 
 export class SessionServiceProvider extends ServiceProvider {
@@ -14,6 +27,7 @@ export class SessionServiceProvider extends ServiceProvider {
    */
   override register (): void {
     this.registerSessionManager()
+    this.registerStartSessionMiddleware()
   }
 
   /**
@@ -22,6 +36,17 @@ export class SessionServiceProvider extends ServiceProvider {
   private registerSessionManager (): void {
     this.app().singleton('session', () => {
       return new SessionManager(this.app())
+    })
+  }
+
+  /**
+   * Bind the middleware to start the session into the container.
+   */
+  private registerStartSessionMiddleware (): void {
+    this.app().singleton(StartSessionMiddleware, () => {
+      const manager = this.app().make('session')
+
+      return new StartSessionMiddleware(manager)
     })
   }
 
