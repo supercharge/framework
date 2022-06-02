@@ -1,23 +1,28 @@
 'use strict'
 
-import { SessionConfig, SessionDriver } from '@supercharge/contracts'
+import { SessionDriver } from '@supercharge/contracts'
+import { InteractsWithTime } from '@supercharge/support'
 
-export class MemorySessionDriver implements SessionDriver {
+interface SessionEntry { time: number, data: any }
+
+export class MemorySessionDriver extends InteractsWithTime implements SessionDriver {
   /**
    * Stores the session data.
    */
-  private readonly sessions: Map<string, any>
+  private readonly sessions: Map<string, SessionEntry>
 
   /**
    * Stores the session config.
    */
-  private readonly config: SessionConfig
+  private readonly lifetimeInMinutes: number
 
   /**
    * Create a new memory session driver instance.
    */
-  constructor (config: SessionConfig) {
-    this.config = config
+  constructor (minutes: number) {
+    super()
+
+    this.lifetimeInMinutes = minutes
     this.sessions = new Map<string, any>()
   }
 
@@ -25,14 +30,29 @@ export class MemorySessionDriver implements SessionDriver {
    * Read the session data.
    */
   async read (sessionId: string): Promise<Record<string, any> | undefined> {
-    return this.sessions.get(sessionId)
+    const session = this.sessions.get(sessionId)
+
+    if (!session) {
+      return {}
+    }
+
+    const expiration = this.calculateExpiration(this.lifetimeInMinutes * 60)
+
+    if (session.time >= expiration) {
+      return session.data
+    }
+
+    return {}
   }
 
   /**
    * Store the session data.
    */
-  async write (sessionId: string, values: Record<string, any>): Promise<this> {
-    this.sessions.set(sessionId, values)
+  async write (sessionId: string, data: Record<string, any>): Promise<this> {
+    this.sessions.set(sessionId, {
+      data,
+      time: this.currentTime()
+    })
 
     return this
   }
@@ -44,5 +64,14 @@ export class MemorySessionDriver implements SessionDriver {
     this.sessions.delete(sessionId)
 
     return this
+  }
+
+  /**
+   * Returns the expiration time for the given `lifetime`.
+   *
+   * @param seconds
+   */
+  calculateExpiration (seconds: number): number {
+    return this.currentTime() - seconds
   }
 }
