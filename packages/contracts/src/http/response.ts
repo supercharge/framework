@@ -1,5 +1,6 @@
 'use strict'
 
+import { CookieBag } from './cookie-bag'
 import { ViewConfigBuilder } from '../view'
 import { HttpRedirect, ResponseCookieBuilderCallback } from '.'
 import { InteractsWithState } from './concerns/interacts-with-state'
@@ -63,6 +64,11 @@ export interface HttpResponse<T = any> extends InteractsWithState {
    * ```
    */
   removeHeader (key: string): this
+
+  /**
+   * Returns the cookie bag.
+   */
+  cookies (): CookieBag
 
   /**
    * Assign the given cookie to the response.

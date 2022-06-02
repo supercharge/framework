@@ -103,6 +103,13 @@ export class Response extends InteractsWithState implements HttpResponse {
   }
 
   /**
+   * Returns the cookie bag.
+   */
+  cookies (): CookieBag {
+    return new CookieBag(this.ctx.cookies, this.cookieOptions)
+  }
+
+  /**
    * Assign the given cookie to the response.
    *
    * @example
@@ -112,7 +119,7 @@ export class Response extends InteractsWithState implements HttpResponse {
    */
   cookie (name: string, value?: string | null, cookieBuilder?: ResponseCookieBuilderCallback): this {
     return tap(this, () => {
-      new CookieBag(this.ctx.cookies, this.cookieOptions).set(name, value, cookieBuilder)
+      this.cookies().set(name, value, cookieBuilder)
     })
   }
 
