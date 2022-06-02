@@ -1,8 +1,8 @@
 'use strict'
 
 import { SessionManager } from './session-manager'
-import { HttpRequest, Session } from '@supercharge/contracts'
 import { ServiceProvider } from '@supercharge/support'
+import { HttpRequest, Session } from '@supercharge/contracts'
 import { StartSessionMiddleware } from './middleware/start-session'
 
 /**
