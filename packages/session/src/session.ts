@@ -6,16 +6,18 @@ import { Session as SessionContract, SessionDriver } from '@supercharge/contract
 
 export class Session implements SessionContract {
   private sessionId: string
+  private readonly sessionName: string
   private readonly driver: SessionDriver
   private attributes: Record<string, any>
 
   /**
    * Create a new session instance.
    */
-  constructor (driver: SessionDriver, id?: string) {
+  constructor (driver: SessionDriver, name: string, id?: string) {
     this.sessionId = ''
     this.attributes = {}
     this.driver = driver
+    this.sessionName = name
 
     this.setId(id)
   }
@@ -25,6 +27,13 @@ export class Session implements SessionContract {
    */
   id (): string {
     return this.sessionId
+  }
+
+  /**
+   * Returns the session name.
+   */
+  name (): string {
+    return this.sessionName
   }
 
   /**
@@ -38,6 +47,26 @@ export class Session implements SessionContract {
       : this.generateRandomToken()
 
     return this
+  }
+
+  /**
+   * Determine whether the given `id` is a valid session id.
+   *
+   * @returns {String}
+   */
+  protected isValidId (id?: string): id is string {
+    return Str.isAlphaNumeric(id) && Str(id).hasLength(40)
+  }
+
+  /**
+   * Returns a new, random alpha-numeric token.
+   *
+   * @returns {String}
+   */
+  protected generateRandomToken (): string {
+    return Str.random(use => {
+      return use.characters().numbers().length(40)
+    })
   }
 
   /**
@@ -128,26 +157,6 @@ export class Session implements SessionContract {
    */
   invalidate (): this {
     return this.clear().regenerate()
-  }
-
-  /**
-   * Returns a new, random session ID.
-   *
-   * @returns {String}
-   */
-  protected isValidId (id?: string): id is string {
-    return Str.isAlphaNumeric(id) && Str(id).hasLength(40)
-  }
-
-  /**
-   * Returns a new, random alpha-numeric token.
-   *
-   * @returns {String}
-   */
-  protected generateRandomToken (): string {
-    return Str.random(use => {
-      return use.characters().numbers().length(40)
-    })
   }
 
   /**

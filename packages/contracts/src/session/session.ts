@@ -7,6 +7,11 @@ export interface Session {
   id(): string
 
   /**
+   * Returns the session name.
+   */
+  name(): string
+
+  /**
    * Returns all of the session data.
    */
   all(): Record<string, any>
