@@ -9,12 +9,12 @@ export interface SessionConfig {
   /**
    * The session lifetime.
    */
-  lifetime: string
+  lifetime: string | number
 
   /**
    * Clear the session when the browser closes.
    */
-  expireOnClose: boolean
+  expireOnClose?: boolean
 
   /**
    * Determine whether to encrypt the session data.
@@ -33,26 +33,27 @@ export interface SessionConfig {
     /**
      * Stores the session cookie path.
      */
-    path: string
+    path?: string
 
     /**
-     * Stores the session cookie domain.
+     * The domain that the cookie will be available to.
      */
-    domain: string
+    domain?: string
 
     /**
-     * Tba.
+     * Determine whether the session cookie is only to be sent over HTTPS.
      */
-    secure: boolean
+    secure?: boolean
 
     /**
-     * Tba.
+     * Determine whether the session cookie is only available through the HTTP
+     * protocol and not from JavaScript.
      */
-    httpOnly: boolean
+    httpOnly?: boolean
 
     /**
-     * Tba.
+     * Determine whether the session cookie is sent along with cross-site requests.
      */
-    sameSite: string
+    sameSite?: 'strict' | 'lax' | 'none' | true | false
   }
 }
