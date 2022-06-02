@@ -2,9 +2,10 @@
 
 import { Session } from './session'
 import { Manager } from '@supercharge/manager'
+import { SessionConfig } from './session-config'
 import { MemorySessionDriver } from './drivers/memory'
 import { CookieSessionDriver } from './drivers/cookie'
-import { Application, HttpRequest, SessionConfig, SessionDriver } from '@supercharge/contracts'
+import { Application, HttpRequest, SessionDriver } from '@supercharge/contracts'
 
 export class SessionManager extends Manager {
   /**
@@ -40,8 +41,10 @@ export class SessionManager extends Manager {
   /**
    * Returns the session config.
    */
-  private sessionConfig (): SessionConfig {
-    return this.config().get('session')
+  sessionConfig (): SessionConfig {
+    return new SessionConfig(
+      this.config().get('session')
+    )
   }
 
   /**
@@ -54,7 +57,9 @@ export class SessionManager extends Manager {
   from (request: HttpRequest): Session {
     this.request = request
 
-    return new Session(this.driver())
+    return new Session(
+      this.driver(), this.sessionConfig().name()
+    )
   }
 
   /**
@@ -85,7 +90,7 @@ export class SessionManager extends Manager {
    */
   protected createCookieDriver (): SessionDriver {
     return new CookieSessionDriver(
-      this.sessionConfig(), this.request as HttpRequest
+      this.sessionConfig().lifetime(), this.request as HttpRequest
     )
   }
 
@@ -96,7 +101,7 @@ export class SessionManager extends Manager {
    */
   protected createMemoryDriver (): SessionDriver {
     return new MemorySessionDriver(
-      this.sessionConfig()
+      this.sessionConfig().lifetime()
     )
   }
 }
