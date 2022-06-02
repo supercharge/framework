@@ -7,7 +7,12 @@ export interface SessionConfig {
   driver: string
 
   /**
-   * The session lifetime.
+   * Stores the session cookie name.
+   */
+  name: string
+
+  /**
+   * The session lifetime in seconds or in a human readable format ('2h').
    */
   lifetime: string | number
 
@@ -25,11 +30,6 @@ export interface SessionConfig {
    * Stores the session cookie options.
    */
   cookie: {
-    /**
-     * Stores the session cookie name.
-     */
-    name: string
-
     /**
      * Stores the session cookie path.
      */
