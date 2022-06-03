@@ -1,36 +1,47 @@
 'use strict'
 
-import { SessionDriver, SessionConfig, HttpRequest } from '@supercharge/contracts'
+import { InteractsWithTime } from '@supercharge/support'
+import { SessionDriver, HttpRequest } from '@supercharge/contracts'
 
-export class CookieSessionDriver implements SessionDriver {
+export class CookieSessionDriver extends InteractsWithTime implements SessionDriver {
   /**
    * Stores the request instance.
    */
   private readonly request: HttpRequest
 
   /**
-   * Stores the session config.
+   * Stores the session lifetime in minutes.
    */
-  private readonly config: SessionConfig
+  private readonly lifetimeInMinutes: number
 
   /**
    * Create a new cookie session driver instance.
    *
-   * @param {HttpRequest} config
-   * @param {SessionConfig} config
+   * @param {Number} minutes
+   * @param {HttpRequest} request
    */
-  constructor (config: SessionConfig, request: HttpRequest) {
-    this.config = config
+  constructor (minutes: number, request: HttpRequest) {
+    super()
+
     this.request = request
+    this.lifetimeInMinutes = minutes
   }
 
   /**
    * Read the session data.
    */
   async read (sessionId: string): Promise<Record<string, any> | undefined> {
-    const value = this.request.cookie(sessionId)
+    const value = this.request.cookie(sessionId) ?? ''
 
-    // TODO
+    if (!value) {
+      return {}
+    }
+
+    const { data, expires } = JSON.parse(value)
+
+    if (this.currentTime() <= expires) {
+      return data
+    }
 
     return {}
   }
@@ -38,8 +49,11 @@ export class CookieSessionDriver implements SessionDriver {
   /**
    * Store the session data.
    */
-  async write (sessionId: string, values: Record<string, any>): Promise<this> {
-    const value = JSON.stringify(values)
+  async write (sessionId: string, data: Record<string, any>): Promise<this> {
+    const value = JSON.stringify({
+      data,
+      expires: this.availableAt(this.lifetimeInMinutes * 60)
+    })
 
     this.request.cookies().set(sessionId, value)
 
