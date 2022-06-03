@@ -57,9 +57,17 @@ export class SessionManager extends Manager {
   from (request: HttpRequest): Session {
     this.request = request
 
-    return new Session(
+    const session = new Session(
       this.driver(), this.sessionConfig().name()
     )
+
+    const state = this.request.state()
+
+    if (state.isMissing('session')) {
+      state.add('session', session)
+    }
+
+    return state.get('session') as Session
   }
 
   /**
