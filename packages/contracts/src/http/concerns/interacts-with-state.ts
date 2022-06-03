@@ -1,5 +1,7 @@
 'use strict'
 
+import { StateBag } from './state-bag'
+
 export interface InteractsWithState {
   /**
    * Share a given `state` across HTTP requests. Any previously
@@ -22,5 +24,5 @@ export interface InteractsWithState {
    * // something like "{ app: {…}, user: {…} }"
    * ```
    */
-  state (): any
+  state (): StateBag
 }
