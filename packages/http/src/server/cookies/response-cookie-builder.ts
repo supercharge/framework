@@ -158,4 +158,13 @@ export class ResponseCookieBuilder implements ResponseCookieBuilderContract {
       this.responseCookieOptions.overwrite = true
     })
   }
+
+  /**
+   * Merge the given `config` with the default HTTP cookie config.
+   */
+  useConfig (config: Partial<CookieOptions>): this {
+    return tap(this, () => {
+      Object.assign(this.responseCookieOptions, { ...config })
+    })
+  }
 }
