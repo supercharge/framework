@@ -5,6 +5,7 @@ import { Files } from 'formidable'
 import { FileBag } from './file-bag'
 import Str from '@supercharge/strings'
 import { CookieBag } from './cookie-bag'
+import { Mixin as Many } from 'ts-mixer'
 import { tap } from '@supercharge/goodies'
 import { RouterContext } from '@koa/router'
 import { ParameterBag } from './parameter-bag'
@@ -12,6 +13,7 @@ import { Macroable } from '@supercharge/macroable'
 import { RequestHeaderBag } from './request-header-bag'
 import { IncomingHttpHeaders, IncomingMessage } from 'http'
 import { CookieOptions, HttpRequest, InteractsWithContentTypes, RequestCookieBuilderCallback } from '@supercharge/contracts'
+import { InteractsWithState } from './interacts-with-state'
 
 declare module 'koa' {
   interface Request extends Koa.BaseRequest {
@@ -21,12 +23,7 @@ declare module 'koa' {
   }
 }
 
-export class Request extends Macroable implements HttpRequest, InteractsWithContentTypes {
-  /**
-   * The route context object from Koa.
-   */
-  protected readonly ctx: RouterContext
-
+export class Request extends Many(Macroable, InteractsWithState) implements HttpRequest, InteractsWithContentTypes {
   /**
    * The default cookie options.
    */
@@ -39,9 +36,8 @@ export class Request extends Macroable implements HttpRequest, InteractsWithCont
    * @param cookieOptions
    */
   constructor (ctx: RouterContext, cookieOptions: CookieOptions) {
-    super()
+    super(ctx)
 
-    this.ctx = ctx
     this.cookieOptions = cookieOptions
   }
 
