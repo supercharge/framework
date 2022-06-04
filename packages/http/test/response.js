@@ -37,16 +37,16 @@ test('share', () => {
     .share({ user })
     .share({ session })
 
-  expect(response.state()).toEqual({ user, session })
+  expect(response.state().all()).toEqual({ user, session })
 })
 
 test('state', () => {
   const user = { name: 'Marcus' }
   const response = new Response({ state: {} }).share({ user })
-  expect(response.state()).toEqual({ user })
+  expect(response.state().all()).toEqual({ user })
 
   const shareKeyValue = new Response({ state: {} }).share('name', 'Marcus')
-  expect(shareKeyValue.state()).toEqual({ name: 'Marcus' })
+  expect(shareKeyValue.state().all()).toEqual({ name: 'Marcus' })
 })
 
 test('response.cookie() creates a signed cookie by default', async () => {

@@ -220,7 +220,7 @@ export class Response extends InteractsWithState implements HttpResponse {
    * @returns {String}
    */
   private async renderView (template: string, data?: any, viewBuilder?: ViewBuilderCallback): Promise<string> {
-    const viewData = { ...this.state(), ...data }
+    const viewData = { ...this.state().all(), ...data }
     const viewConfig = {}
 
     if (typeof viewBuilder === 'function') {
