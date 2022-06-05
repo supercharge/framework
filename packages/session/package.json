@@ -22,6 +22,7 @@
 	"devDependencies": {
 		"@supercharge/core": "^2.0.0-alpha.9",
 		"@supercharge/eslint-config-typescript": "~2.2.0",
+		"@supercharge/http": "^2.0.0-alpha.9",
 		"@types/lodash": "~4.14.182",
 		"@types/ms": "~0.7.31",
 		"c8": "~7.11.3",
