@@ -1,5 +1,35 @@
 # Changelog
 
+## [3.0.0](https://github.com/supercharge/framework/compare/v2.0.0-alpha.10...v3.0.0) - 2022-xx-xx
+
+### Added
+- `@supercharge/session`: a Supercharge session package
+- `@supercharge/http`
+    - make `Request` macroable allowing users to decorate the request with custom functions
+    - add `InteractsWithState` trait to the HTTP request
+    - `InteractsWithState` trait returns a state bag instead of a plain object (please check the breaking changes)
+
+### Updated
+- bump dependencies of all packages
+
+### Breaking Changes
+- Require Node.js v14. Drop support for Node.js v12
+- `@supercharge/http`
+    - instances using the `InteractsWithState` trait (HTTP context/request/response) return a state bag instead of a plain JS object
+
+    ```js
+    // before
+    const state = request.state()
+
+    // after
+    const stateBag = request.state()
+    stateBag.all() // returns the full shared state JS object
+    stateBag.get(key)
+    stateBag.add(key, value) // add key-value-pair
+    stateBag.add({ key: value}) // add an object containing key-value-pairs
+    ```
+
+
 ## [2.0.0-alpha.10](https://github.com/supercharge/framework/compare/v2.0.0-alpha.9...v2.0.0-alpha.10) - 2022-05-08
 
 ### Updated
