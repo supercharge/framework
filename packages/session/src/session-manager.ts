@@ -54,7 +54,7 @@ export class SessionManager extends Manager {
    *
    * @returns {Session}
    */
-  from (request: HttpRequest): Session {
+  createFrom (request: HttpRequest): Session {
     this.request = request
 
     const session = new Session(
