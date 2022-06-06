@@ -4,7 +4,6 @@ const { test } = require('uvu')
 const { expect } = require('expect')
 const { setupApp } = require('./helpers')
 const { Application } = require('@supercharge/core')
-const { HttpServiceProvider } = require('@supercharge/http')
 const { SessionServiceProvider, SessionManager } = require('../dist')
 
 test('throws without session config', async () => {
@@ -18,18 +17,12 @@ test('throws without session config', async () => {
 
 test('register session service provider', async () => {
   const app = await setupApp()
-  app.register(new SessionServiceProvider(app))
 
   expect(app.make('session') instanceof SessionManager).toBe(true)
 })
 
 test('boot the registered session service provider', async () => {
   const app = await setupApp()
-
-  await app
-    .register(new HttpServiceProvider(app))
-    .register(new SessionServiceProvider(app))
-    .boot()
 
   expect(app.make('session') instanceof SessionManager).toBe(true)
 
