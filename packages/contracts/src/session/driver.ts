@@ -4,7 +4,7 @@ export interface SessionDriver {
   /**
    * Read the session data.
    */
-  read (sessionId: string): Promise<Record<string, any> | undefined>
+  read (sessionId: string): Promise<Record<string, any>>
 
   /**
    * Store the session data.
