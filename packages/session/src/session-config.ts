@@ -45,7 +45,7 @@ export class SessionConfig {
   }
 
   /**
-   * Returns the session cookie lifetime in seconds.
+   * Returns the session cookie lifetime in **seconds**.
    */
   lifetime (): number {
     const lifetime = this.config.lifetime
