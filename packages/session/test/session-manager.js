@@ -1,6 +1,6 @@
 'use strict'
 
-// const { expect } = require('expect')
+const { expect } = require('expect')
 const Supertest = require('supertest')
 const { test } = require('@japa/runner')
 const { setupApp } = require('./helpers')
@@ -8,38 +8,24 @@ const { SessionManager } = require('../dist')
 const { Server } = require('@supercharge/http')
 
 test.group('Session Manager', () => {
-  test('Starts a server without routes', async () => {
+  test('creates a session and generates a new ID if none is present', async () => {
     const app = await setupApp()
     const server = new Server(app)
     const sessionManager = new SessionManager(app)
 
     server.use(({ request, response }) => {
       const session = sessionManager.createFrom(request)
-      // TODO
 
-      console.log({ session })
-
-      return response.payload('ok')
+      return response.payload(session.id())
     })
 
-    await Supertest(server.callback())
+    const response = await Supertest(server.callback())
       .get('/')
       .expect(200)
+
+    const sessionId = response.text
+
+    expect(sessionId).toBeDefined()
+    expect(String(sessionId).length).toBe(40)
   })
-
-  // test.skip('adds a middleware using a function handler', async () => {
-  //   let called = false
-
-  //   const server = new Server(app).use(async (ctx) => {
-  //     called = true
-
-  //     return ctx.response.payload('ok')
-  //   })
-
-  //   await Supertest(server.callback())
-  //     .get('/')
-  //     .expect(200, 'ok')
-
-  //   expect(called).toEqual(true)
-  // })
 })
