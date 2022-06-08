@@ -38,7 +38,7 @@ export class SessionConfig {
     const name = this.config.name
 
     if (!name) {
-      throw new Error('Session cookie "name" is required. Configure it in your "config/session.ts" file.')
+      throw new Error(`Session cookie "name" is required. Received "${name}". Configure it in your "config/session.ts" file.`)
     }
 
     return name
@@ -51,7 +51,7 @@ export class SessionConfig {
     const lifetime = this.config.lifetime
 
     if (typeof lifetime === 'string') {
-      return ms(lifetime) * 1000
+      return this.lifetimeInSecondsFrom(lifetime)
     }
 
     if (typeof lifetime === 'number') {
@@ -59,6 +59,19 @@ export class SessionConfig {
     }
 
     throw new Error(`Session lifetime value is neither a string nor a number. Received "${typeof lifetime}". Configure it in your "config/session.ts" file.`)
+  }
+
+  /**
+   * Returns the session cookie lifetime in **seconds** calculated from the given `milliseconds`
+   */
+  private lifetimeInSecondsFrom (lifetime: string): number {
+    const milliseconds = ms(lifetime)
+
+    if (milliseconds) {
+      return milliseconds / 1000
+    }
+
+    throw new Error(`Invalid session lifetime value. Received "${lifetime}". Configure it in your "config/session.ts" file.`)
   }
 
   /**

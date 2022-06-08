@@ -58,13 +58,26 @@ export class SessionCookieConfig {
     const sameSite = this.config.sameSite
 
     if (typeof sameSite === 'string') {
-      return sameSite || 'lax'
+      return this.sameSiteFrom(sameSite)
     }
 
     if (typeof sameSite === 'boolean') {
       return sameSite ? 'strict' : 'none'
     }
 
-    throw new Error(`Session cookie "sameSite" attribute must be a string or boolean. Received "${typeof sameSite}". Configure it in your "config/session.ts" file.`)
+    throw new Error(`Session cookie "sameSite" attribute must be a string or boolean. Received "${sameSite}". Configure it in your "config/session.ts" file.`)
+  }
+
+  /**
+   * Returns the sameSite value.
+   */
+  private sameSiteFrom (sameSite: string): string {
+    const isValid = ['strict', 'lax', 'none'].includes(sameSite)
+
+    if (isValid) {
+      return sameSite
+    }
+
+    throw new Error(`Invalid sameSite value. Received "${sameSite}". Configure it in your "config/session.ts" file.`)
   }
 }
