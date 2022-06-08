@@ -8,6 +8,8 @@ const { Application, ErrorHandler } = require('@supercharge/core')
 /**
  * Returns a test application.
  *
+ * @param {import('@supercharge/contracts').SessionConfig} [sessionConfig]
+ *
  * @returns {Promise<Application>}
  */
 exports.setupApp = async function makeApp (sessionConfig = {}) {
