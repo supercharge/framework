@@ -3,8 +3,9 @@
 const { expect } = require('expect')
 const { test } = require('@japa/runner')
 const { setupApp } = require('./helpers')
+const { Server } = require('@supercharge/http')
 const { Application } = require('@supercharge/core')
-const { SessionServiceProvider, SessionManager } = require('../dist')
+const { SessionServiceProvider, SessionManager, StartSessionMiddleware } = require('../dist')
 
 test.group('Session Service Provider', async () => {
   test('throws without session config', async () => {
@@ -20,6 +21,13 @@ test.group('Session Service Provider', async () => {
     const app = await setupApp()
 
     expect(app.make('session') instanceof SessionManager).toBe(true)
+  })
+
+  test('registers the StartSession middleware', async () => {
+    const app = await setupApp()
+    const server = new Server(app)
+
+    server.app().hasBinding(StartSessionMiddleware)
   })
 
   test('boot the registered session service provider', async () => {
