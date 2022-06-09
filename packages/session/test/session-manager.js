@@ -29,7 +29,10 @@ test.group('Session Manager', () => {
     expect(String(sessionId).length).toBe(40)
   })
 
-  test('throws when', async () => {
+  test('throws when missing a session driver', async () => {
+    await expect(
+      setupApp({ driver: '' })
+    ).rejects.toThrow('Missing session driver. Make sure to configure it in the "config/session.ts" file.')
   })
 
   test('use the memory driver', async () => {
