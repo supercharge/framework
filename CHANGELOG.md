@@ -8,6 +8,12 @@
     - make `Request` macroable allowing users to decorate the request with custom functions
     - add `InteractsWithState` trait to the HTTP request
     - `InteractsWithState` trait returns a state bag instead of a plain object (please check the breaking changes)
+- `@supercharge/config`
+    - add `isEmpty(key)` method: determine whether the config store contains an item for the given `key` with is empty
+    - add `isNotEmpty(key)` method: determine whether the config store contains an item for the given `key` with is not empty
+    - add `ensureNotEmpty(key)` method: throws an error if the config store contains an item for the given `key` which has an empty value
+- `@supercharge/manager`
+    - change visibility of methods to `protected` allowing extending classes to call them
 
 ### Updated
 - bump dependencies of all packages

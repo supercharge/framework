@@ -34,4 +34,24 @@ export interface ConfigStore {
    * Throws an error if the key is not available and no callback was found.
    */
   ensure (key: string, callback?: () => void): void
+
+  /**
+   * Determine whether the config store contains an item for the given `key`,
+   * but the assigned value is empty. Empty values are: `null`, `undefined`,
+   * empty strings, empty arrays, empty objects. 0 is not considered empty.
+   */
+  isEmpty (key: string): boolean
+
+  /**
+   * Determine whether the config store contains an item for the given `key`
+   * and the value is not empty.
+   */
+  isNotEmpty (key: string): boolean
+
+  /**
+   * Ensure that the config store contains a non-empty value for the given `key`.
+   * This function calls the given `callback` if the value is empty. Throws an
+   * error if you don’t provide callback or the given callback doesn’t throw.
+   */
+  ensureNotEmpty (key: string, callback?: () => void): void
 }
