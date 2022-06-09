@@ -46,8 +46,9 @@ test.group('Session Manager', () => {
       .use(StartSessionMiddleware)
       .use(({ request, response }) => {
         const session = sessionManager.createFrom(request)
+        session.set('foo', 'bar')
 
-        return response.payload(session.set('foo', 'bar').id())
+        return response.payload(session.id())
       })
 
     const response = await Supertest(server.callback())
@@ -59,5 +60,45 @@ test.group('Session Manager', () => {
     expect(sessionId).toBeDefined()
     expect(String(sessionId).length).toBe(40)
     expect(await sessionManager.driver().read(sessionId)).toMatchObject({ foo: 'bar' })
+  })
+
+  test('use the cookie driver', async () => {
+    const app = await setupApp({
+      driver: 'cookie',
+      name: 'supercharge-session-test'
+    })
+    const server = new Server(app)
+    const sessionManager = app.make('session')
+
+    expect(sessionManager.sessionConfig().driver()).toBe('cookie')
+
+    server
+      .use(StartSessionMiddleware)
+      .use(({ request, response }) => {
+        const session = sessionManager.createFrom(request)
+        session.set('foo', 'bar')
+
+        return response.payload(session.id())
+      })
+
+    const response = await Supertest(server.callback())
+      .get('/')
+      .expect(200)
+
+    const sessionId = response.text
+    expect(sessionId).toBeDefined()
+    expect(String(sessionId).length).toBe(40)
+
+    expect(response.headers['set-cookie'][0].split(';')[0]).toEqual(`supercharge-session-test=${sessionId}`) // .split('=')[1]
+
+    const sessionValue = response.headers['set-cookie'][2].split(';')[0].split('=')
+    expect(sessionValue[0]).toEqual(sessionId)
+
+    const parsed = JSON.parse(sessionValue[1])
+    expect(parsed.expires).toBeDefined()
+    expect(parsed.data).toBeDefined()
+    expect(parsed.data).toMatchObject({ foo: 'bar' })
+
+    // expect(await sessionManager.driver().read(sessionId)).toMatchObject({ foo: 'bar' })
   })
 })
