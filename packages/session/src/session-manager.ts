@@ -76,7 +76,7 @@ export class SessionManager extends Manager {
    * @returns {String}
    */
   defaultDriver (): string {
-    return this.config().get('session.driver')
+    return this.sessionConfig().driver()
   }
 
   /**
