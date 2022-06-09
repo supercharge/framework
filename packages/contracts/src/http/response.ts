@@ -1,5 +1,6 @@
 'use strict'
 
+import { HttpContext } from './context'
 import { CookieBag } from './cookie-bag'
 import { ViewConfigBuilder } from '../view'
 import { HttpRedirect, ResponseCookieBuilderCallback } from '.'
@@ -8,6 +9,11 @@ import { InteractsWithState } from './concerns/interacts-with-state'
 export type ViewBuilderCallback = (viewBuilder: ViewConfigBuilder) => unknown
 
 export interface HttpResponse<T = any> extends InteractsWithState {
+  /**
+   * Returns the HTTP context.
+   */
+  ctx (): HttpContext
+
   /**
    * Set a response header.
    *

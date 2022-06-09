@@ -33,7 +33,7 @@ test('share', () => {
   const user = { name: 'Marcus' }
   const session = { id: 1 }
 
-  const response = new Response({ state: {} })
+  const response = new Response({ raw: { state: {} } })
     .share({ user })
     .share({ session })
 
@@ -42,10 +42,10 @@ test('share', () => {
 
 test('state', () => {
   const user = { name: 'Marcus' }
-  const response = new Response({ state: {} }).share({ user })
+  const response = new Response({ raw: { state: {} } }).share({ user })
   expect(response.state().all()).toEqual({ user })
 
-  const shareKeyValue = new Response({ state: {} }).share('name', 'Marcus')
+  const shareKeyValue = new Response({ raw: { state: {} } }).share('name', 'Marcus')
   expect(shareKeyValue.state().all()).toEqual({ name: 'Marcus' })
 })
 

@@ -7,13 +7,12 @@ import Str from '@supercharge/strings'
 import { CookieBag } from './cookie-bag'
 import { Mixin as Many } from 'ts-mixer'
 import { tap } from '@supercharge/goodies'
-import { RouterContext } from '@koa/router'
 import { ParameterBag } from './parameter-bag'
 import { Macroable } from '@supercharge/macroable'
 import { RequestHeaderBag } from './request-header-bag'
 import { IncomingHttpHeaders, IncomingMessage } from 'http'
-import { CookieOptions, HttpRequest, InteractsWithContentTypes, RequestCookieBuilderCallback } from '@supercharge/contracts'
 import { InteractsWithState } from './interacts-with-state'
+import { CookieOptions, HttpContext, HttpRequest, InteractsWithContentTypes, RequestCookieBuilderCallback } from '@supercharge/contracts'
 
 declare module 'koa' {
   interface Request extends Koa.BaseRequest {
@@ -25,6 +24,16 @@ declare module 'koa' {
 
 export class Request extends Many(Macroable, InteractsWithState) implements HttpRequest, InteractsWithContentTypes {
   /**
+   * Stores the internal properties.
+   */
+  private readonly meta: {
+    /**
+     * Stores the HTTP context.
+     */
+    ctx: HttpContext
+  }
+
+  /**
    * The default cookie options.
    */
   private readonly cookieOptions: CookieOptions
@@ -35,49 +44,57 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
    * @param ctx
    * @param cookieOptions
    */
-  constructor (ctx: RouterContext, cookieOptions: CookieOptions) {
-    super(ctx)
+  constructor (ctx: HttpContext, cookieOptions: CookieOptions) {
+    super(ctx.raw)
 
+    this.meta = { ctx }
     this.cookieOptions = cookieOptions
+  }
+
+  /**
+   * Returns the HTTP context.
+   */
+  ctx (): HttpContext {
+    return this.meta.ctx
   }
 
   /**
    * Returns the raw Node.js request.
    */
   req (): IncomingMessage {
-    return this.ctx.req
+    return this.koaCtx.req
   }
 
   /**
    * Returns the request method.
    */
   method (): string {
-    return this.ctx.request.method
+    return this.koaCtx.request.method
   }
 
   /**
    * Returns the request’s URL path.
    */
   path (): string {
-    return this.ctx.request.path
+    return this.koaCtx.request.path
   }
 
   /**
    * Returns the request’s query parameters.
    */
   query (): ParameterBag<string | string[]> {
-    return new ParameterBag<string | string[]>(this.ctx.query)
+    return new ParameterBag<string | string[]>(this.koaCtx.query)
   }
 
   /**
    * Returns the request’s path parameters.
    */
   params (): ParameterBag<string> {
-    if (!this.ctx.params) {
-      this.ctx.params = {}
+    if (!this.koaCtx.params) {
+      this.koaCtx.params = {}
     }
 
-    return new ParameterBag(this.ctx.params)
+    return new ParameterBag(this.koaCtx.params)
   }
 
   /**
@@ -94,7 +111,7 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
    * Returns the cookie bag.
    */
   cookies (): CookieBag {
-    return new CookieBag(this.ctx.cookies, this.cookieOptions)
+    return new CookieBag(this.koaCtx.cookies, this.cookieOptions)
   }
 
   /**
@@ -117,7 +134,7 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
    * Returns the request payload.
    */
   payload<T = any> (): T {
-    return this.ctx.request.body
+    return this.koaCtx.request.body
   }
 
   /**
@@ -157,7 +174,7 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
    */
   setPayload (payload: any): this {
     return tap(this, () => {
-      this.ctx.request.body = payload
+      this.koaCtx.request.body = payload
     })
   }
 
@@ -165,7 +182,7 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
    * Returns the raw request payload
    */
   rawPayload (): any {
-    return this.ctx.request.rawBody
+    return this.koaCtx.request.rawBody
   }
 
   /**
@@ -177,7 +194,7 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
    */
   setRawPayload (payload: any): this {
     return tap(this, () => {
-      this.ctx.request.rawBody = payload
+      this.koaCtx.request.rawBody = payload
     })
   }
 
@@ -187,7 +204,7 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
    * @returns {FileBag}
    */
   files (): FileBag {
-    return FileBag.createFromBase(this.ctx.request.files)
+    return FileBag.createFromBase(this.koaCtx.request.files)
   }
 
   /**
@@ -199,7 +216,7 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
    */
   setFiles (files: any): this {
     return tap(this, () => {
-      this.ctx.request.files = files
+      this.koaCtx.request.files = files
     })
   }
 
@@ -207,7 +224,7 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
    * Returns the request header bag.
    */
   headers (): RequestHeaderBag {
-    return new RequestHeaderBag(this.ctx)
+    return new RequestHeaderBag(this.koaCtx)
   }
 
   /**
@@ -314,7 +331,7 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
   isContentType (types: string[]): boolean
   isContentType (...types: string[]): boolean
   isContentType (...types: string[] | string[][]): boolean {
-    return !!this.ctx.request.is(
+    return !!this.koaCtx.request.is(
       ([] as string[]).concat(...types)
     )
   }

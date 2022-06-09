@@ -9,7 +9,7 @@ export class InteractsWithState implements InteractsWithStateContract {
   /**
    * The route context object from Koa.
    */
-  protected readonly ctx: RouterContext
+  protected readonly koaCtx: RouterContext
 
   /**
    * Create a new instance.
@@ -17,7 +17,7 @@ export class InteractsWithState implements InteractsWithStateContract {
    * @param ctx
    */
   constructor (ctx: RouterContext) {
-    this.ctx = ctx
+    this.koaCtx = ctx
   }
 
   /**
@@ -26,7 +26,7 @@ export class InteractsWithState implements InteractsWithStateContract {
    * @returns {StateBag}
    */
   state (): StateBag {
-    return StateBag.from(this.ctx)
+    return StateBag.from(this.koaCtx)
   }
 
   /**

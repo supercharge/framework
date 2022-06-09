@@ -2,6 +2,7 @@
 
 import { FileBag } from './file-bag'
 import { IncomingMessage } from 'http'
+import { HttpContext } from './context'
 import { CookieBag } from './cookie-bag'
 import { ParameterBag } from './parameter-bag'
 import { Macroable } from '@supercharge/macroable'
@@ -10,6 +11,11 @@ import { RequestCookieBuilderCallback } from './cookie-options-builder'
 import { InteractsWithContentTypes, InteractsWithState } from './concerns'
 
 export interface HttpRequest extends InteractsWithState, InteractsWithContentTypes, Macroable {
+  /**
+   * Returns the HTTP context.
+   */
+  ctx (): HttpContext
+
   /**
    * Returns the raw Node.js request.
    */
