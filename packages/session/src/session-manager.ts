@@ -35,7 +35,9 @@ export class SessionManager extends Manager {
       throw new Error('Missing session configuration file. Make sure the "config/session.ts" file exists.')
     })
 
-    this.ensureConfig('session.driver')
+    this.config().ensureNotEmpty('session.driver', () => {
+      throw new Error('Missing session driver. Make sure to configure it in the "config/session.ts" file.')
+    })
   }
 
   /**
