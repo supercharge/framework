@@ -65,7 +65,7 @@ export class SessionServiceProvider extends ServiceProvider {
     const session = this.app().make<SessionManager>('session')
 
     Request.macro('session', function (this: HttpRequest) {
-      return session.createFrom(this)
+      return session.createFrom(this.ctx())
     })
   }
 }

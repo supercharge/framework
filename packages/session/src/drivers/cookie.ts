@@ -1,15 +1,15 @@
 'use strict'
 
 import { InteractsWithTime } from '@supercharge/support'
-import { SessionDriver, HttpRequest } from '@supercharge/contracts'
+import { SessionDriver, HttpContext } from '@supercharge/contracts'
 
 interface SessionEntry { expires: number, data: any }
 
 export class CookieSessionDriver extends InteractsWithTime implements SessionDriver {
   /**
-   * Stores the request instance.
+   * Stores the HTTP context instance.
    */
-  private readonly request: HttpRequest
+  private readonly ctx: HttpContext
 
   /**
    * Stores the session lifetime in seconds.
@@ -20,12 +20,12 @@ export class CookieSessionDriver extends InteractsWithTime implements SessionDri
    * Create a new cookie session driver instance.
    *
    * @param {Number} seconds
-   * @param {HttpRequest} request
+   * @param {HttpRequest} ctx
    */
-  constructor (seconds: number, request: HttpRequest) {
+  constructor (seconds: number, ctx: HttpContext) {
     super()
 
-    this.request = request
+    this.ctx = ctx
     this.lifetimeInSeconds = seconds
   }
 
@@ -33,7 +33,7 @@ export class CookieSessionDriver extends InteractsWithTime implements SessionDri
    * Read the session data.
    */
   async read (sessionId: string): Promise<Record<string, any>> {
-    const value = this.request.cookie(sessionId) ?? ''
+    const value = this.ctx.request.cookie(sessionId) ?? ''
 
     if (!value) {
       return {}
@@ -57,7 +57,7 @@ export class CookieSessionDriver extends InteractsWithTime implements SessionDri
       expires: this.availableAt(this.lifetimeInSeconds)
     })
 
-    this.request.cookies().set(sessionId, value)
+    this.ctx.response.cookies().set(sessionId, value)
 
     return this
   }
@@ -66,7 +66,7 @@ export class CookieSessionDriver extends InteractsWithTime implements SessionDri
    * Delete the session data for the given `sessionId`.
    */
   async destroy (sessionId: string): Promise<this> {
-    this.request.cookies().delete(sessionId)
+    this.ctx.response.cookies().delete(sessionId)
 
     return this
   }

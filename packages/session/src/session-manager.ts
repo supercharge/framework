@@ -5,14 +5,14 @@ import { Manager } from '@supercharge/manager'
 import { SessionConfig } from './session-config'
 import { MemorySessionDriver } from './drivers/memory'
 import { CookieSessionDriver } from './drivers/cookie'
-import { Application, HttpRequest, SessionDriver } from '@supercharge/contracts'
+import { Application, HttpContext, SessionDriver } from '@supercharge/contracts'
 
 export class SessionManager extends Manager {
   /**
    * Stores the HTTP request instance. The cookie driver needs the request
    * instance to properly write the session values into the session cookie.
    */
-  private request?: HttpRequest
+  private ctx?: HttpContext
 
   /**
    * Create a new view manager instance.
@@ -52,18 +52,18 @@ export class SessionManager extends Manager {
   /**
    * Returns a new session instance for the given `request`.
    *
-   * @param {HttpRequest} request
+   * @param {HttpContext} ctx
    *
    * @returns {Session}
    */
-  createFrom (request: HttpRequest): Session {
-    this.request = request
+  createFrom (ctx: HttpContext): Session {
+    this.ctx = ctx
 
     const session = new Session(
       this.driver(), this.sessionConfig().name()
     )
 
-    const state = this.request.state()
+    const state = this.ctx.state()
 
     if (state.isMissing('session')) {
       state.add('session', session)
@@ -100,7 +100,7 @@ export class SessionManager extends Manager {
    */
   protected createCookieDriver (): SessionDriver {
     return new CookieSessionDriver(
-      this.sessionConfig().lifetime(), this.request as HttpRequest
+      this.sessionConfig().lifetime(), this.ctx as HttpContext
     )
   }
 
