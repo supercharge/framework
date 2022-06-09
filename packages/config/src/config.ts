@@ -101,7 +101,11 @@ export class Config implements ConfigStore {
    * empty strings, empty arrays, empty objects. 0 is not considered empty.
    */
   isEmpty (key: string): boolean {
-    return _.isEmpty(this.get(key))
+    const value = this.get(key)
+
+    return typeof value === 'number'
+      ? false
+      : _.isEmpty(value)
   }
 
   /**
