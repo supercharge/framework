@@ -1,7 +1,7 @@
 'use strict'
 
 import { SessionManager } from '../session-manager'
-import { Session, HttpContext, HttpResponse, NextHandler } from '@supercharge/contracts'
+import { Session, HttpContext, HttpResponse, NextHandler, HttpRequest } from '@supercharge/contracts'
 
 export class StartSessionMiddleware {
   /**
@@ -27,8 +27,7 @@ export class StartSessionMiddleware {
       return next()
     }
 
-    const session = request.session()
-    await session.start()
+    const session = await this.startSession(request)
 
     await next()
 
@@ -42,6 +41,18 @@ export class StartSessionMiddleware {
    */
   isMissingSessionDriver (): boolean {
     return this.sessionManager.sessionConfig().driver() === ''
+  }
+
+  /**
+   * Returns a started session for the given request.
+   */
+  async startSession (request: HttpRequest): Promise<Session> {
+    const session = request.session()
+    const sessionId = request.cookie(session.name()) as string
+
+    return await session
+      .setId(sessionId)
+      .start()
   }
 
   /**
