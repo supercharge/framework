@@ -5,9 +5,24 @@ import Str from '@supercharge/strings'
 import { Session as SessionContract, SessionDriver } from '@supercharge/contracts'
 
 export class Session implements SessionContract {
+  /**
+   * Stores the session ID.
+   */
   private sessionId: string
+
+  /**
+   * Stores the session name.
+   */
   private readonly sessionName: string
+
+  /**
+   * Stores the session driver instance.
+   */
   private readonly driver: SessionDriver
+
+  /**
+   * Stores the session data.
+   */
   private attributes: Record<string, any>
 
   /**
@@ -174,7 +189,7 @@ export class Session implements SessionContract {
    * Starte the session and read the session from a storage.
    */
   async start (): Promise<this> {
-    this.attributes = await this.driver.read(this.sessionId) ?? {}
+    this.attributes = await this.driver.read(this.sessionId)
 
     if (!this.has('_token')) {
       this.regenerateToken()
