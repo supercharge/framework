@@ -7,6 +7,11 @@ export interface Session {
   id(): string
 
   /**
+   * Assign the given `sessionId`.
+   */
+  setId(sessionId: string): this
+
+  /**
    * Returns the session name.
    */
   name(): string
