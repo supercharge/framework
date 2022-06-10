@@ -89,16 +89,15 @@ test.group('Session Manager', () => {
     expect(sessionId).toBeDefined()
     expect(String(sessionId).length).toBe(40)
 
-    expect(response.headers['set-cookie'][0].split(';')[0]).toEqual(`supercharge-session-test=${sessionId}`) // .split('=')[1]
+    expect(response.headers['set-cookie'][0].split(';')[0]).toEqual(`supercharge-session-test=${sessionId}`)
 
     const sessionValue = response.headers['set-cookie'][2].split(';')[0].split('=')
     expect(sessionValue[0]).toEqual(sessionId)
 
+    // because we don‘t have encrypted cookies yet, we can parse and read the value
     const parsed = JSON.parse(sessionValue[1])
     expect(parsed.expires).toBeDefined()
     expect(parsed.data).toBeDefined()
     expect(parsed.data).toMatchObject({ foo: 'bar' })
-
-    // expect(await sessionManager.driver().read(sessionId)).toMatchObject({ foo: 'bar' })
   })
 })
