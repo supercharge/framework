@@ -8,10 +8,10 @@
   },
   "devDependencies": {
     "@supercharge/tsconfig": "~3.1.0",
-    "@types/node": "~17.0.38",
+    "@types/node": "~17.0.41",
     "cross-env": "~7.0.3",
-    "lerna": "~5.0.0",
-    "nx": "14.1.9"
+    "lerna": "~5.1.1",
+    "nx": "14.2.4"
   },
   "engines": {
     "node": ">=14"
