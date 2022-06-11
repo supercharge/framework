@@ -23,10 +23,6 @@ export class StartSessionMiddleware {
    * @param {NextHandler} next
    */
   async handle ({ request, response }: HttpContext, next: NextHandler): Promise<void> {
-    if (this.isMissingSessionDriver()) {
-      return next()
-    }
-
     const session = await this.startSession(request)
 
     await next()
@@ -34,13 +30,6 @@ export class StartSessionMiddleware {
     await this.addSessionCookieToResponse(session, response)
 
     await session.commit()
-  }
-
-  /**
-   * Determine whether a valid session driver is configured.
-   */
-  isMissingSessionDriver (): boolean {
-    return this.sessionManager.sessionConfig().driver() === ''
   }
 
   /**
