@@ -62,7 +62,7 @@ export abstract class Manager {
    *
    * @param {String} driver
    */
-  protected createDriver (driver: string): any {
+  protected createDriver (driver: string): this {
     const method: string = `create${Str(driver).studly().get()}Driver`
 
     const self = (this as any)
@@ -90,9 +90,13 @@ export abstract class Manager {
    *
    * @param {String} driver
    * @param {Object} client
+   *
+   * @returns {this}
    */
-  protected set (driver: string, client: any): void {
+  protected set (driver: string, client: any): this {
     this.drivers.set(driver, client)
+
+    return this
   }
 
   /**
