@@ -57,19 +57,19 @@ export class SessionManager extends Manager {
    * @returns {Session}
    */
   createFrom (ctx: HttpContext): Session {
+    if (ctx.state().has('session')) {
+      return ctx.state().get('session') as Session
+    }
+
     this.ctx = ctx
 
     const session = new Session(
       this.driver(), this.sessionConfig().name()
     )
 
-    const state = this.ctx.state()
+    this.ctx.state().add('session', session)
 
-    if (state.isMissing('session')) {
-      state.add('session', session)
-    }
-
-    return state.get('session') as Session
+    return session
   }
 
   /**
@@ -89,7 +89,16 @@ export class SessionManager extends Manager {
    *
    * @returns {SessionDriver}
    */
-  protected override driver (name?: string): SessionDriver {
+  protected override driver (name: string = this.defaultDriver()): SessionDriver {
+    if (name === 'cookie') {
+    /**
+     * We need to create a new cookie driver instance on every time the driver is
+     * needed. The reason is, the cookie driver needs the related HTTP context.
+     * A fresh driver receives the given HTTP context and can handle it all.
+     */
+      return this.createDriver(name).get(name)
+    }
+
     return super.driver(name)
   }
 
