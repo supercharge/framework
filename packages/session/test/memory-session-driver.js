@@ -39,14 +39,14 @@ async function createInitialSession (app, data = {}) {
 }
 
 test.group('Memory Session Driver', () => {
-  test('pick up an existing session', async () => {
+  test('pick up an existing memory session', async () => {
     const app = await setupApp({ driver: 'memory' })
 
-    const { sessionId, sessionCookie } = await createInitialSession(app)
+    const { sessionId, sessionCookie } = await createInitialSession(app, {
+      name: 'Supercharge'
+    })
 
     const server = createServer(app).use(({ request, response }) => {
-      request.session().set('name', 'Supercharge')
-
       return response.payload({
         id: request.session().id(),
         data: request.session().all()
