@@ -245,7 +245,7 @@ export class Server implements HttpServerContract {
     this.bindMiddlewareClass(Middleware)
 
     this.koa().use(async (ctx, next) => {
-      return this.app().make<MiddlewareContract>(Middleware).handle(
+      return await this.app().make<MiddlewareContract>(Middleware).handle(
         this.createContext(ctx), next
       )
     })
