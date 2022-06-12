@@ -83,6 +83,62 @@ test('ensure', () => {
   })).toThrow('Config Error')
 })
 
+test('isEmpty', () => {
+  const config = new Config({
+    empty: undefined,
+    emptyNull: null,
+    emptyString: '',
+    emptyObject: {},
+    emptyArray: [],
+    emptyNumber: 0
+  })
+
+  expect(config.isEmpty('empty')).toBe(true)
+  expect(config.isEmpty('emptyNull')).toBe(true)
+  expect(config.isEmpty('emptyString')).toBe(true)
+  expect(config.isEmpty('emptyObject')).toBe(true)
+  expect(config.isEmpty('emptyArray')).toBe(true)
+
+  expect(config.isEmpty('emptyNumber')).toBe(false)
+})
+
+test('isNotEmpty', () => {
+  const config = new Config({
+    empty: undefined,
+    emptyNull: null,
+    emptyString: '',
+    emptyObject: {},
+    emptyArray: [],
+    emptyNumber: 0
+  })
+
+  expect(config.isNotEmpty('emptyNumber')).toBe(true)
+
+  expect(config.isNotEmpty('empty')).toBe(false)
+  expect(config.isNotEmpty('emptyNull')).toBe(false)
+  expect(config.isNotEmpty('emptyString')).toBe(false)
+  expect(config.isNotEmpty('emptyObject')).toBe(false)
+  expect(config.isNotEmpty('emptyArray')).toBe(false)
+})
+
+test('ensureNotEmpty', () => {
+  const config = new Config({
+    empty: undefined,
+    notEmpty: 0
+  })
+
+  expect(() => {
+    config.ensureNotEmpty('empty')
+  }).toThrow('Missing value for the given key "empty"')
+  expect(() => {
+    config.ensureNotEmpty('empty', () => {
+      throw new TypeError('failed')
+    })
+  }).toThrow(TypeError)
+
+  expect(() => config.ensureNotEmpty('notEmpty')).not.toThrow()
+})
+
 test('clear', () => {
   const config = new Config({ key: 'value' })
   expect(config.has('key')).toBe(true)

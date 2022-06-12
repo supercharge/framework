@@ -2,13 +2,24 @@
 
 const { test } = require('uvu')
 const Supertest = require('supertest')
-const { Server, Router } = require('../dist')
+const { Server, Router, Request, Response } = require('../dist')
 
 const app = {
   bindings: {},
+  hasBinding (key) {
+    return !!this.bindings[key]
+  },
   make (key) {
     if (key === 'route') {
       return new Router(this)
+    }
+
+    if (key === 'request') {
+      return Request
+    }
+
+    if (key === 'response') {
+      return Response
     }
 
     const bindingCallback = this.bindings[key]

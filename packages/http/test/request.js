@@ -4,10 +4,18 @@ const Koa = require('koa')
 const { test } = require('uvu')
 const { expect } = require('expect')
 const Supertest = require('supertest')
-const { HttpContext } = require('../dist')
+const { HttpContext, Request, Response } = require('../dist')
 
 const appMock = {
-  make () {},
+  make (key) {
+    if (key === 'request') {
+      return Request
+    }
+
+    if (key === 'response') {
+      return Response
+    }
+  },
   config () {
     return {
       get () { }
@@ -398,7 +406,11 @@ test('creating a cookie uses default options', async () => {
   }
 
   const appMock = {
-    make () {},
+    make (key) {
+      if (key === 'response') {
+        return Response
+      }
+    },
     config  () {
       return {
         get (key) {

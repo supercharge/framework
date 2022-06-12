@@ -1,5 +1,6 @@
 'use strict'
 
+import { StateBag } from './state-bag'
 import { tap } from '@supercharge/goodies'
 import { RouterContext } from '@koa/router'
 import { InteractsWithState as InteractsWithStateContract } from '@supercharge/contracts'
@@ -8,25 +9,24 @@ export class InteractsWithState implements InteractsWithStateContract {
   /**
    * The route context object from Koa.
    */
-  protected readonly ctx: RouterContext
+  protected readonly koaCtx: RouterContext
 
   /**
-   * Create a new response instance.
+   * Create a new instance.
    *
    * @param ctx
-   * @param cookieOptions
    */
   constructor (ctx: RouterContext) {
-    this.ctx = ctx
+    this.koaCtx = ctx
   }
 
   /**
-   * Returns the shared HTTP context state.
+   * Returns the shared state bag for this HTTP context.
    *
-   * @returns {*}
+   * @returns {StateBag}
    */
-  state (): any {
-    return this.ctx.state
+  state (): StateBag {
+    return StateBag.from(this.koaCtx)
   }
 
   /**
@@ -35,22 +35,9 @@ export class InteractsWithState implements InteractsWithStateContract {
    *
    * @returns {ThisType}
    */
-  share (key: string | any, value?: any): this {
+  share (key: string | Record<string, any>, value?: any): this {
     return tap(this, () => {
-      const state = this.isObject(key) ? key : { [key]: value }
-
-      Object.assign(this.ctx.state, state)
+      this.state().add(key, value)
     })
-  }
-
-  /**
-   * Determine whether the given `input` is an object.
-   *
-   * @param input
-   *
-   * @returns {Boolean}
-   */
-  private isObject (input: any): boolean {
-    return !!input && input.constructor.name === 'Object'
   }
 }

@@ -3,10 +3,14 @@
 const Koa = require('koa')
 const { test } = require('uvu')
 const Supertest = require('supertest')
-const { HttpContext } = require('../dist')
+const { HttpContext, Response } = require('../dist')
 
 const appMock = {
-  make () {},
+  make (key) {
+    if (key === 'response') {
+      return Response
+    }
+  },
   config () {
     return {
       get () {}
@@ -27,4 +31,5 @@ test('returns the raw context', async () => {
     .get('/')
     .expect(200, { isEqual: true })
 })
+
 test.run()

@@ -1,10 +1,8 @@
 'use strict'
 
-import { Request } from './request'
-import { Response } from './response'
 import { RouterContext } from '@koa/router'
 import { InteractsWithState } from './interacts-with-state'
-import { Application, HttpContext as HttpContextContract, CookieOptions, ViewEngine } from '@supercharge/contracts'
+import { Application, HttpContext as HttpContextContract, HttpRequest, HttpResponse, CookieOptions, ViewEngine } from '@supercharge/contracts'
 
 export class HttpContext extends InteractsWithState implements HttpContextContract {
   /**
@@ -15,7 +13,8 @@ export class HttpContext extends InteractsWithState implements HttpContextContra
   /**
    * Create a new HTTP context instance.
    *
-   * @param ctx
+   * @param {RouterContext} ctx
+   * @param {Application} app
    */
   constructor (ctx: RouterContext, app: Application) {
     super(ctx)
@@ -26,11 +25,12 @@ export class HttpContext extends InteractsWithState implements HttpContextContra
   /**
    * Returns a wrapped HTTP context for the raw Koa HTTP `ctx`.
    *
-   * @param ctx
+   * @param {RouterContext} ctx
+   * @param {Application} app
    *
    * @returns {HttpContext}
    */
-  static wrap (ctx: any, app: Application): HttpContext {
+  static wrap (ctx: RouterContext, app: Application): HttpContext {
     return new this(ctx, app)
   }
 
@@ -40,26 +40,40 @@ export class HttpContext extends InteractsWithState implements HttpContextContra
    * @returns {RouterContext}
    */
   get raw (): RouterContext {
-    return this.ctx
+    return this.koaCtx
   }
 
   /**
    * Returns the HTTP request instance.
    *
-   * @returns {Request}
+   * @returns {HttpRequest}
    */
-  get request (): Request {
-    return new Request(this.ctx, this.cookieOptions())
+  get request (): HttpRequest {
+    /**
+     * We’re retrieving the Request constructor from the container because
+     * the request is macroable. That means, packages may decorate the
+     * request with custom methods. And we want to allow that easily.
+     */
+    const Request = this.app.make('request')
+
+    return new Request(this, this.cookieOptions())
   }
 
   /**
    * Returns the HTTP response instance.
    *
-   * @returns {Response}
+   * @returns {HttpResponse}
    */
-  get response (): Response {
+  get response (): HttpResponse {
+    /**
+     * We’re retrieving the Response constructor from the container because
+     * the response is macroable. That means, packages may decorate the
+     * response with custom methods. And we want to allow that easily.
+     */
+    const Response = this.app.make('response')
+
     return new Response(
-      this.ctx, this.app.make<ViewEngine>('view'), this.cookieOptions()
+      this, this.app.make<ViewEngine>('view'), this.cookieOptions()
     )
   }
 

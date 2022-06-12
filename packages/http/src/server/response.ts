@@ -2,14 +2,23 @@
 
 import { CookieBag } from './cookie-bag'
 import { tap } from '@supercharge/goodies'
-import { RouterContext } from '@koa/router'
 import { HttpRedirect } from './http-redirect'
 import { ResponseHeaderBag } from './response-header-bag'
 import { ViewConfigBuilder } from './view-config-builder'
 import { InteractsWithState } from './interacts-with-state'
-import { CookieOptions, HttpResponse, ViewEngine, ViewBuilderCallback, ResponseCookieBuilderCallback } from '@supercharge/contracts'
+import { CookieOptions, HttpContext, HttpResponse, ViewEngine, ViewBuilderCallback, ResponseCookieBuilderCallback } from '@supercharge/contracts'
 
 export class Response extends InteractsWithState implements HttpResponse {
+  /**
+   * Stores the internal properties.
+   */
+  private readonly meta: {
+    /**
+     * Stores the HTTP context.
+     */
+    ctx: HttpContext
+  }
+
   /**
    * The application instance.
    */
@@ -26,11 +35,19 @@ export class Response extends InteractsWithState implements HttpResponse {
    * @param ctx
    * @param cookieOptions
    */
-  constructor (ctx: RouterContext, viewEngine: ViewEngine, cookieOptions: CookieOptions) {
-    super(ctx)
+  constructor (ctx: HttpContext, viewEngine: ViewEngine, cookieOptions: CookieOptions) {
+    super(ctx.raw)
 
+    this.meta = { ctx }
     this.viewEngine = viewEngine
     this.cookieOptions = cookieOptions
+  }
+
+  /**
+   * Returns the HTTP context instance
+   */
+  ctx (): HttpContext {
+    return this.meta.ctx
   }
 
   /**
@@ -40,7 +57,7 @@ export class Response extends InteractsWithState implements HttpResponse {
    */
   payload (payload: any): this {
     return tap(this, () => {
-      this.ctx.response.body = payload
+      this.koaCtx.response.body = payload
     })
   }
 
@@ -50,7 +67,7 @@ export class Response extends InteractsWithState implements HttpResponse {
    * @returns {HeaderBag}
    */
   headers (): ResponseHeaderBag {
-    return new ResponseHeaderBag(this.ctx)
+    return new ResponseHeaderBag(this.koaCtx)
   }
 
   /**
@@ -85,7 +102,7 @@ export class Response extends InteractsWithState implements HttpResponse {
    */
   appendHeader (key: string, value: string | string[]): this {
     return tap(this, () => {
-      this.ctx.response.append(key, value)
+      this.koaCtx.response.append(key, value)
     })
   }
 
@@ -103,6 +120,13 @@ export class Response extends InteractsWithState implements HttpResponse {
   }
 
   /**
+   * Returns the cookie bag.
+   */
+  cookies (): CookieBag {
+    return new CookieBag(this.koaCtx.cookies, this.cookieOptions)
+  }
+
+  /**
    * Assign the given cookie to the response.
    *
    * @example
@@ -112,7 +136,7 @@ export class Response extends InteractsWithState implements HttpResponse {
    */
   cookie (name: string, value?: string | null, cookieBuilder?: ResponseCookieBuilderCallback): this {
     return tap(this, () => {
-      new CookieBag(this.ctx.cookies, this.cookieOptions).set(name, value, cookieBuilder)
+      this.cookies().set(name, value, cookieBuilder)
     })
   }
 
@@ -125,7 +149,7 @@ export class Response extends InteractsWithState implements HttpResponse {
    */
   status (code: number): this {
     return tap(this, () => {
-      this.ctx.response.status = code
+      this.koaCtx.response.status = code
     })
   }
 
@@ -138,7 +162,7 @@ export class Response extends InteractsWithState implements HttpResponse {
    */
   type (contentType: string): this {
     return tap(this, () => {
-      this.ctx.response.type = contentType
+      this.koaCtx.response.type = contentType
     })
   }
 
@@ -149,7 +173,7 @@ export class Response extends InteractsWithState implements HttpResponse {
    */
   etag (etag: string): this {
     return tap(this, () => {
-      this.ctx.response.etag = etag
+      this.koaCtx.response.etag = etag
     })
   }
 
@@ -165,8 +189,8 @@ export class Response extends InteractsWithState implements HttpResponse {
   redirect (url: string): HttpRedirect
   redirect (url?: string): HttpRedirect {
     return url
-      ? new HttpRedirect(this.ctx).to(url)
-      : new HttpRedirect(this.ctx)
+      ? new HttpRedirect(this.koaCtx).to(url)
+      : new HttpRedirect(this.koaCtx)
   }
 
   /**
@@ -213,7 +237,7 @@ export class Response extends InteractsWithState implements HttpResponse {
    * @returns {String}
    */
   private async renderView (template: string, data?: any, viewBuilder?: ViewBuilderCallback): Promise<string> {
-    const viewData = { ...this.state(), ...data }
+    const viewData = { ...this.state().all(), ...data }
     const viewConfig = {}
 
     if (typeof viewBuilder === 'function') {
@@ -234,6 +258,6 @@ export class Response extends InteractsWithState implements HttpResponse {
    */
   throw (status: number, message?: string | Error, properties?: {}): void
   throw (...properties: any[]): void {
-    this.ctx.throw(...properties)
+    this.koaCtx.throw(...properties)
   }
 }

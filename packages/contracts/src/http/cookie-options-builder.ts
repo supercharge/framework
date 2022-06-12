@@ -1,5 +1,7 @@
 'use strict'
 
+import { CookieOptions } from './cookie-options'
+
 export type RequestCookieBuilderCallback = (cookieBuilder: RequestCookieBuilder) => void
 export type ResponseCookieBuilderCallback = (cookieBuilder: ResponseCookieBuilder) => void
 
@@ -66,4 +68,9 @@ export interface ResponseCookieBuilder {
    * Mark this cookie to overwrite any previously set cookie with the same name.
    */
   overwrite(): this
+
+  /**
+   * Merge the given `config` with the default HTTP cookie config.
+   */
+  useConfig (config: Partial<CookieOptions>): this
 }

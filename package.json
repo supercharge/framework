@@ -41,6 +41,7 @@
     "watch": "npm run dev",
     "dev": "nx run-many --target=dev --all --parallel=5",
     "lint": "nx run-many --target=lint --all --parallel=5",
-    "test": "nx run-many --target=test --all --parallel=5"
+    "test": "nx run-many --target=test --all --parallel=5",
+    "publish": "lerna publish --force-publish"
   }
 }

@@ -3,16 +3,27 @@
 const { test } = require('uvu')
 const { expect } = require('expect')
 const Supertest = require('supertest')
-const { Server, Router } = require('../dist')
 const ErrorHandler = require('./helpers/error-handler')
 const { isConstructor } = require('@supercharge/classes')
+const { Server, Router, Request, Response } = require('../dist')
 
 const app = {
   bindings: {},
+  hasBinding (key) {
+    return !!this.bindings[key]
+  },
   make (key) {
     if (isConstructor(key)) {
       // eslint-disable-next-line new-cap
       return new key(this)
+    }
+
+    if (key === 'request') {
+      return Request
+    }
+
+    if (key === 'response') {
+      return Response
     }
 
     if (key === 'route') {

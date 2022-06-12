@@ -2,12 +2,20 @@
 
 import { FileBag } from './file-bag'
 import { IncomingMessage } from 'http'
+import { HttpContext } from './context'
+import { CookieBag } from './cookie-bag'
 import { ParameterBag } from './parameter-bag'
-import { InteractsWithContentTypes } from './concerns'
+import { Macroable } from '@supercharge/macroable'
 import { RequestHeaderBag } from './request-header-bag'
 import { RequestCookieBuilderCallback } from './cookie-options-builder'
+import { InteractsWithContentTypes, InteractsWithState } from './concerns'
 
-export interface HttpRequest extends InteractsWithContentTypes {
+export interface HttpRequest extends InteractsWithState, InteractsWithContentTypes, Macroable {
+  /**
+   * Returns the HTTP context.
+   */
+  ctx (): HttpContext
+
   /**
    * Returns the raw Node.js request.
    */
@@ -41,11 +49,21 @@ export interface HttpRequest extends InteractsWithContentTypes {
   param (name: string, defaultValue: string): string
 
   /**
+   * Returns the cookie bag.
+   */
+  cookies (): CookieBag
+
+  /**
    * Returns the cookie value for the given `name`. Supports an options
    * builder as the second argument allowing you to change whether you
    * want to retrieve the cookie `unsigned` from the incomig request.
    */
   cookie(name: string, cookieBuilder?: RequestCookieBuilderCallback): string | undefined
+
+  /**
+   * Determine whether a cookie exists for the given `name`.
+   */
+  hasCookie (name: string): boolean
 
   /**
    * Returns the merged request payload, files and query parameters. The query parameters

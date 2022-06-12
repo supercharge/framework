@@ -96,6 +96,44 @@ export class Config implements ConfigStore {
   }
 
   /**
+   * Determine whether the config store contains an item for the given `key`,
+   * and the assigned value is empty. Empty values are: `null`, `undefined`,
+   * empty strings, empty arrays, empty objects. 0 is not considered empty.
+   */
+  isEmpty (key: string): boolean {
+    const value = this.get(key)
+
+    return typeof value === 'number'
+      ? false
+      : _.isEmpty(value)
+  }
+
+  /**
+   * Determine whether the config store contains an item for the given `key`
+   * and the value is not empty.
+   */
+  isNotEmpty (key: string): boolean {
+    return !this.isEmpty(key)
+  }
+
+  /**
+   * Ensure that the config store contains a non-empty value for the given `key`.
+   * This function calls the given `callback` if the value is empty. Throws an
+   * error if you don’t provide callback or the given callback doesn’t throw.
+   */
+  ensureNotEmpty (key: string, callback?: () => void): void {
+    if (this.isNotEmpty(key)) {
+      return
+    }
+
+    if (typeof callback === 'function') {
+      callback()
+    }
+
+    throw new Error(`Missing value for the given key "${key}".`)
+  }
+
+  /**
    * Clear all values from the config store.
    */
   clear (): void {

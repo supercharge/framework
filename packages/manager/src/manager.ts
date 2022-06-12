@@ -12,7 +12,7 @@ export abstract class Manager {
   /**
    * Returns the cached database clients.
    */
-  private readonly drivers: Map<string, any> = new Map()
+  protected readonly drivers: Map<string, any>
 
   /**
    * Create a new manager instance.
@@ -21,6 +21,7 @@ export abstract class Manager {
    */
   constructor (app: Application) {
     this.app = app
+    this.drivers = new Map()
   }
 
   /**
@@ -60,9 +61,8 @@ export abstract class Manager {
    * Create a new database client for the given `driver` name.
    *
    * @param {String} driver
-   * @param {Object} config
    */
-  private createDriver (driver: string): any {
+  protected createDriver (driver: string): this {
     const method: string = `create${Str(driver).studly().get()}Driver`
 
     const self = (this as any)
@@ -81,7 +81,7 @@ export abstract class Manager {
    *
    * @returns {Object}
    */
-  private get (driver: string): any {
+  protected get (driver: string): any {
     return this.drivers.get(driver)
   }
 
@@ -90,9 +90,13 @@ export abstract class Manager {
    *
    * @param {String} driver
    * @param {Object} client
+   *
+   * @returns {this}
    */
-  private set (driver: string, client: any): void {
+  protected set (driver: string, client: any): this {
     this.drivers.set(driver, client)
+
+    return this
   }
 
   /**
@@ -102,7 +106,7 @@ export abstract class Manager {
    *
    * @returns {Boolean}
    */
-  private has (driver: string): boolean {
+  protected has (driver: string): boolean {
     return this.drivers.has(driver)
   }
 
@@ -113,7 +117,7 @@ export abstract class Manager {
    *
    * @returns {Boolean}
    */
-  private missing (driver: string): boolean {
+  protected missing (driver: string): boolean {
     return !this.has(driver)
   }
 

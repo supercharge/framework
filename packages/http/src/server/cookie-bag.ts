@@ -74,4 +74,15 @@ export class CookieBag implements CookieBagContract {
 
     return !!parsed[name]
   }
+
+  /**
+   * Deletes a cookie with the given `name`.
+   *
+   * @param {String} name
+   *
+   * @returns {this}
+   */
+  delete (name: string): this {
+    return this.set(name, undefined)
+  }
 }
