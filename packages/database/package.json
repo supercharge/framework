@@ -15,16 +15,16 @@
     "@supercharge/contracts": "^2.0.0-alpha.9",
     "@supercharge/manager": "^2.0.0-alpha.9",
     "@supercharge/support": "^2.0.0-alpha.9",
-    "knex": "~2.0.0",
+    "knex": "~2.1.0",
     "objection": "~3.0.1",
     "sqlite3": "~5.0.8"
   },
   "devDependencies": {
     "@supercharge/core": "^2.0.0-alpha.9",
-    "@supercharge/eslint-config-typescript": "~2.0.0",
-    "eslint": "~8.15.0",
+    "@supercharge/eslint-config-typescript": "~2.2.0",
+    "eslint": "~8.17.0",
     "tap": "~16.2.0",
-    "typescript": "~4.6.4"
+    "typescript": "~4.7.3"
   },
   "engines": {
     "node": ">=14"
