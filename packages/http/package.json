@@ -21,11 +21,11 @@
 		"@supercharge/fs": "~3.4.0",
 		"@supercharge/goodies": "~1.10.1",
 		"@supercharge/http-errors": "~1.1.0",
-		"@supercharge/json": "~1.1.0",
+		"@supercharge/json": "~2.0.0",
 		"@supercharge/macroable": "~1.0.0",
 		"@supercharge/map": "~1.5.0",
 		"@supercharge/set": "~2.2.1",
-		"@supercharge/strings": "~1.27.1",
+		"@supercharge/strings": "~1.28.0",
 		"@supercharge/support": "^2.0.0-alpha.9",
 		"@types/ms": "~0.7.31",
 		"bytes": "~3.1.2",
@@ -38,7 +38,7 @@
 		"ts-mixer": "~6.0.1"
 	},
 	"devDependencies": {
-		"@supercharge/eslint-config-typescript": "~2.0.0",
+		"@supercharge/eslint-config-typescript": "~2.2.0",
 		"@types/bytes": "~3.1.1",
 		"@types/cookie": "~0.5.1",
 		"@types/formidable": "~2.0.5",
@@ -48,10 +48,10 @@
 		"@types/koa__router": "~8.0.11",
 		"c8": "~7.11.3",
 		"deepmerge": "~4.2.2",
-		"eslint": "~8.15.0",
-		"expect": "~28.1.0",
+		"eslint": "~8.17.0",
+		"expect": "~28.1.1",
 		"supertest": "~6.2.3",
-		"typescript": "~4.6.4",
+		"typescript": "~4.7.3",
 		"uvu": "~0.5.3"
 	},
 	"engines": {
@@ -78,8 +78,7 @@
 		"url": "git+https://github.com/supercharge/framework.git"
 	},
 	"scripts": {
-		"build:force": "npm run build -- --force",
-		"build": "tsc --build tsconfig.json",
+		"build": "tsc --build tsconfig.json --force",
 		"dev": "tsc --watch",
 		"lint": "eslint src --ext .js,.ts",
 		"lint:fix": "npm run lint -- --fix",
