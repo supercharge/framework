@@ -12,7 +12,8 @@ export interface RequestHeaderBag {
    * Returns the input value for the given `name`. Returns `undefined`
    * if the given `name` does not exist in the input bag.
    */
-  get<Key extends keyof IncomingHttpHeaders> (name: Key, defaultValue?: IncomingHttpHeaders[Key]): IncomingHttpHeaders[Key] | undefined
+  get<Header extends keyof IncomingHttpHeaders> (name: Header): IncomingHttpHeaders[Header]
+  get<T, Header extends keyof IncomingHttpHeaders> (name: Header, defaultValue: T): IncomingHttpHeaders[Header] | T
 
   /**
    * Set an input for the given `name` and assign the `value`. This

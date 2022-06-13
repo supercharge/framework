@@ -48,7 +48,9 @@ export class RequestHeaderBag implements RequestHeaderBagContract {
    *
    * @returns {Value | Dict<T>[Header] |undefined}
    */
-  get<Header extends keyof IncomingHttpHeaders> (name: Header, defaultValue?: IncomingHttpHeaders[Header]): IncomingHttpHeaders[Header] {
+  get<Header extends keyof IncomingHttpHeaders> (name: Header): IncomingHttpHeaders[Header]
+  get<T, Header extends keyof IncomingHttpHeaders> (name: Header, defaultValue: T): IncomingHttpHeaders[Header] | T
+  get<T, Header extends keyof IncomingHttpHeaders> (name: Header, defaultValue?: T): IncomingHttpHeaders[Header] | T {
     return this.ctx.request.headers[name] ?? defaultValue
   }
 

@@ -236,7 +236,9 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
    *
    * @returns {String}
    */
-  header<Header extends keyof IncomingHttpHeaders> (key: Header, defaultValue?: any): IncomingHttpHeaders[Header] {
+  header<Header extends keyof IncomingHttpHeaders> (key: Header): IncomingHttpHeaders[Header]
+  header<T, Header extends keyof IncomingHttpHeaders> (key: Header, defaultValue: T): IncomingHttpHeaders[Header] | T
+  header<T, Header extends keyof IncomingHttpHeaders> (key: Header, defaultValue?: T): IncomingHttpHeaders[Header] | T {
     return this.headers().get(key, defaultValue)
   }
 

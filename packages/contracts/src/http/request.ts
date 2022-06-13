@@ -1,7 +1,7 @@
 'use strict'
 
 import { FileBag } from './file-bag'
-import { IncomingMessage } from 'http'
+import { IncomingHttpHeaders, IncomingMessage } from 'http'
 import { HttpContext } from './context'
 import { CookieBag } from './cookie-bag'
 import { ParameterBag } from './parameter-bag'
@@ -122,7 +122,8 @@ export interface HttpRequest extends InteractsWithState, InteractsWithContentTyp
    * Returns the request header identified by the given `key`. The default
    * value will be returned if no header is present for the given key.
    */
-  header(key: string, defaultValue?: string | string[]): string | string[] | undefined
+  header<Header extends keyof IncomingHttpHeaders> (key: Header): IncomingHttpHeaders[Header]
+  header<T, Header extends keyof IncomingHttpHeaders> (key: Header, defaultValue: T): IncomingHttpHeaders[Header] | T
 
   /**
    * Determine whether the request contains a header with the given `key`.
