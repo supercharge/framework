@@ -24,7 +24,7 @@
     "@japa/runner": "~2.0.9",
     "@japa/spec-reporter": "~1.1.12",
     "@supercharge/core": "^2.0.0-alpha.9",
-    "@supercharge/eslint-config-typescript": "~2.2.0",
+    "@supercharge/eslint-config-typescript": "~2.3.0",
     "@supercharge/http": "^2.0.0-alpha.9",
     "@types/lodash": "~4.14.182",
     "@types/ms": "~0.7.31",
