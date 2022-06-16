@@ -4,7 +4,7 @@ import { tap } from '@supercharge/goodies'
 import { Server } from '@supercharge/http'
 import Collect from '@supercharge/collections'
 import { Application, BootstrapperCtor, HttpKernel as HttpKernelContract, HttpServer, HttpServerHandler, MiddlewareCtor } from '@supercharge/contracts'
-import { HandleExceptions, LoadConfiguration, LoadEnvironmentVariables, RegisterServiceProviders, BootServiceProviders } from '../bootstrappers'
+import { HandleExceptions, LoadConfiguration, LoadEnvironmentVariables, RegisterServiceProviders, BootServiceProviders, HandleShutdown } from '../bootstrappers'
 
 type Callback = () => unknown | Promise<unknown>
 
@@ -234,6 +234,7 @@ export class HttpKernel implements HttpKernelContract {
   bootstrappers (): BootstrapperCtor[] {
     return [
       HandleExceptions,
+      HandleShutdown,
       LoadEnvironmentVariables,
       LoadConfiguration,
       RegisterServiceProviders,
