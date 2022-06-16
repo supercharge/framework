@@ -33,6 +33,13 @@ export interface ServiceProvider {
   boot? (app: Application): void | Promise<void>
 
   /**
+   * Stop application services.
+   *
+   * @param {Application} app - the application instance
+   */
+  shutdown? (app: Application): void | Promise<void>
+
+  /**
    * Register a booting callback that runs before the `boot` method is called.
    *
    * @param callback Function

@@ -132,6 +132,11 @@ export interface Application extends Container {
   boot(): Promise<void>
 
   /**
+   * Shutdown the application.
+   */
+  shutdown(): Promise<void>
+
+  /**
    * Determine whether the application is running in the console.
    */
   isRunningInConsole (): boolean

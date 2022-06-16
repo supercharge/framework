@@ -433,6 +433,28 @@ export class Application extends Container implements ApplicationContract {
   }
 
   /**
+   * Shutdown the application by stopping all providers.
+   */
+  async shutdown (): Promise<void> {
+    await Collect(
+      this.serviceProviders()
+    ).forEach(async provider => {
+      await this.shutdownProvider(provider)
+    })
+  }
+
+  /**
+   * Run the shutdown methods for the given service `provider`.
+   *
+   * @param provider
+   */
+  private async shutdownProvider (provider: ServiceProvider): Promise<void> {
+    if (typeof provider.shutdown === 'function') {
+      await provider.shutdown(this)
+    }
+  }
+
+  /**
    * Determine whether the application is running in the console.
    *
    * @returns {Boolean}
