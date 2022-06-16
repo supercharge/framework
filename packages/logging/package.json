@@ -30,7 +30,7 @@
     "uvu": "~0.5.3"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=16"
   },
   "keywords": [
     "supercharge",
