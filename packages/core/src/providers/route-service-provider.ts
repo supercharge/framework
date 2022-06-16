@@ -4,6 +4,9 @@ import { tap } from '@supercharge/goodies'
 import { ServiceProvider } from '@supercharge/support'
 
 export class RouteServiceProvider extends ServiceProvider {
+  /**
+   * Stores the callback functions that load route files.
+   */
   private readonly loadRoutesCallbacks: Array<(() => void)> = []
 
   /**
