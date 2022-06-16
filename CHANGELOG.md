@@ -20,7 +20,7 @@
 - bump dependencies of all packages
 
 ### Breaking Changes
-- Require Node.js v16. Drop support for Node.js v12
+- Require Node.js v16. Drop support for Node.js v12 and v14
 - `@supercharge/http`
     - instances using the `InteractsWithState` trait (HTTP context/request/response) return a state bag instead of a plain JS object
 
