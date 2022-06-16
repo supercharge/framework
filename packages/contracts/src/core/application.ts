@@ -6,6 +6,8 @@ import { ConfigStore } from '../config'
 import { Container } from '../container'
 import { BootstrapperCtor } from './bootstrapper'
 
+type Callback = (app: Application) => unknown | Promise<unknown>
+
 export interface Application extends Container {
   /**
    * Returns the logger instance.
@@ -135,6 +137,11 @@ export interface Application extends Container {
    * Shutdown the application.
    */
   shutdown(): Promise<void>
+
+  /**
+   * Register a `callback` being called when shutting down the application.
+   */
+  shuttingDown(callback: Callback): this
 
   /**
    * Determine whether the application is running in the console.

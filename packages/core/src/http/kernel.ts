@@ -46,6 +46,7 @@ export class HttpKernel implements HttpKernelContract {
       isBootstrapped: false
     }
 
+    this.registerShutdownCallback()
     this.registerHttpContainerBindings()
     this.register()
   }
@@ -64,6 +65,12 @@ export class HttpKernel implements HttpKernelContract {
    */
   app (): Application {
     return this.meta.app
+  }
+
+  private registerShutdownCallback (): void {
+    this.app().shuttingDown(async () => {
+      await this.stopServer()
+    })
   }
 
   /**
