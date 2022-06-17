@@ -1,7 +1,6 @@
 'use strict'
 
 import { tap } from '@supercharge/goodies'
-import { Server } from '@supercharge/http'
 import Collect from '@supercharge/collections'
 import { Application, BootstrapperCtor, HttpKernel as HttpKernelContract, HttpServer, HttpServerHandler, MiddlewareCtor } from '@supercharge/contracts'
 import { HandleExceptions, LoadConfiguration, LoadEnvironmentVariables, RegisterServiceProviders, BootServiceProviders, HandleShutdown } from '../bootstrappers'
@@ -41,7 +40,6 @@ export class HttpKernel implements HttpKernelContract {
       isBootstrapped: false
     }
 
-    this.registerShutdownCallback()
     this.registerHttpContainerBindings()
     this.register()
   }
@@ -62,20 +60,11 @@ export class HttpKernel implements HttpKernelContract {
     return this.meta.app
   }
 
-  private registerShutdownCallback (): void {
-    this.app().shuttingDown(async () => {
-      await this.stopServer()
-    })
-  }
-
   /**
    * Register the HTTP base bindings into the container.
    */
   private registerHttpContainerBindings (): void {
     this.app().singleton('http.kernel', () => this)
-
-    this.app().singleton(Server, () => this.server())
-    this.app().singleton('http.server', () => this.server())
   }
 
   /**
@@ -104,7 +93,7 @@ export class HttpKernel implements HttpKernelContract {
    * @returns {Server}
    */
   server (): HttpServer {
-    return this.app().make<HttpServer>('server')
+    return this.app().make<HttpServer>('http.server')
   }
 
   /**
