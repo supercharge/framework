@@ -72,7 +72,14 @@ test('make', () => {
   container.bind('namespace', () => 1)
 
   expect(container.make('namespace')).toBe(1)
-  expect(() => container.make('not-bound')).toThrow('Missing container binding')
+})
+
+test('throws when missing a binding', () => {
+  const container = new Container()
+
+  expect(() => {
+    container.make('not-bound')
+  }).toThrow('Missing container binding for the given namespace "not-bound"')
 })
 
 test('make singleton', () => {
