@@ -24,11 +24,6 @@ export class HttpKernel implements HttpKernelContract {
     bootedCallbacks: Callback[]
 
     /**
-     * The HTTP server instance.
-     */
-    server?: Server
-
-    /**
      * Determine whether the bootstrapping ran.
      */
     isBootstrapped: boolean
@@ -109,11 +104,7 @@ export class HttpKernel implements HttpKernelContract {
    * @returns {Server}
    */
   server (): HttpServer {
-    if (!this.meta.server) {
-      this.meta.server = new Server(this.app())
-    }
-
-    return this.meta.server
+    return this.app().make<HttpServer>('server')
   }
 
   /**
