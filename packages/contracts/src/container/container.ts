@@ -38,14 +38,22 @@ export interface Container<ContainerBindings extends string | Class = any> {
 
   /**
    * Resolve the given namespace from the container.
-   *
-   * @param {String} namespace
    */
   make<Namespace extends Extract<keyof ContainerBindings, string>> (
     namespace: Namespace
   ): Namespace extends keyof ContainerBindings ? ContainerBindings[Namespace] : InferMakeType<Namespace>
   make<T> (namespace: Class<T>): T
   make<T = any> (namespace: string): T
+
+  /**
+   * Alias a binding to a different name.
+   */
+  alias (namespace: string | Class, alias: string | Class): this
+
+  /**
+   * Determine whether the given `namespace` is an alias.
+   */
+  isAlias (namespace: string | Class): boolean
 
   /**
    * Determine whether the given `namespace` is bound in the container.

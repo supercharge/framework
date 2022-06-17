@@ -18,6 +18,11 @@ export class Container implements ContainerContract {
   private bindings: Map<string, Binding>
 
   /**
+   * Stores the registered aliases.
+   */
+  private readonly aliases: Map<string, string[]>
+
+  /**
    * Stores the singleton instances.
    */
   private singletons: Map<string, unknown>
@@ -26,6 +31,7 @@ export class Container implements ContainerContract {
    * Create a new container instance.
    */
   constructor () {
+    this.aliases = new Map()
     this.bindings = new Map()
     this.singletons = new Map()
   }
@@ -141,6 +147,10 @@ export class Container implements ContainerContract {
   make<T = any> (namespace: string): T
   make<T> (namespace: Class<T>): T
   make<T extends any>(namespace: string | Class): T {
+    if (this.isAlias(namespace)) {
+      namespace = this.getAlias(namespace)
+    }
+
     /**
      * If the namespace exists as a singleton, we’ll return the instance
      * without instantiating a new one. This way, the same instance
@@ -228,9 +238,69 @@ export class Container implements ContainerContract {
   }
 
   /**
+   * Determine whether the given `namespace` is an alias.
+   */
+  getAlias (namespace: string | Class): string {
+    const abstract = this.resolveNamespace(namespace)
+
+    for (const [alias, aliases] of this.aliases.entries()) {
+      if (aliases.includes(abstract)) {
+        return alias
+      }
+    }
+
+    throw new Error('puper')
+  }
+
+  /**
+   * Determine whether the given `namespace` is an alias.
+   */
+  isAlias (namespace: string | Class): boolean {
+    try {
+      this.getAlias(namespace)
+      return true
+    } catch (error) {
+      return false
+    }
+  }
+
+  /**
+   * Alias a binding to a different name.
+   */
+  alias (namespace: string | Class, alias: string | Class): this {
+    const resolvedAlias = this.resolveNamespace(alias)
+    const resolvedNamespace = this.resolveNamespace(namespace)
+
+    if (resolvedAlias === resolvedNamespace) {
+      throw new Error(`"${resolvedNamespace}" is an alias for itself`)
+    }
+
+    return tap(this, () => {
+      this.addAlias(resolvedNamespace, resolvedAlias)
+    })
+  }
+
+  /**
+   * Assign the given `alias` to the concrete `namespace`.
+   *
+   * @param namespace
+   * @param alias
+   *
+   * @returns {this}
+   */
+  private addAlias (namespace: string, alias: string): this {
+    const aliases = this.aliases.getOrDefault(namespace, [])
+    aliases.push(alias)
+
+    this.aliases.set(namespace, aliases)
+
+    return this
+  }
+
+  /**
    * Flush all bindings and resolved instances from the containter.
    *
-   * @returns {Container}
+   * @returns {this}
    */
   flush (): this {
     return tap(this, () => {

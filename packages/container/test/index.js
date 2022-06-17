@@ -50,12 +50,6 @@ test('bind (string namespace)', () => {
 })
 
 test('bind (class constructor as namespace)', () => {
-  class User {
-    constructor (data) {
-      this.data = data
-    }
-  }
-
   const container = new Container()
 
   container.bind(User, () => {
@@ -130,6 +124,50 @@ test('flush', () => {
   expect(container.isSingleton('singleton')).toBe(false)
 })
 
+test('alias with string keys', () => {
+  const container = new Container()
+
+  container
+    .bind('namespace', () => 'concrete')
+    .alias('namespace', 'alias')
+
+  expect(container.make('alias')).toBe('concrete')
+  expect(container.make('namespace')).toBe('concrete')
+})
+
+test('alias with class', () => {
+  const container = new Container()
+
+  container
+    .bind(User, () => new User({ name: 'Supercharge' }))
+    .alias(User, 'user')
+
+  const alias = container.make('user')
+  expect(alias).toBeInstanceOf(User)
+  expect(alias).toEqual(new User({ name: 'Supercharge' }))
+
+  const user = container.make(User)
+  expect(alias).toEqual(user)
+})
+
+test('fails to create an alias for itself', () => {
+  const container = new Container()
+
+  expect(() => {
+    container.alias('alias', 'alias')
+  }).toThrow('"alias" is an alias for itself')
+
+  expect(() => {
+    container.alias(User, User)
+  }).toThrow('"User" is an alias for itself')
+})
+
 class Singleton {}
+
+class User {
+  constructor (data) {
+    this.data = data
+  }
+}
 
 test.run()
