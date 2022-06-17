@@ -162,6 +162,66 @@ test('fails to create an alias for itself', () => {
   }).toThrow('"User" is an alias for itself')
 })
 
+test('isSingleton', () => {
+  const container = new Container()
+
+  container
+    .bind('binding', () => 1)
+    .bind(User, () => new User({ name: 'Supercharge' }))
+    .singleton('singleton', () => 1)
+    .singleton(Singleton, () => new Singleton())
+
+  expect(container.isSingleton('binding')).toBe(false)
+  expect(container.isSingleton(User)).toBe(false)
+
+  expect(container.isSingleton('singleton')).toBe(true)
+  expect(container.isSingleton(Singleton)).toBe(true)
+})
+
+test('hasBinding', () => {
+  const container = new Container()
+
+  container
+    .bind('binding', () => 1)
+    .bind(User, () => new User({ name: 'Supercharge' }))
+
+  expect(container.hasBinding(User)).toBe(true)
+  expect(container.hasBinding('binding')).toBe(true)
+})
+
+test('hasSingletonBinding', () => {
+  const container = new Container()
+
+  container
+    .singleton('singleton', () => 2)
+    .singleton(Singleton, () => new Singleton())
+
+  expect(container.hasSingletonBinding(Singleton)).toBe(false)
+  expect(container.hasSingletonBinding('singleton')).toBe(false)
+})
+
+test('hasBinding', () => {
+  const container = new Container()
+
+  container
+    .bind('binding', () => 1)
+    .alias('binding', 'bindingAlias')
+
+  container
+    .singleton('singleton', () => 2)
+    .alias('singleton', 'singletonAlias')
+
+  expect(container.hasBinding('binding')).toBe(true)
+  expect(container.hasBinding('bindingAlias')).toBe(true)
+
+  expect(container.hasBinding('singleton')).toBe(true)
+  expect(container.hasBinding('singletonAlias')).toBe(true)
+
+  expect(container.hasSingletonBinding('singleton')).toBe(false)
+  expect(container.make('singleton')).toBeDefined()
+  expect(container.hasSingletonBinding('singleton')).toBe(true)
+})
+
 class Singleton {}
 
 class User {
