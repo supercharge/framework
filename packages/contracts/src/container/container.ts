@@ -62,6 +62,12 @@ export interface Container<ContainerBindings extends string | Class = any> {
   hasBinding(namespace: string | Class): boolean
 
   /**
+   * Determine whether the given `namespace` is a singleton.
+   */
+  isSingleton<Binding extends keyof ContainerBindings>(namespace: Binding): boolean
+  isSingleton(namespace: string | Class): boolean
+
+  /**
    * Flush all bindings and resolved instances from the containter.
    */
   flush (): this
