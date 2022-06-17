@@ -58,4 +58,11 @@ export class HttpServiceProvider extends ServiceProvider {
       .singleton('response', () => Response)
       .alias('response', Response)
   }
+
+  /**
+   * Stop application services.
+   */
+  override async shutdown (): Promise<void> {
+    await this.app().make<Server>('server').stop()
+  }
 }
