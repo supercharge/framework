@@ -32,7 +32,6 @@ export class Application extends Container implements ApplicationContract {
       appRoot: basePath,
       serviceProviders: [],
       bootingCallbacks: [],
-      shutdownCallbacks: [],
 
       isRunningInConsole: false,
 
@@ -437,8 +436,6 @@ export class Application extends Container implements ApplicationContract {
    * Shutdown the application by stopping all providers.
    */
   async shutdown (): Promise<void> {
-    await this.runAppCallbacks(this.shutdownCallbacks())
-
     await Collect(
       this.serviceProviders()
     ).forEach(async provider => {
@@ -455,22 +452,6 @@ export class Application extends Container implements ApplicationContract {
     if (typeof provider.shutdown === 'function') {
       await provider.shutdown(this)
     }
-  }
-
-  /**
-   * Returns the registered shutdown callbacks.
-   */
-  shutdownCallbacks (): Callback[] {
-    return this.meta.shutdownCallbacks
-  }
-
-  /**
-   * Register a callback being called when shutting down the application.
-   */
-  shuttingDown (callback: Callback): this {
-    return tap(this, () => {
-      this.meta.shutdownCallbacks.push(callback)
-    })
   }
 
   /**
@@ -534,11 +515,6 @@ interface ApplicationMeta {
    * All booting callbacks.
    */
   bootingCallbacks: Callback[]
-
-  /**
-   * All shutdown callbacks.
-   */
-  shutdownCallbacks: Callback[]
 }
 
 type Callback = (app: Application) => unknown | Promise<unknown>

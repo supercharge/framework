@@ -139,11 +139,6 @@ export interface Application extends Container {
   shutdown(): Promise<void>
 
   /**
-   * Register a `callback` being called when shutting down the application.
-   */
-  shuttingDown(callback: Callback): this
-
-  /**
    * Determine whether the application is running in the console.
    */
   isRunningInConsole (): boolean
