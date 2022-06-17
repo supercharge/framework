@@ -20,7 +20,8 @@ export interface Container<ContainerBindings extends string | Class = any> {
   ): this
   bind<Namespace extends string | Class>(
     namespace: Namespace,
-    factory: BindingFactory<Namespace extends keyof ContainerBindings ? ContainerBindings[Namespace] : any>
+    factory: BindingFactory<Namespace extends keyof ContainerBindings ? ContainerBindings[Namespace] : any>,
+    options: { singleton?: boolean }
   ): this
 
   /**

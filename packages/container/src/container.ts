@@ -44,15 +44,17 @@ export class Container implements ContainerContract {
    *
    * @returns {Container}
    */
-  bind (namespace: string | Class, factory: BindingFactory<any>, isSingleton: boolean = false): this {
+  bind (namespace: string | Class, factory: BindingFactory<any>, options?: { singleton?: boolean }): this {
     this.ensureNamespace(namespace)
+
+    const { singleton = false } = options ?? {}
 
     if (!isFunction(factory)) {
       throw new Error(`container.bind(namespace, factory) expects the second argument to be a function. Received ${typeof factory}`)
     }
 
     return tap(this, () => {
-      this.bindings.set(this.resolveNamespace(namespace), { factory, isSingleton })
+      this.bindings.set(this.resolveNamespace(namespace), { factory, isSingleton: singleton })
     })
   }
 
@@ -82,7 +84,7 @@ export class Container implements ContainerContract {
    * @returns {Container}
    */
   singleton (namespace: string | Class, factory: BindingFactory<any>): this {
-    return this.bind(namespace, factory, true)
+    return this.bind(namespace, factory, { singleton: true })
   }
 
   /**
@@ -93,7 +95,7 @@ export class Container implements ContainerContract {
    * @returns {Boolean}
    */
   hasBinding (namespace: string | Class): boolean {
-    return this.bindings.has(
+    return this.isAlias(namespace) || this.isSingleton(namespace) || this.bindings.has(
       this.resolveNamespace(namespace)
     )
   }
@@ -249,7 +251,7 @@ export class Container implements ContainerContract {
       }
     }
 
-    throw new Error('puper')
+    throw new Error(`No alias registered for the given "${abstract}"`)
   }
 
   /**
