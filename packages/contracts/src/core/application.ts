@@ -6,8 +6,6 @@ import { ConfigStore } from '../config'
 import { Container } from '../container'
 import { BootstrapperCtor } from './bootstrapper'
 
-type Callback = (app: Application) => unknown | Promise<unknown>
-
 export interface Application extends Container {
   /**
    * Returns the logger instance.
