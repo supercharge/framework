@@ -10,6 +10,9 @@ export interface ContainerBindings {
   'route': Router
   'router': Router
   'server': Server
+  Server: Server
+  Request: typeof Request
+  Response: typeof Response
 }
 
 export class HttpServiceProvider extends ServiceProvider {
@@ -28,8 +31,8 @@ export class HttpServiceProvider extends ServiceProvider {
    */
   private bindServer (): void {
     this.app()
-      .singleton('server', () => new Server(this.app()))
-      .alias('server', Server)
+      .singleton('http.server', () => new Server(this.app()))
+      .alias('http.server', Server)
   }
 
   /**
