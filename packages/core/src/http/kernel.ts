@@ -93,7 +93,7 @@ export class HttpKernel implements HttpKernelContract {
    * @returns {Server}
    */
   server (): HttpServer {
-    return this.app().make<HttpServer>('http.server')
+    return this.app().make<HttpServer>('server')
   }
 
   /**

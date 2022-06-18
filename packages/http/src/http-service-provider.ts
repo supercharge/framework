@@ -31,8 +31,9 @@ export class HttpServiceProvider extends ServiceProvider {
    */
   private bindServer (): void {
     this.app()
-      .singleton('http.server', () => new Server(this.app()))
-      .alias('http.server', Server)
+      .singleton('server', () => new Server(this.app()))
+      .alias('server', 'http.server')
+      .alias('server', Server)
   }
 
   /**
