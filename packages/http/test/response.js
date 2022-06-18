@@ -227,6 +227,22 @@ test('response.cookie() configures httpOnly', async () => {
   expect(response.headers['set-cookie']).toEqual(['name=Supercharge; path=/'])
 })
 
+test('response.cookie() falls back to httpOnly when not providing a value', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response
+      .payload('ok')
+      .cookie('name', 'Supercharge', cookie => cookie.unsigned().httpOnly(null))
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.headers['set-cookie']).toEqual(['name=Supercharge; path=/; httponly'])
+})
+
 test('response.cookie() creates unsecured cookie', async () => {
   const app = new Koa().use(ctx => {
     const { response } = HttpContext.wrap(ctx, appMock)
@@ -339,6 +355,26 @@ test('response.cookie() creates a sameSite none cookie', async () => {
     .expect(200)
 
   expect(response.headers['set-cookie']).toEqual(['name=Supercharge; path=/; samesite=none; httponly'])
+})
+
+test('response.cookie() uses merged config', async () => {
+  const app = new Koa().use(ctx => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    return response
+      .payload('ok')
+      .cookie('name', 'Supercharge', cookie => {
+        cookie
+          .unsigned()
+          .useConfig({ path: '/config', sameSite: 'strict', httpOnly: false })
+      })
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .expect(200)
+
+  expect(response.headers['set-cookie']).toEqual(['name=Supercharge; path=/config; samesite=strict'])
 })
 
 test('response.cookie() does not overwrite cookie by default', async () => {
