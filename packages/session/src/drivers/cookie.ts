@@ -41,7 +41,7 @@ export class CookieSessionDriver extends InteractsWithTime implements SessionDri
 
     const { data, expires } = JSON.parse(value) as SessionEntry
 
-    if (this.currentTime() <= expires) {
+    if (this.now().getTime() <= expires) {
       return data
     }
 
