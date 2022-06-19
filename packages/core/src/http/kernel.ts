@@ -1,10 +1,9 @@
 'use strict'
 
 import { tap } from '@supercharge/goodies'
-import { Server } from '@supercharge/http'
 import Collect from '@supercharge/collections'
 import { Application, BootstrapperCtor, HttpKernel as HttpKernelContract, HttpServer, HttpServerHandler, MiddlewareCtor } from '@supercharge/contracts'
-import { HandleExceptions, LoadConfiguration, LoadEnvironmentVariables, RegisterServiceProviders, BootServiceProviders } from '../bootstrappers'
+import { HandleExceptions, LoadConfiguration, LoadEnvironmentVariables, RegisterServiceProviders, BootServiceProviders, HandleShutdown } from '../bootstrappers'
 
 type Callback = () => unknown | Promise<unknown>
 
@@ -22,11 +21,6 @@ export class HttpKernel implements HttpKernelContract {
      * Stores the "booted" callbacks
      */
     bootedCallbacks: Callback[]
-
-    /**
-     * The HTTP server instance.
-     */
-    server?: Server
 
     /**
      * Determine whether the bootstrapping ran.
@@ -71,9 +65,6 @@ export class HttpKernel implements HttpKernelContract {
    */
   private registerHttpContainerBindings (): void {
     this.app().singleton('http.kernel', () => this)
-
-    this.app().singleton(Server, () => this.server())
-    this.app().singleton('http.server', () => this.server())
   }
 
   /**
@@ -102,11 +93,7 @@ export class HttpKernel implements HttpKernelContract {
    * @returns {Server}
    */
   server (): HttpServer {
-    if (!this.meta.server) {
-      this.meta.server = new Server(this.app())
-    }
-
-    return this.meta.server
+    return this.app().make<HttpServer>('server')
   }
 
   /**
@@ -234,6 +221,7 @@ export class HttpKernel implements HttpKernelContract {
   bootstrappers (): BootstrapperCtor[] {
     return [
       HandleExceptions,
+      HandleShutdown,
       LoadEnvironmentVariables,
       LoadConfiguration,
       RegisterServiceProviders,

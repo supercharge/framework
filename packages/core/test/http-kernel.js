@@ -30,7 +30,7 @@ test('.middleware() is empty by default', async () => {
 
 test('.bootstrappers()', async () => {
   const bootstrappers = HttpKernel.for(app).bootstrappers()
-  expect(bootstrappers.length).toBe(5)
+  expect(bootstrappers.length).toBe(6)
 })
 
 test('fails to bootstrap the HTTP kernel when missing a .env file', async () => {

@@ -70,6 +70,14 @@ test('provider.booted()', () => {
   expect(serviceProvider.bootedCallbacks()).toEqual([bootedCallback])
 })
 
+test('provider.shutdown()', async () => {
+  const serviceProvider = new TestServiceProvider(appMock)
+
+  await serviceProvider.shutdown()
+
+  expect(serviceProvider.calledShutdown).toBe(true)
+})
+
 test('provider.callBootingCallbacks()', async () => {
   const serviceProvider = new ServiceProvider(appMock)
 
@@ -129,6 +137,7 @@ class TestServiceProvider extends ServiceProvider {
 
     this.calledBoot = false
     this.calledRegister = false
+    this.calledShutdown = false
   }
 
   register () {
@@ -141,5 +150,11 @@ class TestServiceProvider extends ServiceProvider {
     await super.boot()
 
     this.calledBoot = true
+  }
+
+  async shutdown () {
+    await super.shutdown()
+
+    this.calledShutdown = true
   }
 }

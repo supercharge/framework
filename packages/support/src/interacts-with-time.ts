@@ -1,7 +1,5 @@
 'use strict'
 
-import { tap } from '@supercharge/goodies'
-
 export class InteractsWithTime {
   /**
    * Returns the current time as a date instance.
@@ -18,18 +16,21 @@ export class InteractsWithTime {
    * @returns {Number}
    */
   protected currentTime (): number {
-    return this.now().getTime()
+    return Math.floor(
+      this.now().getTime() / 1000
+    )
   }
 
   /**
-   * Returns the current time as a UNIX timestamp.
+   * Add the given number of `seconds` to the `date`.
    *
    * @returns {Date}
    */
   protected addSecondsDelay (date: Date, seconds: number): Date {
-    return tap(date, () => {
-      date.setSeconds(date.getSeconds() + seconds)
-    })
+    const delayed = new Date(date)
+    delayed.setSeconds(date.getSeconds() + seconds)
+
+    return delayed
   }
 
   /**

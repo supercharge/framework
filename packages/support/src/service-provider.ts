@@ -68,6 +68,13 @@ export class ServiceProvider implements ServiceProviderContract {
   }
 
   /**
+   * Stop application services.
+   */
+  async shutdown (): Promise<void> {
+    //
+  }
+
+  /**
    * Register a booting callback that runs before the `boot` method is called.
    *
    * @param callback Function

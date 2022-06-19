@@ -23,6 +23,7 @@
     "@supercharge/goodies": "~1.10.1",
     "@supercharge/http": "^2.0.0-alpha.9",
     "@supercharge/logging": "^2.0.0-alpha.9",
+    "@supercharge/set": "~2.2.1",
     "@supercharge/support": "^2.0.0-alpha.9",
     "dotenv": "~16.0.1",
     "globby": "~11.1.0",

@@ -36,7 +36,7 @@ export class MemorySessionDriver extends InteractsWithTime implements SessionDri
       return {}
     }
 
-    if (this.currentTime() <= session.expires) {
+    if (this.now().getTime() <= session.expires) {
       return session.data
     }
 

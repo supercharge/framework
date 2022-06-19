@@ -356,12 +356,18 @@ export class Server implements HttpServerContract {
    * connections have been processed through the HTTP request lifecycle.
    */
   async stop (): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.startedServer()?.close(error => {
-        return error
-          ? reject(error)
-          : resolve()
-      })
+    await new Promise<void>((resolve, reject) => {
+      this.app().logger().info('Stopping the HTTP server')
+
+      if (this.startedServer()) {
+        return this.startedServer()?.close(error => {
+          return error
+            ? reject(error)
+            : resolve()
+        })
+      }
+
+      resolve()
     })
   }
 
