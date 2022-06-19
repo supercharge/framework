@@ -368,4 +368,11 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
   isMethodNotCacheable (): boolean {
     return !this.isMethodCacheable()
   }
+
+  /**
+   * Returns the client’s user agent.
+   */
+  userAgent (): IncomingHttpHeaders['user-agent'] {
+    return this.header('user-agent')
+  }
 }

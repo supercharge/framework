@@ -620,4 +620,32 @@ test('isMethod', async () => {
     })
 })
 
+test('userAgent', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload({
+      userAgent: request.userAgent()
+    })
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .set('user-agent', 'macOS-Supercharge-UA')
+    .expect(200, {
+      userAgent: 'macOS-Supercharge-UA'
+    })
+
+  await Supertest(app.callback())
+    .get('/')
+    .set('User-Agent', 'macOS-Supercharge-UA')
+    .expect(200, {
+      userAgent: 'macOS-Supercharge-UA'
+    })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(200, { })
+})
+
 test.run()

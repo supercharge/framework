@@ -161,4 +161,9 @@ export interface HttpRequest extends InteractsWithState, InteractsWithContentTyp
    * ```
    */
   contentLength (): number
+
+  /**
+   * Returns the client’s user agent.
+   */
+  userAgent (): IncomingHttpHeaders['user-agent']
 }

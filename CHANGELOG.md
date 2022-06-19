@@ -5,7 +5,8 @@
 ### Added
 - `@supercharge/session`: a Supercharge session package
 - `@supercharge/http`
-    - add `ctx()` method to request and response: allows you to access the HTTP context from the related instance
+    - `ctx()` method: added to request and response. Allows you to access the HTTP context from the related instance
+    - `useragent()` method: retrieve the client’s user agent from the request instance
     - make `Request` macroable allowing users to decorate the request with custom functions
     - add `InteractsWithState` trait to the HTTP request
     - `InteractsWithState` trait returns a state bag instead of a plain object (please check the breaking changes)
