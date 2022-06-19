@@ -48,10 +48,10 @@
 		"@types/koa-static": "~4.0.2",
 		"c8": "~7.11.3",
 		"deepmerge": "~4.2.2",
-		"eslint": "~8.17.0",
+		"eslint": "~8.18.0",
 		"expect": "~28.1.1",
 		"supertest": "~6.2.3",
-		"typescript": "~4.7.3",
+		"typescript": "~4.7.4",
 		"uvu": "~0.5.3"
 	},
 	"engines": {
