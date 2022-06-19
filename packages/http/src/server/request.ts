@@ -12,7 +12,7 @@ import { Macroable } from '@supercharge/macroable'
 import { RequestHeaderBag } from './request-header-bag'
 import { IncomingHttpHeaders, IncomingMessage } from 'http'
 import { InteractsWithState } from './interacts-with-state'
-import { CookieOptions, HttpContext, HttpRequest, InteractsWithContentTypes, RequestCookieBuilderCallback } from '@supercharge/contracts'
+import { CookieOptions, HttpContext, HttpMethods, HttpRequest, InteractsWithContentTypes, RequestCookieBuilderCallback } from '@supercharge/contracts'
 
 declare module 'koa' {
   interface Request extends Koa.BaseRequest {
@@ -68,8 +68,15 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
   /**
    * Returns the request method.
    */
-  method (): string {
-    return this.koaCtx.request.method
+  method (): HttpMethods {
+    return this.koaCtx.request.method.toUpperCase() as HttpMethods
+  }
+
+  /**
+   * Determine whether the request is using the given HTTP `method`.
+   */
+  isMethod (method: HttpMethods): method is HttpMethods {
+    return this.method() === method
   }
 
   /**

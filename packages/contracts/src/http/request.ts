@@ -1,12 +1,13 @@
 'use strict'
 
 import { FileBag } from './file-bag'
-import { IncomingHttpHeaders, IncomingMessage } from 'http'
+import { HttpMethods } from './methods'
 import { HttpContext } from './context'
 import { CookieBag } from './cookie-bag'
 import { ParameterBag } from './parameter-bag'
 import { Macroable } from '@supercharge/macroable'
 import { RequestHeaderBag } from './request-header-bag'
+import { IncomingHttpHeaders, IncomingMessage } from 'http'
 import { RequestCookieBuilderCallback } from './cookie-options-builder'
 import { InteractsWithContentTypes, InteractsWithState } from './concerns'
 
@@ -24,7 +25,12 @@ export interface HttpRequest extends InteractsWithState, InteractsWithContentTyp
   /**
    * Returns the request method.
    */
-  method (): string
+  method (): HttpMethods
+
+  /**
+   * Determine whether the request is using the given HTTP `method`.
+   */
+  isMethod (method: HttpMethods): method is HttpMethods
 
   /**
    * Returns the request’s URL path.
