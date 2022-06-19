@@ -602,4 +602,22 @@ test('request.contentLength()', async () => {
     .expect(200, '0')
 })
 
+test('isMethod', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload({
+      isGet: request.isMethod('GET'),
+      isPost: request.isMethod('POST')
+    })
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(200, {
+      isGet: true,
+      isPost: false
+    })
+})
+
 test.run()
