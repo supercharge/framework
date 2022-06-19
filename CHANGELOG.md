@@ -21,6 +21,8 @@
 
 ### Breaking Changes
 - Require Node.js v16. Drop support for Node.js v12 and v14
+- `@supercharge/contracts`
+    - the exported `HttpMethods` type only exports HTTP methods in uppercase
 - `@supercharge/http`
     - instances using the `InteractsWithState` trait (HTTP context/request/response) return a state bag instead of a plain JS object
 
