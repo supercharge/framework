@@ -273,7 +273,7 @@ export class Router implements HttpRouter {
    * @returns {Route}
    */
   get (path: string, handler: RouteHandler, middleware?: string[]): Route {
-    return this.addRoute(['get', 'head'], path, handler, middleware)
+    return this.addRoute(['GET', 'HEAD'], path, handler, middleware)
   }
 
   /**
@@ -286,7 +286,7 @@ export class Router implements HttpRouter {
    * @returns {Route}
    */
   post (path: string, handler: RouteHandler, middleware?: string[]): Route {
-    return this.addRoute(['post'], path, handler, middleware)
+    return this.addRoute(['POST'], path, handler, middleware)
   }
 
   /**
@@ -299,7 +299,7 @@ export class Router implements HttpRouter {
    * @returns {Route}
    */
   put (path: string, handler: RouteHandler, middleware?: string[]): Route {
-    return this.addRoute(['put'], path, handler, middleware)
+    return this.addRoute(['PUT'], path, handler, middleware)
   }
 
   /**
@@ -312,7 +312,7 @@ export class Router implements HttpRouter {
    * @returns {Route}
    */
   delete (path: string, handler: RouteHandler, middleware?: string[]): Route {
-    return this.addRoute(['delete'], path, handler, middleware)
+    return this.addRoute(['DELETE'], path, handler, middleware)
   }
 
   /**
@@ -325,7 +325,7 @@ export class Router implements HttpRouter {
    * @returns {Route}
    */
   patch (path: string, handler: RouteHandler, middleware?: string[]): Route {
-    return this.addRoute(['patch'], path, handler, middleware)
+    return this.addRoute(['PATCH'], path, handler, middleware)
   }
 
   /**
@@ -338,7 +338,7 @@ export class Router implements HttpRouter {
    * @returns {Route}
    */
   options (path: string, handler: RouteHandler): Route {
-    return this.addRoute(['options'], path, handler)
+    return this.addRoute(['OPTIONS'], path, handler)
   }
 
   /**
