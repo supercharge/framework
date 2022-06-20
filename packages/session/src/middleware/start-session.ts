@@ -1,9 +1,10 @@
 'use strict'
 
 import { SessionManager } from '../session-manager'
+import { InteractsWithTime } from '@supercharge/support'
 import { Session, HttpContext, HttpResponse, NextHandler, HttpRequest } from '@supercharge/contracts'
 
-export class StartSessionMiddleware {
+export class StartSessionMiddleware extends InteractsWithTime {
   /**
    * Stores the session manager instance.
    */
@@ -13,6 +14,8 @@ export class StartSessionMiddleware {
    * Create a new middleware instance.
    */
   constructor (manager: SessionManager) {
+    super()
+
     this.sessionManager = manager
   }
 
@@ -51,7 +54,24 @@ export class StartSessionMiddleware {
    */
   async addSessionCookieToResponse (session: Session, response: HttpResponse): Promise<void> {
     response.cookie(session.name(), session.id(), cookie => {
-      cookie.useConfig(this.sessionManager.sessionConfig().cookie().plain())
+      cookie
+        .useConfig(this.sessionManager.sessionConfig().cookie().plain())
+        .expiresAt(this.cookieExpirationDate())
     })
+  }
+
+  /**
+   * Returns the session cookie expiration date.
+   */
+  private cookieExpirationDate (): Date {
+    const config = this.sessionManager.sessionConfig()
+
+    if (config.expiresOnClose()) {
+      return this.now()
+    }
+
+    return this.addSecondsDelay(
+      this.now(), config.lifetime()
+    )
   }
 }
