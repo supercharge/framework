@@ -1,7 +1,7 @@
 {
   "name": "@supercharge/session",
   "description": "The Supercharge session package",
-  "version": "2.0.0-alpha.9",
+  "version": "3.0.0",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
@@ -12,10 +12,10 @@
   "main": "dist",
   "types": "dist",
   "dependencies": {
-    "@supercharge/contracts": "^2.0.0-alpha.9",
-    "@supercharge/manager": "^2.0.0-alpha.9",
+    "@supercharge/contracts": "^3.0.0",
+    "@supercharge/manager": "^3.0.0",
     "@supercharge/strings": "~1.28.0",
-    "@supercharge/support": "^2.0.0-alpha.9",
+    "@supercharge/support": "^3.0.0",
     "lodash": "~4.17.21",
     "ms": "~2.1.3"
   },
@@ -23,9 +23,9 @@
     "@japa/run-failed-tests": "~1.0.7",
     "@japa/runner": "~2.0.9",
     "@japa/spec-reporter": "~1.1.12",
-    "@supercharge/core": "^2.0.0-alpha.9",
+    "@supercharge/core": "^3.0.0",
     "@supercharge/eslint-config-typescript": "~2.3.0",
-    "@supercharge/http": "^2.0.0-alpha.9",
+    "@supercharge/http": "^3.0.0",
     "@types/lodash": "~4.14.182",
     "@types/ms": "~0.7.31",
     "c8": "~7.11.3",

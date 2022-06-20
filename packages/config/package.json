@@ -1,7 +1,7 @@
 {
     "name": "@supercharge/config",
     "description": "The Supercharge config package",
-    "version": "2.0.0-alpha.9",
+    "version": "3.0.0",
     "author": "Marcus Pöhls <marcus@superchargejs.com>",
     "bugs": {
         "url": "https://github.com/supercharge/framework/issues"
@@ -12,7 +12,7 @@
     "main": "dist",
     "types": "dist",
     "dependencies": {
-        "@supercharge/contracts": "^2.0.0-alpha.9",
+        "@supercharge/contracts": "^3.0.0",
         "lodash": "~4.17.21"
     },
     "devDependencies": {

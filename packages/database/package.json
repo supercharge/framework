@@ -1,7 +1,7 @@
 {
   "name": "@supercharge/database",
   "description": "The Supercharge database package",
-  "version": "2.0.0-alpha.10",
+  "version": "3.0.0",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
@@ -12,15 +12,15 @@
     "dist"
   ],
   "dependencies": {
-    "@supercharge/contracts": "^2.0.0-alpha.9",
-    "@supercharge/manager": "^2.0.0-alpha.9",
-    "@supercharge/support": "^2.0.0-alpha.9",
+    "@supercharge/contracts": "^3.0.0",
+    "@supercharge/manager": "^3.0.0",
+    "@supercharge/support": "^3.0.0",
     "knex": "~2.1.0",
     "objection": "~3.0.1",
     "sqlite3": "~5.0.8"
   },
   "devDependencies": {
-    "@supercharge/core": "^2.0.0-alpha.9",
+    "@supercharge/core": "^3.0.0",
     "@supercharge/eslint-config-typescript": "~2.3.0",
     "eslint": "~8.18.0",
     "tap": "~16.3.0",
