@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.0.0](https://github.com/supercharge/framework/compare/v2.0.0-alpha.10...v3.0.0) - 2022-xx-xx
+## [3.0.0](https://github.com/supercharge/framework/compare/v2.0.0-alpha.10...v3.0.0) - 2022-06-20
 
 ### Added
 - `@supercharge/session`: a Supercharge session package
