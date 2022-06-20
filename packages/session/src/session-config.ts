@@ -62,6 +62,13 @@ export class SessionConfig {
   }
 
   /**
+   * Determine whether to clear the session when the browser closes.
+   */
+  expiresOnClose (): boolean {
+    return this.config.expireOnClose ?? false
+  }
+
+  /**
    * Returns the session cookie lifetime in **seconds** calculated from the given `milliseconds`
    */
   private lifetimeInSecondsFrom (lifetime: string): number {
