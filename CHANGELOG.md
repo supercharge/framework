@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.1.0](https://github.com/supercharge/framework/compare/v3.0.0...v3.1.0) - 2022-07-xx
+
+### Added
+- `@supercharge/http`
+    - `state().clear()` method: clear all items from the shared state
+
+### Updated
+- bump dependencies
+
+
 ## [3.0.0](https://github.com/supercharge/framework/compare/v2.0.0-alpha.10...v3.0.0) - 2022-06-20
 
 ### Added
