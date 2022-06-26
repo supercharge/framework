@@ -51,7 +51,7 @@ export class StateBag implements StateBagContract {
   /**
    * Add a key-value-pair to the shared state or an object of key-value-pairs.
    */
-  add (name: string | Dict<any>, value: any): this {
+  add (name: string | Dict<any>, value?: any): this {
     if (typeof name === 'string') {
       return tap(this, () => {
         this.ctx.state[name] = value
@@ -71,10 +71,17 @@ export class StateBag implements StateBagContract {
    * Remove the shared state item for the given `name`.
    */
   remove (name: string): this {
-    return tap(this, () => {
-      const { [name]: _, ...rest } = this.ctx.state
+    const { [name]: _, ...rest } = this.ctx.state
 
-      this.ctx.state = rest
+    return this.clear().add(rest)
+  }
+
+  /**
+   * Removes all shared state items.
+   */
+  clear (): this {
+    return tap(this, () => {
+      this.ctx.state = {}
     })
   }
 

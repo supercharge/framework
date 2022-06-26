@@ -29,4 +29,9 @@ export interface StateBag {
    * Remove the shared state item for the given `name`.
    */
   remove(name: string): this
+
+  /**
+   * Removes all shared state items.
+   */
+  clear(): this
 }
