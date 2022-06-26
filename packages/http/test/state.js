@@ -63,4 +63,9 @@ test('remove', () => {
   expect(new StateBag({ state: { a: 1, b: 2 } }).remove('c').all()).toEqual({ a: 1, b: 2 })
 })
 
+test('clear', () => {
+  expect(new StateBag({ state: {} }).clear().all()).toEqual({ })
+  expect(new StateBag({ state: { a: 1, b: 2 } }).clear().all()).toEqual({ })
+})
+
 test.run()
