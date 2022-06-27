@@ -27,7 +27,7 @@
     "@supercharge/support": "^3.0.0",
     "dotenv": "~16.0.1",
     "globby": "~11.1.0",
-    "type-fest": "~2.13.1",
+    "type-fest": "~2.14.0",
     "youch": "~3.2.0",
     "youch-terminal": "~2.1.4"
   },
