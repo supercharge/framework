@@ -33,7 +33,7 @@ configure({
     reporters: [specReporter()],
     importer: (filePath) => require(filePath),
     filters: {
-      // files: ['cookie-session-driver.js']
+      // files: ['test-file.js']
     }
   }
 })
