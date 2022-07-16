@@ -1,0 +1,65 @@
+{
+  "name": "@supercharge/application",
+  "description": "The Supercharge application package",
+  "version": "3.0.0",
+  "author": "Marcus Pöhls <marcus@superchargejs.com>",
+  "bugs": {
+    "url": "https://github.com/supercharge/framework/issues"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "dist",
+  "types": "dist",
+  "dependencies": {
+    "@supercharge/arrays": "~3.2.0",
+    "@supercharge/classes": "~1.10.0",
+    "@supercharge/collections": "~4.3.0",
+    "@supercharge/config": "^3.0.0",
+    "@supercharge/container": "^3.0.0",
+    "@supercharge/contracts": "^3.0.0",
+    "@supercharge/env": "^3.0.0",
+    "@supercharge/goodies": "~1.10.1",
+    "@supercharge/logging": "^3.0.0",
+    "@supercharge/map": "~1.5.0",
+    "@supercharge/strings": "~1.28.0"
+  },
+  "devDependencies": {
+    "@japa/run-failed-tests": "~1.0.7",
+    "@japa/runner": "~2.0.9",
+    "@japa/spec-reporter": "~1.1.12",
+    "@supercharge/eslint-config-typescript": "~2.3.0",
+    "c8": "~7.11.3",
+    "eslint": "~8.19.0",
+    "expect": "~28.1.1",
+    "typescript": "~4.7.4"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "homepage": "https://superchargejs.com",
+  "keywords": [
+    "application",
+    "supercharge",
+    "superchargejs",
+    "nodejs"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "directory": "packages/application",
+    "url": "git+https://github.com/supercharge/framework.git"
+  },
+  "scripts": {
+    "build": "tsc --build tsconfig.json --force",
+    "watch": "npm run build -- --watch",
+    "lint": "eslint src --ext .js,.ts",
+    "lint:fix": "npm run lint -- --fix",
+    "posttest": "c8 report --reporter=html",
+    "test": "npm run build && npm run lint && npm run test:run",
+    "test:run": "c8 node bin/test.js"
+  }
+}
