@@ -1,6 +1,5 @@
 'use strict'
 
-// const Sinon = require('sinon')
 const Path = require('path')
 const Sinon = require('sinon')
 const { test } = require('uvu')

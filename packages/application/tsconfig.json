@@ -13,22 +13,7 @@
     ],
     "references": [
         {
-            "path": "../application"
-        },
-        {
-            "path": "../config"
-        },
-        {
-            "path": "../env"
-        },
-        {
             "path": "../contracts"
-        },
-        {
-            "path": "../container"
-        },
-        {
-            "path": "../http"
         }
     ]
 }
