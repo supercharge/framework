@@ -5,6 +5,8 @@
 ### Added
 - `@supercharge/http`
     - `state().clear()` method: clear all items from the shared state
+- `@supercharge/application`: move `Application` class to a dedicated package
+- `@supercharge/encryption`: add encryption package
 
 ### Updated
 - bump dependencies
