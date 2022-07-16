@@ -52,8 +52,8 @@ export class Application extends Container implements ApplicationContract {
    *
    * @returns {Application}
    */
-  public static createWithAppRoot (basePath: string): Application {
-    return new Application(basePath)
+  public static createWithAppRoot (basePath: string): ApplicationContract {
+    return new this(basePath)
   }
 
   /**
@@ -88,7 +88,8 @@ export class Application extends Container implements ApplicationContract {
    * Register the base service provider into the container.
    */
   private registerBaseServiceProviders (): void {
-    this.register(new LoggingServiceProvider(this))
+    this
+      .register(new LoggingServiceProvider(this))
   }
 
   /**
