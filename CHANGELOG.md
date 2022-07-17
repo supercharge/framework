@@ -1,12 +1,14 @@
 # Changelog
 
-## [3.1.0](https://github.com/supercharge/framework/compare/v3.0.0...v3.1.0) - 2022-07-xx
+## [3.1.0](https://github.com/supercharge/framework/compare/v3.0.0...v3.1.0) - 2022-07-17
 
 ### Added
 - `@supercharge/http`
     - `state().clear()` method: clear all items from the shared state
 - `@supercharge/application`: move `Application` class to a dedicated package
 - `@supercharge/encryption`: add encryption package
+- `@supercharge/facades`:
+    - add `Crypt` facade for the encrypter service
 
 ### Updated
 - bump dependencies
