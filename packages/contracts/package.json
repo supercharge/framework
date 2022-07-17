@@ -25,12 +25,12 @@
   },
   "dependencies": {
     "@supercharge/macroable": "~1.0.0",
-    "@types/node": "~18.0.0",
+    "@types/node": "~18.0.5",
     "knex": "~2.1.0"
   },
   "devDependencies": {
     "@supercharge/eslint-config-typescript": "~2.3.0",
-    "eslint": "~8.18.0",
+    "eslint": "~8.20.0",
     "typescript": "~4.7.4"
   },
   "scripts": {
