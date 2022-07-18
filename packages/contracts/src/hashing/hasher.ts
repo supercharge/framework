@@ -11,12 +11,12 @@ export interface Hasher {
   make (value: string): Promise<string>
 
   /**
-   * Compare a the plain-text `value` against the given `hash`.
+   * Compare a the `plain` text value against the given `hashedValue`.
    *
    * @param {String} value
-   * @param {String} hash
+   * @param {String} hashedValue
    *
    * @returns {Boolean}
    */
-  check (value: string, hash: string): Promise<boolean>
+  check (plain: string, hashedValue: string): Promise<boolean>
 }
