@@ -1,10 +1,6 @@
 'use strict'
 
-import { Hasher as HasherContract } from '@supercharge/contracts'
-
-export interface BcryptOptions {
-  rounds: number
-}
+import { Hasher as HasherContract, HashConfig } from '@supercharge/contracts'
 
 export class BcryptHasher implements HasherContract {
   /**
@@ -15,7 +11,7 @@ export class BcryptHasher implements HasherContract {
   /**
    * Create a new instance.
    */
-  constructor ({ rounds }: BcryptOptions) {
+  constructor ({ rounds }: HashConfig['bcrypt']) {
     this.rounds = rounds ?? this.rounds
   }
 
