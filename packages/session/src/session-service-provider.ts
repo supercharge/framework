@@ -13,7 +13,7 @@ export interface ContainerBindings {
 }
 
 /**
- * Extend the supercharge request interface with the session property.
+ * Extend the Supercharge request interface with the session property.
  */
 declare module '@supercharge/contracts' {
   export interface HttpRequest {
