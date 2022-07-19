@@ -2,7 +2,7 @@
 
 import { RouterContext } from '@koa/router'
 import { InteractsWithState } from './interacts-with-state'
-import { Application, HttpContext as HttpContextContract, HttpRequest, HttpResponse, CookieOptions, ViewEngine } from '@supercharge/contracts'
+import { Application, HttpContext as HttpContextContract, HttpRequest, HttpResponse, CookieOptions, ViewEngine, HttpResponseCtor, HttpRequestCtor } from '@supercharge/contracts'
 
 export class HttpContext extends InteractsWithState implements HttpContextContract {
   /**
@@ -54,7 +54,7 @@ export class HttpContext extends InteractsWithState implements HttpContextContra
      * the request is macroable. That means, packages may decorate the
      * request with custom methods. And we want to allow that easily.
      */
-    const Request = this.app.make('request')
+    const Request = this.app.make<HttpRequestCtor>('request')
 
     return new Request(this, this.cookieOptions())
   }
@@ -70,7 +70,7 @@ export class HttpContext extends InteractsWithState implements HttpContextContra
      * the response is macroable. That means, packages may decorate the
      * response with custom methods. And we want to allow that easily.
      */
-    const Response = this.app.make('response')
+    const Response = this.app.make<HttpResponseCtor>('response')
 
     return new Response(
       this, this.app.make<ViewEngine>('view'), this.cookieOptions()
