@@ -2,11 +2,20 @@
 
 import { HttpContext } from './context'
 import { CookieBag } from './cookie-bag'
-import { ViewConfigBuilder } from '../view'
+import { CookieOptions } from './cookie-options'
+import { MacroableCtor } from '@supercharge/macroable'
+import { ViewConfigBuilder, ViewEngine } from '../view'
 import { HttpRedirect, ResponseCookieBuilderCallback } from '.'
 import { InteractsWithState } from './concerns/interacts-with-state'
 
 export type ViewBuilderCallback = (viewBuilder: ViewConfigBuilder) => unknown
+
+export interface HttpResponseCtor extends MacroableCtor {
+  /**
+   * Create a new HTTP response instance.
+   */
+  new (context: HttpContext, view: ViewEngine, cookieOptions: CookieOptions): HttpResponse
+}
 
 export interface HttpResponse<T = any> extends InteractsWithState {
   /**
