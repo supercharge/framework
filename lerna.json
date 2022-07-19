@@ -3,6 +3,7 @@
   "packages": [
     "packages/*"
   ],
+  "useNx": true,
   "command": {
     "publish": {
       "ignoreChanges": [
