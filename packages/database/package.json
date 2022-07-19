@@ -15,7 +15,7 @@
     "@supercharge/contracts": "^3.1.0",
     "@supercharge/manager": "^3.1.0",
     "@supercharge/support": "^3.1.0",
-    "knex": "~2.1.0",
+    "knex": "~2.2.0",
     "objection": "~3.0.1",
     "sqlite3": "~5.0.9"
   },
