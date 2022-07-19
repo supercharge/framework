@@ -1,14 +1,16 @@
 'use strict'
 
 import { CookieBag } from './cookie-bag'
+import { Mixin as Many } from 'ts-mixer'
 import { tap } from '@supercharge/goodies'
 import { HttpRedirect } from './http-redirect'
+import { Macroable } from '@supercharge/macroable'
 import { ResponseHeaderBag } from './response-header-bag'
 import { ViewConfigBuilder } from './view-config-builder'
 import { InteractsWithState } from './interacts-with-state'
 import { CookieOptions, HttpContext, HttpResponse, ViewEngine, ViewBuilderCallback, ResponseCookieBuilderCallback } from '@supercharge/contracts'
 
-export class Response extends InteractsWithState implements HttpResponse {
+export class Response extends Many(Macroable, InteractsWithState) implements HttpResponse {
   /**
    * Stores the internal properties.
    */
