@@ -614,6 +614,27 @@ test('response.status()', async () => {
     .expect(204)
 })
 
+test('response.getStatus()', async () => {
+  const app = new Koa()
+    .use(async (ctx, next) => {
+      const { response } = HttpContext.wrap(ctx, appMock)
+
+      response.status(201)
+
+      await next()
+    })
+    .use(async (ctx, next) => {
+      const { response } = HttpContext.wrap(ctx, appMock)
+
+      response.payload({ statusCode: response.getStatus() })
+      await next()
+    })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(201, { statusCode: 201 })
+})
+
 test('response.type()', async () => {
   const app = new Koa().use(ctx => {
     const { response } = HttpContext.wrap(ctx, appMock)
@@ -691,6 +712,60 @@ test('response.permanentRedirect()', async () => {
     .expect(301)
 
   expect(response.headers.location).toEqual('/other-permanent-path')
+})
+
+test('response.isRedirect()', async () => {
+  const app = new Koa()
+    .use(async (ctx, next) => {
+      HttpContext.wrap(ctx, appMock)
+        .response
+        .redirect()
+        .to('/uri')
+
+      await next()
+    })
+    .use(async (ctx, next) => {
+      const { response } = HttpContext.wrap(ctx, appMock)
+
+      response.payload({
+        isRedirect: response.isRedirect()
+      })
+
+      await next()
+    })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(302, { isRedirect: true })
+})
+
+test('response.isRedirect() with specific status code', async () => {
+  const app = new Koa()
+    .use(async (ctx, next) => {
+      HttpContext.wrap(ctx, appMock)
+        .response
+        .permanentRedirect()
+        .to('/uri')
+
+      await next()
+    })
+    .use(async (ctx, next) => {
+      const { response } = HttpContext.wrap(ctx, appMock)
+
+      response.payload({
+        isPermanentRedirect: response.isRedirect(301),
+        isTemporaryRedirect: response.isRedirect(302)
+      })
+
+      await next()
+    })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(301, {
+      isPermanentRedirect: true,
+      isTemporaryRedirect: false
+    })
 })
 
 test('response.view()', async () => {

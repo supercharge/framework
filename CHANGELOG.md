@@ -7,6 +7,9 @@
     - export `HttpRequestCtor` interface which can be used when resolving the `'request'` binding from the container
 - `@supercharge/session`
     - use the `HttpRequestCtor` interface
+- `@supercharge/http`
+    - add `response.getStatus()` method: returns the HTTP response status code
+    - add `response.isRedirect(statusCode?: number)` method: determine whether the response is an HTTP redirect (optionally checking for the given `statusCode`)
 
 ### Updated
 - bump dependencies

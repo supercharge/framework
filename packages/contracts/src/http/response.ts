@@ -101,7 +101,7 @@ export interface HttpResponse<T = any> extends InteractsWithState {
   payload (payload: T): this
 
   /**
-   * Set a response status.
+   * Set a response status code.
    *
    * @example
    * ```
@@ -109,6 +109,17 @@ export interface HttpResponse<T = any> extends InteractsWithState {
    * ```
    */
   status (status: number): this
+
+  /**
+   * Returns the response status code.
+   *
+   * @example
+   * ```
+   * response.getStatusCode()
+   * // 204
+   * ```
+   */
+  getStatus (): number
 
   /**
    * Temporarily redirect the request using HTTP status code 302. You can customize
@@ -140,6 +151,22 @@ export interface HttpResponse<T = any> extends InteractsWithState {
    */
   permanentRedirect (): HttpRedirect
   permanentRedirect (url: string): void
+
+  /**
+   * Determine whether the response is an HTTP redirect using one of the status
+   * codes in range 300 to 399. You may also determine whether the response is
+   * a redirect using a `statusCode` value that you provide as an argument.
+   *
+   * @example
+   * ```
+   * response.isRedirect()
+   * // true
+   *
+   * response.isRedirect(307)
+   * // false
+   * ```
+   */
+  isRedirect (statusCode?: number): boolean
 
   /**
    * Set the response `Content-Type` header. This will look up the mime type

@@ -154,6 +154,15 @@ export class Response extends InteractsWithState implements HttpResponse {
   }
 
   /**
+   * Returns the response status code.
+   *
+   * @returns {Number}
+   */
+  getStatus (): number {
+    return this.koaCtx.response.status
+  }
+
+  /**
    * Set the response `Content-Type` header. This will look up the mime type
    * and set the related value as the content type header field. It also
    * removes the content type header if no valid mime type is available.
@@ -204,6 +213,19 @@ export class Response extends InteractsWithState implements HttpResponse {
   permanentRedirect (url: string): HttpRedirect
   permanentRedirect (url?: any): HttpRedirect {
     return this.redirect(url).permanent()
+  }
+
+  /**
+   * Determine whether the response is an HTTP redirect using one of the status
+   * codes in range 300 to 399. You may also determine whether the response is
+   * a redirect using a `statusCode` value that you provide as an argument.
+   */
+  isRedirect (statusCode?: number): boolean {
+    const responseStatusCode = this.ctx().raw.response.status as number
+
+    return statusCode
+      ? statusCode === responseStatusCode
+      : responseStatusCode >= 300 && responseStatusCode <= 399
   }
 
   /**
