@@ -24,9 +24,9 @@
     "url": "git+https://github.com/supercharge/framework.git"
   },
   "dependencies": {
-    "@supercharge/macroable": "~1.0.0",
+    "@supercharge/macroable": "~2.0.1",
     "@types/node": "~18.0.6",
-    "knex": "~2.1.0"
+    "knex": "~2.2.0"
   },
   "devDependencies": {
     "@supercharge/eslint-config-typescript": "~2.3.0",
