@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.2.0](https://github.com/supercharge/framework/compare/v3.1.0...v3.2.0) - 2022-xx-xx
+
+### Added
+- `@supercharge/contracts`
+    - export `HttpRequestCtor` interface which can be used when resolving the `'request'` binding from the container
+- `@supercharge/session`
+    - use the `HttpRequestCtor` interface
+
+### Updated
+- bump dependencies
+
+
 ## [3.1.0](https://github.com/supercharge/framework/compare/v3.0.0...v3.1.0) - 2022-07-17
 
 ### Added
