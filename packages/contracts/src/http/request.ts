@@ -5,13 +5,21 @@ import { HttpMethods } from './methods'
 import { HttpContext } from './context'
 import { CookieBag } from './cookie-bag'
 import { ParameterBag } from './parameter-bag'
-import { Macroable } from '@supercharge/macroable'
+import { CookieOptions } from './cookie-options'
+import { MacroableCtor } from '@supercharge/macroable'
 import { RequestHeaderBag } from './request-header-bag'
 import { IncomingHttpHeaders, IncomingMessage } from 'http'
 import { RequestCookieBuilderCallback } from './cookie-options-builder'
 import { InteractsWithContentTypes, InteractsWithState } from './concerns'
 
-export interface HttpRequest extends InteractsWithState, InteractsWithContentTypes, Macroable {
+export interface HttpRequestCtor extends MacroableCtor {
+  /**
+   * Create a new HTTP request instance.
+   */
+  new (context: HttpContext, cookieOptions: CookieOptions): HttpRequest
+}
+
+export interface HttpRequest extends InteractsWithState, InteractsWithContentTypes {
   /**
    * Returns the HTTP context.
    */
