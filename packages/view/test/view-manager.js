@@ -111,4 +111,15 @@ test('exists', async () => {
   expect(await view.exists('not-existing-test-view')).toBe(false)
 })
 
+test('registerPartial', async () => {
+  const app = makeApp()
+  const view = new ViewManager(app)
+  view.registerPartial('test', '<div id="testing-div">this is a test partial</div>')
+  await view.boot()
+
+  expect(
+    await view.render('test-view-with-in-memory-partial')
+  ).toEqual('<p>Test View: <div id="testing-div">this is a test partial</div></p>\n')
+})
+
 test.run()
