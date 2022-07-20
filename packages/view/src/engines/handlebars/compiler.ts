@@ -4,7 +4,7 @@ import Path from 'path'
 import Fs from '@supercharge/fs'
 import Str from '@supercharge/strings'
 import Collect from '@supercharge/collections'
-import { esmResolve } from '@supercharge/goodies'
+import { esmResolve, tap } from '@supercharge/goodies'
 import Handlebars, { HelperDelegate } from 'handlebars'
 import { Application, ConfigStore, Logger, ViewConfig, ViewEngine } from '@supercharge/contracts'
 
@@ -162,12 +162,16 @@ export class HandlebarsCompiler implements ViewEngine {
    * Load and register partial views.
    */
   async loadPartials (): Promise<void> {
-    for (const location of await this.partialsLocations()) {
+    for (const partialsFolder of await this.partialsLocations()) {
       await Collect(
-        await Fs.allFiles(location)
+        await Fs.allFiles(partialsFolder)
       )
-        .filter(partial => this.isViewFile(partial))
-        .forEach(async view => await this.registerPartial(view, location))
+        .filter(partial => {
+          return this.isViewFile(partial)
+        })
+        .forEach(async partial => {
+          return await this.registerPartialFromFile(partial, partialsFolder)
+        })
     }
   }
 
@@ -189,14 +193,28 @@ export class HandlebarsCompiler implements ViewEngine {
    *
    * @param {string} file
    */
-  async registerPartial (file: string, basePath: string): Promise<void> {
+  async registerPartialFromFile (file: string, basePath: string): Promise<void> {
     try {
-      this.handlebars().registerPartial(
+      this.registerPartial(
         this.partialNameFrom(file, basePath), await Fs.content(file)
       )
     } catch (error: any) {
       this.logger().warning(`WARNING: failed to register partial "${file}": ${String(error.message)}`)
     }
+  }
+
+  /**
+   * Register a partial view with the given `name` and `content` to the handlebars engine.
+   *
+   * @param {String} name
+   * @param {String} content
+   *
+   * @returns {this}
+   */
+  registerPartial (name: string, content: string): this {
+    return tap(this, () => {
+      this.handlebars().registerPartial(name, content)
+    })
   }
 
   /**

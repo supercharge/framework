@@ -1,5 +1,6 @@
 'use strict'
 
+import { tap } from '@supercharge/goodies'
 import { Manager } from '@supercharge/manager'
 import { HandlebarsCompiler } from './engines/handlebars'
 import { Application, ViewConfig, ViewEngine } from '@supercharge/contracts'
@@ -82,6 +83,20 @@ export class ViewManager extends Manager implements ViewEngine {
    */
   async exists (view: string): Promise<boolean> {
     return await this.driver().exists(view)
+  }
+
+  /**
+   * Register a partial view with the given `name` and `content` to the handlebars engine.
+   *
+   * @param {String} name
+   * @param {String} content
+   *
+   * @returns {this}
+   */
+  registerPartial (name: string, content: string): this {
+    return tap(this, () => {
+      this.driver().registerPartial(name, content)
+    })
   }
 
   /**

@@ -19,4 +19,9 @@ export interface ViewEngine {
    * Determine whether the given `view` template file exists.
    */
   exists(view: string): Promise<boolean>
+
+  /**
+   * Register a partial view with the given `name` and `content` to the handlebars engine.
+   */
+  registerPartial (name: string, content: string): this
 }
