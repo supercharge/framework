@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.3.0](https://github.com/supercharge/framework/compare/v3.2.0...v3.3.0) - 2022-07-xx
+
+### Added
+- `@supercharge/view`
+    - add `registerPartial(name, content)` method: register a partial view dynamically in a service provider (for example in community packages)
+
+### Updated
+- bump dependencies
+
+
 ## [3.2.0](https://github.com/supercharge/framework/compare/v3.1.0...v3.2.0) - 2022-07-19
 
 ### Added
