@@ -51,6 +51,11 @@ export interface HttpRequest extends InteractsWithState, InteractsWithContentTyp
   query(): ParameterBag<string | string[]>
 
   /**
+   * Returns the plain query string, without the leading ?.
+   */
+  queryString(): string
+
+  /**
    * Returns the path parameter bag.
    */
   params(): ParameterBag<string>

@@ -648,4 +648,50 @@ test('userAgent', async () => {
     .expect(200, { })
 })
 
+test.only('querystring', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload({
+      querystring: request.queryString()
+    })
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(200, { querystring: '' })
+
+  await Supertest(app.callback())
+    .get('/?name=Supercharge')
+    .expect(200, { querystring: 'name=Supercharge' })
+})
+
+test.skip('url', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload({
+      url: request.url()
+    })
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .set('user-agent', 'macOS-Supercharge-UA')
+    .expect(200, {
+      userAgent: 'macOS-Supercharge-UA'
+    })
+
+  await Supertest(app.callback())
+    .get('/')
+    .set('User-Agent', 'macOS-Supercharge-UA')
+    .expect(200, {
+      userAgent: 'macOS-Supercharge-UA'
+    })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(200, { })
+})
+
 test.run()

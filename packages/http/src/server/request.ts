@@ -94,6 +94,13 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
   }
 
   /**
+   * Returns the plain query string, without the leading ?.
+   */
+  queryString (): string {
+    return this.koaCtx.querystring
+  }
+
+  /**
    * Returns the request’s path parameters.
    */
   params (): ParameterBag<string> {
