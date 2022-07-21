@@ -1,11 +1,13 @@
 'use strict'
 
 import * as Koa from 'koa'
+import { URL } from './url'
 import { Files } from 'formidable'
 import { FileBag } from './file-bag'
 import Str from '@supercharge/strings'
 import { CookieBag } from './cookie-bag'
 import { Mixin as Many } from 'ts-mixer'
+import { Arr } from '@supercharge/arrays'
 import { tap } from '@supercharge/goodies'
 import { ParameterBag } from './parameter-bag'
 import { Macroable } from '@supercharge/macroable'
@@ -142,6 +144,20 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
    */
   hasCookie (name: string): boolean {
     return this.cookies().has(name)
+  }
+
+  /**
+   * Returns a URL instance for this request.
+   */
+  url (): URL {
+    return new URL(this.koaCtx.URL.href)
+  }
+
+  /**
+    * Returns the full URL including protocol[:port], host, path, and query string.
+    */
+  fullUrl (): string {
+    return this.url().full()
   }
 
   /**
@@ -381,5 +397,38 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
    */
   userAgent (): IncomingHttpHeaders['user-agent'] {
     return this.header('user-agent')
+  }
+
+  /**
+   * Determine whether the request the request is an XMLHttpRequest.
+   */
+  isXmlHttpRequest (): boolean {
+    return this.header('X-Requested-With') === 'XMLHttpRequest'
+  }
+
+  /**
+   * Determine whether the request is the result of an AJAX call.
+   * This is an alias for {@link HttpRequest#isXmlHttpRequest}.
+   */
+  isAjax (): boolean {
+    return this.isXmlHttpRequest()
+  }
+
+  /**
+   * Determine whether the request is the result of a PJAX call.
+   */
+  isPjax (): boolean {
+    return this.hasHeader('X-PJAX')
+  }
+
+  /**
+   * Determine whether the request is the result of a prefetch call.
+   */
+  isPrefetch (): boolean {
+    return Arr.from([
+      this.header('X-moz', '') as string,
+      this.header('Purpose', '') as string
+    ]).map(header => header.toLowerCase())
+      .has(header => header === 'prefetch')
   }
 }

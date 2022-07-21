@@ -14,7 +14,7 @@
 	"dependencies": {
 		"@koa/cors": "~3.3.0",
 		"@koa/router": "~11.0.1",
-		"@supercharge/arrays": "^3.2.0",
+		"@supercharge/arrays": "~3.2.0",
 		"@supercharge/classes": "~1.10.0",
 		"@supercharge/collections": "~4.3.0",
 		"@supercharge/contracts": "^3.2.0",
