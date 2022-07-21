@@ -648,7 +648,7 @@ test('userAgent', async () => {
     .expect(200, { })
 })
 
-test.only('querystring', async () => {
+test('querystring', async () => {
   const app = new Koa().use(ctx => {
     const { request, response } = HttpContext.wrap(ctx, appMock)
 
@@ -666,32 +666,84 @@ test.only('querystring', async () => {
     .expect(200, { querystring: 'name=Supercharge' })
 })
 
-test.skip('url', async () => {
+test('isPjax', async () => {
   const app = new Koa().use(ctx => {
     const { request, response } = HttpContext.wrap(ctx, appMock)
 
-    return response.payload({
-      url: request.url()
-    })
+    expect(request.isPjax()).toBe(false)
+
+    request.headers().set('X-PJAX', 'true')
+    expect(request.isPjax()).toBe(true)
+
+    request.headers().set('X-PJAX', 'false')
+    expect(request.isPjax()).toBe(true)
+
+    request.headers().set('X-PJAX', true)
+    expect(request.isPjax()).toBe(true)
+
+    request.headers().set('X-PJAX', '')
+    expect(request.isPjax()).toBe(false)
+
+    request.headers().set('X-PJAX', undefined)
+    expect(request.isPjax()).toBe(false)
+
+    return response.payload('ok')
   })
 
-  await Supertest(app.callback())
-    .get('/')
-    .set('user-agent', 'macOS-Supercharge-UA')
-    .expect(200, {
-      userAgent: 'macOS-Supercharge-UA'
-    })
+  await Supertest(app.callback()).get('/').expect(200)
+})
 
-  await Supertest(app.callback())
-    .get('/')
-    .set('User-Agent', 'macOS-Supercharge-UA')
-    .expect(200, {
-      userAgent: 'macOS-Supercharge-UA'
-    })
+test('isAjax', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
 
-  await Supertest(app.callback())
-    .get('/')
-    .expect(200, { })
+    expect(request.isAjax()).toBe(false)
+
+    request.headers().set('X-Requested-With', 'XMLHttpRequest')
+    expect(request.isAjax()).toBe(true)
+
+    request.headers().set('X-Requested-With', '')
+    expect(request.isAjax()).toBe(false)
+
+    request.headers().set('X-Requested-With', undefined)
+    expect(request.isAjax()).toBe(false)
+
+    return response.payload('ok')
+  })
+
+  await Supertest(app.callback()).get('/').expect(200)
+})
+
+test('isPrefetch', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    expect(request.isPrefetch()).toBe(false)
+
+    request.headers().set('X-moz', '')
+    expect(request.isPrefetch()).toBe(false)
+
+    request.headers().set('X-moz', 'prefetch')
+    expect(request.isPrefetch()).toBe(true)
+
+    request.headers().set('X-moz', 'Prefetch')
+    expect(request.isPrefetch()).toBe(true)
+
+    request.headers().remove('X-moz')
+
+    request.headers().set('Purpose', '')
+    expect(request.isPrefetch()).toBe(false)
+
+    request.headers().set('Purpose', 'prefetch')
+    expect(request.isPrefetch()).toBe(true)
+
+    request.headers().set('Purpose', 'Prefetch')
+    expect(request.isPrefetch()).toBe(true)
+
+    return response.payload('ok')
+  })
+
+  await Supertest(app.callback()).get('/').expect(200)
 })
 
 test.run()
