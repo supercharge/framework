@@ -1,6 +1,5 @@
 'use strict'
 
-import { URL } from './url'
 import { FileBag } from './file-bag'
 import { HttpMethods } from './methods'
 import { HttpContext } from './context'
@@ -102,11 +101,6 @@ export interface HttpRequest extends InteractsWithState, InteractsWithContentTyp
    * Determine whether a cookie exists for the given `name`.
    */
   hasCookie (name: string): boolean
-
-  /**
-   * Returns a url instance for this request.
-   */
-  url(): URL
 
   /**
    * Returns the full URL including protocol[:port], host, path, and query string.

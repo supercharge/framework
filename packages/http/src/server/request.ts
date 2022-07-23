@@ -1,7 +1,6 @@
 'use strict'
 
 import * as Koa from 'koa'
-import { URL } from './url'
 import { Files } from 'formidable'
 import { FileBag } from './file-bag'
 import Str from '@supercharge/strings'
@@ -99,7 +98,7 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
    * Returns the plain query string, without the leading ?.
    */
   queryString (): string {
-    return this.koaCtx.querystring
+    return this.koaCtx.request.querystring
   }
 
   /**
@@ -147,24 +146,17 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
   }
 
   /**
-   * Returns a URL instance for this request.
-   */
-  url (): URL {
-    return new URL(this.koaCtx.URL.toString())
-  }
-
-  /**
     * Returns the full URL including protocol[:port], host, path, and query string.
     */
   fullUrl (): string {
-    return this.url().full()
+    return this.koaCtx.href
   }
 
   /**
    * Returns the protocol value.
    */
   protocol (): Protocol {
-    return this.koaCtx.protocol
+    return this.koaCtx.request.protocol
   }
 
   /**
