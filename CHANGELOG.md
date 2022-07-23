@@ -5,6 +5,13 @@
 ### Added
 - `@supercharge/view`
     - add `registerPartial(name, content)` method: register a partial view dynamically in a service provider (for example in community packages)
+- `@supercharge/http`
+    - add `request.protocol()` method: returns the URL protocol
+    - add `request.queryString()` method: returns the URL’s query string as a string value
+    - add `request.isXmlHttpRequest()` method: is an alias for `isAjax` (see next line)
+    - add `request.isAjax()` method: determine whether the request is a result of an AJAX call
+    - add `request.isPjax()` method: determine whether the request is a result of an PJAX call
+    - add `request.isPrefetch()` method: determine whether the request is a result of a [prefetch call](https://developer.mozilla.org/en-US/docs/Glossary/Prefetch)
 
 ### Updated
 - bump dependencies
