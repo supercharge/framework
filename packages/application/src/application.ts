@@ -63,9 +63,9 @@ export class Application extends Container implements ApplicationContract {
    *
    * @param ErrorHandler
    *
-   * @returns {Application}
+   * @returns {this}
    */
-  withErrorHandler (ErrorHandler: ErrorHandlerCtor): Application {
+  withErrorHandler (ErrorHandler: ErrorHandlerCtor): this {
     return tap(this, () => {
       this.singleton('error.handler', () => {
         return new ErrorHandler(this)
