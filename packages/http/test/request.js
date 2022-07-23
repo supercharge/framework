@@ -666,6 +666,30 @@ test('querystring', async () => {
     .expect(200, { querystring: 'name=Supercharge' })
 })
 
+test('fullUrl', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload({
+      fullUrl: request.fullUrl()
+    })
+  })
+
+  // ensure to listen on a port we control
+  const server = app.listen(3000)
+
+  await Supertest(server)
+    .get('/foo?bar=baz&name=Supercharge')
+    .set({ host: 'localhost:3000' })
+    .expect(200, { fullUrl: 'http://localhost:3000/foo?bar=baz&name=Supercharge' })
+
+  await new Promise((resolve, reject) => {
+    server.close(error => {
+      error ? reject(error) : resolve()
+    })
+  })
+})
+
 test('protocol', async () => {
   const app = new Koa().use(ctx => {
     const { request, response } = HttpContext.wrap(ctx, appMock)
