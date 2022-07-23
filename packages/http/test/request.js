@@ -680,6 +680,61 @@ test('protocol', async () => {
     .expect(200, { protocol: 'http' })
 })
 
+test('protocol - when x-forwarded-proto is empty', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload({
+      protocol: request.protocol()
+    })
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .set({ 'X-Forwarded-Proto': '' })
+    .expect(200, { protocol: 'http' })
+})
+
+test('protocol - when x-forwarded-proto is set and trusted proxy', async () => {
+  const app = new Koa({ proxy: true }).use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload({
+      protocol: request.protocol()
+    })
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .set({ 'X-Forwarded-Proto': 'https' })
+    .expect(200, { protocol: 'https' })
+
+  await Supertest(app.callback())
+    .get('/')
+    .set({ 'X-Forwarded-Proto': 'https, http' })
+    .expect(200, { protocol: 'https' })
+})
+
+test('protocol - when x-forwarded-proto is set and not trusting proxy', async () => {
+  const app = new Koa({ proxy: false }).use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload({
+      protocol: request.protocol()
+    })
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .set({ 'X-Forwarded-Proto': 'https' })
+    .expect(200, { protocol: 'http' })
+
+  await Supertest(app.callback())
+    .get('/')
+    .set({ 'X-Forwarded-Proto': 'https, http' })
+    .expect(200, { protocol: 'http' })
+})
+
 test('isPjax', async () => {
   const app = new Koa().use(ctx => {
     const { request, response } = HttpContext.wrap(ctx, appMock)
