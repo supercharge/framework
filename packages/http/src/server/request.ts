@@ -146,8 +146,8 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
   }
 
   /**
-    * Returns the full URL including protocol[:port], host, path, and query string.
-    */
+   * Returns the full URL including protocol, host[:port], path, and query string.
+   */
   fullUrl (): string {
     return this.koaCtx.href
   }

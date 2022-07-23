@@ -14,7 +14,8 @@
     - add `request.isAjax()` method: determine whether the request is a result of an AJAX call
     - add `request.isPjax()` method: determine whether the request is a result of an PJAX call
     - add `request.isPrefetch()` method: determine whether the request is a result of a [prefetch call](https://developer.mozilla.org/en-US/docs/Glossary/Prefetch)
-    - add `request.url()` method: returns a `URL` instance allowing you to access individual parts from the request’s URI
+    - add `request.fullUrl()` method: returns the full URL including including protocol, host[:port], path, and query string
+
 
 ### Updated
 - bump dependencies
