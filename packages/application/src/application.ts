@@ -321,8 +321,19 @@ export class Application extends Container implements ApplicationContract {
    * Register a booting callback that runs at the beginning of the app boot.
    *
    * @param {Function} callback
+   *
+   * @deprecated use the {@link onBooting} method
    */
   booting (callback: Callback): this {
+    return this.onBooting(callback)
+  }
+
+  /**
+   * Register a booting callback that runs at the beginning of the app boot.
+   *
+   * @param {Function} callback
+   */
+  onBooting (callback: Callback): this {
     return tap(this, () => {
       this.meta.bootingCallbacks.push(callback)
     })

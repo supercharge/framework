@@ -5,13 +5,17 @@
 ### Added
 - `@supercharge/contracts`
     - extend `HttpResponse` contract (with the methods below in `@supercharge/http`)
+    - add `onBooting` method to `Application` contract
 - `@supercharge/http`
     - add `response.getPayload()` method: returns the currently assigned response payload
     - add `response.hasStatus(<code>)` method: determine whether the response has a given status `code`
     - add `response.isOk()` method: determine whether the response has the status code `200 OK`
     - add `response.isEmpty()` method: determine whether the response has one of the status codes `204 No Content` or `304 Not Modified`
+- `@supercharge/application`
+    - add `onBooting` method: register a callback that runs when the app boots
 
 ### Updated
+- bump dependencies
 - `@supercharge/http`
     - update `request.isMethod(<method | method-array>)` method: support an array as the argument determining whether the request’s method is one of the given candidates (e.g. `request.isMethod(['GET', 'POST']) // true`)
 

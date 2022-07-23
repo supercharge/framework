@@ -7,6 +7,8 @@ import { Container } from '../container'
 import { BootstrapperCtor } from './bootstrapper'
 import { ErrorHandlerCtor } from './error-handler'
 
+type Callback = (app: Application) => Promise<unknown> | unknown
+
 export interface Application extends Container {
   /**
    * Returns the logger instance.
@@ -29,6 +31,11 @@ export interface Application extends Container {
    * also to create responses for requests throwing errors.
    */
   withErrorHandler (ErrorHandler: ErrorHandlerCtor): this
+
+  /**
+   * Register a booting callback that runs at the beginning of the app boot.
+   */
+  onBooting (callback: Callback): this
 
   /**
    * Returns the root path of the application directory.
