@@ -10,7 +10,7 @@
     "@supercharge/tsconfig": "~4.0.0",
     "@types/node": "~18.0.6",
     "cross-env": "~7.0.3",
-    "lerna": "~5.1.8",
+    "lerna": "~5.2.0",
     "nx": "14.4.3"
   },
   "engines": {
