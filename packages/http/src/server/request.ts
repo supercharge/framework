@@ -14,7 +14,7 @@ import { Macroable } from '@supercharge/macroable'
 import { RequestHeaderBag } from './request-header-bag'
 import { IncomingHttpHeaders, IncomingMessage } from 'http'
 import { InteractsWithState } from './interacts-with-state'
-import { CookieOptions, HttpContext, HttpMethods, HttpRequest, InteractsWithContentTypes, RequestCookieBuilderCallback } from '@supercharge/contracts'
+import { CookieOptions, HttpContext, HttpMethods, HttpRequest, InteractsWithContentTypes, Protocol, RequestCookieBuilderCallback } from '@supercharge/contracts'
 
 declare module 'koa' {
   interface Request extends Koa.BaseRequest {
@@ -150,7 +150,7 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
    * Returns a URL instance for this request.
    */
   url (): URL {
-    return new URL(this.koaCtx.URL.href)
+    return new URL(this.koaCtx.URL.toString())
   }
 
   /**
@@ -158,6 +158,13 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
     */
   fullUrl (): string {
     return this.url().full()
+  }
+
+  /**
+   * Returns the protocol value.
+   */
+  protocol (): Protocol {
+    return this.koaCtx.protocol
   }
 
   /**

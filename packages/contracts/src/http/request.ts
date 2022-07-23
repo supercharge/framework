@@ -20,6 +20,8 @@ export interface HttpRequestCtor extends MacroableCtor {
   new (context: HttpContext, cookieOptions: CookieOptions): HttpRequest
 }
 
+export type Protocol = 'http' | 'https' | string
+
 export interface HttpRequest extends InteractsWithState, InteractsWithContentTypes {
   /**
    * Returns the HTTP context.
@@ -116,6 +118,11 @@ export interface HttpRequest extends InteractsWithState, InteractsWithContentTyp
    * ```
    */
   fullUrl(): string
+
+  /**
+   * Returns the protocol value.
+   */
+  protocol(): Protocol
 
   /**
    * Returns the merged request payload, files and query parameters. The query parameters

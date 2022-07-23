@@ -666,6 +666,20 @@ test('querystring', async () => {
     .expect(200, { querystring: 'name=Supercharge' })
 })
 
+test('protocol', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload({
+      protocol: request.protocol()
+    })
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(200, { protocol: 'http' })
+})
+
 test('isPjax', async () => {
   const app = new Koa().use(ctx => {
     const { request, response } = HttpContext.wrap(ctx, appMock)
