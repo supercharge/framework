@@ -19,6 +19,8 @@ export interface HttpRequestCtor extends MacroableCtor {
   new (context: HttpContext, cookieOptions: CookieOptions): HttpRequest
 }
 
+export type Protocol = 'http' | 'https' | string
+
 export interface HttpRequest extends InteractsWithState, InteractsWithContentTypes {
   /**
    * Returns the HTTP context.
@@ -41,6 +43,22 @@ export interface HttpRequest extends InteractsWithState, InteractsWithContentTyp
   isMethod (method: HttpMethods): method is HttpMethods
 
   /**
+   * Determine whether the request method is cacheable.
+   * Cacheable methods are `HEAD` and `GET`.
+   *
+   * @see https://tools.ietf.org/html/rfc7231#section-4.2.3
+   */
+  isMethodCacheable(): boolean
+
+  /**
+   * Determine whether the request method is not cacheable.
+   * Not cacheable methods are `POST`, `PUT`, `DELETE`, `PATCH`, and `OPTIONS`.
+   *
+   * @see https://tools.ietf.org/html/rfc7231#section-4.2.3
+   */
+  isMethodNotCacheable(): boolean
+
+  /**
    * Returns the request’s URL path.
    */
   path (): string
@@ -49,6 +67,11 @@ export interface HttpRequest extends InteractsWithState, InteractsWithContentTyp
    * Returns the query parameter bag.
    */
   query(): ParameterBag<string | string[]>
+
+  /**
+   * Returns the plain query string, without the leading ?.
+   */
+  queryString(): string
 
   /**
    * Returns the path parameter bag.
@@ -78,6 +101,22 @@ export interface HttpRequest extends InteractsWithState, InteractsWithContentTyp
    * Determine whether a cookie exists for the given `name`.
    */
   hasCookie (name: string): boolean
+
+  /**
+   * Returns the full URL including protocol[:port], host, path, and query string.
+   *
+   * @example
+   * ```ts
+   * request.fullUrl()
+   * // http://localhost:3000/users?query=Joe
+   * ```
+   */
+  fullUrl(): string
+
+  /**
+   * Returns the protocol value.
+   */
+  protocol(): Protocol
 
   /**
    * Returns the merged request payload, files and query parameters. The query parameters
@@ -145,22 +184,6 @@ export interface HttpRequest extends InteractsWithState, InteractsWithContentTyp
   hasHeader(key: string): boolean
 
   /**
-   * Determine whether the request method is cacheable.
-   * Cacheable methods are `HEAD` and `GET`.
-   *
-   * @see https://tools.ietf.org/html/rfc7231#section-4.2.3
-   */
-  isMethodCacheable(): boolean
-
-  /**
-   * Determine whether the request method is not cacheable.
-   * Not cacheable methods are `POST`, `PUT`, `DELETE`, `PATCH`, and `OPTIONS`.
-   *
-   * @see https://tools.ietf.org/html/rfc7231#section-4.2.3
-   */
-  isMethodNotCacheable(): boolean
-
-  /**
    * Returns the request’s content size as a number retrieved from the `Content-Length` header field.
    *
    * @example
@@ -174,4 +197,25 @@ export interface HttpRequest extends InteractsWithState, InteractsWithContentTyp
    * Returns the client’s user agent.
    */
   userAgent (): IncomingHttpHeaders['user-agent']
+
+  /**
+   * Determine whether the request the request is an XMLHttpRequest.
+   */
+  isXmlHttpRequest(): boolean
+
+  /**
+   * Determine whether the request is the result of an AJAX call.
+   * This is an alias for {@link HttpRequest#isXmlHttpRequest}.
+   */
+  isAjax(): boolean
+
+  /**
+   * Determine whether the request is the result of a PJAX call.
+   */
+  isPjax(): boolean
+
+  /**
+   * Determine whether the request is the result of a prefetch call.
+   */
+  isPrefetch(): boolean
 }
