@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.4.0](https://github.com/supercharge/framework/compare/v3.3.0...v3.4.0) - 2022-07-xx
+
+### Added
+- `@supercharge/contracts`
+    - extend `HttpResponse` contract (with the methods below in `@supercharge/http`)
+- `@supercharge/http`
+    - add `response.getPayload()` method: returns the currently assigned response payload
+    - add `response.hasStatus(<code>)` method: determine whether the response has a given status `code`
+    - add `response.isOk()` method: determine whether the response has the status code `200 OK`
+    - add `response.isEmpty()` method: determine whether the response has one of the status codes `204 No Content` or `304 Not Modified`
+
+### Updated
+- `@supercharge/http`
+    - update `request.isMethod(<method | method-array>)` method: support an array as the argument determining whether the request’s method is one of the given candidates (e.g. `request.isMethod(['GET', 'POST']) // true`)
+
+
 ## [3.3.0](https://github.com/supercharge/framework/compare/v3.2.0...v3.3.0) - 2022-07-23
 
 ### Added
@@ -15,7 +31,6 @@
     - add `request.isPjax()` method: determine whether the request is a result of an PJAX call
     - add `request.isPrefetch()` method: determine whether the request is a result of a [prefetch call](https://developer.mozilla.org/en-US/docs/Glossary/Prefetch)
     - add `request.fullUrl()` method: returns the full URL including including protocol, host[:port], path, and query string
-
 
 ### Updated
 - bump dependencies

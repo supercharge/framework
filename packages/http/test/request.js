@@ -608,7 +608,8 @@ test('isMethod', async () => {
 
     return response.payload({
       isGet: request.isMethod('GET'),
-      isPost: request.isMethod('POST')
+      isPost: request.isMethod('POST'),
+      isGetFromArray: request.isMethod(['GET', 'PUT', 'PATCH'])
     })
   })
 
@@ -616,7 +617,8 @@ test('isMethod', async () => {
     .get('/')
     .expect(200, {
       isGet: true,
-      isPost: false
+      isPost: false,
+      isGetFromArray: true
     })
 })
 

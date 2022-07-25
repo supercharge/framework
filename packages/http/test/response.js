@@ -49,6 +49,36 @@ test('state', () => {
   expect(shareKeyValue.state().all()).toEqual({ name: 'Marcus' })
 })
 
+test('response.getPayload', async () => {
+  function createAppUsing (createResponseCallback) {
+    return new Koa().use(ctx => {
+      const { response } = HttpContext.wrap(ctx, appMock)
+
+      return response.payload({
+        payload: createResponseCallback(response)
+      })
+    })
+  }
+
+  // the framework removes the response payload when not assigning any non-empty data
+  await Supertest(
+    createAppUsing(response => {
+      return response.getPayload()
+    }).callback()
+  )
+    .get('/')
+    .expect(200, { })
+
+  // return the previously assigned payload
+  await Supertest(
+    createAppUsing(response => {
+      return response.payload('ok').getPayload()
+    }).callback()
+  )
+    .get('/')
+    .expect(200, { payload: 'ok' })
+})
+
 test('response.cookie() creates a signed cookie by default', async () => {
   const app = new Koa({ keys: ['abc'] }).use(ctx => {
     const { response } = HttpContext.wrap(ctx, appMock)
@@ -633,6 +663,78 @@ test('response.getStatus()', async () => {
   await Supertest(app.callback())
     .get('/')
     .expect(201, { statusCode: 201 })
+})
+
+test('response.hasStatus()', async () => {
+  const app = new Koa().use(async (ctx, next) => {
+    const { response } = HttpContext.wrap(ctx, appMock)
+
+    response.status(201).payload({
+      200: response.hasStatus(200),
+      201: response.hasStatus(201)
+    })
+
+    await next()
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(201, {
+      200: false,
+      201: true
+    })
+})
+
+test('response.isOk()', async () => {
+  function createAppUsingResponseStatus (code) {
+    return new Koa().use(async (ctx, next) => {
+      const { response } = HttpContext.wrap(ctx, appMock)
+
+      response.payload({
+        isOk: response.status(code).isOk()
+      })
+
+      await next()
+    })
+  }
+
+  await Supertest(createAppUsingResponseStatus(200).callback())
+    .get('/')
+    .expect(200, { isOk: true })
+
+  await Supertest(createAppUsingResponseStatus(201).callback())
+    .get('/')
+    .expect(201, { isOk: false })
+})
+
+test('response.isEmpty() for 204', async () => {
+  function createAppUsingResponseStatus (code) {
+    return new Koa().use(async (ctx, next) => {
+      const { response } = HttpContext.wrap(ctx, appMock)
+
+      response.payload({
+        isEmpty: response.status(code).isEmpty()
+      })
+
+      // reset the response status code so that the payload will be sent
+      // otherwise, for status code 204 the framework removes the response body
+      response.status(200)
+
+      await next()
+    })
+  }
+
+  await Supertest(createAppUsingResponseStatus(204).callback())
+    .get('/')
+    .expect(200, { isEmpty: true })
+
+  await Supertest(createAppUsingResponseStatus(204).callback())
+    .get('/')
+    .expect(200, { isEmpty: true })
+
+  await Supertest(createAppUsingResponseStatus(201).callback())
+    .get('/')
+    .expect(200, { isEmpty: false })
 })
 
 test('response.type()', async () => {

@@ -64,6 +64,13 @@ export class Response extends Many(Macroable, InteractsWithState) implements Htt
   }
 
   /**
+   * Returns the current response payload.
+   */
+  getPayload<T extends unknown = any> (): T {
+    return this.koaCtx.response.body as T
+  }
+
+  /**
    * Returns the response header bag.
    *
    * @returns {HeaderBag}
@@ -162,6 +169,35 @@ export class Response extends Many(Macroable, InteractsWithState) implements Htt
    */
   getStatus (): number {
     return this.koaCtx.response.status
+  }
+
+  /**
+   * Determine whether the response has any of the given status `codes` assigned.
+   */
+  hasStatus (codes: number | number[]): boolean {
+    return ([] as number[])
+      .concat(codes)
+      .includes(this.getStatus())
+  }
+
+  /**
+   * Determine whether the response has the status code `200 OK`.
+   *
+   * @example
+   * ```
+   * response.isOk()
+   * // true
+   * ```
+   */
+  isOk (): boolean {
+    return this.hasStatus(200)
+  }
+
+  /**
+   * Determine whether the response has one of the status codes `204` or `304`.
+   */
+  isEmpty (): boolean {
+    return this.hasStatus([204, 304])
   }
 
   /**
