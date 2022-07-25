@@ -74,10 +74,12 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
   }
 
   /**
-   * Determine whether the request is using the given HTTP `method`.
+   * Determine whether the request is using one of the given HTTP `methods`.
    */
-  isMethod (method: HttpMethods): method is HttpMethods {
-    return this.method() === method
+  isMethod (methods: HttpMethods | HttpMethods[]): methods is HttpMethods {
+    return ([] as HttpMethods[])
+      .concat(methods)
+      .includes(this.method())
   }
 
   /**

@@ -40,7 +40,7 @@ export interface HttpRequest extends InteractsWithState, InteractsWithContentTyp
   /**
    * Determine whether the request is using the given HTTP `method`.
    */
-  isMethod (method: HttpMethods): method is HttpMethods
+  isMethod (methods: HttpMethods | HttpMethods[]): methods is HttpMethods
 
   /**
    * Determine whether the request method is cacheable.
