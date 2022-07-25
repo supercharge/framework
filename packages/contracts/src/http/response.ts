@@ -110,6 +110,17 @@ export interface HttpResponse<T = any> extends InteractsWithState {
   payload (payload: T): this
 
   /**
+   * Returns the current response payload.
+   *
+   * @example
+   * ```
+   * response.getPayload()
+   * // { id: 1, name: 'Supercharge' }
+   * ```
+   */
+  getPayload (): T
+
+  /**
    * Set a response status code.
    *
    * @example
@@ -129,6 +140,51 @@ export interface HttpResponse<T = any> extends InteractsWithState {
    * ```
    */
   getStatus (): number
+
+  /**
+   * Determine whether the response has any of the given status `codes` assigned.
+   *
+   * @example
+   * ```
+   * response.status(204).hasStatus(204)
+   * // true
+   *
+   * response.status(200).hasStatus([201, 202, 204])
+   * // false
+   *
+   * response.status(201).hasStatus(204)
+   * // false
+   * ```
+   */
+  hasStatus (codes: number | number[]): boolean
+
+  /**
+   * Determine whether the response has the status code `200 OK`.
+   *
+   * @example
+   * ```
+   * response.isOk()
+   * // true
+   * ```
+   */
+  isOk (): boolean
+
+  /**
+   * Determine whether the response has one of the status codes `204` or `304`.
+   *
+   * @example
+   * ```
+   * response.status(204).isEmpty()
+   * // true
+   *
+   * response.status(304).isEmpty()
+   * // true
+   *
+   * response.status(201).isEmpty()
+   * // false
+   * ```
+   */
+  isEmpty (): boolean
 
   /**
    * Temporarily redirect the request using HTTP status code 302. You can customize
@@ -210,8 +266,8 @@ export interface HttpResponse<T = any> extends InteractsWithState {
    * response.view('welcome', view => {
    *   view.layout('landing')
    * })
-   * response.view('user/dashboard', { user: { id: 1, name: 'Marcus' } })
-   * response.view('user/dashboard', { user: { id: 1, name: 'Marcus' } }, view => {
+   * response.view('user/dashboard', { user: { id: 1, name: 'Supercharge' } })
+   * response.view('user/dashboard', { user: { id: 1, name: 'Supercharge' } }, view => {
    *   view.layout('profile')
    * })
    * ```
