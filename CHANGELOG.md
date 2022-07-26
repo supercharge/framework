@@ -18,6 +18,7 @@
 - bump dependencies
 - `@supercharge/http`
     - update `request.isMethod(<method | method-array>)` method: support an array as the argument determining whether the request’s method is one of the given candidates (e.g. `request.isMethod(['GET', 'POST']) // true`)
+    - lowercase all header names before accessing them from request headers (Node.js lowercases all request headers)
 
 
 ## [3.3.0](https://github.com/supercharge/framework/compare/v3.2.0...v3.3.0) - 2022-07-23

@@ -230,6 +230,27 @@ test('request.headers()', async () => {
   })
 })
 
+test('request.header()', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload({
+      headers: request.headers()
+    })
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .set('X-Testing', 'foo')
+    .expect(200)
+
+  expect(response.body).toMatchObject({
+    headers: {
+      'x-testing': 'foo'
+    }
+  })
+})
+
 test('request.headers().all()', async () => {
   const app = new Koa().use(ctx => {
     const { request, response } = HttpContext.wrap(ctx, appMock)
@@ -289,7 +310,7 @@ test('request.headers().has()', async () => {
     .expect(200, 'true')
 })
 
-test('request.hasHeaders()', async () => {
+test('request.hasHeader()', async () => {
   const app = new Koa().use(ctx => {
     const { request, response } = HttpContext.wrap(ctx, appMock)
 
@@ -320,7 +341,7 @@ test('response.headers().remove()', async () => {
     .get('/')
     .expect(200)
 
-  expect(response.body).toMatchObject({ sessionId: 1 })
+  expect(response.body).toMatchObject({ sessionid: 1 })
   expect(response.body).not.toMatchObject({ name: 'Supercharge' })
 })
 
