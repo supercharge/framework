@@ -4,6 +4,7 @@ import { tap } from '@supercharge/goodies'
 import { Manager } from '@supercharge/manager'
 import { HandlebarsCompiler } from './engines/handlebars'
 import { Application, ViewConfig, ViewEngine } from '@supercharge/contracts'
+import { HelperDelegate } from 'handlebars'
 
 export class ViewManager extends Manager implements ViewEngine {
   /**
@@ -96,6 +97,20 @@ export class ViewManager extends Manager implements ViewEngine {
   registerPartial (name: string, content: string): this {
     return tap(this, () => {
       this.driver().registerPartial(name, content)
+    })
+  }
+
+  /**
+   * Register a view helper with the given `name` and `content` to the view engine.
+   *
+   * @param {String} name
+   * @param {HelperDelegate} fn
+   *
+   * @returns {this}
+   */
+  registerHelper (name: string, fn: HelperDelegate): this {
+    return tap(this, () => {
+      this.driver().registerHelper(name, fn)
     })
   }
 

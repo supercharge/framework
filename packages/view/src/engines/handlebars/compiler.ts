@@ -246,7 +246,7 @@ export class HandlebarsCompiler implements ViewEngine {
     )
       .flatMap(async helpersPath => await Fs.allFiles(helpersPath))
       .filter(helper => this.isScriptFile(helper))
-      .forEach(async helper => await this.registerHelper(helper))
+      .forEach(async helper => this.registerHelperFromFile(helper))
   }
 
   /**
@@ -263,21 +263,33 @@ export class HandlebarsCompiler implements ViewEngine {
   }
 
   /**
-   * Register the given view helper `file` to the handlebars engine.
+   * Register a Handlebars view helper from the given file `path`.
    *
-   * @param {string} file
+   * @param {string} path
    */
-  async registerHelper (file: string): Promise<void> {
-    try {
-      const helper = esmResolve(require(file))
-      const name = await Fs.filename(file)
+  registerHelperFromFile (path: string): void {
+    const name = Fs.filename(path)
+    const helper: HelperDelegate = esmResolve(require(path))
 
-      typeof helper === 'function'
-        ? this.handlebars().registerHelper(name, helper as HelperDelegate)
-        : this.logger().warning(`View helper "${file}" is not a function, received "${typeof helper}"`)
+    this.registerHelper(name, helper)
+  }
+
+  /**
+   * Register a view helper with the given `name` and `content` to the view engine.
+   *
+   * @param {string} name
+   * @param {HelperDelegate} fn
+   */
+  registerHelper (name: string, fn: HelperDelegate): this {
+    try {
+      typeof fn === 'function'
+        ? this.handlebars().registerHelper(name, fn)
+        : this.logger().warning(`View helper "${name}" is not a function, received "${typeof fn}"`)
     } catch (error: any) {
-      this.logger().warning(`WARNING: failed to load helper "${file}": ${String(error.message)}`)
+      this.logger().warning(`WARNING: failed to load helper "${name}": ${String(error.message)}`)
     }
+
+    return this
   }
 
   /**
