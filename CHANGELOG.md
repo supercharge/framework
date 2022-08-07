@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.5.0](https://github.com/supercharge/framework/compare/v3.4.0...v3.5.0) - 2022-08-xx
+
+### Added
+- `@supercharge/view`
+    - add `registerHelper(name, helperDelegateFunction)` method: register a view helper dynamically in a service provider (for example in community packages)
+
+### Updated
+- bump dependencies
+
+
 ## [3.4.0](https://github.com/supercharge/framework/compare/v3.3.0...v3.4.0) - 2022-07-27
 
 ### Added
