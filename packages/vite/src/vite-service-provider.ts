@@ -8,7 +8,6 @@ export class ViteServiceProvider extends ServiceProvider {
    * Register application services.
    */
   override register (): void {
-    super.register()
     this.registerViteViewHelpers()
   }
 
@@ -19,9 +18,8 @@ export class ViteServiceProvider extends ServiceProvider {
     const view = this.app().make<ViewEngine>('view')
 
     // TODO
-    // @ts-expect-error view.registerHelper is not available yet!
-    view.registerHelper('vite', () => {
-      //
+    view.registerHelper('vite', (...entrypoints: string[] | string[][]) => {
+      console.log({ entrypoints })
     })
   }
 }
