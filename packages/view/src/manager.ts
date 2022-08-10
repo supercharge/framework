@@ -101,6 +101,15 @@ export class ViewManager extends Manager implements ViewEngine {
   }
 
   /**
+   * Determine whether a partial view with the given `name` is registered.
+   *
+   * @param {string} name
+   */
+  hasPartial (name: string): boolean {
+    return this.driver().hasPartial(name)
+  }
+
+  /**
    * Register a view helper with the given `name` and `content` to the view engine.
    *
    * @param {String} name
@@ -112,6 +121,15 @@ export class ViewManager extends Manager implements ViewEngine {
     return tap(this, () => {
       this.driver().registerHelper(name, fn)
     })
+  }
+
+  /**
+   * Determine whether a view helper with the given `name` is registered.
+   *
+   * @param {string} name
+   */
+  hasHelper (name: string): boolean {
+    return this.driver().hasHelper(name)
   }
 
   /**

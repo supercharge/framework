@@ -77,7 +77,7 @@ export class HandlebarsCompiler implements ViewEngine {
   /**
    * Returns the view file extension.
    *
-   * @returns {Handlebars}
+   * @returns {String}
    */
   extension (): string {
     return this.meta.extension
@@ -218,6 +218,15 @@ export class HandlebarsCompiler implements ViewEngine {
   }
 
   /**
+   * Determine whether a partial view with the given `name` is registered.
+   *
+   * @param {string} name
+   */
+  hasPartial (name: string): boolean {
+    return !!this.handlebars().partials[name]
+  }
+
+  /**
    * Retrieves the partial name from its file path on disk. The
    * name derives from the path by removing the base path and
    * view fileextension. For example, a partial view located
@@ -272,6 +281,15 @@ export class HandlebarsCompiler implements ViewEngine {
     const helper: HelperDelegate = esmResolve(require(path))
 
     this.registerHelper(name, helper)
+  }
+
+  /**
+   * Determine whether a view helper with the given `name` is registered.
+   *
+   * @param {string} name
+   */
+  hasHelper (name: string): boolean {
+    return typeof this.handlebars().helpers[name] === 'function'
   }
 
   /**

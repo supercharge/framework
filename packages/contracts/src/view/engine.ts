@@ -27,7 +27,18 @@ export interface ViewEngine {
   registerPartial (name: string, content: string): this
 
   /**
+   * Determine whether a partial view with the given `name` is registered.
+   */
+  hasPartial (name: string): boolean
+
+  /**
    * Register a view helper with the given `name` and `content` to the view engine.
    */
   registerHelper (name: string, fn: HelperDelegate): this
+
+  /**
+   * Determine whether a view helper with the given `name` is registered.
+   */
+  hasHelper (name: string): boolean
+
 }
