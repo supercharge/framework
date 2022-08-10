@@ -4,6 +4,7 @@ import { EnvStore } from '../env'
 import { Logger } from '../logging'
 import { ConfigStore } from '../config'
 import { Container } from '../container'
+import { ServiceProvider } from '../support'
 import { BootstrapperCtor } from './bootstrapper'
 import { ErrorHandlerCtor } from './error-handler'
 
@@ -69,7 +70,7 @@ export interface Application extends Container {
    *
    * @param {String} path
    */
-  publicPath (path?: string): string
+  publicPath (...paths: string[]): string
 
   /**
    * Returns an absolute path into the application’s resources directory.
@@ -135,6 +136,11 @@ export interface Application extends Container {
    * @param {Array} bootstrappers
    */
   bootstrapWith(bootstrappers: BootstrapperCtor[]): Promise<void>
+
+  /**
+   * Call the `register` method on the given service `provider`.
+   */
+  register (provider: ServiceProvider): this
 
   /**
    * Register the configured user-land providers.
