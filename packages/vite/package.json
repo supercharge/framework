@@ -7,12 +7,14 @@
     "url": "https://github.com/supercharge/vite/issues"
   },
   "dependencies": {
+    "@supercharge/arrays": "~4.0.0",
     "@supercharge/contracts": "~3.4.0",
     "@supercharge/fs": "~3.4.0",
     "@supercharge/strings": "~1.28.0",
     "@supercharge/support": "~3.4.0"
   },
   "devDependencies": {
+    "@supercharge/application": "~3.4.0",
     "@supercharge/eslint-config-typescript": "~2.3.0",
     "@supercharge/http": "~3.4.0",
     "@supercharge/tsconfig": "~4.0.0",
@@ -58,7 +60,7 @@
     "lint:fix": "npm run lint -- --fix",
     "test": "npm run build && npm run lint && npm run test:run",
     "test:watch": "vitest",
-    "test:run": "vitest run",
+    "test:run": "vitest run --coverage",
     "posttest": "c8 report --reporter=html --reporter=text"
   },
   "types": "dist"
