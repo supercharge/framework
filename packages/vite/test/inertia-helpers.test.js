@@ -1,24 +1,24 @@
 'use strict'
 
-import { describe, it, expect } from 'vitest'
+import { describe, test, expect } from 'vitest'
 import { resolvePageComponent } from '../dist'
 
 describe('inertia-helpers', () => {
-  const path = './__fixtures__/dummy.js'
+  const testPage = './fixtures/test-page.js'
 
-  it('pass glob value to resolvePageComponent', async () => {
-    const file = await resolvePageComponent(path, import.meta.glob('./__fixtures__/*.js'))
+  test('pass glob value to resolvePageComponent', async () => {
+    const file = await resolvePageComponent(testPage, import.meta.glob('./fixtures/*.js'))
     expect(file.default).toBe('Dummy File')
   })
 
-  it('pass eagerly globed value to resolvePageComponent', async () => {
-    const file = await resolvePageComponent(path, import.meta.glob('./__fixtures__/*.js', { eager: true }))
+  test('pass eagerly globed value to resolvePageComponent', async () => {
+    const file = await resolvePageComponent(testPage, import.meta.glob('./fixtures/*.js', { eager: true }))
     expect(file.default).toBe('Dummy File')
   })
 
-  it('pass glob value to resolvePageComponent', async () => {
+  test('fails for non-existing page', async () => {
     await expect(
-      resolvePageComponent('./__fixtures__/not-existing.js', import.meta.glob('./__fixtures__/*.js'))
-    ).rejects.toThrow('Inertia page not found: ./__fixtures__/not-existing.js')
+      resolvePageComponent('./fixtures/not-existing.js', import.meta.glob('./fixtures/*.js'))
+    ).rejects.toThrow('Inertia page not found: ./fixtures/not-existing.js')
   })
 })
