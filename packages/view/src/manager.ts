@@ -4,6 +4,7 @@ import { tap } from '@supercharge/goodies'
 import { Manager } from '@supercharge/manager'
 import { HandlebarsCompiler } from './engines/handlebars'
 import { Application, ViewConfig, ViewEngine } from '@supercharge/contracts'
+import { HelperDelegate } from 'handlebars'
 
 export class ViewManager extends Manager implements ViewEngine {
   /**
@@ -97,6 +98,38 @@ export class ViewManager extends Manager implements ViewEngine {
     return tap(this, () => {
       this.driver().registerPartial(name, content)
     })
+  }
+
+  /**
+   * Determine whether a partial view with the given `name` is registered.
+   *
+   * @param {string} name
+   */
+  hasPartial (name: string): boolean {
+    return this.driver().hasPartial(name)
+  }
+
+  /**
+   * Register a view helper with the given `name` and `content` to the view engine.
+   *
+   * @param {String} name
+   * @param {HelperDelegate} fn
+   *
+   * @returns {this}
+   */
+  registerHelper (name: string, fn: HelperDelegate): this {
+    return tap(this, () => {
+      this.driver().registerHelper(name, fn)
+    })
+  }
+
+  /**
+   * Determine whether a view helper with the given `name` is registered.
+   *
+   * @param {string} name
+   */
+  hasHelper (name: string): boolean {
+    return this.driver().hasHelper(name)
   }
 
   /**

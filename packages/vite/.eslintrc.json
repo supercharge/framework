@@ -1,0 +1,15 @@
+{
+  "env": {
+    "node": true
+  },
+  "extends": [
+    "@supercharge/typescript"
+  ],
+  "rules": {
+    "@typescript-eslint/return-await": 0,
+    "@typescript-eslint/no-extraneous-class": 0,
+    "@typescript-eslint/no-non-null-assertion": 0,
+    "@typescript-eslint/method-signature-style": 0,
+    "@typescript-eslint/strict-boolean-expressions": 0
+  }
+}

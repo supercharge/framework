@@ -212,8 +212,8 @@ export class Application extends Container implements ApplicationContract {
    *
    * @returns {String}
    */
-  publicPath (path?: string): string {
-    return this.resolveFromBasePath('public', path ?? '')
+  publicPath (...paths: string[]): string {
+    return this.resolveFromBasePath('public', ...paths)
   }
 
   /**

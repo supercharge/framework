@@ -1,5 +1,35 @@
 # Changelog
 
+## [3.5.0](https://github.com/supercharge/framework/compare/v3.4.0...v3.5.0) - 2022-08-11
+
+### Added
+- `@supercharge/vite`: [Vite](https://vitejs.dev) plugin and package
+    - exposes a Vite plugin for the Supercharge framework
+    - registers a `vite` view helper to generate script and stylesheet tags
+    ```js
+    <html>
+        <head>
+            {{{ vite "resources/js/app.js" }}}
+        </head>
+    </html>
+    ```
+- `@supercharge/view`
+    - add `registerHelper(name, helperDelegateFunction)` method: register a view helper dynamically in a service provider (for example in community packages)
+    - add `registerPartial(name, content)` method: register a partial view dynamically in a service provider (for example in community packages)
+    - add `hasPartial(name)` method: determine whether the view engine has a partial view with the given `name`
+    - add `hasHelper(name)` method: determine whether the view engine has a view helper with the given `name`
+- `@supercharge/contracts`
+    - expose `Application#register(provider: ServiceProvider)` method (which was already implemented in `@supercharge/application`)
+    - add `Htmlable` contract
+- `@supercharge/support`
+    - export `HtmlString` class implementing the `Htmlable` contract
+
+### Updated
+- bump dependencies
+- `@supercharge/application`
+    - `publicPath(...paths)` method now supports multiple paths. This allows us to use something like `app.publicPath('foo/bar')` and `app.publicPath('foo', 'bar')` resolving to the same path `public/foo/bar`
+
+
 ## [3.4.0](https://github.com/supercharge/framework/compare/v3.3.0...v3.4.0) - 2022-07-27
 
 ### Added

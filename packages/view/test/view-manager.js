@@ -122,4 +122,16 @@ test('registerPartial', async () => {
   ).toEqual('<p>Test View: <div id="testing-div">this is a test partial</div></p>\n')
 })
 
+test('registerHelper', async () => {
+  const app = makeApp()
+  const view = new ViewManager(app)
+  view.registerHelper('test', () => {
+    return 'this-comes-from-test-helper'
+  })
+
+  expect(
+    await view.render('test-view-with-in-memory-helper')
+  ).toEqual('<p>Test View: this-comes-from-test-helper</p>\n')
+})
+
 test.run()
