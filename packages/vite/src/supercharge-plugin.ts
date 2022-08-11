@@ -16,7 +16,7 @@ export class SuperchargePlugin implements Plugin {
   /**
    * Stores the finaly, resolved Vite config.
    */
-  private resolvedConfig!: ResolvedConfig
+  private resolvedConfig?: ResolvedConfig
 
   /**
    * Stores the path to the hot-reload file.
@@ -148,7 +148,7 @@ export class SuperchargePlugin implements Plugin {
    * Hook into Vite’s code transform lifecycle setp.
    */
   transform (code: string): string | undefined {
-    if (this.resolvedConfig.command === 'serve') {
+    if (this.resolvedConfig?.command === 'serve') {
       return code.replace(/__supercharge_vite_placeholder__/g, this.viteDevServerUrl)
     }
   }
@@ -213,7 +213,7 @@ export class SuperchargePlugin implements Plugin {
    * Returns the client protocol.
    */
   clientProtocol (): 'https' | 'http' | undefined {
-    const configHmrProtocol = this.resolvedConfig.server.hmr === 'object'
+    const configHmrProtocol = this.resolvedConfig?.server.hmr === 'object'
       ? this.resolvedConfig.server.hmr.protocol
       : null
 
@@ -230,7 +230,7 @@ export class SuperchargePlugin implements Plugin {
    * Returns the server protocol.
    */
   serverProtocol (): 'https' | 'http' {
-    return this.resolvedConfig.server.https
+    return this.resolvedConfig?.server.https
       ? 'https'
       : 'http'
   }
@@ -239,11 +239,11 @@ export class SuperchargePlugin implements Plugin {
    * Returns the server’s host address.
    */
   host (address: AddressInfo): string {
-    const configHmrHost = typeof this.resolvedConfig.server.hmr === 'object'
+    const configHmrHost = typeof this.resolvedConfig?.server.hmr === 'object'
       ? this.resolvedConfig.server.hmr.host
       : null
 
-    const configHost = typeof this.resolvedConfig.server.host === 'string'
+    const configHost = typeof this.resolvedConfig?.server.host === 'string'
       ? this.resolvedConfig.server.host
       : null
 
