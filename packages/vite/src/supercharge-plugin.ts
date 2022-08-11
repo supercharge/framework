@@ -5,7 +5,7 @@ import Path from 'path'
 import { AddressInfo } from 'net'
 import Str from '@supercharge/strings'
 import { DevServerUrl, PluginConfigContract } from './contracts/plugin'
-import { ConfigEnv, loadEnv, Plugin, ResolvedConfig, UserConfig, ViteDevServer } from 'vite'
+import { ConfigEnv, Plugin, ResolvedConfig, UserConfig, ViteDevServer } from 'vite'
 
 export class SuperchargePlugin implements Plugin {
   /**
@@ -45,7 +45,7 @@ export class SuperchargePlugin implements Plugin {
    */
   validated (config: string | string[] | PluginConfigContract): Required<PluginConfigContract> {
     if (!config) {
-      throw new Error('@supercharge/vite: missing configuration')
+      throw new Error('supercharge-vite-plugin: missing inputs or configuration')
     }
 
     if (typeof config === 'string') {
@@ -56,11 +56,15 @@ export class SuperchargePlugin implements Plugin {
       config = { input: config }
     }
 
+    if (!config.input) {
+      throw new Error('supercharge-vite-plugin: missing "input" configuration')
+    }
+
     if (typeof config.publicDirectory === 'string') {
       config.publicDirectory = Str(config.publicDirectory).trim().ltrim('/').get()
 
       if (config.publicDirectory === '') {
-        throw new Error('@supercharge/vite: the publicDirectory option must be a subdirectory, like "public"')
+        throw new Error('supercharge-vite-plugin: the publicDirectory option must be a subdirectory, like "public"')
       }
     }
 
@@ -68,7 +72,7 @@ export class SuperchargePlugin implements Plugin {
       config.buildDirectory = Str(config.buildDirectory).trim().ltrim('/').rtrim('/').get()
 
       if (config.buildDirectory === '') {
-        throw new Error('@supercharge/vite: the buildDirectory option must be a subdirectory, e.g. "build"')
+        throw new Error('supercharge-vite-plugin: the buildDirectory option must be a subdirectory, like "build"')
       }
     }
 
@@ -104,12 +108,9 @@ export class SuperchargePlugin implements Plugin {
    * Hook into the Vite configuration before it is resolved. This adjusts the
    * configuration for a project using the Supercharge directory structure.
    */
-  config (userConfig: UserConfig, { command, mode }: ConfigEnv): UserConfig {
-    const env = loadEnv(mode, userConfig.envDir ?? process.cwd(), '')
-    console.log({ env })
-
+  config (userConfig: UserConfig, { command }: ConfigEnv): UserConfig {
     return {
-      base: command === 'build' ? this.pluginConfig.buildDirectory : '',
+      base: command === 'build' ? this.resolveBase() : '',
       publicDir: false,
       build: {
         manifest: true,
@@ -123,6 +124,24 @@ export class SuperchargePlugin implements Plugin {
         host: 'localhost',
       }
     }
+  }
+
+  /**
+   * Returns the resolved base option based on the build directory.
+   *
+   * @returns {string}
+   */
+  resolveBase (): string {
+    return `/${this.pluginConfig.buildDirectory}/`
+  }
+
+  /**
+   * Returns the output path for the compiled assets.
+   *
+   * @returns {string}
+   */
+  resolveOutDir (): string {
+    return Path.join(this.pluginConfig.publicDirectory, this.pluginConfig.buildDirectory)
   }
 
   /**
@@ -245,14 +264,5 @@ export class SuperchargePlugin implements Plugin {
 
     // In Node.js >=18.0 <18.4 this was an integer value. This was changed in a minor version.
     return address.family === 6
-  }
-
-  /**
-   * Returns the output path for the compiled assets.
-   *
-   * @returns {string}
-   */
-  resolveOutDir (): string {
-    return Path.join(this.pluginConfig.publicDirectory, this.pluginConfig.buildDirectory)
   }
 }
