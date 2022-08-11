@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
-    "url": "https://github.com/supercharge/vite/issues"
+    "url": "https://github.com/supercharge/framework/issues"
   },
   "dependencies": {
     "@supercharge/arrays": "~4.0.0",
@@ -31,7 +31,7 @@
   "files": [
     "dist"
   ],
-  "homepage": "https://github.com/supercharge/vite",
+  "homepage": "https://superchargejs.com",
   "keywords": [
     "vite",
     "vitejs",
@@ -50,7 +50,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/supercharge/vite.git"
+    "directory": "packages/vite",
+    "url": "git+https://github.com/supercharge/framework.git"
   },
   "scripts": {
     "build": "tsc",
