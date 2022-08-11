@@ -16,7 +16,6 @@
   "devDependencies": {
     "@supercharge/application": "~3.4.0",
     "@supercharge/eslint-config-typescript": "~2.3.0",
-    "@supercharge/http": "~3.4.0",
     "@supercharge/tsconfig": "~4.0.0",
     "@supercharge/view": "~3.4.0",
     "c8": "~7.12.0",
