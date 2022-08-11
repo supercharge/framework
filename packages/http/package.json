@@ -1,7 +1,7 @@
 {
 	"name": "@supercharge/http",
 	"description": "The Supercharge http package",
-	"version": "3.4.0",
+	"version": "3.5.0",
 	"author": "Marcus Pöhls <marcus@superchargejs.com>",
 	"bugs": {
 		"url": "https://github.com/supercharge/framework/issues"
@@ -17,7 +17,7 @@
 		"@supercharge/arrays": "~3.2.0",
 		"@supercharge/classes": "~1.10.0",
 		"@supercharge/collections": "~4.3.0",
-		"@supercharge/contracts": "^3.4.0",
+		"@supercharge/contracts": "^3.5.0",
 		"@supercharge/fs": "~3.4.0",
 		"@supercharge/goodies": "~1.10.1",
 		"@supercharge/http-errors": "~1.1.0",
@@ -26,7 +26,7 @@
 		"@supercharge/map": "~1.5.0",
 		"@supercharge/set": "~2.2.1",
 		"@supercharge/strings": "~1.28.0",
-		"@supercharge/support": "^3.4.0",
+		"@supercharge/support": "^3.5.0",
 		"@types/ms": "~0.7.31",
 		"bytes": "~3.1.2",
 		"cookie": "~0.5.0",
@@ -43,9 +43,9 @@
 		"@types/cookie": "~0.5.1",
 		"@types/formidable": "~2.0.5",
 		"@types/koa": "~2.13.5",
+		"@types/koa-static": "~4.0.2",
 		"@types/koa__cors": "~3.3.0",
 		"@types/koa__router": "~8.0.11",
-		"@types/koa-static": "~4.0.2",
 		"c8": "~7.12.0",
 		"deepmerge": "~4.2.2",
 		"eslint": "~8.21.0",
