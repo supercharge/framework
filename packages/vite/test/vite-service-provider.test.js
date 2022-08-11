@@ -1,14 +1,14 @@
 'use strict'
 
-import { clearViteHotReloadFile, clearViteManifest, createViteManifest, makeApp } from './helpers'
 import { ViteServiceProvider } from '../dist'
-import { describe, test, expect, beforeEach } from 'vitest'
 import { ViewServiceProvider } from '@supercharge/view'
+import { describe, test, expect, afterEach } from 'vitest'
+import { clearViteHotReloadFile, clearViteManifest, createViteManifest, makeApp } from './helpers'
 
 const app = makeApp()
 
 describe('ViteServiceProvider', () => {
-  beforeEach(async () => {
+  afterEach(async () => {
     await clearViteManifest(app)
     await clearViteHotReloadFile(app)
   })

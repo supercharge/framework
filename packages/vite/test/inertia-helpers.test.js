@@ -1,7 +1,7 @@
 'use strict'
 
-import { describe, test, expect } from 'vitest'
 import { resolvePageComponent } from '../dist'
+import { describe, test, expect } from 'vitest'
 
 describe('inertia-helpers', () => {
   const testPage = './fixtures/test-page.js'

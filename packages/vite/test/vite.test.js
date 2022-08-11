@@ -1,13 +1,13 @@
 'use strict'
 
 import { Vite } from '../dist'
-import { describe, test, expect, beforeEach } from 'vitest'
+import { describe, test, expect, afterEach } from 'vitest'
 import { makeApp, createViteManifest, createViteHotReloadFile, clearViteManifest, clearViteHotReloadFile } from './helpers'
 
 const app = makeApp()
 
 describe('Vite', () => {
-  beforeEach(async () => {
+  afterEach(async () => {
     await clearViteManifest(app)
     await clearViteHotReloadFile(app)
   })
@@ -60,5 +60,19 @@ describe('Vite', () => {
       '<link rel="stylesheet" href="http://localhost:3000/resources/css/app.css" />' +
       '<script type="module" src="http://localhost:3000/resources/js/app.js"></script>'
     )
+  })
+
+  test('fails when manifest file is not available', async () => {
+    expect(() => {
+      Vite.generateTags(app, ['resources/css/app.css', 'resources/js/app.js'])
+    }).toThrow(`Vite manifest file not found at: ${app.publicPath('build/manifest.json')}`)
+  })
+
+  test('fails when entrypoint is missing in manifest file', async () => {
+    await createViteManifest(app)
+
+    expect(() => {
+      Vite.generateTags(app, ['missing/entrypoing/file.css'])
+    }).toThrow('Entrypoint not found in manifest: missing/entrypoing/file.css')
   })
 })
