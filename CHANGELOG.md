@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.6.0](https://github.com/supercharge/framework/compare/v3.5.0...v3.6.0) - 2022-08-xx
+
+### Added
+- `@supercharge/vite`: SSR support via the `ssr` and `ssrOutputDirectory` options
+
+### Updated
+- bump dependencies
+
+
 ## [3.5.0](https://github.com/supercharge/framework/compare/v3.4.0...v3.5.0) - 2022-08-11
 
 ### Added
