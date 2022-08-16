@@ -29,9 +29,15 @@ export class SuperchargePlugin implements Plugin {
   private viteDevServerUrl!: DevServerUrl
 
   /**
+   * Determine whether to use server-side rendering.
+   */
+  private useSsr: boolean
+
+  /**
    * Create a new instance.
    */
   constructor (config: string | string[] | PluginConfigContract) {
+    this.useSsr = false
     this.pluginConfig = this.validated(config)
     this.hotFilePath = Path.join(this.pluginConfig.publicDirectory, 'hot')
   }
@@ -76,10 +82,20 @@ export class SuperchargePlugin implements Plugin {
       }
     }
 
+    if (typeof config.ssrOutputDirectory === 'string') {
+      config.ssrOutputDirectory = Str(config.ssrOutputDirectory).trim().ltrim('/').rtrim('/').get()
+
+      if (config.ssrOutputDirectory === '') {
+        throw new Error('supercharge-vite-plugin: the ssrOutputDirectory option must be a subdirectory, like "ssr"')
+      }
+    }
+
     return {
       input: config.input,
       buildDirectory: config.buildDirectory ?? 'build',
       publicDirectory: config.publicDirectory ?? 'public',
+      ssr: config.ssr ?? config.input,
+      ssrOutputDirectory: config.ssrOutputDirectory ?? 'bootstrap/ssr',
     }
   }
 
@@ -109,20 +125,25 @@ export class SuperchargePlugin implements Plugin {
    * configuration for a project using the Supercharge directory structure.
    */
   config (userConfig: UserConfig, { command }: ConfigEnv): UserConfig {
+    this.useSsr = !!userConfig.build?.ssr
+
     return {
       base: command === 'build' ? this.resolveBase() : '',
       publicDir: false,
       build: {
-        manifest: true,
+        manifest: !this.useSsr,
         outDir: userConfig.build?.outDir ?? this.resolveOutDir(),
         rollupOptions: {
-          input: userConfig.build?.rollupOptions?.input ?? this.pluginConfig.input
+          input: userConfig.build?.rollupOptions?.input ?? this.resolveInput()
         },
       },
       server: {
         origin: '__supercharge_vite_placeholder__',
         host: 'localhost',
-      }
+      },
+      ssr: {
+        noExternal: this.noExternalInertiaHelpers(userConfig),
+      },
     }
   }
 
@@ -141,7 +162,19 @@ export class SuperchargePlugin implements Plugin {
    * @returns {string}
    */
   resolveOutDir (): string {
-    return Path.join(this.pluginConfig.publicDirectory, this.pluginConfig.buildDirectory)
+    return this.useSsr
+      ? this.pluginConfig.ssrOutputDirectory
+      : Path.join(this.pluginConfig.publicDirectory, this.pluginConfig.buildDirectory)
+  }
+
+  /**
+   * Returns the input path for the Vite configuration.
+   * @returns {string | string[] | undefined}
+   */
+  resolveInput (): string | string[] | undefined {
+    return this.useSsr
+      ? this.pluginConfig.ssr
+      : this.pluginConfig.input
   }
 
   /**
@@ -264,5 +297,25 @@ export class SuperchargePlugin implements Plugin {
 
     // In Node.js >=18.0 <18.4 this was an integer value. This was changed in a minor version.
     return address.family === 6
+  }
+
+  /**
+   * Returns the values for Vite’s `ssr.noExternal` configuration option.
+   */
+  noExternalInertiaHelpers (userConfig: UserConfig): true | Array<string | RegExp> {
+    const userNoExternal = (userConfig.ssr)?.noExternal
+    const pluginNoExternal = ['supercharge-vite-plugin']
+
+    if (userNoExternal === true) {
+      return true
+    }
+
+    if (userNoExternal == null) {
+      return pluginNoExternal
+    }
+
+    return ([] as Array<string | RegExp>)
+      .concat(userNoExternal)
+      .concat(pluginNoExternal)
   }
 }
