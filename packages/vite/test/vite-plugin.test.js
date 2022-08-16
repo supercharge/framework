@@ -28,6 +28,14 @@ describe('supercharge-vite-plugin', () => {
       .toThrow('supercharge-vite-plugin: the buildDirectory option must be a subdirectory, like "build"')
   })
 
+  test('throws for empty ssrOutputDirectory configuration', async () => {
+    expect(() => supercharge({ input: 'app.ts', ssrOutputDirectory: '' }))
+      .toThrow('supercharge-vite-plugin: the ssrOutputDirectory option must be a subdirectory, like "ssr"')
+
+    expect(() => supercharge({ input: 'app.ts', ssrOutputDirectory: '      /   ' }))
+      .toThrow('supercharge-vite-plugin: the ssrOutputDirectory option must be a subdirectory, like "ssr"')
+  })
+
   test('uses "supercharge" as the name', async () => {
     const plugin = supercharge('resources/js/app.ts')
 
@@ -46,6 +54,10 @@ describe('supercharge-vite-plugin', () => {
     const config = plugin.config({}, { command: 'build' })
     expect(config.build.outDir).toEqual('public/build')
     expect(config.build.rollupOptions.input).toEqual(['resources/js/app.ts'])
+
+    const ssrConfig = plugin.config({ build: { ssr: true } }, { command: 'build' })
+    expect(ssrConfig.build.outDir).toEqual('bootstrap/ssr')
+    expect(ssrConfig.build.rollupOptions.input).toEqual(['resources/js/app.ts'])
   })
 
   test('accepts a string array as inpput', async () => {
@@ -54,6 +66,13 @@ describe('supercharge-vite-plugin', () => {
     const config = plugin.config({}, { command: 'build' })
     expect(config.build.outDir).toEqual('public/build')
     expect(config.build.rollupOptions.input).toEqual([
+      'resources/js/app.ts',
+      'resources/js/second.ts'
+    ])
+
+    const ssrConfig = plugin.config({ build: { ssr: true } }, { command: 'build' })
+    expect(ssrConfig.build.outDir).toEqual('bootstrap/ssr')
+    expect(ssrConfig.build.rollupOptions.input).toEqual([
       'resources/js/app.ts',
       'resources/js/second.ts'
     ])
@@ -77,24 +96,36 @@ describe('supercharge-vite-plugin', () => {
     const plugin = supercharge({
       input: 'resources/js/app.ts',
       // buildDirectory: 'other-build',
-      publicDirectory: 'other-public'
+      publicDirectory: 'other-public',
+      ssr: 'resources/js/ssr.ts'
     })
 
     const config = plugin.config({}, { command: 'build' })
     expect(config.base).toEqual('/build/')
+    expect(config.build.manifest).toBe(true)
     expect(config.build.outDir).toEqual('other-public/build')
+
+    const ssrConfig = plugin.config({ build: { ssr: true } }, { command: 'build' })
+    expect(ssrConfig.base).toEqual('/build/')
+    expect(ssrConfig.build.manifest).toBe(false)
+    expect(ssrConfig.build.outDir).toEqual('bootstrap/ssr')
+    expect(ssrConfig.build.rollupOptions.input).toEqual('resources/js/ssr.ts')
   })
 
   test('handles surrounding slashes on directories', async () => {
     const plugin = supercharge({
       input: 'resources/js/app.ts',
       buildDirectory: '/other-build/test/',
-      publicDirectory: '/other-public/test/'
+      publicDirectory: '/other-public/test/',
+      ssrOutputDirectory: '/ssr-directory/test/'
     })
 
     const config = plugin.config({}, { command: 'build' })
     expect(config.base).toEqual('/other-build/test/')
     expect(config.build.outDir).toEqual('other-public/test/other-build/test')
+
+    const ssrConfig = plugin.config({ build: { ssr: true } }, { command: 'build' })
+    expect(ssrConfig.build.outDir).toEqual('ssr-directory/test')
   })
 
   test('prefers a custom outDir over resolved outDir', async () => {
@@ -114,5 +145,21 @@ describe('supercharge-vite-plugin', () => {
     const config = plugin.config({}, { command: 'serve' })
     expect(config.base).toEqual('')
     expect(config.server.origin).toEqual('__supercharge_vite_placeholder__')
+  })
+
+  test('prevents the Inertia helpers from being externalized', () => {
+    const plugin = supercharge('resources/js/app.ts')
+
+    const noSsrConfig = plugin.config({ build: { ssr: true } }, { command: 'build' })
+    expect(noSsrConfig.ssr.noExternal).toEqual(['supercharge-vite-plugin'])
+
+    const nothingExternalConfig = plugin.config({ ssr: { noExternal: true }, build: { ssr: true } }, { command: 'build' })
+    expect(nothingExternalConfig.ssr.noExternal).toBe(true)
+
+    const arrayNoExternalConfig = plugin.config({ ssr: { noExternal: ['foo'] }, build: { ssr: true } }, { command: 'build' })
+    expect(arrayNoExternalConfig.ssr.noExternal).toEqual(['foo', 'supercharge-vite-plugin'])
+
+    const stringNoExternalConfig = plugin.config({ ssr: { noExternal: 'foo' }, build: { ssr: true } }, { command: 'build' })
+    expect(stringNoExternalConfig.ssr.noExternal).toEqual(['foo', 'supercharge-vite-plugin'])
   })
 })
