@@ -19,6 +19,18 @@ export interface PluginConfigContract {
    * @default "build"
    */
   buildDirectory?: string
+
+  /**
+   * The SSR entry point path(s).
+   */
+  ssr?: string | string[]
+
+  /**
+   * The directory where the SSR bundle should be written.
+   *
+   * @default 'bootstrap/ssr'
+   */
+  ssrOutputDirectory?: string
 }
 
 export type DevServerUrl = `${'http' | 'https'}://${string}:${number}`
