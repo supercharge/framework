@@ -36,7 +36,7 @@ export class HashManager extends Manager implements Hasher {
    *
    * @param value
    *
-   * @returns {String}
+   * @returns {Promise<String>}
    */
   async make (value: string): Promise<string> {
     return await this.driver().make(value)
@@ -47,9 +47,20 @@ export class HashManager extends Manager implements Hasher {
    *
    * @param plain
    *
-   * @returns {Boolean}
+   * @returns {Promise<Boolean>}
    */
   async check (plain: string, hashedValue: string): Promise<boolean> {
     return await this.driver().check(plain, hashedValue)
+  }
+
+  /**
+   * Determine whether the given hash value has been hashed using the configured options.
+   *
+   * @param {String} hashedValue
+   *
+   * @returns {Boolean}
+   */
+  needsRehash (hashedValue: string): boolean {
+    return this.driver().needsRehash(hashedValue)
   }
 }

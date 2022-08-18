@@ -19,4 +19,13 @@ export interface Hasher {
    * @returns {Boolean}
    */
   check (plain: string, hashedValue: string): Promise<boolean>
+
+  /**
+   * Determine whether the given hash value has been hashed using the configured options.
+   *
+   * @param {String} hashedValue
+   *
+   * @returns {Boolean}
+   */
+  needsRehash (hashedValue: string): boolean
 }
