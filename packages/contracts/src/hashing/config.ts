@@ -9,7 +9,10 @@ export interface HashConfig {
   /**
    * The bcrypt hashing config.
    */
-  bcrypt: {
+  bcrypt?: {
+    /**
+     * The number of rounds to use.
+     */
     rounds: number
   }
 }
