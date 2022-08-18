@@ -19,6 +19,16 @@ export class RequestHeaderBag implements RequestHeaderBagContract {
   }
 
   /**
+   * Returns the lowercased string value for the given `name`.
+   *
+   * @param name
+   * @returns
+   */
+  private resolveName (name: keyof IncomingHttpHeaders): string {
+    return String(name).toLowerCase()
+  }
+
+  /**
    * Returns an object with all `keys` existing in the input bag.
    *
    * @param keys
@@ -32,6 +42,7 @@ export class RequestHeaderBag implements RequestHeaderBagContract {
 
     return ([] as Key[])
       .concat(...keys)
+      .map(name => this.resolveName(name))
       .reduce((carry: Dict<IncomingHttpHeaders[Key]>, key) => {
         carry[key] = this.get(key)
 
@@ -51,7 +62,15 @@ export class RequestHeaderBag implements RequestHeaderBagContract {
   get<Header extends keyof IncomingHttpHeaders> (name: Header): IncomingHttpHeaders[Header]
   get<T, Header extends keyof IncomingHttpHeaders> (name: Header, defaultValue: T): IncomingHttpHeaders[Header] | T
   get<T, Header extends keyof IncomingHttpHeaders> (name: Header, defaultValue?: T): IncomingHttpHeaders[Header] | T {
-    return this.ctx.request.headers[name] ?? defaultValue
+    const key = this.resolveName(name)
+
+    switch (key) {
+      case 'referrer':
+      case 'referer':
+        return this.ctx.request.headers.referrer ?? this.ctx.request.headers.referer ?? defaultValue
+      default:
+        return this.ctx.request.headers[key] ?? defaultValue
+    }
   }
 
   /**
@@ -64,8 +83,10 @@ export class RequestHeaderBag implements RequestHeaderBagContract {
    * @returns {this}
    */
   set (name: string, value: any): this {
+    const key = this.resolveName(name)
+
     return tap(this, () => {
-      this.ctx.request.headers[name] = value
+      this.ctx.request.headers[key] = value
     })
   }
 
@@ -77,8 +98,10 @@ export class RequestHeaderBag implements RequestHeaderBagContract {
    * @returns {this}
    */
   remove (name: string): this {
+    const key = this.resolveName(name)
+
     return tap(this, () => {
-      const { [name]: _, ...rest } = this.ctx.request.headers
+      const { [key]: _, ...rest } = this.ctx.request.headers
 
       this.ctx.request.headers = rest
     })

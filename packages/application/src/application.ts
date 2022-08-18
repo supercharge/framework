@@ -63,9 +63,9 @@ export class Application extends Container implements ApplicationContract {
    *
    * @param ErrorHandler
    *
-   * @returns {Application}
+   * @returns {this}
    */
-  withErrorHandler (ErrorHandler: ErrorHandlerCtor): Application {
+  withErrorHandler (ErrorHandler: ErrorHandlerCtor): this {
     return tap(this, () => {
       this.singleton('error.handler', () => {
         return new ErrorHandler(this)
@@ -212,8 +212,8 @@ export class Application extends Container implements ApplicationContract {
    *
    * @returns {String}
    */
-  publicPath (path?: string): string {
-    return this.resolveFromBasePath('public', path ?? '')
+  publicPath (...paths: string[]): string {
+    return this.resolveFromBasePath('public', ...paths)
   }
 
   /**
@@ -321,8 +321,19 @@ export class Application extends Container implements ApplicationContract {
    * Register a booting callback that runs at the beginning of the app boot.
    *
    * @param {Function} callback
+   *
+   * @deprecated use the {@link onBooting} method
    */
   booting (callback: Callback): this {
+    return this.onBooting(callback)
+  }
+
+  /**
+   * Register a booting callback that runs at the beginning of the app boot.
+   *
+   * @param {Function} callback
+   */
+  onBooting (callback: Callback): this {
     return tap(this, () => {
       this.meta.bootingCallbacks.push(callback)
     })

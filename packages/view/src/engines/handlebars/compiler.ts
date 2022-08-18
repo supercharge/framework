@@ -4,7 +4,7 @@ import Path from 'path'
 import Fs from '@supercharge/fs'
 import Str from '@supercharge/strings'
 import Collect from '@supercharge/collections'
-import { esmResolve } from '@supercharge/goodies'
+import { esmResolve, tap } from '@supercharge/goodies'
 import Handlebars, { HelperDelegate } from 'handlebars'
 import { Application, ConfigStore, Logger, ViewConfig, ViewEngine } from '@supercharge/contracts'
 
@@ -77,7 +77,7 @@ export class HandlebarsCompiler implements ViewEngine {
   /**
    * Returns the view file extension.
    *
-   * @returns {Handlebars}
+   * @returns {String}
    */
   extension (): string {
     return this.meta.extension
@@ -162,12 +162,16 @@ export class HandlebarsCompiler implements ViewEngine {
    * Load and register partial views.
    */
   async loadPartials (): Promise<void> {
-    for (const location of await this.partialsLocations()) {
+    for (const partialsFolder of await this.partialsLocations()) {
       await Collect(
-        await Fs.allFiles(location)
+        await Fs.allFiles(partialsFolder)
       )
-        .filter(partial => this.isViewFile(partial))
-        .forEach(async view => await this.registerPartial(view, location))
+        .filter(partial => {
+          return this.isViewFile(partial)
+        })
+        .forEach(async partial => {
+          return await this.registerPartialFromFile(partial, partialsFolder)
+        })
     }
   }
 
@@ -189,14 +193,37 @@ export class HandlebarsCompiler implements ViewEngine {
    *
    * @param {string} file
    */
-  async registerPartial (file: string, basePath: string): Promise<void> {
+  async registerPartialFromFile (file: string, basePath: string): Promise<void> {
     try {
-      this.handlebars().registerPartial(
+      this.registerPartial(
         this.partialNameFrom(file, basePath), await Fs.content(file)
       )
     } catch (error: any) {
       this.logger().warning(`WARNING: failed to register partial "${file}": ${String(error.message)}`)
     }
+  }
+
+  /**
+   * Register a partial view with the given `name` and `content` to the handlebars engine.
+   *
+   * @param {String} name
+   * @param {String} content
+   *
+   * @returns {this}
+   */
+  registerPartial (name: string, content: string): this {
+    return tap(this, () => {
+      this.handlebars().registerPartial(name, content)
+    })
+  }
+
+  /**
+   * Determine whether a partial view with the given `name` is registered.
+   *
+   * @param {string} name
+   */
+  hasPartial (name: string): boolean {
+    return !!this.handlebars().partials[name]
   }
 
   /**
@@ -228,7 +255,7 @@ export class HandlebarsCompiler implements ViewEngine {
     )
       .flatMap(async helpersPath => await Fs.allFiles(helpersPath))
       .filter(helper => this.isScriptFile(helper))
-      .forEach(async helper => await this.registerHelper(helper))
+      .forEach(async helper => this.registerHelperFromFile(helper))
   }
 
   /**
@@ -245,21 +272,42 @@ export class HandlebarsCompiler implements ViewEngine {
   }
 
   /**
-   * Register the given view helper `file` to the handlebars engine.
+   * Register a Handlebars view helper from the given file `path`.
    *
-   * @param {string} file
+   * @param {string} path
    */
-  async registerHelper (file: string): Promise<void> {
-    try {
-      const helper = esmResolve(require(file))
-      const name = await Fs.filename(file)
+  registerHelperFromFile (path: string): void {
+    const name = Fs.filename(path)
+    const helper: HelperDelegate = esmResolve(require(path))
 
-      typeof helper === 'function'
-        ? this.handlebars().registerHelper(name, helper as HelperDelegate)
-        : this.logger().warning(`View helper "${file}" is not a function, received "${typeof helper}"`)
+    this.registerHelper(name, helper)
+  }
+
+  /**
+   * Determine whether a view helper with the given `name` is registered.
+   *
+   * @param {string} name
+   */
+  hasHelper (name: string): boolean {
+    return typeof this.handlebars().helpers[name] === 'function'
+  }
+
+  /**
+   * Register a view helper with the given `name` and `content` to the view engine.
+   *
+   * @param {string} name
+   * @param {HelperDelegate} fn
+   */
+  registerHelper (name: string, fn: HelperDelegate): this {
+    try {
+      typeof fn === 'function'
+        ? this.handlebars().registerHelper(name, fn)
+        : this.logger().warning(`View helper "${name}" is not a function, received "${typeof fn}"`)
     } catch (error: any) {
-      this.logger().warning(`WARNING: failed to load helper "${file}": ${String(error.message)}`)
+      this.logger().warning(`WARNING: failed to load helper "${name}": ${String(error.message)}`)
     }
+
+    return this
   }
 
   /**

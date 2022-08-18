@@ -2,8 +2,8 @@
 
 import { SessionManager } from './session-manager'
 import { ServiceProvider } from '@supercharge/support'
-import { HttpRequest, Session } from '@supercharge/contracts'
 import { StartSessionMiddleware } from './middleware/start-session'
+import { HttpRequest, HttpRequestCtor, Session } from '@supercharge/contracts'
 
 /**
  * Add container bindings for the session service.
@@ -13,7 +13,7 @@ export interface ContainerBindings {
 }
 
 /**
- * Extend the supercharge request interface with the session property.
+ * Extend the Supercharge request interface with the session property.
  */
 declare module '@supercharge/contracts' {
   export interface HttpRequest {
@@ -61,8 +61,8 @@ export class SessionServiceProvider extends ServiceProvider {
    * Register the `request.session()` macro function to the request constructor.
    */
   private registerRequestMacro (): void {
-    const Request = this.app().make<HttpRequest>('request')
     const session = this.app().make<SessionManager>('session')
+    const Request = this.app().make<HttpRequestCtor>('request')
 
     Request.macro('session', function (this: HttpRequest) {
       return session.createFrom(this.ctx())

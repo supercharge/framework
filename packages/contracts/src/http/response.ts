@@ -2,11 +2,20 @@
 
 import { HttpContext } from './context'
 import { CookieBag } from './cookie-bag'
-import { ViewConfigBuilder } from '../view'
+import { CookieOptions } from './cookie-options'
+import { MacroableCtor } from '@supercharge/macroable'
+import { ViewConfigBuilder, ViewEngine } from '../view'
 import { HttpRedirect, ResponseCookieBuilderCallback } from '.'
 import { InteractsWithState } from './concerns/interacts-with-state'
 
 export type ViewBuilderCallback = (viewBuilder: ViewConfigBuilder) => unknown
+
+export interface HttpResponseCtor extends MacroableCtor {
+  /**
+   * Create a new HTTP response instance.
+   */
+  new (context: HttpContext, view: ViewEngine, cookieOptions: CookieOptions): HttpResponse
+}
 
 export interface HttpResponse<T = any> extends InteractsWithState {
   /**
@@ -101,7 +110,18 @@ export interface HttpResponse<T = any> extends InteractsWithState {
   payload (payload: T): this
 
   /**
-   * Set a response status.
+   * Returns the current response payload.
+   *
+   * @example
+   * ```
+   * response.getPayload()
+   * // { id: 1, name: 'Supercharge' }
+   * ```
+   */
+  getPayload (): T
+
+  /**
+   * Set a response status code.
    *
    * @example
    * ```
@@ -109,6 +129,62 @@ export interface HttpResponse<T = any> extends InteractsWithState {
    * ```
    */
   status (status: number): this
+
+  /**
+   * Returns the response status code.
+   *
+   * @example
+   * ```
+   * response.getStatusCode()
+   * // 204
+   * ```
+   */
+  getStatus (): number
+
+  /**
+   * Determine whether the response has any of the given status `codes` assigned.
+   *
+   * @example
+   * ```
+   * response.status(204).hasStatus(204)
+   * // true
+   *
+   * response.status(200).hasStatus([201, 202, 204])
+   * // false
+   *
+   * response.status(201).hasStatus(204)
+   * // false
+   * ```
+   */
+  hasStatus (codes: number | number[]): boolean
+
+  /**
+   * Determine whether the response has the status code `200 OK`.
+   *
+   * @example
+   * ```
+   * response.isOk()
+   * // true
+   * ```
+   */
+  isOk (): boolean
+
+  /**
+   * Determine whether the response has one of the status codes `204` or `304`.
+   *
+   * @example
+   * ```
+   * response.status(204).isEmpty()
+   * // true
+   *
+   * response.status(304).isEmpty()
+   * // true
+   *
+   * response.status(201).isEmpty()
+   * // false
+   * ```
+   */
+  isEmpty (): boolean
 
   /**
    * Temporarily redirect the request using HTTP status code 302. You can customize
@@ -140,6 +216,22 @@ export interface HttpResponse<T = any> extends InteractsWithState {
    */
   permanentRedirect (): HttpRedirect
   permanentRedirect (url: string): void
+
+  /**
+   * Determine whether the response is an HTTP redirect using one of the status
+   * codes in range 300 to 399. You may also determine whether the response is
+   * a redirect using a `statusCode` value that you provide as an argument.
+   *
+   * @example
+   * ```
+   * response.isRedirect()
+   * // true
+   *
+   * response.isRedirect(307)
+   * // false
+   * ```
+   */
+  isRedirect (statusCode?: number): boolean
 
   /**
    * Set the response `Content-Type` header. This will look up the mime type
@@ -174,8 +266,8 @@ export interface HttpResponse<T = any> extends InteractsWithState {
    * response.view('welcome', view => {
    *   view.layout('landing')
    * })
-   * response.view('user/dashboard', { user: { id: 1, name: 'Marcus' } })
-   * response.view('user/dashboard', { user: { id: 1, name: 'Marcus' } }, view => {
+   * response.view('user/dashboard', { user: { id: 1, name: 'Supercharge' } })
+   * response.view('user/dashboard', { user: { id: 1, name: 'Supercharge' } }, view => {
    *   view.layout('profile')
    * })
    * ```

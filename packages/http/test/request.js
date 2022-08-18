@@ -230,6 +230,27 @@ test('request.headers()', async () => {
   })
 })
 
+test('request.header()', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload({
+      headers: request.headers()
+    })
+  })
+
+  const response = await Supertest(app.callback())
+    .get('/')
+    .set('X-Testing', 'foo')
+    .expect(200)
+
+  expect(response.body).toMatchObject({
+    headers: {
+      'x-testing': 'foo'
+    }
+  })
+})
+
 test('request.headers().all()', async () => {
   const app = new Koa().use(ctx => {
     const { request, response } = HttpContext.wrap(ctx, appMock)
@@ -289,7 +310,7 @@ test('request.headers().has()', async () => {
     .expect(200, 'true')
 })
 
-test('request.hasHeaders()', async () => {
+test('request.hasHeader()', async () => {
   const app = new Koa().use(ctx => {
     const { request, response } = HttpContext.wrap(ctx, appMock)
 
@@ -320,7 +341,7 @@ test('response.headers().remove()', async () => {
     .get('/')
     .expect(200)
 
-  expect(response.body).toMatchObject({ sessionId: 1 })
+  expect(response.body).toMatchObject({ sessionid: 1 })
   expect(response.body).not.toMatchObject({ name: 'Supercharge' })
 })
 
@@ -608,7 +629,8 @@ test('isMethod', async () => {
 
     return response.payload({
       isGet: request.isMethod('GET'),
-      isPost: request.isMethod('POST')
+      isPost: request.isMethod('POST'),
+      isGetFromArray: request.isMethod(['GET', 'PUT', 'PATCH'])
     })
   })
 
@@ -616,7 +638,8 @@ test('isMethod', async () => {
     .get('/')
     .expect(200, {
       isGet: true,
-      isPost: false
+      isPost: false,
+      isGetFromArray: true
     })
 })
 
@@ -646,6 +669,197 @@ test('userAgent', async () => {
   await Supertest(app.callback())
     .get('/')
     .expect(200, { })
+})
+
+test('querystring', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload({
+      querystring: request.queryString()
+    })
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(200, { querystring: '' })
+
+  await Supertest(app.callback())
+    .get('/?name=Supercharge')
+    .expect(200, { querystring: 'name=Supercharge' })
+})
+
+test('fullUrl', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload({
+      fullUrl: request.fullUrl()
+    })
+  })
+
+  // ensure to listen on a port we control
+  const server = app.listen(3000)
+
+  await Supertest(server)
+    .get('/foo?bar=baz&name=Supercharge')
+    .set({ host: 'localhost:3000' })
+    .expect(200, { fullUrl: 'http://localhost:3000/foo?bar=baz&name=Supercharge' })
+
+  await new Promise((resolve, reject) => {
+    server.close(error => {
+      error ? reject(error) : resolve()
+    })
+  })
+})
+
+test('protocol', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload({
+      protocol: request.protocol()
+    })
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .expect(200, { protocol: 'http' })
+})
+
+test('protocol - when x-forwarded-proto is empty', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload({
+      protocol: request.protocol()
+    })
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .set({ 'X-Forwarded-Proto': '' })
+    .expect(200, { protocol: 'http' })
+})
+
+test('protocol - when x-forwarded-proto is set and trusted proxy', async () => {
+  const app = new Koa({ proxy: true }).use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload({
+      protocol: request.protocol()
+    })
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .set({ 'X-Forwarded-Proto': 'https' })
+    .expect(200, { protocol: 'https' })
+
+  await Supertest(app.callback())
+    .get('/')
+    .set({ 'X-Forwarded-Proto': 'https, http' })
+    .expect(200, { protocol: 'https' })
+})
+
+test('protocol - when x-forwarded-proto is set and not trusting proxy', async () => {
+  const app = new Koa({ proxy: false }).use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    return response.payload({
+      protocol: request.protocol()
+    })
+  })
+
+  await Supertest(app.callback())
+    .get('/')
+    .set({ 'X-Forwarded-Proto': 'https' })
+    .expect(200, { protocol: 'http' })
+
+  await Supertest(app.callback())
+    .get('/')
+    .set({ 'X-Forwarded-Proto': 'https, http' })
+    .expect(200, { protocol: 'http' })
+})
+
+test('isPjax', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    expect(request.isPjax()).toBe(false)
+
+    request.headers().set('X-PJAX', 'true')
+    expect(request.isPjax()).toBe(true)
+
+    request.headers().set('X-PJAX', 'false')
+    expect(request.isPjax()).toBe(true)
+
+    request.headers().set('X-PJAX', true)
+    expect(request.isPjax()).toBe(true)
+
+    request.headers().set('X-PJAX', '')
+    expect(request.isPjax()).toBe(false)
+
+    request.headers().set('X-PJAX', undefined)
+    expect(request.isPjax()).toBe(false)
+
+    return response.payload('ok')
+  })
+
+  await Supertest(app.callback()).get('/').expect(200)
+})
+
+test('isAjax', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    expect(request.isAjax()).toBe(false)
+
+    request.headers().set('X-Requested-With', 'XMLHttpRequest')
+    expect(request.isAjax()).toBe(true)
+
+    request.headers().set('X-Requested-With', '')
+    expect(request.isAjax()).toBe(false)
+
+    request.headers().set('X-Requested-With', undefined)
+    expect(request.isAjax()).toBe(false)
+
+    return response.payload('ok')
+  })
+
+  await Supertest(app.callback()).get('/').expect(200)
+})
+
+test('isPrefetch', async () => {
+  const app = new Koa().use(ctx => {
+    const { request, response } = HttpContext.wrap(ctx, appMock)
+
+    expect(request.isPrefetch()).toBe(false)
+
+    request.headers().set('X-moz', '')
+    expect(request.isPrefetch()).toBe(false)
+
+    request.headers().set('X-moz', 'prefetch')
+    expect(request.isPrefetch()).toBe(true)
+
+    request.headers().set('X-moz', 'Prefetch')
+    expect(request.isPrefetch()).toBe(true)
+
+    request.headers().remove('X-moz')
+
+    request.headers().set('Purpose', '')
+    expect(request.isPrefetch()).toBe(false)
+
+    request.headers().set('Purpose', 'prefetch')
+    expect(request.isPrefetch()).toBe(true)
+
+    request.headers().set('Purpose', 'Prefetch')
+    expect(request.isPrefetch()).toBe(true)
+
+    return response.payload('ok')
+  })
+
+  await Supertest(app.callback()).get('/').expect(200)
 })
 
 test.run()

@@ -6,13 +6,14 @@ import { FileBag } from './file-bag'
 import Str from '@supercharge/strings'
 import { CookieBag } from './cookie-bag'
 import { Mixin as Many } from 'ts-mixer'
+import { Arr } from '@supercharge/arrays'
 import { tap } from '@supercharge/goodies'
 import { ParameterBag } from './parameter-bag'
 import { Macroable } from '@supercharge/macroable'
 import { RequestHeaderBag } from './request-header-bag'
 import { IncomingHttpHeaders, IncomingMessage } from 'http'
 import { InteractsWithState } from './interacts-with-state'
-import { CookieOptions, HttpContext, HttpMethods, HttpRequest, InteractsWithContentTypes, RequestCookieBuilderCallback } from '@supercharge/contracts'
+import { CookieOptions, HttpContext, HttpMethods, HttpRequest, InteractsWithContentTypes, Protocol, RequestCookieBuilderCallback } from '@supercharge/contracts'
 
 declare module 'koa' {
   interface Request extends Koa.BaseRequest {
@@ -73,10 +74,12 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
   }
 
   /**
-   * Determine whether the request is using the given HTTP `method`.
+   * Determine whether the request is using one of the given HTTP `methods`.
    */
-  isMethod (method: HttpMethods): method is HttpMethods {
-    return this.method() === method
+  isMethod (methods: HttpMethods | HttpMethods[]): methods is HttpMethods {
+    return ([] as HttpMethods[])
+      .concat(methods)
+      .includes(this.method())
   }
 
   /**
@@ -91,6 +94,13 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
    */
   query (): ParameterBag<string | string[]> {
     return new ParameterBag<string | string[]>(this.koaCtx.query)
+  }
+
+  /**
+   * Returns the plain query string, without the leading ?.
+   */
+  queryString (): string {
+    return this.koaCtx.request.querystring
   }
 
   /**
@@ -135,6 +145,20 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
    */
   hasCookie (name: string): boolean {
     return this.cookies().has(name)
+  }
+
+  /**
+   * Returns the full URL including protocol, host[:port], path, and query string.
+   */
+  fullUrl (): string {
+    return this.koaCtx.href
+  }
+
+  /**
+   * Returns the protocol value.
+   */
+  protocol (): Protocol {
+    return this.koaCtx.request.protocol
   }
 
   /**
@@ -374,5 +398,38 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
    */
   userAgent (): IncomingHttpHeaders['user-agent'] {
     return this.header('user-agent')
+  }
+
+  /**
+   * Determine whether the request the request is an XMLHttpRequest.
+   */
+  isXmlHttpRequest (): boolean {
+    return this.header('X-Requested-With') === 'XMLHttpRequest'
+  }
+
+  /**
+   * Determine whether the request is the result of an AJAX call.
+   * This is an alias for {@link HttpRequest#isXmlHttpRequest}.
+   */
+  isAjax (): boolean {
+    return this.isXmlHttpRequest()
+  }
+
+  /**
+   * Determine whether the request is the result of a PJAX call.
+   */
+  isPjax (): boolean {
+    return this.hasHeader('X-PJAX')
+  }
+
+  /**
+   * Determine whether the request is the result of a prefetch call.
+   */
+  isPrefetch (): boolean {
+    return Arr.from([
+      this.header('X-moz', '') as string,
+      this.header('Purpose', '') as string
+    ]).map(header => header.toLowerCase())
+      .has(header => header === 'prefetch')
   }
 }

@@ -19,6 +19,12 @@
     "references": [
         {
             "path": "../contracts"
+        },
+        {
+            "path": "../manager"
+        },
+        {
+            "path": "../support"
         }
     ]
 }

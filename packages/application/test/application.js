@@ -129,6 +129,18 @@ test.group('Application', () => {
     expect(app.publicPath()).toEqual(
       Path.resolve(__dirname, 'public')
     )
+
+    expect(app.publicPath('test')).toEqual(
+      Path.resolve(__dirname, 'public/test')
+    )
+
+    expect(app.publicPath('foo/bar')).toEqual(
+      Path.resolve(__dirname, 'public/foo/bar')
+    )
+
+    expect(app.publicPath('foo', 'bar')).toEqual(
+      Path.resolve(__dirname, 'public/foo/bar')
+    )
   })
 
   test('resolves publicPath for parameter', async () => {

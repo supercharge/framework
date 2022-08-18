@@ -8,10 +8,10 @@
   },
   "devDependencies": {
     "@supercharge/tsconfig": "~4.0.0",
-    "@types/node": "~18.0.6",
+    "@types/node": "~18.7.6",
     "cross-env": "~7.0.3",
-    "lerna": "~5.1.8",
-    "nx": "14.4.3"
+    "lerna": "~5.4.3",
+    "nx": "14.5.7"
   },
   "engines": {
     "node": ">=16"
@@ -37,11 +37,11 @@
     "clean": "lerna clean --yes",
     "fresh": "npm run clean && npm run bootstrap",
     "bootstrap": "lerna bootstrap --no-ci",
-    "build": "nx run-many --target=build --all --parallel=5",
+    "build": "lerna run build",
     "watch": "npm run dev",
-    "dev": "nx run-many --target=dev --all --parallel=5",
-    "lint": "nx run-many --target=lint --all --parallel=5",
-    "test": "nx run-many --target=test --all --parallel=5",
+    "dev": "lerna run dev",
+    "lint": "lerna run lint",
+    "test": "lerna run test",
     "publish": "lerna publish --force-publish"
   }
 }

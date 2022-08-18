@@ -1,6 +1,7 @@
 'use strict'
 
 import { ViewConfig } from './config'
+import { HelperDelegate } from 'handlebars'
 
 export interface ViewEngine {
   /**
@@ -19,4 +20,25 @@ export interface ViewEngine {
    * Determine whether the given `view` template file exists.
    */
   exists(view: string): Promise<boolean>
+
+  /**
+   * Register a partial view with the given `name` and `content` to the view engine.
+   */
+  registerPartial (name: string, content: string): this
+
+  /**
+   * Determine whether a partial view with the given `name` is registered.
+   */
+  hasPartial (name: string): boolean
+
+  /**
+   * Register a view helper with the given `name` and `content` to the view engine.
+   */
+  registerHelper (name: string, fn: HelperDelegate): this
+
+  /**
+   * Determine whether a view helper with the given `name` is registered.
+   */
+  hasHelper (name: string): boolean
+
 }

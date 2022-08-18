@@ -10,7 +10,7 @@ export type MiddlewareCtor = new (app: Application) => Middleware
 
 export interface Middleware {
   /**
-   * Handle the given request `ctx`.
+   * Handle the given HTTP `ctx`.
    */
-  handle(ctx: HttpContext, next: NextHandler): any | Promise<any>
+  handle(ctx: HttpContext, next: NextHandler): Promise<any> | any
 }

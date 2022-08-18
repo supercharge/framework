@@ -1,9 +1,100 @@
 # Changelog
 
-## [3.2.0](https://github.com/supercharge/framework/compare/v3.1.0...v3.2.0) - 2022-08-xx
+## [3.6.0](https://github.com/supercharge/framework/compare/v3.5.0...v3.6.0) - 2022-08-17
 
 ### Added
-- tba.
+- `@supercharge/vite`: SSR support via the `ssr` and `ssrOutputDirectory` options
+
+### Updated
+- bump dependencies
+
+
+## [3.5.0](https://github.com/supercharge/framework/compare/v3.4.0...v3.5.0) - 2022-08-11
+
+### Added
+- `@supercharge/vite`: [Vite](https://vitejs.dev) plugin and package
+    - exposes a Vite plugin for the Supercharge framework
+    - registers a `vite` view helper to generate script and stylesheet tags
+    ```js
+    <html>
+        <head>
+            {{{ vite "resources/js/app.js" }}}
+        </head>
+    </html>
+    ```
+- `@supercharge/view`
+    - add `registerHelper(name, helperDelegateFunction)` method: register a view helper dynamically in a service provider (for example in community packages)
+    - add `registerPartial(name, content)` method: register a partial view dynamically in a service provider (for example in community packages)
+    - add `hasPartial(name)` method: determine whether the view engine has a partial view with the given `name`
+    - add `hasHelper(name)` method: determine whether the view engine has a view helper with the given `name`
+- `@supercharge/contracts`
+    - expose `Application#register(provider: ServiceProvider)` method (which was already implemented in `@supercharge/application`)
+    - add `Htmlable` contract
+- `@supercharge/support`
+    - export `HtmlString` class implementing the `Htmlable` contract
+
+### Updated
+- bump dependencies
+- `@supercharge/application`
+    - `publicPath(...paths)` method now supports multiple paths. This allows us to use something like `app.publicPath('foo/bar')` and `app.publicPath('foo', 'bar')` resolving to the same path `public/foo/bar`
+
+
+## [3.4.0](https://github.com/supercharge/framework/compare/v3.3.0...v3.4.0) - 2022-07-27
+
+### Added
+- `@supercharge/contracts`
+    - extend `HttpResponse` contract (with the methods below in `@supercharge/http`)
+    - add `onBooting` method to `Application` contract
+- `@supercharge/http`
+    - add `response.getPayload()` method: returns the currently assigned response payload
+    - add `response.hasStatus(<code>)` method: determine whether the response has a given status `code`
+    - add `response.isOk()` method: determine whether the response has the status code `200 OK`
+    - add `response.isEmpty()` method: determine whether the response has one of the status codes `204 No Content` or `304 Not Modified`
+- `@supercharge/application`
+    - add `onBooting` method: register a callback that runs when the app boots
+
+### Updated
+- bump dependencies
+- `@supercharge/http`
+    - update `request.isMethod(<method | method-array>)` method: support an array as the argument determining whether the request’s method is one of the given candidates (e.g. `request.isMethod(['GET', 'POST']) // true`)
+    - lowercase all header names before accessing them from request headers (Node.js lowercases all request headers)
+
+
+## [3.3.0](https://github.com/supercharge/framework/compare/v3.2.0...v3.3.0) - 2022-07-23
+
+### Added
+- `@supercharge/contracts`
+    - extend `Application` contract by adding the `withErrorHandler` method
+- `@supercharge/view`
+    - add `registerPartial(name, content)` method: register a partial view dynamically in a service provider (for example in community packages)
+- `@supercharge/http`
+    - add `request.protocol()` method: returns the URL protocol
+    - add `request.queryString()` method: returns the URL’s query string as a string value
+    - add `request.isXmlHttpRequest()` method: is an alias for `isAjax` (see next line)
+    - add `request.isAjax()` method: determine whether the request is a result of an AJAX call
+    - add `request.isPjax()` method: determine whether the request is a result of an PJAX call
+    - add `request.isPrefetch()` method: determine whether the request is a result of a [prefetch call](https://developer.mozilla.org/en-US/docs/Glossary/Prefetch)
+    - add `request.fullUrl()` method: returns the full URL including including protocol, host[:port], path, and query string
+
+### Updated
+- bump dependencies
+
+
+## [3.2.0](https://github.com/supercharge/framework/compare/v3.1.0...v3.2.0) - 2022-07-19
+
+### Added
+- `@supercharge/contracts`
+    - export `HttpRequestCtor` interface which can be used when resolving the `'request'` constructor binding from the container
+    - export `HttpResponseCtor` interface which can be used when resolving the `'response'` constructor binding from the container
+- `@supercharge/session`
+    - use the `HttpRequestCtor` interface
+- `@supercharge/http`
+    - add `response.getStatus()` method: returns the HTTP response status code
+    - add `response.isRedirect(statusCode?: number)` method: determine whether the response is an HTTP redirect (optionally checking for the given `statusCode`)
+    - make `Response` macroable allowing users to decorate the response with custom functions
+
+### Updated
+- bump dependencies
 
 
 ## [3.1.0](https://github.com/supercharge/framework/compare/v3.0.0...v3.1.0) - 2022-07-17

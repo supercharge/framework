@@ -4,7 +4,11 @@ import { EnvStore } from '../env'
 import { Logger } from '../logging'
 import { ConfigStore } from '../config'
 import { Container } from '../container'
+import { ServiceProvider } from '../support'
 import { BootstrapperCtor } from './bootstrapper'
+import { ErrorHandlerCtor } from './error-handler'
+
+type Callback = (app: Application) => Promise<unknown> | unknown
 
 export interface Application extends Container {
   /**
@@ -21,6 +25,18 @@ export interface Application extends Container {
    * Returns the app version.
    */
   version(): string | undefined
+
+  /**
+   * Assign the given error handler to this application instance. The error
+   * handler is used to report errors on the default logging channel and
+   * also to create responses for requests throwing errors.
+   */
+  withErrorHandler (ErrorHandler: ErrorHandlerCtor): this
+
+  /**
+   * Register a booting callback that runs at the beginning of the app boot.
+   */
+  onBooting (callback: Callback): this
 
   /**
    * Returns the root path of the application directory.
@@ -54,7 +70,7 @@ export interface Application extends Container {
    *
    * @param {String} path
    */
-  publicPath (path?: string): string
+  publicPath (...paths: string[]): string
 
   /**
    * Returns an absolute path into the application’s resources directory.
@@ -120,6 +136,11 @@ export interface Application extends Container {
    * @param {Array} bootstrappers
    */
   bootstrapWith(bootstrappers: BootstrapperCtor[]): Promise<void>
+
+  /**
+   * Call the `register` method on the given service `provider`.
+   */
+  register (provider: ServiceProvider): this
 
   /**
    * Register the configured user-land providers.

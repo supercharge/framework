@@ -1,14 +1,16 @@
 'use strict'
 
 import { CookieBag } from './cookie-bag'
+import { Mixin as Many } from 'ts-mixer'
 import { tap } from '@supercharge/goodies'
 import { HttpRedirect } from './http-redirect'
+import { Macroable } from '@supercharge/macroable'
 import { ResponseHeaderBag } from './response-header-bag'
 import { ViewConfigBuilder } from './view-config-builder'
 import { InteractsWithState } from './interacts-with-state'
 import { CookieOptions, HttpContext, HttpResponse, ViewEngine, ViewBuilderCallback, ResponseCookieBuilderCallback } from '@supercharge/contracts'
 
-export class Response extends InteractsWithState implements HttpResponse {
+export class Response extends Many(Macroable, InteractsWithState) implements HttpResponse {
   /**
    * Stores the internal properties.
    */
@@ -59,6 +61,13 @@ export class Response extends InteractsWithState implements HttpResponse {
     return tap(this, () => {
       this.koaCtx.response.body = payload
     })
+  }
+
+  /**
+   * Returns the current response payload.
+   */
+  getPayload<T extends unknown = any> (): T {
+    return this.koaCtx.response.body as T
   }
 
   /**
@@ -154,6 +163,44 @@ export class Response extends InteractsWithState implements HttpResponse {
   }
 
   /**
+   * Returns the response status code.
+   *
+   * @returns {Number}
+   */
+  getStatus (): number {
+    return this.koaCtx.response.status
+  }
+
+  /**
+   * Determine whether the response has any of the given status `codes` assigned.
+   */
+  hasStatus (codes: number | number[]): boolean {
+    return ([] as number[])
+      .concat(codes)
+      .includes(this.getStatus())
+  }
+
+  /**
+   * Determine whether the response has the status code `200 OK`.
+   *
+   * @example
+   * ```
+   * response.isOk()
+   * // true
+   * ```
+   */
+  isOk (): boolean {
+    return this.hasStatus(200)
+  }
+
+  /**
+   * Determine whether the response has one of the status codes `204` or `304`.
+   */
+  isEmpty (): boolean {
+    return this.hasStatus([204, 304])
+  }
+
+  /**
    * Set the response `Content-Type` header. This will look up the mime type
    * and set the related value as the content type header field. It also
    * removes the content type header if no valid mime type is available.
@@ -204,6 +251,19 @@ export class Response extends InteractsWithState implements HttpResponse {
   permanentRedirect (url: string): HttpRedirect
   permanentRedirect (url?: any): HttpRedirect {
     return this.redirect(url).permanent()
+  }
+
+  /**
+   * Determine whether the response is an HTTP redirect using one of the status
+   * codes in range 300 to 399. You may also determine whether the response is
+   * a redirect using a `statusCode` value that you provide as an argument.
+   */
+  isRedirect (statusCode?: number): boolean {
+    const responseStatusCode = this.ctx().raw.response.status as number
+
+    return statusCode
+      ? statusCode === responseStatusCode
+      : responseStatusCode >= 300 && responseStatusCode <= 399
   }
 
   /**
