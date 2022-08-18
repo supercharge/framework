@@ -1,7 +1,7 @@
 'use strict'
 
-const Fs = require('@supercharge/fs')
 const Path = require('path')
+const Fs = require('@supercharge/fs')
 const { Application } = require('@supercharge/application')
 
 /**
