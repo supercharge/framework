@@ -46,18 +46,12 @@ export class BcryptHasher implements HasherContract {
    * @returns {Boolean}
    */
   needsRehash (hashedValue: string): boolean {
-    const hash = hashedValue ?? ''
-
-    if (typeof hash !== 'string') {
+    if (typeof hashedValue !== 'string') {
       throw new Error('You must provide a string value as an argument to the "needsRehash" method.')
     }
 
-    if (hash.startsWith('$2a')) {
-      return true
-    }
+    const [version, rounds] = hashedValue.split('$').slice(1)
 
-    const [_version, rounds, ..._rest] = (hashedValue ?? '').split('$')
-
-    return this.rounds !== Number(rounds)
+    return this.rounds !== Number(rounds) || version !== '2b'
   }
 }
