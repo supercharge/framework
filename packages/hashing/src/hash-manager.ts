@@ -11,7 +11,7 @@ export class HashManager extends Manager implements Hasher {
    *
    * @param {String} name
    */
-  override driver (name?: string): Hasher {
+  protected override driver (name?: string): Hasher {
     return super.driver(name)
   }
 
