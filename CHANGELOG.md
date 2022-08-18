@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.7.0](https://github.com/supercharge/framework/compare/v3.6.0...v3.7.0) - 2022-08-xx
+
+### Added
+- `@supercharge/hashing`: a new package providing hashing support based on the bcrypt algorithm
+- `@supercharge/contracts`:
+    - export hashing contracts
+- `@supercharge/facades`:
+    - add `Hash` facade for the hashing service
+
+### Updated
+- bump dependencies
+
+
 ## [3.6.0](https://github.com/supercharge/framework/compare/v3.5.0...v3.6.0) - 2022-08-17
 
 ### Added
