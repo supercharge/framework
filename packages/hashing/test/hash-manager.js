@@ -40,4 +40,21 @@ test.group('HashManager', () => {
     const hashValue = await hash.make('foo')
     expect(hash.needsRehash(hashValue)).toBe(false)
   })
+
+  test('fallback to 12 rounds', async () => {
+    const app = await setupApp()
+    const hash = new HashManager(app)
+
+    expect(() => hash.needsRehash()).toThrow()
+    expect(() => hash.needsRehash(null)).toThrow()
+    expect(() => hash.needsRehash(123)).toThrow()
+    expect(() => hash.needsRehash([])).toThrow()
+    expect(() => hash.needsRehash({})).toThrow()
+
+    expect(hash.needsRehash('$2a')).toBe(true)
+    expect(hash.needsRehash('$2b')).toBe(true)
+
+    const hashValue = await hash.make('foo')
+    expect(hash.needsRehash(hashValue)).toBe(false)
+  })
 })
