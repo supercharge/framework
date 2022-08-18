@@ -26,7 +26,7 @@
   "dependencies": {
     "@supercharge/macroable": "~2.0.1",
     "@types/handlebars": "~4.1.0",
-    "@types/node": "~18.7.4",
+    "@types/node": "~18.7.6",
     "knex": "~2.2.0"
   },
   "devDependencies": {
