@@ -12,7 +12,7 @@ export class BcryptHasher implements HasherContract {
   /**
    * Create a new instance.
    */
-  constructor ({ rounds }: HashConfig['bcrypt']) {
+  constructor ({ rounds }: HashConfig['bcrypt'] = {}) {
     this.rounds = rounds ?? this.rounds
   }
 

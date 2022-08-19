@@ -13,6 +13,6 @@ export interface HashConfig {
     /**
      * The number of rounds to use.
      */
-    rounds: number
+    rounds?: number
   }
 }
