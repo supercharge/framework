@@ -1,5 +1,6 @@
 'use strict'
 
+import deepmerge from 'deepmerge'
 import { tap } from '@supercharge/goodies'
 import { RouterContext } from '@koa/router'
 import { Dict, StateBag as StateBagContract } from '@supercharge/contracts'
@@ -65,6 +66,19 @@ export class StateBag implements StateBagContract {
     }
 
     throw new Error(`Invalid argument when setting state via "state().set()". Expected a key-value-pair or object as the first argument. Received ${name}.`)
+  }
+
+  /**
+   * Merge the given `data` object with the existing shared state.
+   */
+  merge (data: Record<string, any>): this {
+    if (this.isObject(data)) {
+      return tap(this, () => {
+        this.ctx.state = deepmerge.all([this.ctx.state, data])
+      })
+    }
+
+    throw new Error(`Invalid argument when merging state via "state().merge()". Expected an object. Received "${typeof data}".`)
   }
 
   /**

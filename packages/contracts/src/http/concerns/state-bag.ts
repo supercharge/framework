@@ -17,6 +17,11 @@ export interface StateBag {
   add (name: string | Record<string, any>, value?: any): this
 
   /**
+   * Merge the given `data` object with the existing shared state.
+   */
+  merge (data: Record<string, any>): this
+
+  /**
    * Determine whether a shared state item exists for the given `name`.
    */
   has(name: string): boolean

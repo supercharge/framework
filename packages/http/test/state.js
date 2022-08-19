@@ -40,6 +40,22 @@ test('add', () => {
   }).toThrow('Invalid argument when setting state via "state().set()". Expected a key-value-pair or object as the first argument.')
 })
 
+test('merge', () => {
+  expect(new StateBag({ state: {} }).merge({ a: 1 }).all()).toEqual({ a: 1 })
+  expect(new StateBag({ state: { a: 'b' } }).merge({ c: 1 }).all()).toEqual({ a: 'b', c: 1 })
+  expect(new StateBag({ state: { a: { b: 1 } } }).merge({ a: { c: 2 } }).all()).toEqual({ a: { b: 1, c: 2 } })
+
+  const bag = new StateBag({ state: { a: 'b' } })
+  expect(bag.get('a')).toEqual('b')
+  expect(bag.merge({ a: 1 }).get('a')).toEqual(1)
+
+  expect(() => bag.merge([1, 2, 3]))
+    .toThrow('Invalid argument when merging state via "state().merge()". Expected an object. Received "object".')
+
+  expect(() => bag.merge('key', 'value'))
+    .toThrow('Invalid argument when merging state via "state().merge()". Expected an object. Received "string".')
+})
+
 test('has', () => {
   expect(new StateBag({ state: {} }).has()).toBe(false)
   expect(new StateBag({ state: {} }).has('test')).toBe(false)

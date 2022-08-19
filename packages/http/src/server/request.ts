@@ -11,8 +11,8 @@ import { tap } from '@supercharge/goodies'
 import { ParameterBag } from './parameter-bag'
 import { Macroable } from '@supercharge/macroable'
 import { RequestHeaderBag } from './request-header-bag'
-import { IncomingHttpHeaders, IncomingMessage } from 'http'
 import { InteractsWithState } from './interacts-with-state'
+import { IncomingHttpHeaders, IncomingMessage } from 'http'
 import { CookieOptions, HttpContext, HttpMethods, HttpRequest, InteractsWithContentTypes, Protocol, RequestCookieBuilderCallback } from '@supercharge/contracts'
 
 declare module 'koa' {
