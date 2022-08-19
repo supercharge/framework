@@ -6,8 +6,11 @@
 - `@supercharge/hashing`: a new package providing hashing support based on the bcrypt algorithm
 - `@supercharge/contracts`:
     - export hashing contracts
+    - add `merge` method to `StateBag` contract
 - `@supercharge/facades`:
     - add `Hash` facade for the hashing service
+- `@supercharge/http`:
+    - add `merge` method to `StateBag` class
 
 ### Updated
 - bump dependencies
