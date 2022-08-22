@@ -13,7 +13,7 @@
   ],
   "dependencies": {
     "@supercharge/contracts": "^3.7.0",
-    "@supercharge/goodies": "~1.10.1"
+    "@supercharge/goodies": "~1.11.1"
   },
   "devDependencies": {
     "@supercharge/eslint-config-typescript": "~2.3.0",

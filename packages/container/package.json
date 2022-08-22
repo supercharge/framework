@@ -14,7 +14,7 @@
   "dependencies": {
     "@supercharge/classes": "~1.10.0",
     "@supercharge/contracts": "^3.7.0",
-    "@supercharge/goodies": "~1.10.1",
+    "@supercharge/goodies": "~1.11.1",
     "@supercharge/map": "~1.5.0",
     "@supercharge/strings": "~1.28.0"
   },

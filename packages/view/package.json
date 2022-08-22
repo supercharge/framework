@@ -15,7 +15,7 @@
     "@supercharge/collections": "~4.3.0",
     "@supercharge/contracts": "^3.7.0",
     "@supercharge/fs": "~3.4.0",
-    "@supercharge/goodies": "~1.10.1",
+    "@supercharge/goodies": "~1.11.1",
     "@supercharge/manager": "^3.7.0",
     "@supercharge/strings": "~1.28.0",
     "@supercharge/support": "^3.7.0",
