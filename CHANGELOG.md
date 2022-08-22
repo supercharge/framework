@@ -1,11 +1,14 @@
 # Changelog
 
-## [3.8.0](https://github.com/supercharge/framework/compare/v3.7.0...v3.8.0) - 2022-08-xx
+## [3.7.1](https://github.com/supercharge/framework/compare/v3.7.0...v3.7.1) - 2022-08-22
 
 ### Updated
 - bump dependencies
 - `@supercharge/contracts`:
     - refined types for `StateBag#get` when providing a default value
+- `@supercharge/http`:
+    - use lodash `merge` instead of the `deepmerge` package
+    - remove `deepmerge` dependency
 
 
 ## [3.7.0](https://github.com/supercharge/framework/compare/v3.6.0...v3.7.0) - 2022-08-22
