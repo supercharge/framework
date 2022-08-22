@@ -9,7 +9,7 @@ export interface StateBag {
   /**
    * Returns the saved state for the given `name`.
    */
-  get<R = any>(name: string): R | undefined
+  get<R = any>(name: string, defaultValue?: R): R | undefined
 
   /**
    * Add a key-value-pair to the shared state or an object of key-value-pairs.

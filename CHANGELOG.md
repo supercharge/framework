@@ -14,6 +14,8 @@
 
 ### Updated
 - bump dependencies
+- `@supercharge/contracts`:
+    - extend `StateBag#get` contract: add `defaultValue` as an optional, second parameter
 - `@supercharge/http`:
     - `StateBag` class:
         - `add` method supports nested keys
