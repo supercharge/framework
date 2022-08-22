@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.7.0](https://github.com/supercharge/framework/compare/v3.6.0...v3.7.0) - 2022-08-xx
+## [3.7.0](https://github.com/supercharge/framework/compare/v3.6.0...v3.7.0) - 2022-08-22
 
 ### Added
 - `@supercharge/hashing`: a new package providing hashing support based on the bcrypt algorithm
@@ -10,10 +10,23 @@
 - `@supercharge/facades`:
     - add `Hash` facade for the hashing service
 - `@supercharge/http`:
-    - add `merge` method to `StateBag` class
+    - `StateBag` class: add `merge` method
 
 ### Updated
 - bump dependencies
+- `@supercharge/http`:
+    - `StateBag` class:
+        - `add` method supports nested keys
+        - `add` method merges nested fields instead of overriding them
+        - `has` method supports nested keys
+        - `remove` method supports nested keys
+        - `isMissing` method supports nested keys
+
+### Fixed
+- `@supercharge/http`:
+    - `StateBag` class:
+        - `has` method correctly handles falsy values
+        - `isMissing` method correctly handles falsy values
 
 
 ## [3.6.0](https://github.com/supercharge/framework/compare/v3.5.0...v3.6.0) - 2022-08-17
