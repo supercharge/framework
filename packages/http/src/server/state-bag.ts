@@ -47,7 +47,11 @@ export class StateBag implements StateBagContract {
    * Returns the saved state for the given `name`.
    */
   get<R = any> (name: string, defaultValue?: R): R {
-    return _.get(this.ctx.state, name, defaultValue)
+    const value = _.get(this.ctx.state, name)
+
+    return defaultValue !== undefined
+      ? value ?? defaultValue
+      : value
   }
 
   /**

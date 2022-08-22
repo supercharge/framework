@@ -26,6 +26,14 @@ test('get', () => {
   expect(new StateBag({ state: { a: 'b' } }).get('a')).toEqual('b')
 })
 
+test('get defaultValue', () => {
+  expect(new StateBag({ state: {} }).get('test', 'defaultValue')).toEqual('defaultValue')
+  expect(new StateBag({ state: { a: 'b' } }).get('c', 'defaultValue')).toEqual('defaultValue')
+  expect(new StateBag({ state: { a: null } }).get('a', 'defaultValue')).toEqual('defaultValue')
+  expect(new StateBag({ state: { a: undefined } }).get('a', 'defaultValue')).toEqual('defaultValue')
+  expect(new StateBag({ state: { a: undefined } }).get('a', '')).toEqual('')
+})
+
 test('get nested keys', () => {
   expect(new StateBag({ state: { a: {} } }).get('a.b')).toEqual(undefined)
   expect(new StateBag({ state: { a: { b: null } } }).get('a.b')).toEqual(null)
