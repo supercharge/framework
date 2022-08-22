@@ -20,7 +20,7 @@ export class HttpError extends BaseHttpError {
    * @returns {HttpError}
    */
   static wrap (error: Error): HttpError {
-    return new HttpError(error.message).withStatus(
+    return new this(error.message).withStatus(
       this.retrieveStatusFrom(error)
     )
   }
