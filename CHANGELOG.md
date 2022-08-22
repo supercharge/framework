@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.8.0](https://github.com/supercharge/framework/compare/v3.7.0...v3.8.0) - 2022-08-xx
+
+### Updated
+- bump dependencies
+- `@supercharge/contracts`:
+    - refined types for `StateBag#get` when providing a default value
+
+
 ## [3.7.0](https://github.com/supercharge/framework/compare/v3.6.0...v3.7.0) - 2022-08-22
 
 ### Added
