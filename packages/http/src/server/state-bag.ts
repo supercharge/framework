@@ -1,5 +1,6 @@
 'use strict'
 
+import _ from 'lodash'
 import deepmerge from 'deepmerge'
 import { tap } from '@supercharge/goodies'
 import { RouterContext } from '@koa/router'
@@ -46,7 +47,7 @@ export class StateBag implements StateBagContract {
    * Returns the saved state for the given `name`.
    */
   get<R = any> (name: string, defaultValue?: R): R {
-    return this.ctx.state[name] ?? defaultValue
+    return _.get(this.ctx.state, name, defaultValue)
   }
 
   /**
@@ -54,15 +55,13 @@ export class StateBag implements StateBagContract {
    */
   add (name: string | Dict<any>, value?: any): this {
     if (typeof name === 'string') {
-      return tap(this, () => {
-        this.ctx.state[name] = value
-      })
+      _.set(this.ctx.state, name, value)
+
+      return this
     }
 
     if (this.isObject(name)) {
-      return tap(this, () => {
-        Object.assign(this.ctx.state, name)
-      })
+      return this.merge(name)
     }
 
     throw new Error(`Invalid argument when setting state via "state().set()". Expected a key-value-pair or object as the first argument. Received ${name}.`)
@@ -85,9 +84,9 @@ export class StateBag implements StateBagContract {
    * Remove the shared state item for the given `name`.
    */
   remove (name: string): this {
-    const { [name]: _, ...rest } = this.ctx.state
-
-    return this.clear().add(rest)
+    return tap(this, () => {
+      _.unset(this.ctx.state, name)
+    })
   }
 
   /**
@@ -103,7 +102,7 @@ export class StateBag implements StateBagContract {
    * Determine whether a shared state item exists for the given `name`.
    */
   has (name: string): boolean {
-    return !!this.get(name)
+    return _.has(this.ctx.state, name)
   }
 
   /**
