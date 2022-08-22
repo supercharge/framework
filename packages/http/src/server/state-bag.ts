@@ -1,7 +1,6 @@
 'use strict'
 
 import _ from 'lodash'
-import deepmerge from 'deepmerge'
 import { tap } from '@supercharge/goodies'
 import { RouterContext } from '@koa/router'
 import { Dict, StateBag as StateBagContract } from '@supercharge/contracts'
@@ -77,7 +76,7 @@ export class StateBag implements StateBagContract {
   merge (data: Record<string, any>): this {
     if (this.isObject(data)) {
       return tap(this, () => {
-        this.ctx.state = deepmerge.all([this.ctx.state, data])
+        _.merge(this.ctx.state, data)
       })
     }
 
