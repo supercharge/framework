@@ -141,8 +141,6 @@ export class Vite {
    * @returns {String}
    */
   protected makeTagForChunk (src: string, url: string): string {
-    // console.log({ src })
-
     return this.isCssPath(src)
       ? this.makeStylesheetTagWithAttributes(url, {})
       : this.makeScriptTagWithAttributes(url, {})
