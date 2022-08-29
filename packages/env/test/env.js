@@ -13,12 +13,22 @@ test('has environment from NPM script', async () => {
 test('get', async () => {
   Env.set('TEST_VAR', 1234)
   expect(Env.get('TEST_VAR')).toEqual('1234')
+
+  Env.set('TEST_VAR', '')
+  expect(Env.get('TEST_VAR')).toEqual('')
+  expect(Env.get('TEST_VAR', 'default')).toEqual('')
 })
 
 test('get default', async () => {
   expect(
     Env.get('UNAVAILABLE_ENV_VAR', 'defaultValue')
   ).toEqual('defaultValue')
+
+  expect(
+    Env
+      .set('EMPTY_ENV_VAR', '')
+      .get('EMPTY_ENV_VAR', 'defaultValue')
+  ).toEqual('')
 })
 
 test('isEmpty', async () => {
@@ -28,6 +38,8 @@ test('isEmpty', async () => {
   expect(Env.isEmpty()).toBe(true)
   expect(Env.isEmpty(undefined)).toBe(true)
   expect(Env.isEmpty('undefined')).toBe(true)
+
+  expect(Env.isEmpty('')).toBe(true)
 })
 
 test('getOrFail', async () => {
@@ -86,6 +98,25 @@ test('is', async () => {
 
   process.env.NODE_ENV = 'LOCAL'
   expect(Env.is('local')).toBe(true)
+})
+
+test('number', () => {
+  Env.set('NUMBER_VAR', 123)
+  expect(Env.number('NUMBER_VAR')).toEqual(123)
+
+  Env.set('TEST_VAR', '123')
+  expect(Env.number('TEST_VAR')).toEqual(123)
+  expect(Env.number('TEST_VAR', 456)).toEqual(123)
+  expect(Env.number('UNAVAILABLE_NUMBER_VAR', 123)).toEqual(123)
+  expect(Env.number('UNAVAILABLE_NUMBER_VAR', '123')).toEqual(123)
+
+  Env.set('NUM_NAME', false)
+  expect(() => Env.number('NUM_NAME'))
+    .toThrow('The value for environment variable "NUM_NAME" cannot be converted to a number.')
+
+  Env.set('NUM_BOOLEAN', false)
+  expect(() => Env.number('NUM_BOOLEAN'))
+    .toThrow('The value for environment variable "NUM_BOOLEAN" cannot be converted to a number.')
 })
 
 test.run()

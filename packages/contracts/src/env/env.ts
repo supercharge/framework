@@ -9,7 +9,8 @@ export interface EnvStore {
    *
    * @returns {String}
    */
-  get (key: string, defaultValue?: any): string
+  get (key: string): string
+  get (key: string, defaultValue: any): string
 
   /**
    * This method is similar to the `Env.get` method, except that it throws
@@ -24,12 +25,22 @@ export interface EnvStore {
   getOrFail (key: string): string
 
   /**
+   * Returns the environment variable identified by the given `key` as a number.
+   *
+   * @param {String} key
+   *
+   * @returns {Number}
+   */
+  number (key: string): number
+  number (key: string, defaultValue?: number): number
+
+  /**
    * Set the value of an environment variable.
    *
    * @param {String} key
    * @param {String} value
    */
-  set (key: string, value: string): void
+  set (key: string, value: string): this
 
   /**
    * Determine whether the `NODE_ENV` variable is set to `'production'`.

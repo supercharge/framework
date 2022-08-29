@@ -12,8 +12,10 @@ export class Env implements EnvStore {
    *
    * @returns {*}
    */
+  get (key: string): string
+  get (key: string, defaultValue: any): string
   get (key: string, defaultValue?: any): string {
-    return process.env[key] ?? defaultValue
+    return String(process.env[key] ?? defaultValue)
   }
 
   /**
@@ -30,10 +32,29 @@ export class Env implements EnvStore {
     const value = this.get(key)
 
     if (this.isEmpty(value)) {
-      throw new Error(`Missing environment variable ${key}`)
+      throw new Error(`Missing environment variable "${key}"`)
     }
 
     return value
+  }
+
+  /**
+   * Returns the environment variable identified by the given `key` as a number.
+   *
+   * @param {String} key
+   *
+   * @returns {Number}
+   */
+  number (key: string): number
+  number (key: string, defaultValue: number): number
+  number (key: string, defaultValue?: number): number {
+    const num = Number(this.get(key, defaultValue))
+
+    if (Number.isNaN(num)) {
+      throw new Error(`The value for environment variable "${key}" cannot be converted to a number.`)
+    }
+
+    return num
   }
 
   /**
@@ -42,8 +63,10 @@ export class Env implements EnvStore {
    * @param {String} key
    * @param {String} value
    */
-  set (key: string, value: string): void {
+  set (key: string, value: string): this {
     process.env[key] = value
+
+    return this
   }
 
   /**
@@ -61,6 +84,9 @@ export class Env implements EnvStore {
 
       case undefined:
       case 'undefined':
+        return true
+
+      case '':
         return true
 
       default:
