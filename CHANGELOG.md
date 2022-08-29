@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.8.0](https://github.com/supercharge/framework/compare/v3.8.0...v3.8.0) - 2022-08-xx
+
+### Added
+- `@supercharge/env`:
+    - add `.number` method: returns the given environment variable as a number
+
+### Updated
+- bump dependencies
+- `@supercharge/env`:
+    - `Env.set()` returns `this` to fluently chain calls
+
+
 ## [3.7.1](https://github.com/supercharge/framework/compare/v3.7.0...v3.7.1) - 2022-08-22
 
 ### Updated
