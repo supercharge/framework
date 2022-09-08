@@ -8,7 +8,7 @@ export class ViteServiceProvider extends ServiceProvider {
   /**
    * Register application services.
    */
-  override register (): void {
+  override async boot (): Promise<void> {
     this.registerViteViewHelpers()
   }
 

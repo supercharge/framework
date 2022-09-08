@@ -10,6 +10,8 @@
 - bump dependencies
 - `@supercharge/env`:
     - `Env.set()` returns `this` to fluently chain calls
+- `@supercharge/vite`:
+    - register Vite view helpers in the service provider’s `boot` method (instead of `register`) which makes sure the `view` container binding is available
 
 
 ## [3.7.1](https://github.com/supercharge/framework/compare/v3.7.0...v3.7.1) - 2022-08-22
