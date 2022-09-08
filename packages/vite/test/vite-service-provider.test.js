@@ -16,9 +16,10 @@ describe('ViteServiceProvider', () => {
   test('registers view helpers', async () => {
     const app = makeApp()
 
-    app
+    await app
       .register(new ViewServiceProvider(app))
       .register(new ViteServiceProvider(app))
+      .boot()
 
     const view = app.make('view')
 
@@ -29,9 +30,10 @@ describe('ViteServiceProvider', () => {
     const app = makeApp()
     await createViteManifest(app)
 
-    app
+    await app
       .register(new ViewServiceProvider(app))
       .register(new ViteServiceProvider(app))
+      .boot()
 
     const rendered = await app.make('view').render('test-vite-helper')
 
