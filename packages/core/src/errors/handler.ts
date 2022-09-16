@@ -1,5 +1,6 @@
 'use strict'
 
+import Youch from 'youch'
 import { HttpError } from './http-error'
 import { tap } from '@supercharge/goodies'
 import Collect from '@supercharge/collections'
@@ -45,7 +46,14 @@ export class ErrorHandler implements ErrorHandlerContract {
    * upstream to an error tracking service, like Sentry or Bugsnag.
    */
   register (): void {
-    //
+    /**
+     * We’re registering a default reportable handler here that logs the error
+     * message and context to the default logging transport. This "register"
+     * method should be overwritten in user-land to remove this default.
+     */
+    this.reportable((ctx, error) => {
+      this.logger().error(error.message, { ...this.context(ctx), error })
+    })
   }
 
   /**
@@ -95,8 +103,6 @@ export class ErrorHandler implements ErrorHandlerContract {
     await Collect(this.reportCallbacks).forEach(async reportCallback => {
       await reportCallback(ctx, error)
     })
-
-    this.logger().error(error.message, { ...this.context(ctx), error })
   }
 
   /**
@@ -117,7 +123,7 @@ export class ErrorHandler implements ErrorHandlerContract {
    * @param {HttpContext} ctx
    * @param {HttpError} error
    */
-  renderJsonResponse (ctx: HttpContext, error: HttpError): void {
+  protected renderJsonResponse (ctx: HttpContext, error: HttpError): void {
     const { message, stack, status: statusCode } = error
 
     this.app.env().isProduction()
@@ -131,18 +137,14 @@ export class ErrorHandler implements ErrorHandlerContract {
    * @param {HttpContext} ctx
    * @param {HttpError} error
    */
-  async renderViewResponse (ctx: HttpContext, error: HttpError): Promise<void> {
+  protected async renderViewResponse (ctx: HttpContext, error: HttpError): Promise<void> {
     if (await this.isMissingTemplateFor(error)) {
-      this.logger().debug(`No error view template found at "${this.viewTemplateFor(error)}". Falling back to JSON response.`)
-
-      return this.renderJsonResponse(ctx, error)
+      return await this.renderYouchResponse(ctx, error)
     }
 
-    await ctx.response
-      .status(error.status)
-      .view(
-        this.viewTemplateFor(error), { error }
-      )
+    await ctx.response.status(error.status).view(
+      this.viewTemplateFor(error), { error }
+    )
   }
 
   /**
@@ -152,7 +154,7 @@ export class ErrorHandler implements ErrorHandlerContract {
    *
    * @returns {Boolean}
    */
-  private async isMissingTemplateFor (error: HttpError): Promise<boolean> {
+  protected async isMissingTemplateFor (error: HttpError): Promise<boolean> {
     return !await this.templateExistsFor(error)
   }
 
@@ -163,7 +165,7 @@ export class ErrorHandler implements ErrorHandlerContract {
    *
    * @returns {Boolean}
    */
-  private async templateExistsFor (error: HttpError): Promise<boolean> {
+  protected async templateExistsFor (error: HttpError): Promise<boolean> {
     return await this.view().exists(
       this.viewTemplateFor(error)
     )
@@ -176,7 +178,19 @@ export class ErrorHandler implements ErrorHandlerContract {
    *
    * @returns {String}
    */
-  private viewTemplateFor (error: HttpError): string {
+  protected viewTemplateFor (error: HttpError): string {
     return `errors/${error.status}`
+  }
+
+  /**
+   * Renders an HTML response containing details about the given `error`.
+   *
+   * @param {HttpContext} ctx
+   * @param {HttpError} error
+   */
+  async renderYouchResponse ({ request, response }: HttpContext, error: HttpError): Promise<void> {
+    response.payload(
+      await new Youch(error, request.req()).toHTML()
+    ).status(error.status)
   }
 }
