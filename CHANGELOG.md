@@ -5,6 +5,8 @@
 ### Added
 - `@supercharge/env`:
     - add `.number` method: returns the given environment variable as a number
+- `@supercharge/core`:
+    - use [Youch](https://github.com/poppinss/youch) to render an error view instead of falling back to JSON
 
 ### Updated
 - bump dependencies
