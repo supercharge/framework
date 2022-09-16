@@ -39,7 +39,7 @@ test('renders an error view', async () => {
   expect(response.text).toEqual('<h1>error-view</h1>')
 })
 
-test('falls back to JSON when missing an error view', async () => {
+test('falls back to Youch when missing an error view', async () => {
   const server = new Server(app)
 
   server.use(async ({ response }) => {
@@ -52,11 +52,8 @@ test('falls back to JSON when missing an error view', async () => {
     .get('/')
     .expect(418)
 
-  expect(response.body).toMatchObject({
-    message: 'Yo teapot',
-    statusCode: 418
-  })
-  expect(response.body.stack).not.toBeUndefined()
+  expect(response.text).toBeDefined()
+  expect(response.text).toContain('Yo teapot')
 })
 
 test('does not return the error stack in production', async () => {
@@ -77,6 +74,7 @@ test('does not return the error stack in production', async () => {
     server.callback()
   )
     .get('/')
+    .set('accept', 'application/json')
     .expect(418)
 
   expect(response.body).toMatchObject({
@@ -152,10 +150,7 @@ test('defaults to 500 error', async () => {
     .get('/')
     .expect(500)
 
-  expect(response.body).toMatchObject({
-    message: 'failed',
-    statusCode: 500
-  })
+  expect(response.text).toBeDefined()
 })
 
 test.run()
