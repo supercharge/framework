@@ -25,14 +25,14 @@
   },
   "dependencies": {
     "@supercharge/macroable": "~2.0.1",
-    "@types/node": "~18.7.15",
+    "@types/node": "~18.7.18",
     "handlebars": "~4.7.7",
     "knex": "~2.3.0"
   },
   "devDependencies": {
-    "@supercharge/eslint-config-typescript": "~2.3.0",
-    "eslint": "~8.23.0",
-    "typescript": "~4.8.2"
+    "@supercharge/eslint-config-typescript": "~2.3.1",
+    "eslint": "~8.23.1",
+    "typescript": "~4.8.3"
   },
   "scripts": {
     "build": "tsc --build tsconfig.json --force",
