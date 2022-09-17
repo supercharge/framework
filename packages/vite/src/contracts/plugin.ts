@@ -26,6 +26,13 @@ export interface PluginConfigContract {
   ssr?: string | string[]
 
   /**
+   * The hot-reload file path.
+   *
+   * @default "${publicDirectory}/'hot')"
+   */
+  hotFilePath?: string
+
+  /**
    * The directory where the SSR bundle should be written.
    *
    * @default 'bootstrap/ssr'
