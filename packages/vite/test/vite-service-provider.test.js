@@ -2,13 +2,13 @@
 
 import { ViteServiceProvider } from '../dist'
 import { ViewServiceProvider } from '@supercharge/view'
-import { describe, test, expect, afterEach } from 'vitest'
+import { describe, test, expect, beforeEach } from 'vitest'
 import { clearViteHotReloadFile, clearViteManifest, createViteManifest, makeApp } from './helpers'
 
 const app = makeApp()
 
 describe('ViteServiceProvider', () => {
-  afterEach(async () => {
+  beforeEach(async () => {
     await clearViteManifest(app)
     await clearViteHotReloadFile(app)
   })

@@ -14,6 +14,7 @@
     - `Env.set()` returns `this` to fluently chain calls
 - `@supercharge/vite`:
     - register Vite view helpers in the service provider’s `boot` method (instead of `register`) which makes sure the `view` container binding is available
+    - refactor the Supercharge Vite plugin to use functions instead of being a class-based plugin. This refactoring is necessary because Vite makes `this` point to `void` which throws an error for any reference like `this.propery`
 
 
 ## [3.7.1](https://github.com/supercharge/framework/compare/v3.7.0...v3.7.1) - 2022-08-22
