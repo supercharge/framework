@@ -18,6 +18,7 @@
     "@supercharge/eslint-config-typescript": "~2.3.1",
     "@supercharge/tsconfig": "~4.0.0",
     "@supercharge/view": "^3.7.1",
+    "@vitest/coverage-c8": "~0.23.4",
     "c8": "~7.12.0",
     "eslint": "~8.23.1",
     "supertest": "~6.2.4",
@@ -61,7 +62,7 @@
     "lint:fix": "npm run lint -- --fix",
     "test": "npm run build && npm run lint && npm run test:run",
     "test:watch": "vitest",
-    "test:run": "vitest run",
+    "test:run": "vitest run --coverage",
     "posttest": "c8 report --reporter=html --reporter=text"
   },
   "types": "dist"
