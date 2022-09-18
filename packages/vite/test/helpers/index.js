@@ -68,7 +68,7 @@ async function createViteManifest (app, content, buildDirectory = 'build') {
 
   const manifestPath = app.publicPath(`${buildDirectory}/manifest.json`)
 
-  await Fs.writeJson(manifestPath, manifest)
+  await Fs.outputJSON(manifestPath, manifest)
 }
 
 /**
