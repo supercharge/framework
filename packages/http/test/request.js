@@ -699,12 +699,12 @@ test('fullUrl', async () => {
   })
 
   // ensure to listen on a port we control
-  const server = app.listen(3000)
+  const server = app.listen(3013)
 
   await Supertest(server)
     .get('/foo?bar=baz&name=Supercharge')
-    .set({ host: 'localhost:3000' })
-    .expect(200, { fullUrl: 'http://localhost:3000/foo?bar=baz&name=Supercharge' })
+    .set({ host: 'localhost:3013' })
+    .expect(200, { fullUrl: 'http://localhost:3013/foo?bar=baz&name=Supercharge' })
 
   await new Promise((resolve, reject) => {
     server.close(error => {
