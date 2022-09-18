@@ -122,7 +122,9 @@ export class Vite {
    * @returns {String}
    */
   manifestPath (): string {
-    return this.app.publicPath(Str(this.buildDirecotry).ltrim('/').get(), 'manifest.json')
+    return this.app.publicPath(
+      Str(this.buildDirecotry).ltrim('/').get(), 'manifest.json'
+    )
   }
 
   /**
