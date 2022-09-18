@@ -29,13 +29,12 @@ function makeApp () {
 }
 
 /**
- *
  * @param {Application} app
  * @param {Object} content
  * @param {String} buildDirectory
  */
 async function createViteManifest (app, content, buildDirectory = 'build') {
-  const manifest = JSON.stringify(content || {
+  const manifest = content || {
     'resources/js/app.js': {
       file: 'assets/app.version.js'
     },
@@ -65,15 +64,14 @@ async function createViteManifest (app, content, buildDirectory = 'build') {
     'resources/css/shared-css': {
       file: 'assets/shared-css.version.css'
     }
-  })
+  }
 
   const manifestPath = app.publicPath(`${buildDirectory}/manifest.json`)
 
-  await Fs.writeFile(manifestPath, manifest)
+  await Fs.writeJson(manifestPath, manifest)
 }
 
 /**
- *
  * @param {Application} app
  */
 async function clearViteManifest (app, buildDirectory = 'build') {
@@ -85,7 +83,6 @@ async function clearViteManifest (app, buildDirectory = 'build') {
 }
 
 /**
- *
  * @param {Application} app
  */
 async function createViteHotReloadFile (app) {
@@ -93,7 +90,6 @@ async function createViteHotReloadFile (app) {
 }
 
 /**
- *
  * @param {Application} app
  */
 async function clearViteHotReloadFile (app) {
