@@ -34,4 +34,7 @@ coverage
 
 tsconfig.tsbuildinfo
 
+# Generated Files
+packages/vite/test/**/manifest.json
+
 packages/app
