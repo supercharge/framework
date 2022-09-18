@@ -1,13 +1,13 @@
 'use strict'
 
 import { Vite } from '../dist'
-import { describe, test, expect, afterEach } from 'vitest'
+import { describe, test, expect, beforeEach } from 'vitest'
 import { makeApp, createViteManifest, createViteHotReloadFile, clearViteManifest, clearViteHotReloadFile } from './helpers'
 
 const app = makeApp()
 
 describe('Vite', () => {
-  afterEach(async () => {
+  beforeEach(async () => {
     await clearViteManifest(app)
     await clearViteHotReloadFile(app)
   })
