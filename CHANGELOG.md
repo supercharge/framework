@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.8.0](https://github.com/supercharge/framework/compare/v3.7.1...v3.8.0) - 2022-09-19
+## [3.8.1](https://github.com/supercharge/framework/compare/v3.8.0...v3.8.1) - 2022-09-19
 
 ### Added
 - `@supercharge/vite`:
