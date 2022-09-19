@@ -1,7 +1,7 @@
 {
   "name": "@supercharge/core",
   "description": "The Supercharge foundation package",
-  "version": "3.7.1",
+  "version": "3.8.0",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
@@ -12,16 +12,16 @@
   "main": "dist",
   "types": "dist",
   "dependencies": {
-    "@supercharge/application": "^3.7.1",
+    "@supercharge/application": "^3.8.0",
     "@supercharge/collections": "~4.3.0",
-    "@supercharge/console": "^3.7.1",
-    "@supercharge/contracts": "^3.7.1",
+    "@supercharge/console": "^3.8.0",
+    "@supercharge/contracts": "^3.8.0",
     "@supercharge/errors": "~1.3.0",
     "@supercharge/fs": "~3.4.0",
     "@supercharge/goodies": "~1.11.1",
-    "@supercharge/http": "^3.7.1",
+    "@supercharge/http": "^3.8.0",
     "@supercharge/set": "~2.2.1",
-    "@supercharge/support": "^3.7.1",
+    "@supercharge/support": "^3.8.0",
     "dotenv": "~16.0.2",
     "youch": "~3.2.2",
     "youch-terminal": "~2.1.5"

@@ -1,23 +1,23 @@
 {
   "name": "@supercharge/vite",
   "description": "Vite plugin and package for the Supercharge Node.js framework",
-  "version": "3.7.1",
+  "version": "3.8.0",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
   },
   "dependencies": {
     "@supercharge/arrays": "~4.0.0",
-    "@supercharge/contracts": "^3.7.1",
+    "@supercharge/contracts": "^3.8.0",
     "@supercharge/fs": "~3.4.0",
     "@supercharge/strings": "~1.28.0",
-    "@supercharge/support": "^3.7.1"
+    "@supercharge/support": "^3.8.0"
   },
   "devDependencies": {
-    "@supercharge/application": "^3.7.1",
+    "@supercharge/application": "^3.8.0",
     "@supercharge/eslint-config-typescript": "~2.3.1",
     "@supercharge/tsconfig": "~4.0.0",
-    "@supercharge/view": "^3.7.1",
+    "@supercharge/view": "^3.8.0",
     "@vitest/coverage-c8": "~0.23.4",
     "c8": "~7.12.0",
     "eslint": "~8.23.1",
