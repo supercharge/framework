@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.8.0](https://github.com/supercharge/framework/compare/v3.8.0...v3.8.0) - 2022-08-xx
+## [3.8.0](https://github.com/supercharge/framework/compare/v3.7.1...v3.8.0) - 2022-09-19
 
 ### Added
 - `@supercharge/env`:
@@ -12,6 +12,9 @@
 - bump dependencies
 - `@supercharge/env`:
     - `Env.set()` returns `this` to fluently chain calls
+- `@supercharge/core`:
+    - change visibility of selected methods in the `ErrorHandler` from `public` to `protected`
+    - register the "log error" reportable inside the base `register` method allowing users to overwrite this behavior
 - `@supercharge/vite`:
     - register Vite view helpers in the service provider’s `boot` method (instead of `register`) which makes sure the `view` container binding is available
     - refactor the Supercharge Vite plugin to use functions instead of being a class-based plugin. This refactoring is necessary because Vite makes `this` point to `void` which throws an error for any reference like `this.propery`
