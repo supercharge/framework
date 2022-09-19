@@ -3,6 +3,17 @@
 ## [3.8.0](https://github.com/supercharge/framework/compare/v3.7.1...v3.8.0) - 2022-09-19
 
 ### Added
+- `@supercharge/vite`:
+    - set [`assetsInlineLimit`](https://vitejs.dev/config/build-options.html#build-assetsinlinelimit) to `0` by default which disables inlining assets altogether
+
+### Fixed
+- `@supercharge/vite`:
+    - use `@supercharge/strings` to replace all Vite dev server URL placeholder strings which is more reliant than JavaScript’s `<string>.replace(/…/g, …)`
+
+
+## [3.8.0](https://github.com/supercharge/framework/compare/v3.7.1...v3.8.0) - 2022-09-19
+
+### Added
 - `@supercharge/env`:
     - add `.number` method: returns the given environment variable as a number
 - `@supercharge/core`:

@@ -107,10 +107,12 @@ function resolveSuperchargePlugin (pluginConfig: Required<PluginConfigContract>)
           rollupOptions: {
             input: userConfig.build?.rollupOptions?.input ?? resolveInput(pluginConfig, useSsr)
           },
+          assetsInlineLimit: userConfig.build?.assetsInlineLimit ?? 0,
         },
         server: {
           origin: '__supercharge_vite_placeholder__',
           host: 'localhost',
+          ...userConfig.server
         },
         ssr: {
           noExternal: noExternalInertiaHelpers(userConfig),
@@ -130,7 +132,7 @@ function resolveSuperchargePlugin (pluginConfig: Required<PluginConfigContract>)
      */
     transform (code: string) {
       if (resolvedConfig.command === 'serve') {
-        return code.replace(/__supercharge_vite_placeholder__/g, viteDevServerUrl)
+        return Str(code).replaceAll(/__supercharge_vite_placeholder__/g, viteDevServerUrl).get()
       }
     },
 
@@ -142,7 +144,7 @@ function resolveSuperchargePlugin (pluginConfig: Required<PluginConfigContract>)
         const address = server.httpServer?.address()
 
         if (isAddressInfo(address)) {
-          viteDevServerUrl = resolveDevServerUrl(address, resolvedConfig)
+          viteDevServerUrl = resolveDevServerUrl(address, server.config)
           Fs.writeFileSync(pluginConfig.hotFilePath, viteDevServerUrl)
         }
       })
@@ -222,7 +224,7 @@ function protocol (config: ResolvedConfig): 'http' | 'https' {
  * Returns the client protocol.
  */
 function clientProtocol (config: ResolvedConfig): 'https' | 'http' | undefined {
-  const configHmrProtocol = config?.server.hmr === 'object'
+  const configHmrProtocol = config.server.hmr === 'object'
     ? config.server.hmr.protocol
     : null
 
@@ -239,7 +241,7 @@ function clientProtocol (config: ResolvedConfig): 'https' | 'http' | undefined {
  * Returns the server protocol.
  */
 function serverProtocol (config: ResolvedConfig): 'https' | 'http' {
-  return config?.server.https
+  return config.server.https
     ? 'https'
     : 'http'
 }
@@ -248,11 +250,11 @@ function serverProtocol (config: ResolvedConfig): 'https' | 'http' {
  * Returns the server’s host address.
  */
 function host (address: AddressInfo, config: ResolvedConfig): string {
-  const configHmrHost = typeof config?.server.hmr === 'object'
+  const configHmrHost = typeof config.server.hmr === 'object'
     ? config.server.hmr.host
     : null
 
-  const configHost = typeof config?.server.host === 'string'
+  const configHost = typeof config.server.host === 'string'
     ? config.server.host
     : null
 
@@ -279,7 +281,7 @@ function isIpv6 (address: AddressInfo): boolean {
  * Returns the server’s port.
  */
 function port (address: AddressInfo, config: ResolvedConfig): number {
-  const configHmrPort = typeof config?.server.hmr === 'object'
+  const configHmrPort = typeof config.server.hmr === 'object'
     ? config.server.hmr.clientPort
     : null
 
