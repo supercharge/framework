@@ -63,6 +63,9 @@ async function createViteManifest (app, content, buildDirectory = 'build') {
     },
     'resources/css/shared-css': {
       file: 'assets/shared-css.version.css'
+    },
+    'resources/js/hash-app.js': {
+      file: 'assets/app.from-hash.version.js'
     }
   }
 
