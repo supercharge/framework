@@ -1,8 +1,8 @@
 'use strict'
 
-import { Vite } from './vite'
 import { ViewEngine } from '@supercharge/contracts'
 import { ServiceProvider } from '@supercharge/support'
+import { ViteHandlebarsHelper } from './vite-handlebars-helper'
 
 export class ViteServiceProvider extends ServiceProvider {
   /**
@@ -19,11 +19,7 @@ export class ViteServiceProvider extends ServiceProvider {
     const view = this.app().make<ViewEngine>('view')
 
     view.registerHelper('vite', (...entrypoints: string[] | string[][]) => {
-      const entries = ([] as string[])
-        .concat(...entrypoints)
-        .slice(0, -1) // the last entry is the Handlebars "options" context object. We’re slicing that off from the rest parameter.
-
-      return Vite.generateTags(this.app(), entries)
+      return new ViteHandlebarsHelper(this.app(), ...entrypoints).generateTags()
     })
   }
 }
