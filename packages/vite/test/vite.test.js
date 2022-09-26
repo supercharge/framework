@@ -39,6 +39,17 @@ describe('Vite', () => {
     )
   })
 
+  test('JS with CSS imports', async () => {
+    await createViteManifest(app)
+
+    const tags = Vite.generateTags(app, ['resources/js/app-with-css-import.js'])
+
+    expect(tags).toEqual(
+      '<script type="module" src="/build/assets/app-with-css-import.version.js"></script>' +
+      '<link rel="stylesheet" href="/build/assets/imported-css.version.css" />'
+    )
+  })
+
   test('Vite hot module replacement with JS only', async () => {
     await createViteHotReloadFile(app)
 

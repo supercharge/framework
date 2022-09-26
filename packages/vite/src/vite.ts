@@ -109,7 +109,7 @@ export class Vite {
       tags.push(this.makeTagForChunk(entrypoint, `${this.buildDirecotry}/${chunk.file}`))
 
       chunk.css?.forEach(cssFile => {
-        tags.push(this.makeTagForChunk(entrypoint, `${this.buildDirecotry}/${cssFile}`))
+        tags.push(this.makeTagForChunk(cssFile, `${this.buildDirecotry}/${cssFile}`))
       })
     }
 
