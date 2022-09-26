@@ -1,7 +1,7 @@
 {
   "name": "@supercharge/view",
   "description": "The Supercharge view package",
-  "version": "3.8.1",
+  "version": "3.9.0",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
@@ -13,16 +13,16 @@
   ],
   "dependencies": {
     "@supercharge/collections": "~4.3.0",
-    "@supercharge/contracts": "^3.8.1",
+    "@supercharge/contracts": "^3.9.0",
     "@supercharge/fs": "~3.4.0",
     "@supercharge/goodies": "~1.11.1",
-    "@supercharge/manager": "^3.8.1",
+    "@supercharge/manager": "^3.9.0",
     "@supercharge/strings": "~1.28.0",
-    "@supercharge/support": "^3.8.1",
+    "@supercharge/support": "^3.9.0",
     "handlebars": "~4.7.7"
   },
   "devDependencies": {
-    "@supercharge/core": "^3.8.1",
+    "@supercharge/core": "^3.9.0",
     "@supercharge/eslint-config-typescript": "~2.3.1",
     "c8": "~7.12.0",
     "eslint": "~8.24.0",
