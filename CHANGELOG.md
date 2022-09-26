@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.9.0](https://github.com/supercharge/framework/compare/v3.8.1...v3.9.0) - 2022-09-25
+
+### Added
+- `@supercharge/vite`:
+    - support `input` hash in `{{vite input="resources/js/app.js"}}` Handlebars helper
+
+### Updated
+- bump dependencies
+
+### Fixed
+- `@supercharge/vite`:
+    - build correct URL for CSS import in JS/TS file
+
+
 ## [3.8.1](https://github.com/supercharge/framework/compare/v3.8.0...v3.8.1) - 2022-09-19
 
 ### Added
