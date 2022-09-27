@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.9.1](https://github.com/supercharge/framework/compare/v3.9.0...v3.9.1) - 2022-09-26
+
+### Fixed
+- `@supercharge/vite`:
+    - use string value instead of RegEx to replace the `__supercharge_vite_placeholder` URL for the DevServer
+
+
 ## [3.9.0](https://github.com/supercharge/framework/compare/v3.8.1...v3.9.0) - 2022-09-25
 
 ### Added
