@@ -132,7 +132,7 @@ function resolveSuperchargePlugin (pluginConfig: Required<PluginConfigContract>)
      */
     transform (code: string) {
       if (resolvedConfig.command === 'serve') {
-        return Str(code).replaceAll(/__supercharge_vite_placeholder__/g, viteDevServerUrl).get()
+        return Str(code).replaceAll('__supercharge_vite_placeholder__', viteDevServerUrl).get()
       }
     },
 
