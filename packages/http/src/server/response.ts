@@ -1,7 +1,7 @@
 'use strict'
 
-import { CookieBag } from './cookie-bag'
 import { Mixin as Many } from 'ts-mixer'
+import { CookieBag } from './cookie-bag'
 import { tap } from '@supercharge/goodies'
 import { HttpRedirect } from './http-redirect'
 import { Macroable } from '@supercharge/macroable'
