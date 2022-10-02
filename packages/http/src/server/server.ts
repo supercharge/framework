@@ -55,10 +55,25 @@ export class Server implements HttpServerContract {
       app,
       bootedCallbacks: [],
       isBootstrapped: false,
-      koa: new Koa({ keys: [app.key()] })
+      koa: this.createKoaInstance(app)
     }
 
     this.registerBaseMiddleware()
+  }
+
+  /**
+   * Returns the initialized Koa instance.
+   *
+   * @param app
+   *
+   * @returns {Koa}
+   */
+  private createKoaInstance (app: Application): Koa {
+    return new Koa({
+      keys: [app.key()],
+      env: app.config().get('app.env'),
+      proxy: app.config().get('app.runsBehindProxy'),
+    })
   }
 
   /**

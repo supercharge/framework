@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.10.0](https://github.com/supercharge/framework/compare/v3.9.0...v3.10.0) - 2022-10-xx
+
+### Added
+- `@supercharge/contracts`:
+    - export `ApplicationConfig` contract
+
+### Updated
+- bump dependencies
+- `@supercharge/http`:
+    - configure Koa HTTP server instance to use the added `runsBehindProxy` config determining whether the app runs behind a proxy server (like nginx, Apache, Caddy, or any other)
+
+
+
 ## [3.9.1](https://github.com/supercharge/framework/compare/v3.9.0...v3.9.1) - 2022-09-26
 
 ### Fixed
