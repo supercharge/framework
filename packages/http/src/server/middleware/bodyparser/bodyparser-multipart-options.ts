@@ -2,23 +2,23 @@
 
 import Bytes from 'bytes'
 import { BodyparserBaseOptions } from './bodyparser-base-options'
-import { BodyparserOptions as BodyparserOptionsContract } from '@supercharge/contracts'
+import { BodyparserConfig as BodyparserConfigContract } from '@supercharge/contracts'
 
 export class BodyparserMultipartOptions extends BodyparserBaseOptions {
   /**
    * The bodyparser multipart options object.
    */
-  protected override readonly options: BodyparserOptionsContract['multipart']
+  protected override readonly config: BodyparserConfigContract['multipart']
 
   /**
     * Create a new instance.
     *
-    * @param {BodyparserOptionsContract['multipart']} options
+    * @param {BodyparserConfigContract['multipart']} config
     */
-  constructor (options: BodyparserOptionsContract['multipart']) {
-    super(options)
+  constructor (config: BodyparserConfigContract['multipart']) {
+    super(config)
 
-    this.options = options
+    this.config = config
   }
 
   /**
@@ -27,7 +27,7 @@ export class BodyparserMultipartOptions extends BodyparserBaseOptions {
    * @returns {Number}
    */
   maxFileSize (): number {
-    return Bytes.parse(this.options.maxFileSize ?? '200mb')
+    return Bytes.parse(this.config.maxFileSize ?? '200mb')
   }
 
   /**
@@ -36,6 +36,6 @@ export class BodyparserMultipartOptions extends BodyparserBaseOptions {
    * @returns {Number}
    */
   maxFields (): number {
-    return this.options.maxFields ?? 1000
+    return this.config.maxFields ?? 1000
   }
 }

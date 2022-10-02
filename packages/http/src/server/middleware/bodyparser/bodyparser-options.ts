@@ -4,21 +4,21 @@ import Set from '@supercharge/set'
 import { BodyparserJsonOptions } from './bodyparser-json-options'
 import { BodyparserBaseOptions } from './bodyparser-base-options'
 import { BodyparserMultipartOptions } from './bodyparser-multipart-options'
-import { BodyparserOptions as BodyparserOptionsContract } from '@supercharge/contracts'
+import { BodyparserConfig as BodyparserConfigContract } from '@supercharge/contracts'
 
 export class BodyparserOptions {
   /**
    * The bodyparser object object.
    */
-  protected readonly options: BodyparserOptionsContract
+  protected readonly config: BodyparserConfigContract
 
   /**
    * Create a new instance.
    *
-   * @param {BodyparserOptionsContract} options
+   * @param {BodyparserConfigContract} options
    */
-  constructor (options: BodyparserOptionsContract) {
-    this.options = options ?? {}
+  constructor (options: BodyparserConfigContract) {
+    this.config = options ?? {}
   }
 
   /**
@@ -27,7 +27,7 @@ export class BodyparserOptions {
    * @returns {BodyparserJsonOptions}
    */
   encoding (): BufferEncoding {
-    return this.options.encoding ?? 'utf8'
+    return this.config.encoding ?? 'utf8'
   }
 
   /**
@@ -43,7 +43,7 @@ export class BodyparserOptions {
    */
   methods (): string[] {
     return Set
-      .from(this.options.methods)
+      .from(this.config.methods)
       .map(method => method.toLowerCase())
       .toArray()
   }
@@ -54,7 +54,7 @@ export class BodyparserOptions {
    * @returns {BodyparserJsonOptions}
    */
   json (): BodyparserJsonOptions {
-    return new BodyparserJsonOptions(this.options.json)
+    return new BodyparserJsonOptions(this.config.json)
   }
 
   /**
@@ -63,7 +63,7 @@ export class BodyparserOptions {
    * @returns {BodyparserBaseOptions}
    */
   form (): BodyparserBaseOptions {
-    return new BodyparserBaseOptions(this.options.form)
+    return new BodyparserBaseOptions(this.config.form)
   }
 
   /**
@@ -72,7 +72,7 @@ export class BodyparserOptions {
    * @returns {BodyparserBaseOptions}
    */
   text (): BodyparserBaseOptions {
-    return new BodyparserBaseOptions(this.options.text)
+    return new BodyparserBaseOptions(this.config.text)
   }
 
   /**
@@ -81,6 +81,6 @@ export class BodyparserOptions {
    * @returns {BodyparserMultipartOptions}
    */
   multipart (): BodyparserMultipartOptions {
-    return new BodyparserMultipartOptions(this.options.multipart ?? {})
+    return new BodyparserMultipartOptions(this.config.multipart ?? {})
   }
 }
