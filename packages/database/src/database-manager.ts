@@ -118,4 +118,13 @@ export class DatabaseManager {
   protected defaultConnection (): string {
     return this.config().get('database.connection')
   }
+
+  /**
+   * This method is used by the `DatabaseManagerProxy` class to dynamically access
+   * the knex database connection instance. It calls the related properties or
+   * methods when accessing the connection.
+   */
+  protected __call (): unknown {
+    return this.connection()
+  }
 }
