@@ -259,7 +259,7 @@ export class Response extends Many(Macroable, InteractsWithState) implements Htt
    * a redirect using a `statusCode` value that you provide as an argument.
    */
   isRedirect (statusCode?: number): boolean {
-    const responseStatusCode = this.ctx().raw.response.status as number
+    const responseStatusCode = this.ctx().raw.response.status
 
     return statusCode
       ? statusCode === responseStatusCode
