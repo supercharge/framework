@@ -15,14 +15,14 @@ export class CookieBag implements CookieBagContract {
   /**
    * Stores the default cookie options.
    */
-  private readonly options: CookieOptions
+  private readonly options: CookieOptions & { signed: boolean }
 
   /**
    * Create a new instance.
    */
   constructor (cookies: Cookies, options?: CookieOptions) {
     this.cookies = cookies
-    this.options = options ?? { signed: true }
+    this.options = { signed: true, ...options }
   }
 
   /**
