@@ -6,7 +6,7 @@ import Str from '@supercharge/strings'
 import Collect from '@supercharge/collections'
 import { esmResolve, tap } from '@supercharge/goodies'
 import Handlebars, { HelperDelegate } from 'handlebars'
-import { Application, ConfigStore, Logger, ViewConfig, ViewEngine } from '@supercharge/contracts'
+import { Application, ConfigStore, Logger, ViewEngine, ViewResponseConfig } from '@supercharge/contracts'
 
 export class HandlebarsCompiler implements ViewEngine {
   /**
@@ -332,7 +332,7 @@ export class HandlebarsCompiler implements ViewEngine {
    *
    * @returns {String}
    */
-  async render (view: string, data: any, viewConfig: ViewConfig = {}): Promise<string> {
+  async render (view: string, data: any, viewConfig: ViewResponseConfig = {}): Promise<string> {
     return this.hasLayout(viewConfig)
       ? await this.renderWithLayout(view, data, viewConfig)
       : await this.renderView(view, data)
@@ -345,7 +345,7 @@ export class HandlebarsCompiler implements ViewEngine {
    *
    * @returns {Boolean}
    */
-  private hasLayout (viewConfig: ViewConfig): boolean {
+  private hasLayout (viewConfig: ViewResponseConfig): boolean {
     return !!this.baseLayout(viewConfig)
   }
 
@@ -357,7 +357,7 @@ export class HandlebarsCompiler implements ViewEngine {
    *
    * @returns {String}
    */
-  private baseLayout (viewConfig: ViewConfig): string {
+  private baseLayout (viewConfig: ViewResponseConfig): string {
     return viewConfig.layout ?? this.defaultLayout()
   }
 
@@ -370,7 +370,7 @@ export class HandlebarsCompiler implements ViewEngine {
    *
    * @returns {String}
    */
-  async renderWithLayout (view: string, data: any, viewConfig: ViewConfig): Promise<string> {
+  async renderWithLayout (view: string, data: any, viewConfig: ViewResponseConfig): Promise<string> {
     const layout = await this.compile(this.baseLayout(viewConfig), { isLayout: true })
 
     const context: any = data || {}

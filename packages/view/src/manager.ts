@@ -1,10 +1,10 @@
 'use strict'
 
 import { tap } from '@supercharge/goodies'
+import { HelperDelegate } from 'handlebars'
 import { Manager } from '@supercharge/manager'
 import { HandlebarsCompiler } from './engines/handlebars'
-import { Application, ViewConfig, ViewEngine } from '@supercharge/contracts'
-import { HelperDelegate } from 'handlebars'
+import { Application, ViewEngine, ViewResponseConfig } from '@supercharge/contracts'
 
 export class ViewManager extends Manager implements ViewEngine {
   /**
@@ -70,7 +70,7 @@ export class ViewManager extends Manager implements ViewEngine {
    *
    * @returns {String} the rendered view
    */
-  async render (view: string, data: any, config?: ViewConfig): Promise<string> {
+  async render (view: string, data: any, config?: ViewResponseConfig): Promise<string> {
     return await this.driver().render(view, data, config)
   }
 
