@@ -85,7 +85,7 @@ export class DatabaseManager {
   /**
    * Creates a new knex instance using the given.
    *
-   * @returns
+   * @returns {Knex}
    */
   protected createConnection (name: string): Knex {
     return knex(
@@ -98,9 +98,9 @@ export class DatabaseManager {
    *
    * @param {String} connectionName
    *
-   * @returns {Object}
+   * @returns {Knex.Config | String}
    */
-  protected configuration (connectionName: string): Knex.Config {
+  protected configuration (connectionName: string): Knex.Config | string {
     const connection = this.config().get(`database.connections.${connectionName}`)
 
     if (!connection) {
@@ -117,9 +117,5 @@ export class DatabaseManager {
    */
   protected defaultConnection (): string {
     return this.config().get('database.connection')
-  }
-
-  protected __call (): unknown {
-    return this.connection()
   }
 }
