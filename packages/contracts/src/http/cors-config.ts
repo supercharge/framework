@@ -1,6 +1,13 @@
 'use strict'
 
-export interface CorsOptions {
+/**
+ * @deprecated The `CorsOptions` is deprecated in favor of the `CorsConfig`
+ * interface. We’ll remove the `CorsOptions` interface in the upcoming
+ * release of the Supercharge framework. You may already switch to the renamed interface.
+ */
+export type CorsOptions = CorsConfig
+
+export interface CorsConfig {
   /**
    * Controls the `Access-Control-Max-Age` header in seconds.
    */

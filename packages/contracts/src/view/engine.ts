@@ -1,7 +1,7 @@
 'use strict'
 
-import { ViewConfig } from './config'
 import { HelperDelegate } from 'handlebars'
+import { ViewResponseConfig } from './response-config'
 
 export interface ViewEngine {
   /**
@@ -14,7 +14,7 @@ export interface ViewEngine {
   /**
    * Returns the rendered HTML view.
    */
-  render(view: string, data: any, config?: ViewConfig): Promise<string>
+  render(view: string, data: any, config?: ViewResponseConfig): Promise<string>
 
   /**
    * Determine whether the given `view` template file exists.

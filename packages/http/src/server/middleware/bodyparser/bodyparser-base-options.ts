@@ -13,7 +13,7 @@ export class BodyparserBaseOptions {
   /**
    * The bodyparser base options object.
    */
-  protected readonly options: BodyparserBaseOptionsContract
+  protected readonly config: BodyparserBaseOptionsContract
 
   /**
    * Create a new instance.
@@ -21,7 +21,7 @@ export class BodyparserBaseOptions {
    * @param {BodyparserBaseOptionsContract} options
    */
   constructor (options: BodyparserBaseOptionsContract = { contentTypes: [] }) {
-    this.options = options
+    this.config = options
   }
 
   /**
@@ -30,7 +30,7 @@ export class BodyparserBaseOptions {
    * @returns {String|Number}
    */
   limit (): number {
-    return Bytes.parse(this.options.limit ?? '56kb')
+    return Bytes.parse(this.config.limit ?? '56kb')
   }
 
   /**
@@ -40,7 +40,7 @@ export class BodyparserBaseOptions {
    */
   contentTypes (): string[] {
     return Set
-      .from(this.options.contentTypes)
+      .from(this.config.contentTypes)
       .map(contentType => contentType.toLowerCase())
       .toArray()
   }

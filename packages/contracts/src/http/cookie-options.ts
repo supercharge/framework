@@ -41,7 +41,7 @@ export interface CookieOptions {
   /**
    * Determine whether cookies will be signed using the app key.
    */
-  signed: boolean
+  signed?: boolean
 
   /**
    * Determine whether to overwrite previously set cookies with the same name.

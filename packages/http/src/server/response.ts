@@ -8,7 +8,7 @@ import { Macroable } from '@supercharge/macroable'
 import { ResponseHeaderBag } from './response-header-bag'
 import { ViewConfigBuilder } from './view-config-builder'
 import { InteractsWithState } from './interacts-with-state'
-import { CookieOptions, HttpContext, HttpResponse, ViewEngine, ViewBuilderCallback, ResponseCookieBuilderCallback } from '@supercharge/contracts'
+import { CookieOptions, HttpContext, HttpResponse, ViewEngine, ViewBuilderCallback, ResponseCookieBuilderCallback, ViewResponseConfig } from '@supercharge/contracts'
 
 export class Response extends Many(Macroable, InteractsWithState) implements HttpResponse {
   /**
@@ -259,7 +259,7 @@ export class Response extends Many(Macroable, InteractsWithState) implements Htt
    * a redirect using a `statusCode` value that you provide as an argument.
    */
   isRedirect (statusCode?: number): boolean {
-    const responseStatusCode = this.ctx().raw.response.status as number
+    const responseStatusCode = this.ctx().raw.response.status
 
     return statusCode
       ? statusCode === responseStatusCode
@@ -298,7 +298,7 @@ export class Response extends Many(Macroable, InteractsWithState) implements Htt
    */
   private async renderView (template: string, data?: any, viewBuilder?: ViewBuilderCallback): Promise<string> {
     const viewData = { ...this.state().all(), ...data }
-    const viewConfig = {}
+    const viewConfig: ViewResponseConfig = {}
 
     if (typeof viewBuilder === 'function') {
       viewBuilder(

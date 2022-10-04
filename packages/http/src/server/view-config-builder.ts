@@ -1,18 +1,18 @@
 'use strict'
 
 import { tap } from '@supercharge/goodies'
-import { ViewConfig, ViewConfigBuilder as ViewConfigBuilderContract } from '@supercharge/contracts'
+import { ViewConfigBuilder as ViewConfigBuilderContract, ViewResponseConfig } from '@supercharge/contracts'
 
 export class ViewConfigBuilder implements ViewConfigBuilderContract {
   /**
    * Stores the view config.
    */
-  private readonly config: ViewConfig
+  private readonly config: ViewResponseConfig
 
   /**
    * Create a new view config builder instance.
    */
-  constructor (config: ViewConfig) {
+  constructor (config: ViewResponseConfig) {
     this.config = config
   }
 

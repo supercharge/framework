@@ -85,7 +85,7 @@ export class DatabaseManager {
   /**
    * Creates a new knex instance using the given.
    *
-   * @returns
+   * @returns {Knex}
    */
   protected createConnection (name: string): Knex {
     return knex(
@@ -98,9 +98,9 @@ export class DatabaseManager {
    *
    * @param {String} connectionName
    *
-   * @returns {Object}
+   * @returns {Knex.Config | String}
    */
-  protected configuration (connectionName: string): Knex.Config {
+  protected configuration (connectionName: string): Knex.Config | string {
     const connection = this.config().get(`database.connections.${connectionName}`)
 
     if (!connection) {
@@ -119,6 +119,11 @@ export class DatabaseManager {
     return this.config().get('database.connection')
   }
 
+  /**
+   * This method is used by the `DatabaseManagerProxy` class to dynamically access
+   * the knex database connection instance. It calls the related properties or
+   * methods when accessing the connection.
+   */
   protected __call (): unknown {
     return this.connection()
   }

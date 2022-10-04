@@ -2,7 +2,7 @@
 
 import Koa from 'koa'
 import cors from '@koa/cors'
-import { Application, CorsOptions, HttpContext, Middleware, NextHandler } from '@supercharge/contracts'
+import { Application, CorsConfig, HttpContext, Middleware, NextHandler } from '@supercharge/contracts'
 
 export class HandleCorsMiddleware implements Middleware {
   /**
@@ -28,28 +28,28 @@ export class HandleCorsMiddleware implements Middleware {
   /**
    * Returns the options determining how to serve assets.
    *
-   * @returns {CorsOptions}
+   * @returns {CorsConfig}
    */
   protected createConfig (): cors.Options {
-    const options = this.config()
+    const config = this.config()
 
     return {
-      maxAge: options.maxAge,
+      maxAge: config.maxAge,
       keepHeadersOnError: true,
-      origin: options.allowedOrigin,
-      allowMethods: options.allowedMethods,
-      allowHeaders: options.allowedHeaders,
-      exposeHeaders: options.exposedHeaders,
-      credentials: options.supportsCredentials
+      origin: config.allowedOrigin,
+      allowMethods: config.allowedMethods,
+      allowHeaders: config.allowedHeaders,
+      exposeHeaders: config.exposedHeaders,
+      credentials: config.supportsCredentials
     }
   }
 
   /**
    * Returns the options determining how to serve assets.
    *
-   * @returns {CorsOptions}
+   * @returns {CorsConfig}
    */
-  protected config (): CorsOptions {
+  protected config (): CorsConfig {
     return this.app.config().get('cors')
   }
 
