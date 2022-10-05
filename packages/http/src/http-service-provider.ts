@@ -31,10 +31,12 @@ export class HttpServiceProvider extends ServiceProvider {
    * Bind the Router instance into the container.
    */
   private bindServer (): void {
-    const appConfig = this.config().get<ApplicationConfig>('app')
-
     this.app()
-      .singleton('server', () => new Server(this.app(), appConfig, this.httpConfig()))
+      .singleton('server', () => {
+        const appConfig = this.config().get<ApplicationConfig>('app')
+
+        return new Server(this.app(), appConfig, this.httpConfig())
+      })
       .alias('server', 'http.server')
       .alias('server', Server)
   }
