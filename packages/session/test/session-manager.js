@@ -10,7 +10,7 @@ const { SessionManager, StartSessionMiddleware } = require('../dist')
 test.group('Session Manager', () => {
   test('creates a session and generates a new ID if none is present', async () => {
     const app = await setupApp()
-    const server = new Server(app)
+    const server = app.make(Server)
     const sessionManager = new SessionManager(app)
 
     server.use(({ request, response }) => {
@@ -37,7 +37,7 @@ test.group('Session Manager', () => {
 
   test('use the memory driver', async () => {
     const app = await setupApp({ driver: 'memory' })
-    const server = new Server(app)
+    const server = app.make(Server)
     const sessionManager = app.make('session')
 
     expect(sessionManager.sessionConfig().driver()).toBe('memory')
@@ -67,7 +67,7 @@ test.group('Session Manager', () => {
       driver: 'cookie',
       name: 'supercharge-session-test'
     })
-    const server = new Server(app)
+    const server = app.make(Server)
     const sessionManager = app.make('session')
 
     expect(sessionManager.sessionConfig().driver()).toBe('cookie')

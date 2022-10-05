@@ -2,7 +2,6 @@
 
 const Path = require('path')
 const { SessionServiceProvider } = require('../../dist')
-const { HttpServiceProvider } = require('@supercharge/http')
 const { Application, ErrorHandler } = require('@supercharge/core')
 
 /**
@@ -16,11 +15,14 @@ exports.setupApp = async function makeApp (sessionConfig = {}) {
   const app = Application
     .createWithAppRoot(Path.resolve(__dirname, '../fixtures'))
     .withErrorHandler(ErrorHandler)
-
-  app.bind('view', () => viewMock)
+    .bind('view', () => viewMock)
 
   app.config()
     .set('app.key', 'app-key-1234')
+    .set('http', {
+      host: 'localhost',
+      port: 1234
+    })
     .set('session', {
       driver: 'cookie',
       name: 'supercharge-test-session',
@@ -29,7 +31,6 @@ exports.setupApp = async function makeApp (sessionConfig = {}) {
     })
 
   await app
-    .register(new HttpServiceProvider(app))
     .register(new SessionServiceProvider(app))
     .boot()
 

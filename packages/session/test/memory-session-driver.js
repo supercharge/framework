@@ -8,7 +8,7 @@ const { Server } = require('@supercharge/http')
 const { StartSessionMiddleware } = require('../dist')
 
 function createServer (app) {
-  const server = new Server(app).use(StartSessionMiddleware)
+  const server = app.make(Server).use(StartSessionMiddleware)
 
   return server
 }
