@@ -1,5 +1,6 @@
 'use strict'
 
+export * from './application'
 export * from './config'
 export * from './console'
 export * from './container'

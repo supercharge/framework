@@ -5,8 +5,8 @@ import { Logger } from '../logging'
 import { ConfigStore } from '../config'
 import { Container } from '../container'
 import { ServiceProvider } from '../support'
-import { BootstrapperCtor } from './bootstrapper'
-import { ErrorHandlerCtor } from './error-handler'
+import { BootstrapperCtor } from '../core/bootstrapper'
+import { ErrorHandlerCtor } from '../core/error-handler'
 
 type Callback = (app: Application) => Promise<unknown> | unknown
 

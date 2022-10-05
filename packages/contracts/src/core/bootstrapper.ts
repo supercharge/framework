@@ -1,6 +1,6 @@
 'use strict'
 
-import { Application } from './application'
+import { Application } from '../application'
 
 export type BootstrapperCtor =
   /**
