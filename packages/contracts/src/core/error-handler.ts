@@ -1,7 +1,7 @@
 'use strict'
 
 import { HttpContext } from '../http'
-import { Application } from './application'
+import { Application } from '../application'
 
 export type ErrorHandlerCtor =
   /**
