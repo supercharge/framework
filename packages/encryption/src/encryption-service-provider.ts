@@ -1,7 +1,7 @@
 'use strict'
 
-import { ServiceProvider } from '@supercharge/support'
 import { Encrypter } from './encrypter'
+import { ServiceProvider } from '@supercharge/support'
 
 export class EncryptionServiceProvider extends ServiceProvider {
   /**
