@@ -3,7 +3,7 @@
 const { test } = require('uvu')
 const { expect } = require('expect')
 const { makeApp } = require('./helpers')
-const { Application } = require('@supercharge/core')
+const { Application } = require('@supercharge/application')
 const { ViewServiceProvider, ViewManager } = require('../dist')
 
 test('throws without view config', async () => {
