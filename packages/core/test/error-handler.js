@@ -1,5 +1,6 @@
 'use strict'
 
+const Path = require('path')
 const { test } = require('uvu')
 const { expect } = require('expect')
 const Supertest = require('supertest')
@@ -15,16 +16,27 @@ const viewMock = {
   }
 }
 
-const app = new Application(__dirname)
-app.config().set('app.key', 1234)
-app
-  .bind('view', () => viewMock)
-  .bind('error.handler', () => new ErrorHandler(app))
+function createApp () {
+  const app = Application.createWithAppRoot(
+    Path.resolve(__dirname, 'fixtures')
+  ).withErrorHandler(ErrorHandler)
 
-//
+  app
+    .bind('view', () => viewMock)
+
+  app.config().set('app.key', 1234)
+  app.config().set('http', {
+    host: 'localhost',
+    port: 1234,
+    cookie: {}
+  })
+
+  return app
+}
 
 test('renders an error view', async () => {
-  const server = new Server(app)
+  const app = createApp()
+  const server = app.make(Server)
 
   server.use(async ({ response }) => {
     return response.throw(401, 'Authentication token missing')
@@ -40,7 +52,8 @@ test('renders an error view', async () => {
 })
 
 test('falls back to Youch when missing an error view', async () => {
-  const server = new Server(app)
+  const app = createApp()
+  const server = app.make(Server)
 
   server.use(async ({ response }) => {
     return response.throw(418, 'Yo teapot')
@@ -57,14 +70,10 @@ test('falls back to Youch when missing an error view', async () => {
 })
 
 test('does not return the error stack in production', async () => {
-  const app = new Application(__dirname)
-  app.config().set('app.key', 1234)
+  const app = createApp()
   app.env().set('NODE_ENV', 'production')
-  app
-    .bind('view', () => viewMock)
-    .bind('error.handler', () => new ErrorHandler(app))
 
-  const server = new Server(app)
+  const server = app.make(Server)
 
   server.use(async ({ response }) => {
     return response.throw(418, 'Yo teapot')
@@ -85,7 +94,8 @@ test('does not return the error stack in production', async () => {
 })
 
 test('responds JSON when request is asking for it', async () => {
-  const server = new Server(app)
+  const app = createApp()
+  const server = app.make(Server)
 
   server.use(async ({ response }) => {
     return response.throw(401, 'Auth missing')
@@ -115,13 +125,10 @@ test('calls report callbacks', async () => {
     }
   }
 
-  const app = new Application(__dirname)
-  app.config().set('app.key', 1234)
-  app
-    .bind('view', () => viewMock)
+  const app = createApp()
     .bind('error.handler', () => new CustomErrorHandler(app))
 
-  const server = new Server(app)
+  const server = app.make(Server)
 
   server.use(async ({ response }) => {
     return response.throw(418, 'Yo teapot')
@@ -138,7 +145,8 @@ test('calls report callbacks', async () => {
 })
 
 test('defaults to 500 error', async () => {
-  const server = new Server(app)
+  const app = createApp()
+  const server = app.make(Server)
 
   server.use(async () => {
     throw new Error('failed')

@@ -6,10 +6,21 @@ const { test } = require('uvu')
 const { expect } = require('expect')
 const Supertest = require('supertest')
 const { Server } = require('@supercharge/http')
-const { HttpKernel, Application } = require('../dist')
+const { HttpKernel, Application, ErrorHandler } = require('../dist')
 
-const app = new Application(__dirname)
+const app = Application
+  .createWithAppRoot(Path.resolve(__dirname, 'fixtures'))
+  .withErrorHandler(ErrorHandler)
+  .bind('view', () => {
+    // empty view mock
+  })
+
 app.config().set('app.key', 1234)
+app.config().set('http', {
+  host: 'localhost',
+  port: 1234,
+  cookie: {}
+})
 
 test('static .for(app)', async () => {
   expect(HttpKernel.for(app)).toBeInstanceOf(HttpKernel)
@@ -71,12 +82,6 @@ test('calls register when creating the HttpKernel instance', async () => {
 })
 
 test('bootstrap and .startServer()', async () => {
-  const app = Application.createWithAppRoot(Path.resolve(__dirname, 'fixtures'))
-
-  app.config().set('app.key', 1234)
-  app.config().set('app.host', 'localhost')
-  app.config().set('app.port', 1234)
-
   const kernel = new HttpKernel(app)
 
   await kernel.startServer()
@@ -90,10 +95,6 @@ test('bootstrap and .startServer()', async () => {
 })
 
 test('register middleware', async () => {
-  const app = Application.createWithAppRoot(Path.resolve(__dirname, 'fixtures'))
-
-  app.config().set('app.key', 1234)
-
   class TestMiddleware { handle () {} }
 
   class CustomHttpKernel extends HttpKernel {
@@ -121,9 +122,6 @@ test('register middleware', async () => {
 })
 
 test('bootstraps only once', async () => {
-  const app = Application.createWithAppRoot(Path.resolve(__dirname, 'fixtures'))
-  app.config().set('app.key', 1234)
-
   const bootstrapWithStub = Sinon.stub(app, 'bootstrapWith').returns()
 
   const kernel = new HttpKernel(app).booted(async () => {
@@ -137,16 +135,10 @@ test('bootstraps only once', async () => {
   bootstrapWithStub.restore()
 })
 
-test('.serverCallback()', async () => {
-  const app = Application.createWithAppRoot(Path.resolve(__dirname, 'fixtures'))
-  app.config().set('app.key', 1234)
-  app.bind('view', () => {
-    return { render () {} }
-  })
-
+test.only('.serverCallback()', async () => {
   const kernel = new HttpKernel(app)
 
-  kernel.server().use(async ({ request, response }) => {
+  kernel.server().use(({ request, response }) => {
     return response.payload({
       query: request.query().all()
     })
