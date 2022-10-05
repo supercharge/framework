@@ -14,7 +14,7 @@ test('methods', () => {
 
   expect(
     new BodyparserOptions({ methods: ['DELETE', 'post', 'PUT'] }).methods()
-  ).toEqual(['delete', 'post', 'put'])
+  ).toEqual(['DELETE', 'POST', 'PUT'])
 })
 
 test.run()

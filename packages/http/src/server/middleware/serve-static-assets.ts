@@ -1,7 +1,7 @@
 'use strict'
 
 import serveStaticFilesFrom from 'koa-static'
-import { Application, HttpContext, Middleware, NextHandler, StaticAssetsOptions } from '@supercharge/contracts'
+import { Application, HttpContext, Middleware, NextHandler, StaticAssetsConfig } from '@supercharge/contracts'
 
 export class ServeStaticAssetsMiddleware implements Middleware {
   /**
@@ -38,9 +38,9 @@ export class ServeStaticAssetsMiddleware implements Middleware {
   /**
    * Returns the options determining how to serve assets.
    *
-   * @returns {StaticAssetsOptions}
+   * @returns {StaticAssetsConfig}
    */
-  config (): StaticAssetsOptions {
+  config (): StaticAssetsConfig {
     return this.app.config().get('static')
   }
 

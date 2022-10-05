@@ -42,6 +42,7 @@
 	"devDependencies": {
 		"@supercharge/application": "^3.9.1",
 		"@supercharge/eslint-config-typescript": "~2.3.1",
+		"@supercharge/view": "^3.9.1",
 		"@types/bytes": "~3.1.1",
 		"@types/cookie": "~0.5.1",
 		"@types/formidable": "~2.0.5",

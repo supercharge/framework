@@ -5,6 +5,7 @@ import { Router } from './routing'
 import { Request } from './server/request'
 import { Response } from './server/response'
 import { ServiceProvider } from '@supercharge/support'
+import { ApplicationConfig, HttpConfig } from '@supercharge/contracts'
 
 export interface ContainerBindings {
   'route': Router
@@ -30,8 +31,10 @@ export class HttpServiceProvider extends ServiceProvider {
    * Bind the Router instance into the container.
    */
   private bindServer (): void {
+    const appConfig = this.config().get<ApplicationConfig>('app')
+
     this.app()
-      .singleton('server', () => new Server(this.app()))
+      .singleton('server', () => new Server(this.app(), appConfig, this.httpConfig()))
       .alias('server', 'http.server')
       .alias('server', Server)
   }
@@ -41,8 +44,15 @@ export class HttpServiceProvider extends ServiceProvider {
    */
   private bindRouter (): void {
     this.app()
-      .singleton('route', () => new Router(this.app()))
+      .singleton('route', () => new Router(this.app(), this.httpConfig()))
       .alias('route', 'router')
+  }
+
+  /**
+   * Returns the HTTP configuration object.
+   */
+  private httpConfig (): HttpConfig {
+    return this.config().get('http')
   }
 
   /**

@@ -4,7 +4,7 @@ import Set from '@supercharge/set'
 import { BodyparserJsonOptions } from './bodyparser-json-options'
 import { BodyparserBaseOptions } from './bodyparser-base-options'
 import { BodyparserMultipartOptions } from './bodyparser-multipart-options'
-import { BodyparserConfig as BodyparserConfigContract } from '@supercharge/contracts'
+import { BodyparserConfig as BodyparserConfigContract, HttpMethods } from '@supercharge/contracts'
 
 export class BodyparserOptions {
   /**
@@ -39,13 +39,13 @@ export class BodyparserOptions {
    * // ['post', 'put']
    * ```
    *
-   * @returns {BodyparserJsonOptions}
+   * @returns {HttpMethods[]}
    */
-  methods (): string[] {
+  methods (): HttpMethods[] {
     return Set
       .from(this.config.methods)
-      .map(method => method.toLowerCase())
-      .toArray()
+      .map(method => method.toUpperCase())
+      .toArray() as HttpMethods[]
   }
 
   /**
