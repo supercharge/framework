@@ -7,7 +7,7 @@ import Collect from '@supercharge/collections'
 import { Server as NodeHttpServer } from 'http'
 import { BodyparserMiddleware } from './middleware'
 import { className, isConstructor } from '@supercharge/classes'
-import { Application, HttpServer as HttpServerContract, Middleware as MiddlewareContract, MiddlewareCtor, HttpRouter, ErrorHandler, HttpServerHandler, InlineMiddlewareHandler, NextHandler } from '@supercharge/contracts'
+import { Application, HttpServer as HttpServerContract, Middleware as MiddlewareContract, MiddlewareCtor, HttpRouter, ErrorHandler, HttpServerHandler, InlineMiddlewareHandler, NextHandler, ApplicationConfig, HttpConfig } from '@supercharge/contracts'
 
 type Callback = (server: Server) => unknown | Promise<unknown>
 
@@ -20,6 +20,11 @@ export class Server implements HttpServerContract {
      * The application instance.
      */
     app: Application
+
+    /**
+     * The HTTP configuration object.
+     */
+    httpConfig: HttpConfig
 
     /**
      * The Koa server instance.
@@ -50,12 +55,13 @@ export class Server implements HttpServerContract {
   /**
    * Create a new HTTP context instance.
    */
-  constructor (app: Application) {
+  constructor (app: Application, appConfig: ApplicationConfig, httpConfig: HttpConfig) {
     this.meta = {
       app,
+      httpConfig,
       bootedCallbacks: [],
       isBootstrapped: false,
-      koa: this.createKoaInstance(app)
+      koa: this.createKoaInstance(appConfig)
     }
 
     this.registerBaseMiddleware()
@@ -68,11 +74,10 @@ export class Server implements HttpServerContract {
    *
    * @returns {Koa}
    */
-  private createKoaInstance (app: Application): Koa {
+  private createKoaInstance (appConfig: ApplicationConfig): Koa {
     return new Koa({
-      keys: [app.key()],
-      env: app.config().get('app.env'),
-      proxy: app.config().get('app.runsBehindProxy'),
+      keys: [appConfig.key],
+      proxy: appConfig.runsBehindProxy,
     })
   }
 
@@ -338,7 +343,7 @@ export class Server implements HttpServerContract {
    * @param ctx
    */
   private createContext (ctx: any): HttpContext {
-    return HttpContext.wrap(ctx, this.app())
+    return HttpContext.wrap(ctx, this.app(), this.cookieConfig())
   }
 
   /**
@@ -387,12 +392,21 @@ export class Server implements HttpServerContract {
   }
 
   /**
+   * Returns the HTTP cookie configuration object.
+   *
+   * @returns {HttpConfig['cookie']}
+   */
+  private cookieConfig (): HttpConfig['cookie'] {
+    return this.meta.httpConfig.cookie
+  }
+
+  /**
    * Returns the local port on which the server listens for connections.
    *
    * @returns {Number}
    */
   private port (): number {
-    return this.app().config().get('http.port')
+    return this.meta.httpConfig.port
   }
 
   /**
@@ -401,6 +415,6 @@ export class Server implements HttpServerContract {
    * @returns {String}
    */
   private hostname (): string {
-    return this.app().config().get('http.host')
+    return this.meta.httpConfig.host
   }
 }
