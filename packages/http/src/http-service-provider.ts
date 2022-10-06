@@ -32,7 +32,7 @@ export class HttpServiceProvider extends ServiceProvider {
    */
   private bindServer (): void {
     this.app()
-      .bind('server', () => {
+      .singleton('server', () => {
         const appConfig = this.config().get<ApplicationConfig>('app')
 
         return new Server(this.app(), appConfig, this.httpConfig())
