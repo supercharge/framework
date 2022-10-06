@@ -6,6 +6,7 @@ import Glob from 'globby'
 import { Env } from '@supercharge/env'
 import { PackageJson } from 'type-fest'
 import { Arr } from '@supercharge/arrays'
+import NormalizePath from 'normalize-path'
 import { Config } from '@supercharge/config'
 import Collect from '@supercharge/collections'
 import { Container } from '@supercharge/container'
@@ -189,9 +190,17 @@ export class Application extends Container implements ApplicationContract {
    * @returns {String}
    */
   resolveGlobFromBasePath (...destination: string[]): string {
-    return Glob.sync(
+    const path = NormalizePath(
       this.resolveFromBasePath(...destination)
-    )[0]
+    )
+
+    const glob = Glob.sync(path).pop()
+
+    if (!glob) {
+      throw new Error(`Failed to find a matching file for the given glob pattern: ${path}`)
+    }
+
+    return glob
   }
 
   /**
@@ -388,6 +397,10 @@ export class Application extends Container implements ApplicationContract {
    * @returns {*}
    */
   require (path: string): any {
+    if (!path) {
+      throw new Error(`Cannot require missing or empty "path". Received "${path}" (${typeof path})`)
+    }
+
     return esmRequire(path)
   }
 
