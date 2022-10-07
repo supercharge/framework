@@ -1,5 +1,6 @@
 'use strict'
 
+import { EOL } from 'node:os'
 import { ViteServiceProvider } from '../dist'
 import { ViewServiceProvider } from '@supercharge/view'
 import { describe, test, expect, beforeEach } from 'vitest'
@@ -39,7 +40,7 @@ describe('ViteServiceProvider', () => {
 
     expect(rendered).toEqual(
       '<script type="module" src="/build/assets/app.version.js"></script>' +
-      '<link rel="stylesheet" href="/build/assets/app.version.css" />\n'
+      '<link rel="stylesheet" href="/build/assets/app.version.css" />' + EOL
     )
   })
 
@@ -56,7 +57,7 @@ describe('ViteServiceProvider', () => {
 
     expect(rendered).toEqual(
       '<script type="module" src="/build/assets/app.from-hash.version.js"></script>' +
-      '<link rel="stylesheet" href="/build/assets/app.version.css" />\n'
+      '<link rel="stylesheet" href="/build/assets/app.version.css" />' + EOL
     )
   })
 
