@@ -14,7 +14,9 @@ export class DatabaseServiceProvider extends ServiceProvider {
    */
   override register (): void {
     this.app().singleton('db', () => {
-      return new DatabaseManager(this.app())
+      const databaseConfig = this.app().config().get('database')
+
+      return new DatabaseManager(databaseConfig)
     })
 
     Model.knex(

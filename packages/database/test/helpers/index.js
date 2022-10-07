@@ -12,9 +12,9 @@ exports.makeApp = makeApp
  * @returns {Database}
  */
 function makeDb (app, dbDirectory) {
-  return new DatabaseManager(
-    app || makeApp(undefined, dbDirectory)
-  )
+  const application = (app || makeApp(undefined, dbDirectory))
+
+  return new DatabaseManager(application.config().get('database'))
 }
 
 /**
