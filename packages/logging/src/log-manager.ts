@@ -20,8 +20,6 @@ export class LogManager extends Manager implements LoggingContract {
     super(app)
 
     this.options = config
-
-    this.ensureConfig('logging.driver')
   }
 
   /**
