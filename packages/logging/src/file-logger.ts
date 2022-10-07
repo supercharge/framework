@@ -18,12 +18,11 @@ export class FileLogger extends Logger<FileChannelConfig> implements LoggingCont
    *
    * @param options
    */
-  constructor (options: FileChannelConfig) {
+  constructor (options: FileChannelConfig = {}) {
     super(options)
 
-    this.ensureLogFilePath()
+    this.path = this.resolveLogFilePath(options.path)
 
-    this.path = options.path
     this.addFileTransportToLogger()
   }
 
@@ -34,10 +33,12 @@ export class FileLogger extends Logger<FileChannelConfig> implements LoggingCont
    *
    * @throws
    */
-  ensureLogFilePath (): void {
-    if (!this.config.path) {
+  resolveLogFilePath (path?: string): string {
+    if (!path) {
       throw new Error('Missing log file path when logging to a file')
     }
+
+    return path
   }
 
   /**

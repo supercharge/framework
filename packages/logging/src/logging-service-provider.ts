@@ -10,7 +10,7 @@ export class LoggingServiceProvider extends ServiceProvider implements ServicePr
    */
   override register (): void {
     this.app().singleton('logger', () => {
-      const loggingConfig = this.app().config().get('logging')
+      const loggingConfig = this.app().config().get('logging', { driver: 'console', channels: {} })
 
       return new LogManager(this.app(), loggingConfig)
     })

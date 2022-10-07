@@ -19,7 +19,7 @@ export class LogManager extends Manager implements LoggingContract {
   constructor (app: Application, config: LoggingConfig) {
     super(app)
 
-    this.options = config
+    this.options = { ...config, channels: { ...config.channels } }
   }
 
   /**
@@ -121,7 +121,7 @@ export class LogManager extends Manager implements LoggingContract {
    * @returns {FileLogger}
    */
   protected createFileDriver (): LoggingContract {
-    return new FileLogger(this.options.channels.file ?? {})
+    return new FileLogger(this.options.channels.file ?? {} as any)
   }
 
   /**
@@ -130,6 +130,6 @@ export class LogManager extends Manager implements LoggingContract {
    * @returns {Logger}
    */
   protected createConsoleDriver (): LoggingContract {
-    return new ConsoleLogger(this.options.channels.console ?? {})
+    return new ConsoleLogger(this.options.channels.console ?? { } as any)
   }
 }

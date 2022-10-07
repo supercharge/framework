@@ -16,17 +16,12 @@ export interface LoggingChannels {
   /**
    * The file channel.
    */
-  file: FileChannelConfig
+  file?: FileChannelConfig
 
   /**
    * The console channel.
    */
-  console: ConsoleChannelConfig
-
-  /**
-   * Index signature for other channels.
-   */
-  [key: string]: LogChannelConfig & Record<string, any>
+  console?: ConsoleChannelConfig
 }
 
 export interface ConsoleChannelConfig extends LogChannelConfig {}
@@ -35,12 +30,12 @@ export interface FileChannelConfig extends LogChannelConfig {
   /**
    * The log file path.
    */
-  path: string
+  path?: string
 }
 
 export interface LogChannelConfig {
   /**
    * The minimum logging level.
    */
-  level: string
+  level?: string
 }
