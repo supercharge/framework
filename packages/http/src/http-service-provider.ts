@@ -1,11 +1,11 @@
 'use strict'
 
-import { Server } from './server'
+import { Server, ServeStaticAssetsMiddleware } from './server'
 import { Router } from './routing'
 import { Request } from './server/request'
 import { Response } from './server/response'
 import { ServiceProvider } from '@supercharge/support'
-import { ApplicationConfig, HttpConfig } from '@supercharge/contracts'
+import { ApplicationConfig, HttpConfig, StaticAssetsConfig } from '@supercharge/contracts'
 
 export interface ContainerBindings {
   'route': Router
@@ -25,6 +25,7 @@ export class HttpServiceProvider extends ServiceProvider {
     this.bindRouter()
     this.bindRequest()
     this.bindResponse()
+    this.bindServeStaticAssetsMiddleware()
   }
 
   /**
@@ -73,6 +74,17 @@ export class HttpServiceProvider extends ServiceProvider {
     this.app()
       .singleton('response', () => Response)
       .alias('response', Response)
+  }
+
+  /**
+   * Bind the middleware to serve static assets into the container.
+   */
+  private bindServeStaticAssetsMiddleware (): void {
+    this.app().singleton(ServeStaticAssetsMiddleware, () => {
+      const staticAssetsConfig = this.app().config().get<StaticAssetsConfig>('static')
+
+      return new ServeStaticAssetsMiddleware(staticAssetsConfig, this.app().publicPath())
+    })
   }
 
   /**
