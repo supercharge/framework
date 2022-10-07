@@ -1,14 +1,11 @@
 'use strict'
 
 import { knex, Knex } from 'knex'
+import { DatabaseConfig } from '@supercharge/contracts'
 import { DatabaseManagerProxy } from './database-manager-proxy'
-import { Application, ConfigStore } from '@supercharge/contracts'
 
 export class DatabaseManager {
-  /**
-   * The application instance.
-   */
-  private readonly app: Application
+  private readonly config: DatabaseConfig
 
   /**
    * Stores the active database connections, like connections to
@@ -21,20 +18,11 @@ export class DatabaseManager {
    *
    * @param app
    */
-  constructor (app: Application) {
-    this.app = app
+  constructor (config: DatabaseConfig) {
+    this.config = config
     this.connections = new Map()
 
     return new Proxy(this, new DatabaseManagerProxy(this))
-  }
-
-  /**
-   * Returns the config store.
-   *
-   * @returns {ConfigStore}
-   */
-  config (): ConfigStore {
-    return this.app.config()
   }
 
   /**
@@ -101,7 +89,7 @@ export class DatabaseManager {
    * @returns {Knex.Config | String}
    */
   protected configuration (connectionName: string): Knex.Config | string {
-    const connection = this.config().get(`database.connections.${connectionName}`)
+    const connection = this.config.connections[connectionName]
 
     if (!connection) {
       throw new Error(`Database connection "${connectionName}" is not configured.`)
@@ -116,7 +104,7 @@ export class DatabaseManager {
    * @returns {String}
    */
   protected defaultConnection (): string {
-    return this.config().get('database.connection')
+    return this.config.default ?? this.config.connection
   }
 
   /**
