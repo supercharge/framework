@@ -1,7 +1,7 @@
 'use strict'
 
 const Path = require('path')
-const { Application } = require('@supercharge/core')
+const { Application } = require('@supercharge/application')
 
 /**
  * Returns a test application.
