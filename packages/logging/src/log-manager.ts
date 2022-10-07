@@ -3,9 +3,25 @@
 import { FileLogger } from './file-logger'
 import { Manager } from '@supercharge/manager'
 import { ConsoleLogger } from './console-logger'
-import { Logger as LoggingContract } from '@supercharge/contracts'
+import { Application, Logger as LoggingContract, LoggingConfig } from '@supercharge/contracts'
 
 export class LogManager extends Manager implements LoggingContract {
+  /**
+   * Stores the logging config.
+   */
+  private readonly options: LoggingConfig
+
+  /**
+   * Create a new logs manager instance.
+   *
+   * @param {Application} app
+   */
+  constructor (app: Application, config: LoggingConfig) {
+    super(app)
+
+    this.options = { ...config, channels: { ...config.channels } }
+  }
+
   /**
    * Log the given `message` at debug level.
    *
@@ -84,7 +100,7 @@ export class LogManager extends Manager implements LoggingContract {
    * @returns {String}
    */
   protected defaultDriver (): string {
-    return this.config().get('logging.driver', 'console')
+    return this.options.driver ?? 'console'
   }
 
   /**
@@ -105,9 +121,7 @@ export class LogManager extends Manager implements LoggingContract {
    * @returns {FileLogger}
    */
   protected createFileDriver (): LoggingContract {
-    return new FileLogger(
-      this.config().get('logging.channels.file', {})
-    )
+    return new FileLogger(this.options.channels.file ?? {} as any)
   }
 
   /**
@@ -116,8 +130,6 @@ export class LogManager extends Manager implements LoggingContract {
    * @returns {Logger}
    */
   protected createConsoleDriver (): LoggingContract {
-    return new ConsoleLogger(
-      this.config().get('logging.channels.console', {})
-    )
+    return new ConsoleLogger(this.options.channels.console ?? { } as any)
   }
 }

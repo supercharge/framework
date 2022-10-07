@@ -15,7 +15,7 @@ test('logs debug message to console', () => {
 
   expect(consoleLogStub.called).toBe(true)
   expect(
-    !!consoleLogStub.args[0].find(message => message.includes('debug message'))
+    consoleLogStub.args[0].some(message => message.includes('debug message'))
   ).toBe(true)
 })
 
@@ -29,7 +29,7 @@ test('logs info message to console', () => {
 
   expect(consoleLogStub.called).toBe(true)
   expect(
-    !!consoleLogStub.args[0].find(message => message.includes('info message'))
+    consoleLogStub.args[0].some(message => message.includes('info message'))
   ).toBe(true)
 })
 
@@ -43,7 +43,7 @@ test('logs notice message to console', async () => {
 
   expect(consoleLogStub.called).toBe(true)
   expect(
-    !!consoleLogStub.args[0].find(message => message.includes('notice message'))
+    consoleLogStub.args[0].some(message => message.includes('notice message'))
   ).toBe(true)
 })
 
@@ -57,7 +57,7 @@ test('logs warning message to console', async () => {
 
   expect(consoleLogStub.called).toBe(true)
   expect(
-    !!consoleLogStub.args[0].find(message => message.includes('warning message'))
+    consoleLogStub.args[0].some(message => message.includes('warning message'))
   ).toBe(true)
 })
 
@@ -71,7 +71,7 @@ test('logs error message to console', async () => {
 
   expect(consoleLogStub.called).toBe(true)
   expect(
-    !!consoleLogStub.args[0].find(message => message.includes('error message'))
+    consoleLogStub.args[0].some(message => message.includes('error message'))
   ).toBe(true)
 })
 
@@ -85,7 +85,7 @@ test('logs critical message to console', async () => {
 
   expect(consoleLogStub.called).toBe(true)
   expect(
-    !!consoleLogStub.args[0].find(message => message.includes('critical message'))
+    consoleLogStub.args[0].some(message => message.includes('critical message'))
   ).toBe(true)
 })
 
@@ -99,7 +99,7 @@ test('logs alert message to console', async () => {
 
   expect(consoleLogStub.called).toBe(true)
   expect(
-    !!consoleLogStub.args[0].find(message => message.includes('alert message'))
+    consoleLogStub.args[0].some(message => message.includes('alert message'))
   ).toBe(true)
 })
 
@@ -113,7 +113,7 @@ test('logs emergency message to console', async () => {
 
   expect(consoleLogStub.called).toBe(true)
   expect(
-    !!consoleLogStub.args[0].find(message => message.includes('emergency message'))
+    consoleLogStub.args[0].some(message => message.includes('emergency message'))
   ).toBe(true)
 })
 
@@ -127,7 +127,7 @@ test('logs message with context data (object)', async () => {
 
   expect(consoleLogStub.called).toBe(true)
   expect(
-    !!consoleLogStub.args[0].find(message => {
+    consoleLogStub.args[0].some(message => {
       return message.includes('custom message {"name":"Marcus","app":"Supercharge"}')
     })
   ).toBe(true)
@@ -143,7 +143,7 @@ test('handles errors and shows stacktraces', async () => {
 
   expect(consoleLogStub.called).toBe(true)
   expect(
-    !!consoleLogStub.args[0].find(message => message.includes('Logging failed'))
+    consoleLogStub.args[0].some(message => message.includes('Logging failed'))
   ).toBe(true)
 })
 
@@ -158,11 +158,11 @@ test('honors the log level', async () => {
 
   expect(consoleLogStub.called).toBe(true)
   expect(
-    !!consoleLogStub.args[0].find(message => message.includes('should not appear'))
+    consoleLogStub.args[0].some(message => message.includes('should not appear'))
   ).toBe(false)
 
   expect(
-    !!consoleLogStub.args[0].find(message => message.includes('this message should appear'))
+    consoleLogStub.args[0].some(message => message.includes('this message should appear'))
   ).toBe(true)
 })
 

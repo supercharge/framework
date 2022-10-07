@@ -24,12 +24,13 @@ function createApp () {
   app
     .bind('view', () => viewMock)
 
-  app.config().set('app.key', 1234)
-  app.config().set('http', {
-    host: 'localhost',
-    port: 1234,
-    cookie: {}
-  })
+  app.config()
+    .set('app.key', 1234)
+    .set('http', {
+      host: 'localhost',
+      port: 1234,
+      cookie: {}
+    })
 
   return app
 }
