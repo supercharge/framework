@@ -77,7 +77,7 @@ export class HttpServiceProvider extends ServiceProvider {
   }
 
   /**
-   * Bind the middleware to start the session into the container.
+   * Bind the middleware to handle CORS requests into the container.
    */
   private bindHandleCorsMiddleware (): void {
     this.app().singleton(HandleCorsMiddleware, () => {

@@ -17,8 +17,6 @@ export class HandleCorsMiddleware implements Middleware {
 
   /**
    * Create a new middleware instance.
-   *
-   * @param {Application} app
    */
   constructor (config: CorsConfig) {
     this.config = config
