@@ -1,55 +1,19 @@
 'use strict'
 
 const { test } = require('uvu')
-const deepmerge = require('deepmerge')
 const Supertest = require('supertest')
-const { isConstructor } = require('@supercharge/classes')
+const { setupApp } = require('../../helpers')
 const defaultCorsConfig = require('./fixtures/cors-config')
-const { HandleCorsMiddleware, Server, Router, Response, Request } = require('../../../dist')
+const { HandleCorsMiddleware, Server } = require('../../../dist')
 
-function createAppMock (corsConfig = {}) {
-  return {
-    key () {
-      return 1234
-    },
-    hasBinding () {
-      return false
-    },
-    make (key) {
-      if (isConstructor(key)) {
-        // eslint-disable-next-line new-cap
-        return new key(this)
-      }
+const app = setupApp({ cors: defaultCorsConfig })
 
-      if (key === 'route') {
-        return new Router()
-      }
-
-      if (key === 'request') {
-        return Request
-      }
-
-      if (key === 'response') {
-        return Response
-      }
-    },
-    singleton () {},
-    config () {
-      return {
-        get () {
-          return deepmerge.all([{}, defaultCorsConfig, corsConfig])
-        }
-      }
-    }
-  }
-}
-
-async function createHttpServer (corsConfig) {
-  const appMock = createAppMock(corsConfig)
-
-  const server = new Server(appMock).use(HandleCorsMiddleware).use(ctx => {
-    return ctx.response.payload('ok')
-  })
+async function createHttpServer () {
+  const server = app.make(Server)
+    .use(HandleCorsMiddleware)
+    .use(ctx => {
+      return ctx.response.payload('ok')
+    })
 
   await server.bootstrap()
 

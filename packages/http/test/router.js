@@ -2,59 +2,18 @@
 
 const { test } = require('uvu')
 const { expect } = require('expect')
+const { Server } = require('../dist')
 const Supertest = require('supertest')
-const { isConstructor } = require('@supercharge/classes')
-const { Server, Router, Request, Response } = require('../dist')
+const { setupApp } = require('./helpers')
 
-const app = {
-  bindings: {},
-  hasBinding (key) {
-    return !!this.bindings[key]
-  },
-  make (key) {
-    if (isConstructor(key)) {
-      // eslint-disable-next-line new-cap
-      return new key(this)
-    }
+let app = setupApp()
 
-    if (key === 'request') {
-      return Request
-    }
-
-    if (key === 'response') {
-      return Response
-    }
-
-    if (key === 'route') {
-      return new Router(this)
-    }
-
-    const bindingCallback = this.bindings[key]
-
-    if (bindingCallback) {
-      return bindingCallback(this)
-    }
-  },
-  singleton (key, bindingCallback) {
-    this.bindings[key] = bindingCallback
-  },
-  key () {
-    return '1234'
-  },
-  logger () {
-    return {
-      info () {}
-    }
-  },
-  config () {
-    return {
-      get () {}
-    }
-  }
-}
+test.before.each(() => {
+  app = setupApp()
+})
 
 test('router.get()', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   router.get('/name', () => 'Supercharge')
@@ -66,7 +25,7 @@ test('router.get()', async () => {
 })
 
 test('router.post()', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   router.post('/name', ({ response }) => response.status(201).payload('Supercharge'))
@@ -79,7 +38,7 @@ test('router.post()', async () => {
 })
 
 test('router.put()', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   router.put('/name', ({ response }) => response.status(202).payload('Supercharge'))
@@ -92,7 +51,7 @@ test('router.put()', async () => {
 })
 
 test('router.delete()', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   router.delete('/name', ({ response }) => response.status(204))
@@ -105,7 +64,7 @@ test('router.delete()', async () => {
 })
 
 test('router.patch()', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   router.patch('/name', ({ response }) => response.status(200))
@@ -118,7 +77,7 @@ test('router.patch()', async () => {
 })
 
 test('router.options()', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   router.options('/name', ({ response }) => response.status(200))
@@ -137,7 +96,7 @@ test('router.get() with controller class', async () => {
     }
   }
 
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   router.get('/name', Controller)
@@ -152,20 +111,20 @@ test('router.get() with controller class', async () => {
 test('fails for route controller class without .handle() method', async () => {
   class Controller { }
 
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
-  router.get('/name', Controller)
+  router.get('/should-fail', Controller)
 
   await server.bootstrap()
 
   await Supertest(server.callback())
-    .get('/name')
+    .get('/should-fail')
     .expect(500)
 })
 
 test('router.group() without route prefix', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   router.group(() => {
@@ -180,7 +139,7 @@ test('router.group() without route prefix', async () => {
 })
 
 test('router.group() with route prefix', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   router.group('/api', () => {
@@ -195,7 +154,7 @@ test('router.group() with route prefix', async () => {
 })
 
 test('router.group() ensures prefix starts with slash', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   router.group('api', () => {
@@ -210,7 +169,7 @@ test('router.group() ensures prefix starts with slash', async () => {
 })
 
 test('router.group() ensures prefix starts with single slash', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   router.group('/////api', () => {
@@ -225,7 +184,7 @@ test('router.group() ensures prefix starts with single slash', async () => {
 })
 
 test('router.group() with attributes object', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   router.group({ prefix: 'api' }, () => {
@@ -240,14 +199,14 @@ test('router.group() with attributes object', async () => {
 })
 
 test('fails when not providing a callback to router.group()', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   expect(() => router.group('api')).toThrow()
 })
 
 test('router.prefix()', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   router.prefix('/api').get('/hello', () => 'Supercharge')
@@ -260,7 +219,7 @@ test('router.prefix()', async () => {
 })
 
 test('router.prefix().group() ', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   router.prefix('/api').group(() => {
@@ -284,7 +243,7 @@ test('runs route middleware', async () => {
     }
   }
 
-  const server = new Server(app)
+  const server = app.make(Server)
   server.useRouteMiddleware('caller', CallerMiddlware)
 
   const router = server.router()
@@ -303,7 +262,7 @@ test('runs route middleware', async () => {
 })
 
 test('fails when registering middleware alias without a name', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   expect(
@@ -312,7 +271,7 @@ test('fails when registering middleware alias without a name', async () => {
 })
 
 test('fails when registering middleware alias without a middleware class', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   expect(
@@ -321,7 +280,7 @@ test('fails when registering middleware alias without a middleware class', async
 })
 
 test('fails when adding not-registered middleware to route', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
 
   server.router()
     .post('/name', ({ response }) => response.payload('Supercharge'))
@@ -342,7 +301,7 @@ test('router.middleware()', async () => {
     }
   }
 
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   router
@@ -377,7 +336,7 @@ test('router.middleware() registers and calls multiple middleware', async () => 
     }
   }
 
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   router
@@ -397,7 +356,7 @@ test('router.middleware() registers and calls multiple middleware', async () => 
 })
 
 test('fails when using router.middleware() with unknown middleware', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
 
   server.router()
     .middleware('unknown')
@@ -410,7 +369,7 @@ test('fails when using router.middleware() with unknown middleware', async () =>
 })
 
 test('returns status 204 for empty responses', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   router.get('/name', () => '')
@@ -423,7 +382,7 @@ test('returns status 204 for empty responses', async () => {
 })
 
 test('handles redirects', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   router.get('/name', ctx => ctx.response.redirect('/login'))
@@ -436,7 +395,7 @@ test('handles redirects', async () => {
 })
 
 test('throws when returning a null response', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   router.get('/name', ctx => null)
@@ -449,7 +408,7 @@ test('throws when returning a null response', async () => {
 })
 
 test('register route middleware for single route in group', async () => {
-  // const server = new Server(app)
+  // const server = app.make(Server)
   // const router = server.router()
 
   // router.post('/name', ({ response }) => response.status(201).payload('Supercharge'))

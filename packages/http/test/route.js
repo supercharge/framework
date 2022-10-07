@@ -3,23 +3,13 @@
 const { test } = require('uvu')
 const { expect } = require('expect')
 const { Route } = require('../dist')
-const { isConstructor } = require('@supercharge/classes')
+const { setupApp } = require('./helpers')
 
-const app = {
-  bindings: {},
-  make (key) {
-    if (isConstructor(key)) {
-      // eslint-disable-next-line new-cap
-      return new key(this)
-    }
+let app = setupApp()
 
-    const bindingCallback = this.bindings[key]
-
-    if (bindingCallback) {
-      return bindingCallback(this)
-    }
-  }
-}
+test.before.each(() => {
+  app = setupApp()
+})
 
 test('fails for route controller class without .handle() method', async () => {
   class NoopController { }

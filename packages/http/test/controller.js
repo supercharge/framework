@@ -2,13 +2,10 @@
 
 const { test } = require('uvu')
 const { expect } = require('expect')
+const { setupApp } = require('./helpers')
 const { Controller } = require('../dist')
 
-const app = {
-  key () {
-    return '1234'
-  }
-}
+const app = setupApp()
 
 test('controller.app()', async () => {
   class TestController extends Controller {}

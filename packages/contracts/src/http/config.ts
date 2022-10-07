@@ -11,10 +11,10 @@ export interface HttpConfig {
   /**
    * The local HTTP port.
    */
-  port: string
+  port: number
 
   /**
    * The HTTP cookie options.
    */
-  cookie?: CookieOptions
+  cookie: CookieOptions
 }

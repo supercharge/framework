@@ -1,53 +1,18 @@
 'use strict'
 
 const { test } = require('uvu')
+const { Server } = require('../dist')
 const Supertest = require('supertest')
-const { Server, Router, Request, Response } = require('../dist')
+const { setupApp } = require('./helpers')
 
-const app = {
-  bindings: {},
-  hasBinding (key) {
-    return !!this.bindings[key]
-  },
-  make (key) {
-    if (key === 'route') {
-      return new Router(this)
-    }
+let app = setupApp()
 
-    if (key === 'request') {
-      return Request
-    }
-
-    if (key === 'response') {
-      return Response
-    }
-
-    const bindingCallback = this.bindings[key]
-
-    if (bindingCallback) {
-      return bindingCallback(this)
-    }
-  },
-  singleton (key, bindingCallback) {
-    this.bindings[key] = bindingCallback
-  },
-  key () {
-    return '1234'
-  },
-  logger () {
-    return {
-      info () {}
-    }
-  },
-  config () {
-    return {
-      get () {}
-    }
-  }
-}
+test.before.each(() => {
+  app = setupApp()
+})
 
 test('pending .get() route', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   router.prefix('api').get('/name', () => 'Supercharge')
@@ -60,7 +25,7 @@ test('pending .get() route', async () => {
 })
 
 test('pending .post() route', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   router
@@ -75,7 +40,7 @@ test('pending .post() route', async () => {
 })
 
 test('pending .put() route', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   router
@@ -90,7 +55,7 @@ test('pending .put() route', async () => {
 })
 
 test('pending .delete() route', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   router
@@ -105,7 +70,7 @@ test('pending .delete() route', async () => {
 })
 
 test('pending .patch() route', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   router
@@ -120,7 +85,7 @@ test('pending .patch() route', async () => {
 })
 
 test('pending .options() route', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
   const router = server.router()
 
   router

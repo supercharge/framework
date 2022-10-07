@@ -1,32 +1,25 @@
 'use strict'
 
-const Koa = require('koa')
 const { test } = require('uvu')
 const { expect } = require('expect')
+const { Server } = require('../dist')
 const Supertest = require('supertest')
-const { HttpContext, Response } = require('../dist')
+const { setupApp } = require('./helpers')
 
-const appMock = {
-  make (key) {
-    if (key === 'response') {
-      return Response
-    }
-  },
-  config () {
-    return {
-      get () { }
-    }
-  }
-}
+let app = setupApp()
+
+test.before.each(() => {
+  app = setupApp()
+})
 
 test('redirect is chainable', async () => {
-  const app = new Koa().use(ctx => {
-    const { response } = HttpContext.wrap(ctx, appMock)
+  const server = app
+    .make(Server)
+    .use(({ response }) => {
+      return response.redirect().to('/path').withPayload()
+    })
 
-    return response.redirect().to('/path').withPayload()
-  })
-
-  const response = await Supertest(app.callback())
+  const response = await Supertest(server.callback())
     .get('/')
     .expect(307)
 
@@ -34,13 +27,13 @@ test('redirect is chainable', async () => {
 })
 
 test('redirect.back()', async () => {
-  const app = new Koa().use(ctx => {
-    const { response } = HttpContext.wrap(ctx, appMock)
+  const server = app
+    .make(Server)
+    .use(({ response }) => {
+      return response.redirect().back()
+    })
 
-    return response.redirect().back()
-  })
-
-  const response = await Supertest(app.callback())
+  const response = await Supertest(server.callback())
     .get('/')
     .expect(302)
 
@@ -48,13 +41,13 @@ test('redirect.back()', async () => {
 })
 
 test('redirect.back() with fallback', async () => {
-  const app = new Koa().use(ctx => {
-    const { response } = HttpContext.wrap(ctx, appMock)
+  const server = app
+    .make(Server)
+    .use(({ response }) => {
+      return response.redirect().back({ fallback: '/login' })
+    })
 
-    return response.redirect().back({ fallback: '/login' })
-  })
-
-  const response = await Supertest(app.callback())
+  const response = await Supertest(server.callback())
     .get('/')
     .expect(302)
 
@@ -62,13 +55,13 @@ test('redirect.back() with fallback', async () => {
 })
 
 test('redirect.permanent()', async () => {
-  const app = new Koa().use(ctx => {
-    const { response } = HttpContext.wrap(ctx, appMock)
+  const server = app
+    .make(Server)
+    .use(({ response }) => {
+      return response.redirect().permanent().to('/permanent-path')
+    })
 
-    return response.redirect().permanent().to('/permanent-path')
-  })
-
-  const response = await Supertest(app.callback())
+  const response = await Supertest(server.callback())
     .get('/')
     .expect(301)
 

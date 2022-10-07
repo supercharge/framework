@@ -1,61 +1,31 @@
 'use strict'
 
-const Koa = require('koa')
 const Path = require('path')
 const { test } = require('uvu')
 const { expect } = require('expect')
 const deepmerge = require('deepmerge')
 const Supertest = require('supertest')
+const { Server } = require('../../../dist')
+const { setupApp } = require('../../helpers')
 const defaultBodyparserConfig = require('./fixtures/bodyparser-config')
-const { BodyparserMiddleware, HttpContext, Response, Request } = require('../../../dist')
 
 const testFile1Path = Path.resolve(__dirname, 'fixtures', 'test-multipart-file-1.txt')
 const testFile2Path = Path.resolve(__dirname, 'fixtures', 'test-multipart-file-2.txt')
 
-function createAppMock (bodyparserConfig = {}) {
-  return {
-    make (key) {
-      if (key === 'request') {
-        return Request
-      }
-
-      if (key === 'response') {
-        return Response
-      }
-    },
-    config () {
-      return {
-        get () {
-          return deepmerge.all([{}, defaultBodyparserConfig, bodyparserConfig])
-        }
-      }
-    }
-  }
-}
-
 function createHttpServer (bodyparserConfig) {
-  const appMock = createAppMock(bodyparserConfig)
-
-  const app = new Koa().use(async (ctx, next) => {
-    const context = HttpContext.wrap(ctx, appMock)
-
-    try {
-      await new BodyparserMiddleware(appMock).handle(context, async () => {
-        context.response.payload({
-          files: context.request.files(),
-          payload: context.request.payload()
-        })
-      })
-    } catch (error) {
-      return error.status
-        ? context.response.throw(error.status, error.message)
-        : context.response.throw(error)
-    }
-
-    await next()
+  const app = setupApp({
+    bodyparser: deepmerge(defaultBodyparserConfig, { ...bodyparserConfig })
   })
 
-  return app.callback()
+  const server = app.make(Server)
+    .use(({ request, response }) => {
+      return response.payload({
+        files: request.files(),
+        payload: request.payload()
+      })
+    })
+
+  return server.callback()
 }
 
 test('parse json body', async () => {
@@ -223,21 +193,19 @@ test('skips parsing on DELETE request', async () => {
 })
 
 test('sets the raw request payload', async () => {
-  const appMock = createAppMock()
-  const app = new Koa().use(async (ctx, next) => {
-    const context = HttpContext.wrap(ctx, appMock)
+  const app = setupApp({ bodyparser: defaultBodyparserConfig })
 
-    await new BodyparserMiddleware(appMock).handle(context, async () => {
-      context.response.payload({
-        payload: context.request.payload(),
-        rawPayload: context.request.rawPayload()
+  const server = app.make(Server)
+    .use(async (ctx, next) => {
+      ctx.response.payload({
+        payload: ctx.request.payload(),
+        rawPayload: ctx.request.rawPayload()
       })
+
+      await next()
     })
 
-    await next()
-  })
-
-  const response = await Supertest(app.callback())
+  const response = await Supertest(server.callback())
     .post('/')
     .set('Content-Type', 'application/x-www-form-urlencoded')
     .send('hello=Supercharge')

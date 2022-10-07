@@ -68,8 +68,8 @@ export class BodyparserMiddleware implements Middleware {
    * @returns {Boolean}
    */
   hasConfiguredMethod (request: HttpRequest): boolean {
-    return this.options().methods().includes(
-      request.method().toLowerCase()
+    return request.isMethod(
+      this.options().methods()
     )
   }
 

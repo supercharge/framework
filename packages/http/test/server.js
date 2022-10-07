@@ -2,64 +2,18 @@
 
 const { test } = require('uvu')
 const { expect } = require('expect')
+const { Server } = require('../dist')
 const Supertest = require('supertest')
-const ErrorHandler = require('./helpers/error-handler')
-const { isConstructor } = require('@supercharge/classes')
-const { Server, Router, Request, Response } = require('../dist')
+const { setupApp } = require('./helpers')
 
-const app = {
-  bindings: {},
-  hasBinding (key) {
-    return !!this.bindings[key]
-  },
-  make (key) {
-    if (isConstructor(key)) {
-      // eslint-disable-next-line new-cap
-      return new key(this)
-    }
+let app = setupApp()
 
-    if (key === 'request') {
-      return Request
-    }
-
-    if (key === 'response') {
-      return Response
-    }
-
-    if (key === 'route') {
-      return new Router(this)
-    }
-
-    if (key === 'error.handler') {
-      return new ErrorHandler()
-    }
-
-    const bindingCallback = this.bindings[key]
-
-    if (bindingCallback) {
-      return bindingCallback(this)
-    }
-  },
-  singleton (key, bindingCallback) {
-    this.bindings[key] = bindingCallback
-  },
-  key () {
-    return '1234'
-  },
-  logger () {
-    return {
-      info () {}
-    }
-  },
-  config () {
-    return {
-      get () {}
-    }
-  }
-}
+test.before.each(() => {
+  app = setupApp()
+})
 
 test('Starts a server without routes', async () => {
-  const server = new Server(app)
+  const server = app.make(Server)
 
   await Supertest(server.callback())
     .get('/')
@@ -69,7 +23,7 @@ test('Starts a server without routes', async () => {
 test('adds a middleware using a function handler', async () => {
   let called = false
 
-  const server = new Server(app).use(async (ctx) => {
+  const server = app.make(Server).use(async (ctx) => {
     called = true
 
     return ctx.response.payload('ok')
@@ -86,7 +40,7 @@ test('proceeds middleware chain when calling next', async () => {
   let calledFirst = false
   let calledSecond = false
 
-  const server = new Server(app)
+  const server = app.make(Server)
     .use(async (_, next) => {
       calledFirst = true
 
@@ -112,7 +66,7 @@ test('stops middleware chain when not calling next', async () => {
   let calledFirst = false
   let calledSecond = false
 
-  const server = new Server(app)
+  const server = app.make(Server)
     .use(async (ctx) => {
       calledFirst = true
 
@@ -141,7 +95,7 @@ test('adds a middleware using a Middleware class', async () => {
     }
   }
 
-  const server = new Server(app).use(Middleware)
+  const server = app.make(Server).use(Middleware)
 
   await Supertest(server.callback())
     .get('/')
@@ -154,13 +108,12 @@ test('throws when a Middleware class is not implementing the "handle" method', a
   expect(() => {
     class MiddlewareWithoutHandleMethod {}
 
-    new Server(app).use(MiddlewareWithoutHandleMethod)
+    app.make(Server).use(MiddlewareWithoutHandleMethod)
   }).toThrow('must implement a "handle" method.')
 })
 
 test('server.bootstrap()', async () => {
-  const server = new Server(app)
-
+  const server = app.make(Server)
   server.router().get('/', () => 'hello Supercharge')
 
   await server.bootstrap()
@@ -174,14 +127,14 @@ test('server.bootstrap()', async () => {
 })
 
 test('server.start() and server.stop()', async () => {
-  new Server(app)
+  app.make(Server)
     .use(ctx => ctx.response.payload('ok'))
     .booted(async (server) => await server.stop())
     .start()
 })
 
 test('fails silently with empty error handler', async () => {
-  const server = new Server(app).use(ctx => {
+  const server = app.make(Server).use(ctx => {
     return ctx.response.throw(418, 'Teapot Supercharge')
   })
 
@@ -195,7 +148,7 @@ test('server.useRouteMiddleware()', async () => {
     handle () {}
   }
 
-  const server = new Server(app).useRouteMiddleware('noop', Middleware)
+  const server = app.make(Server).useRouteMiddleware('noop', Middleware)
 
   expect(server.router().hasMiddleware('noop')).toBe(true)
 })

@@ -2,7 +2,7 @@
 
 import { RouterContext } from '@koa/router'
 import { InteractsWithState } from './interacts-with-state'
-import { Application, HttpContext as HttpContextContract, HttpRequest, HttpResponse, CookieOptions, ViewEngine, HttpResponseCtor, HttpRequestCtor } from '@supercharge/contracts'
+import { Application, HttpContext as HttpContextContract, HttpRequest, HttpResponse, ViewEngine, HttpResponseCtor, HttpRequestCtor, HttpConfig } from '@supercharge/contracts'
 
 export class HttpContext extends InteractsWithState implements HttpContextContract {
   /**
@@ -11,15 +11,21 @@ export class HttpContext extends InteractsWithState implements HttpContextContra
   private readonly app: Application
 
   /**
+   * The cookie config object.
+   */
+  private readonly cookieConfig: HttpConfig['cookie']
+
+  /**
    * Create a new HTTP context instance.
    *
    * @param {RouterContext} ctx
    * @param {Application} app
    */
-  constructor (ctx: RouterContext, app: Application) {
+  constructor (ctx: RouterContext, app: Application, cookieConfig: HttpConfig['cookie']) {
     super(ctx)
 
     this.app = app
+    this.cookieConfig = cookieConfig
   }
 
   /**
@@ -30,8 +36,8 @@ export class HttpContext extends InteractsWithState implements HttpContextContra
    *
    * @returns {HttpContext}
    */
-  static wrap (ctx: RouterContext, app: Application): HttpContext {
-    return new this(ctx, app)
+  static wrap (ctx: RouterContext, app: Application, cookieConfig: HttpConfig['cookie']): HttpContext {
+    return new this(ctx, app, cookieConfig)
   }
 
   /**
@@ -56,7 +62,7 @@ export class HttpContext extends InteractsWithState implements HttpContextContra
      */
     const Request = this.app.make<HttpRequestCtor>('request')
 
-    return new Request(this, this.cookieOptions())
+    return new Request(this, this.cookieConfig)
   }
 
   /**
@@ -72,17 +78,8 @@ export class HttpContext extends InteractsWithState implements HttpContextContra
      */
     const Response = this.app.make<HttpResponseCtor>('response')
 
-    return new Response(
-      this, this.app.make<ViewEngine>('view'), this.cookieOptions()
-    )
-  }
+    const view = this.app.make<ViewEngine>('view')
 
-  /**
-   * Returns the default cookie options.
-   *
-   * @returns {CookieOptions}
-   */
-  private cookieOptions (): CookieOptions {
-    return this.app.config().get('http.cookie')
+    return new Response(this, view, this.cookieConfig)
   }
 }
