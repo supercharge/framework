@@ -1,10 +1,10 @@
 'use strict'
 
-import { Server, ServeStaticAssetsMiddleware } from './server'
 import { Router } from './routing'
 import { Request } from './server/request'
 import { Response } from './server/response'
 import { ServiceProvider } from '@supercharge/support'
+import { Server, ServeStaticAssetsMiddleware } from './server'
 import { ApplicationConfig, HttpConfig, StaticAssetsConfig } from '@supercharge/contracts'
 
 export interface ContainerBindings {

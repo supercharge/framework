@@ -294,7 +294,9 @@ export class Server implements HttpServerContract {
    * @throws
    */
   private ensureHandleMethod (Middleware: MiddlewareCtor): void {
-    const middleware = new Middleware(this.app())
+    const middleware = this.app().hasBinding(Middleware)
+      ? this.app().make(Middleware)
+      : new Middleware(this.app())
 
     if (typeof middleware.handle === 'function') {
       return
