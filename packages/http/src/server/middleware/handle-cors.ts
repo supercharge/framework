@@ -2,13 +2,13 @@
 
 import Koa from 'koa'
 import cors from '@koa/cors'
-import { Application, CorsConfig, HttpContext, Middleware, NextHandler } from '@supercharge/contracts'
+import { CorsConfig, HttpContext, Middleware, NextHandler } from '@supercharge/contracts'
 
 export class HandleCorsMiddleware implements Middleware {
   /**
    * The application instance.
    */
-  protected readonly app: Application
+  protected readonly config: CorsConfig
 
   /**
    * The CORS handler for incoming requests.
@@ -17,11 +17,9 @@ export class HandleCorsMiddleware implements Middleware {
 
   /**
    * Create a new middleware instance.
-   *
-   * @param {Application} app
    */
-  constructor (app: Application) {
-    this.app = app
+  constructor (config: CorsConfig) {
+    this.config = config
     this.handleCors = cors(this.createConfig())
   }
 
@@ -31,26 +29,15 @@ export class HandleCorsMiddleware implements Middleware {
    * @returns {CorsConfig}
    */
   protected createConfig (): cors.Options {
-    const config = this.config()
-
     return {
-      maxAge: config.maxAge,
+      maxAge: this.config.maxAge,
       keepHeadersOnError: true,
-      origin: config.allowedOrigin,
-      allowMethods: config.allowedMethods,
-      allowHeaders: config.allowedHeaders,
-      exposeHeaders: config.exposedHeaders,
-      credentials: config.supportsCredentials
+      origin: this.config.allowedOrigin,
+      allowMethods: this.config.allowedMethods,
+      allowHeaders: this.config.allowedHeaders,
+      exposeHeaders: this.config.exposedHeaders,
+      credentials: this.config.supportsCredentials
     }
-  }
-
-  /**
-   * Returns the options determining how to serve assets.
-   *
-   * @returns {CorsConfig}
-   */
-  protected config (): CorsConfig {
-    return this.app.config().get('cors')
   }
 
   /**
