@@ -14,7 +14,7 @@ import { describe, test, expect } from 'vitest'
  * @returns {String}
  */
 function unixifyPath (path) {
-  return String(path).replace(/\\/g, '//')
+  return String(path).replace(/\\/g, '/')
 }
 
 describe('supercharge-vite-plugin', () => {
