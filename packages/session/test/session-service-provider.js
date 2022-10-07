@@ -25,7 +25,7 @@ test.group('Session Service Provider', async () => {
 
   test('registers the StartSession middleware', async () => {
     const app = await setupApp()
-    const server = new Server(app)
+    const server = app.make(Server)
 
     server.app().hasBinding(StartSessionMiddleware)
   })

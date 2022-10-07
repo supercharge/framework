@@ -11,7 +11,7 @@ import KoaRouter, { RouterContext } from '@koa/router'
 import { isNullish, tap, upon } from '@supercharge/goodies'
 import { HttpContext, HttpRedirect, Response } from '../server'
 import { isFunction, isNotConstructor } from '@supercharge/classes'
-import { HttpRouter, RouteHandler, RouteAttributes, HttpMethods, MiddlewareCtor, NextHandler, Middleware, Application } from '@supercharge/contracts'
+import { HttpRouter, RouteHandler, RouteAttributes, HttpMethods, MiddlewareCtor, NextHandler, Middleware, Application, HttpConfig } from '@supercharge/contracts'
 
 export class Router implements HttpRouter {
   private readonly meta: {
@@ -19,6 +19,11 @@ export class Router implements HttpRouter {
      * Stores the app instance.
      */
     app: Application
+
+    /**
+     * Stores the HTTP configuration object.
+     */
+    httpConfig: HttpConfig
 
     /**
      * Stores the list of routes.
@@ -44,9 +49,10 @@ export class Router implements HttpRouter {
   /**
    * Create a new router instance.
    */
-  constructor (app: Application) {
+  constructor (app: Application, httpConfig: HttpConfig) {
     this.meta = {
       app,
+      httpConfig,
       groupStack: [],
       middleware: new Map(),
       instance: new KoaRouter(),
@@ -251,7 +257,7 @@ export class Router implements HttpRouter {
    * @returns {HttpContext}
    */
   private createContext (ctx: any): HttpContext {
-    return HttpContext.wrap(ctx, this.app())
+    return HttpContext.wrap(ctx, this.app(), this.meta.httpConfig.cookie)
   }
 
   /**

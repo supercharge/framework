@@ -7,24 +7,27 @@ const { setupApp } = require('./helpers')
 const { Server } = require('@supercharge/http')
 const { StartSessionMiddleware } = require('../dist')
 
+/**
+ * @returns {Server}
+ */
 function createServer (app) {
-  const server = new Server(app).use(StartSessionMiddleware)
-
-  return server
+  return app.make(Server).use(StartSessionMiddleware)
 }
 
 async function createInitialSession (app, data = {}) {
   const server = createServer(app)
 
-  server.use(({ request, response }) => {
+  server.use(async ({ request, response }, next) => {
     Object.entries(data).forEach(([key, value]) => {
       request.session().set(key, value)
     })
 
-    return response.payload({
+    response.payload({
       id: request.session().id(),
       data: request.session().all()
     })
+
+    await next()
   })
 
   const response = await Supertest(server.callback())
@@ -267,12 +270,10 @@ test.group('Session', () => {
       )
     })
 
-    const response = await Supertest(server.callback())
+    await Supertest(server.callback())
       .get('/')
-      .expect(200)
+      .expect(200, {})
       .set('Cookie', sessionCookie)
-
-    expect(response.body).toEqual({})
   })
 
   test('regenerate session id', async () => {

@@ -1,35 +1,26 @@
 'use strict'
 
-const Koa = require('koa')
 const { test } = require('uvu')
+const { Server } = require('../dist')
 const Supertest = require('supertest')
-const { HttpContext, Response } = require('../dist')
+const { setupApp } = require('./helpers')
 
-const appMock = {
-  make (key) {
-    if (key === 'response') {
-      return Response
-    }
-  },
-  config () {
-    return {
-      get () {}
-    }
-  }
-}
+let app = setupApp()
+
+test.before.each(() => {
+  app = setupApp()
+})
 
 test('returns the raw context', async () => {
-  const app = new Koa().use(ctx => {
-    const { raw, response } = HttpContext.wrap(ctx, appMock)
-
+  const server = app.make(Server).use(({ response, raw }) => {
     return response.payload({
-      isEqual: ctx === raw
+      hasRaw: !!raw
     })
   })
 
-  await Supertest(app.callback())
+  await Supertest(server.callback())
     .get('/')
-    .expect(200, { isEqual: true })
+    .expect(200, { hasRaw: true })
 })
 
 test.run()

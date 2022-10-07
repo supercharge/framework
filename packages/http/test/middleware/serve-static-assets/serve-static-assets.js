@@ -2,56 +2,18 @@
 
 const Path = require('path')
 const { test } = require('uvu')
-const deepmerge = require('deepmerge')
 const Supertest = require('supertest')
-const { isConstructor } = require('@supercharge/classes')
+const { setupApp } = require('../../helpers')
 const defaultStaticAssetsConfig = require('./fixtures/static-assets')
-const { ServeStaticAssetsMiddleware, Server, Router, Request, Response } = require('../../../dist')
+const { ServeStaticAssetsMiddleware, Server } = require('../../../dist')
 
-function createAppMock (staticAssetsConfig = {}) {
-  return {
-    publicPath () {
-      return Path.resolve(__dirname, 'fixtures', 'public')
-    },
-    key () {
-      return 1234
-    },
-    make (key) {
-      if (isConstructor(key)) {
-        // eslint-disable-next-line new-cap
-        return new key(this)
-      }
+const app = setupApp({
+  static: defaultStaticAssetsConfig,
+  appRoot: Path.resolve(__dirname, 'fixtures')
+})
 
-      if (key === 'route') {
-        return new Router()
-      }
-
-      if (key === 'request') {
-        return Request
-      }
-
-      if (key === 'response') {
-        return Response
-      }
-    },
-    hasBinding () {
-      return false
-    },
-    singleton () {},
-    config () {
-      return {
-        get () {
-          return deepmerge.all([{}, defaultStaticAssetsConfig, staticAssetsConfig])
-        }
-      }
-    }
-  }
-}
-
-async function createHttpServer (staticAssetsConfig) {
-  const appMock = createAppMock(staticAssetsConfig)
-
-  const server = new Server(appMock)
+async function createHttpServer () {
+  const server = app.make(Server)
     .use(ServeStaticAssetsMiddleware)
     .use(async (ctx, next) => {
       if (ctx.request.path() === '/unavailable.txt') {
