@@ -3,6 +3,20 @@
 import { supercharge } from '../dist'
 import { describe, test, expect } from 'vitest'
 
+/**
+ * This helper function translates the given file `path` from a platform-agnostic
+ * format to a unix-specific format. For example, Windows uses back-slashes in
+ * their paths and POSIX forward slashes. This function replaces a backslash
+ * with a forward slash allowing us to use coherent assertions in our tests.
+ *
+ * @param {String} path
+ *
+ * @returns {String}
+ */
+function unixifyPath (path) {
+  return String(path).replace(/\\/g, '//')
+}
+
 describe('supercharge-vite-plugin', () => {
   test('throws when missing configuration', async () => {
     expect(() => supercharge())
@@ -48,23 +62,29 @@ describe('supercharge-vite-plugin', () => {
     expect(plugin.enforce).toEqual('post')
   })
 
-  test('accepts a single string as inpput', async () => {
+  test('accepts a single string as input', async () => {
     const plugin = supercharge('resources/js/app.ts')
 
     const config = plugin.config({}, { command: 'build' })
-    expect(config.build.outDir).toEqual('public/build')
+    expect(
+      unixifyPath(config.build.outDir)
+    ).toEqual('public/build')
     expect(config.build.rollupOptions.input).toEqual(['resources/js/app.ts'])
 
     const ssrConfig = plugin.config({ build: { ssr: true } }, { command: 'build' })
-    expect(ssrConfig.build.outDir).toEqual('bootstrap/ssr')
+    expect(
+      unixifyPath(ssrConfig.build.outDir)
+    ).toEqual('bootstrap/ssr')
     expect(ssrConfig.build.rollupOptions.input).toEqual(['resources/js/app.ts'])
   })
 
-  test('accepts a string array as inpput', async () => {
+  test('accepts a string array as input', async () => {
     const plugin = supercharge(['resources/js/app.ts', 'resources/js/second.ts'])
 
     const config = plugin.config({}, { command: 'build' })
-    expect(config.build.outDir).toEqual('public/build')
+    expect(
+      unixifyPath(config.build.outDir)
+    ).toEqual('public/build')
     expect(config.build.rollupOptions.input).toEqual([
       'resources/js/app.ts',
       'resources/js/second.ts'
@@ -88,7 +108,9 @@ describe('supercharge-vite-plugin', () => {
     const config = plugin.config({}, { command: 'build' })
     expect(config.base).toEqual('/other-build/')
     expect(config.build.manifest).toBe(true)
-    expect(config.build.outDir).toEqual('other-public/other-build')
+    expect(
+      unixifyPath(config.build.outDir)
+    ).toEqual('other-public/other-build')
     expect(config.build.rollupOptions.input).toEqual('resources/js/app.ts')
   })
 
@@ -103,12 +125,16 @@ describe('supercharge-vite-plugin', () => {
     const config = plugin.config({}, { command: 'build' })
     expect(config.base).toEqual('/build/')
     expect(config.build.manifest).toBe(true)
-    expect(config.build.outDir).toEqual('other-public/build')
+    expect(
+      unixifyPath(config.build.outDir)
+    ).toEqual('other-public/build')
 
     const ssrConfig = plugin.config({ build: { ssr: true } }, { command: 'build' })
     expect(ssrConfig.base).toEqual('/build/')
     expect(ssrConfig.build.manifest).toBe(false)
-    expect(ssrConfig.build.outDir).toEqual('bootstrap/ssr')
+    expect(
+      unixifyPath(ssrConfig.build.outDir)
+    ).toEqual('bootstrap/ssr')
     expect(ssrConfig.build.rollupOptions.input).toEqual('resources/js/ssr.ts')
   })
 
@@ -122,10 +148,14 @@ describe('supercharge-vite-plugin', () => {
 
     const config = plugin.config({}, { command: 'build' })
     expect(config.base).toEqual('/other-build/test/')
-    expect(config.build.outDir).toEqual('other-public/test/other-build/test')
+    expect(
+      unixifyPath(config.build.outDir)
+    ).toEqual('other-public/test/other-build/test')
 
     const ssrConfig = plugin.config({ build: { ssr: true } }, { command: 'build' })
-    expect(ssrConfig.build.outDir).toEqual('ssr-directory/test')
+    expect(
+      unixifyPath(ssrConfig.build.outDir)
+    ).toEqual('ssr-directory/test')
   })
 
   test('prefers a custom outDir over resolved outDir', async () => {
