@@ -3,9 +3,11 @@ name: Run tests
 on: [push, pull_request]
 
 jobs:
-  test:
+  linux_tests:
     runs-on: ubuntu-latest
+
     strategy:
+      fail-fast: true
       matrix:
         node-version: [16.x, 18.x]
 
@@ -13,20 +15,54 @@ jobs:
 
     steps:
     - name: Git checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
 
     - name: Restore dependencies
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: |
           node_modules
           */*/node_modules
         key: ${{ runner.os }}-node-${{ matrix.node-version}}-${{ hashFiles('**/package.json') }}
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Bootstrap dependencies in packages
+      run: npm run bootstrap
+
+    - name: Build packages
+      run: npm run build
+
+    - name: Run tests
+      run: npm test
+      env:
+        CI: true
+
+
+  windows_tests:
+    runs-on: windows-2019
+
+    strategy:
+      fail-fast: true
+      matrix:
+        node-version: [16.x, 18.x]
+
+    name: Node ${{ matrix.node-version }} - Windows
+
+    steps:
+    - name: Git checkout
+      uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
 
     - name: Install dependencies
       run: npm install
