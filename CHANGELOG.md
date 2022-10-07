@@ -1,16 +1,40 @@
 # Changelog
 
-## [3.10.0](https://github.com/supercharge/framework/compare/v3.9.0...v3.10.0) - 2022-10-xx
+## [3.10.0](https://github.com/supercharge/framework/compare/v3.9.1...v3.10.0) - 2022-10-xx
 
 ### Added
+- run tests on Windows
 - `@supercharge/contracts`:
     - export `ApplicationConfig` contract
+    - export `HttpConfig` contract
+    - export `DatabaseConfig` contract
+    - export `BodyparserConfig` contract
+    - export `CorsConfig` contract
+    - export `StaticAssetsConfig` contract
+    - export `LoggingConfig` contract
+    - export `ViewConfig` contract
 
 ### Updated
 - bump dependencies
+- `@supercharge/core`:
+    - structure contracts and move `Application` contract from `core` to `application`
 - `@supercharge/http`:
     - configure Koa HTTP server instance to use the added `runsBehindProxy` config determining whether the app runs behind a proxy server (like nginx, Apache, Caddy, or any other)
+    - pass the `HttpConfig` while creating the HTTP Server instead of resolving them when needed
+- `@supercharge/vite`:
+    - refine tests to successfully pass on Windows
+- `@supercharge/contracts`:
+    - fix typing for `raw` Koa HTTP context in `HttpContext` interface
 
+### Fixed
+- `@supercharge/application`:
+    - use posix path when resolving path for glob (because Windows path with backslashes are not supported, only posix paths are supported)
+
+### Deprecated
+- `@supercharge/contracts`:
+    - deprecate `CorsOptions` in favor of `CorsConfig`
+    - deprecate `BodyparserOptions` in favor of `BodyparserConfig`
+    - deprecate `StaticAssetsOptions` in favor of `StaticAssetsConfig`
 
 
 ## [3.9.1](https://github.com/supercharge/framework/compare/v3.9.0...v3.9.1) - 2022-09-26
