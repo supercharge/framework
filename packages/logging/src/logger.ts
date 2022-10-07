@@ -1,13 +1,14 @@
 'use strict'
 
+import { LogChannelConfig } from '@supercharge/contracts'
 import Winston, { format, Logger as WinstonLogger } from 'winston'
 import { AbstractConfigSetLevels, AbstractConfigSetColors } from 'winston/lib/winston/config'
 
-export class Logger {
+export class Logger<LoggingChannelConfig extends LogChannelConfig> {
   /**
-   * The maximum log level.
+   * Stores the logging channel config.
    */
-  protected readonly level: string = 'debug'
+  protected readonly config: LoggingChannelConfig
 
   /**
    * The logger instance.
@@ -19,9 +20,8 @@ export class Logger {
    *
    * @param options
    */
-  constructor (options: any) {
-    options = options ?? {}
-    this.level = options.level || this.level
+  constructor (options: LoggingChannelConfig) {
+    this.config = options = options ?? {}
 
     this.logger = this.createLogger()
   }
@@ -57,10 +57,10 @@ export class Logger {
   }
 
   /**
-   * Returns the log level.
+   * Returns the log level. Defaults to `debug`.
    */
   logLevel (): string {
-    return this.level
+    return this.config.level ?? 'debug'
   }
 
   /**

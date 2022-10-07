@@ -3,19 +3,19 @@
 import { Logger } from './logger'
 import Winston, { format } from 'winston'
 import Chalk, { ChalkFunction } from 'chalk'
-import { Logger as LoggingContract } from '@supercharge/contracts'
 import { ConsoleTransportInstance } from 'winston/lib/winston/transports'
+import { ConsoleChannelConfig, Logger as LoggingContract } from '@supercharge/contracts'
 
 const { combine, timestamp, printf, splat } = format
 
-export class ConsoleLogger extends Logger implements LoggingContract {
+export class ConsoleLogger extends Logger<ConsoleChannelConfig> implements LoggingContract {
   /**
    * Create a new console logger instance.
    *
-   * @param options
+   * @param config
    */
-  constructor (options: any) {
-    super(options)
+  constructor (config: ConsoleChannelConfig) {
+    super(config)
 
     this.addConsoleTransportToLogger()
   }

@@ -2,12 +2,12 @@
 
 import { Logger } from './logger'
 import Winston, { format } from 'winston'
-import { Logger as LoggingContract } from '@supercharge/contracts'
+import { FileChannelConfig, Logger as LoggingContract } from '@supercharge/contracts'
 import { FileTransportInstance } from 'winston/lib/winston/transports'
 
 const { combine, timestamp, printf, splat } = format
 
-export class FileLogger extends Logger implements LoggingContract {
+export class FileLogger extends Logger<FileChannelConfig> implements LoggingContract {
   /**
    * The log file path.
    */
@@ -18,12 +18,11 @@ export class FileLogger extends Logger implements LoggingContract {
    *
    * @param options
    */
-  constructor (options: any) {
+  constructor (options: FileChannelConfig = {}) {
     super(options)
 
-    this.ensureLogFilePath(options)
+    this.path = this.resolveLogFilePath(options.path)
 
-    this.path = options.path
     this.addFileTransportToLogger()
   }
 
@@ -34,10 +33,12 @@ export class FileLogger extends Logger implements LoggingContract {
    *
    * @throws
    */
-  ensureLogFilePath (options: any): void {
-    if (!options?.path) {
+  resolveLogFilePath (path?: string): string {
+    if (!path) {
       throw new Error('Missing log file path when logging to a file')
     }
+
+    return path
   }
 
   /**

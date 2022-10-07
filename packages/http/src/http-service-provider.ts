@@ -4,8 +4,8 @@ import { Router } from './routing'
 import { Request } from './server/request'
 import { Response } from './server/response'
 import { ServiceProvider } from '@supercharge/support'
-import { Server, ServeStaticAssetsMiddleware } from './server'
-import { ApplicationConfig, HttpConfig, StaticAssetsConfig } from '@supercharge/contracts'
+import { HandleCorsMiddleware, Server, ServeStaticAssetsMiddleware } from './server'
+import { ApplicationConfig, CorsConfig, HttpConfig, StaticAssetsConfig } from '@supercharge/contracts'
 
 export interface ContainerBindings {
   'route': Router
@@ -14,6 +14,8 @@ export interface ContainerBindings {
   Server: Server
   Request: typeof Request
   Response: typeof Response
+  HandleCorsMiddleware: typeof HandleCorsMiddleware
+  ServeStaticAssetsMiddleware: typeof ServeStaticAssetsMiddleware
 }
 
 export class HttpServiceProvider extends ServiceProvider {
@@ -25,6 +27,7 @@ export class HttpServiceProvider extends ServiceProvider {
     this.bindRouter()
     this.bindRequest()
     this.bindResponse()
+    this.bindHandleCorsMiddleware()
     this.bindServeStaticAssetsMiddleware()
   }
 
@@ -74,6 +77,17 @@ export class HttpServiceProvider extends ServiceProvider {
     this.app()
       .singleton('response', () => Response)
       .alias('response', Response)
+  }
+
+  /**
+   * Bind the middleware to handle CORS requests into the container.
+   */
+  private bindHandleCorsMiddleware (): void {
+    this.app().singleton(HandleCorsMiddleware, () => {
+      const corsConfig = this.app().config().get<CorsConfig>('cors')
+
+      return new HandleCorsMiddleware(corsConfig)
+    })
   }
 
   /**

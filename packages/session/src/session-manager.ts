@@ -15,7 +15,7 @@ export class SessionManager extends Manager {
   private ctx?: HttpContext
 
   /**
-   * Create a new view manager instance.
+   * Create a new session manager instance.
    *
    * @param {Application} app
    */
