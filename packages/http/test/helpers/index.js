@@ -10,6 +10,7 @@ const { ViewServiceProvider } = require('@supercharge/view')
 const defaultOptions = {
   appRoot: Path.resolve(__dirname)
 }
+
 /**
  * Returns a test application.
  *

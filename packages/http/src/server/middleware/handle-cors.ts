@@ -6,7 +6,7 @@ import { CorsConfig, HttpContext, Middleware, NextHandler } from '@supercharge/c
 
 export class HandleCorsMiddleware implements Middleware {
   /**
-   * The application instance.
+   * Stores the CORS configuration object.
    */
   protected readonly config: CorsConfig
 
