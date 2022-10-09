@@ -1,13 +1,13 @@
 'use strict'
 
 import serveStaticFilesFrom from 'koa-static'
-import { HttpContext, Middleware, NextHandler, StaticAssetsConfig } from '@supercharge/contracts'
+import { Application, HttpContext, Middleware, NextHandler, StaticAssetsConfig } from '@supercharge/contracts'
 
 export class ServeStaticAssetsMiddleware implements Middleware {
   /**
    * Stores the path to the "public" directory.
    */
-  protected readonly publicPath: string
+  protected readonly app: Application
 
   /**
    * The asset handler serving static files for an incoming request.
@@ -19,11 +19,11 @@ export class ServeStaticAssetsMiddleware implements Middleware {
    *
    * @param {Application} config
    */
-  constructor (config: StaticAssetsConfig, publicPath: string) {
-    this.publicPath = publicPath
+  constructor (app: Application) {
+    this.app = app
 
     this.handleAssets = serveStaticFilesFrom(
-      this.assetsLocation(), config
+      this.assetsLocation(), this.config()
     )
   }
 
@@ -33,7 +33,16 @@ export class ServeStaticAssetsMiddleware implements Middleware {
    * @returns {Array}
    */
   assetsLocation (): string {
-    return this.publicPath
+    return this.app.publicPath()
+  }
+
+  /**
+   * Returns the options determining how to serve assets.
+   *
+   * @returns {StaticAssetsConfig}
+   */
+  config (): StaticAssetsConfig {
+    return this.app.config().get<StaticAssetsConfig>('static')
   }
 
   /**
