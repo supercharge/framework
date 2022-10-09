@@ -4,17 +4,25 @@ import { tap } from '@supercharge/goodies'
 import { HelperDelegate } from 'handlebars'
 import { Manager } from '@supercharge/manager'
 import { HandlebarsCompiler } from './engines/handlebars'
-import { Application, ViewEngine, ViewResponseConfig } from '@supercharge/contracts'
+import { Application, ViewConfig, ViewEngine, ViewResponseConfig } from '@supercharge/contracts'
 
 export class ViewManager extends Manager implements ViewEngine {
+  /**
+   * Stores the view configuration object.
+   */
+  private readonly meta: {
+    config: ViewConfig
+  }
+
   /**
    * Create a new view manager instance.
    *
    * @param {Application} app
    */
-  constructor (app: Application) {
+  constructor (app: Application, config: ViewConfig) {
     super(app)
 
+    this.meta = { config }
     this.validateConfig()
   }
 
@@ -37,7 +45,7 @@ export class ViewManager extends Manager implements ViewEngine {
    * @returns {String}
    */
   defaultDriver (): string {
-    return this.config().get('view.driver')
+    return this.meta.config.driver
   }
 
   /**
@@ -58,7 +66,7 @@ export class ViewManager extends Manager implements ViewEngine {
    * @returns {ViewEngine}
    */
   protected createHandlebarsDriver (): ViewEngine {
-    return new HandlebarsCompiler(this.app)
+    return new HandlebarsCompiler(this.app.logger(), this.meta.config.handlebars)
   }
 
   /**

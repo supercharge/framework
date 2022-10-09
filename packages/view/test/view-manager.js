@@ -3,11 +3,10 @@
 const { test } = require('uvu')
 const { expect } = require('expect')
 const { makeApp } = require('./helpers')
-const { ViewManager } = require('../dist')
 
 test('renders a view', async () => {
   const app = makeApp()
-  const view = new ViewManager(app)
+  const view = app.make('view')
   await view.boot()
 
   expect(
@@ -17,7 +16,7 @@ test('renders a view', async () => {
 
 test('throws for missing view file', async () => {
   const app = makeApp()
-  const view = new ViewManager(app)
+  const view = app.make('view')
   await view.boot()
 
   await expect(async () => {
@@ -27,7 +26,7 @@ test('throws for missing view file', async () => {
 
 test('renders a view with data', async () => {
   const app = makeApp()
-  const view = new ViewManager(app)
+  const view = app.make('view')
   await view.boot()
 
   expect(
@@ -37,7 +36,7 @@ test('renders a view with data', async () => {
 
 test('renders a view with data and layout', async () => {
   const app = makeApp()
-  const view = new ViewManager(app)
+  const view = app.make('view')
   await view.boot()
 
   expect(
@@ -50,7 +49,7 @@ test('throws for invalid views path', async () => {
   const viewsPath = app.resourcePath('not-existing-views-path')
   app.config().set('view.handlebars.views', viewsPath)
 
-  const view = new ViewManager(app)
+  const view = app.make('view')
   await view.boot()
 
   await expect(async () => {
@@ -60,7 +59,7 @@ test('throws for invalid views path', async () => {
 
 test('throws when rendering a view with not-existing layout', async () => {
   const app = makeApp()
-  const view = new ViewManager(app)
+  const view = app.make('view')
   await view.boot()
 
   await expect(async () => {
@@ -74,7 +73,7 @@ test('throws for misconfigured layouts path', async () => {
   const layoutsPath = app.resourcePath('not-existing-layouts-path')
   app.config().set('view.handlebars.layouts', layoutsPath)
 
-  const view = new ViewManager(app)
+  const view = app.make('view')
   await view.boot()
 
   await expect(async () => {
@@ -84,7 +83,7 @@ test('throws for misconfigured layouts path', async () => {
 
 test('throws when rendering a view with not-existing layout', async () => {
   const app = makeApp()
-  const view = new ViewManager(app)
+  const view = app.make('view')
   await view.boot()
 
   await expect(async () => {
@@ -94,7 +93,7 @@ test('throws when rendering a view with not-existing layout', async () => {
 
 test('renders partials', async () => {
   const app = makeApp()
-  const view = new ViewManager(app)
+  const view = app.make('view')
   await view.boot()
 
   expect(
@@ -104,7 +103,7 @@ test('renders partials', async () => {
 
 test('exists', async () => {
   const app = makeApp()
-  const view = new ViewManager(app)
+  const view = app.make('view')
   await view.boot()
 
   expect(await view.exists('test-view')).toBe(false)
@@ -113,7 +112,7 @@ test('exists', async () => {
 
 test('registerPartial', async () => {
   const app = makeApp()
-  const view = new ViewManager(app)
+  const view = app.make('view')
   view.registerPartial('test', '<div id="testing-div">this is a test partial</div>')
   await view.boot()
 
@@ -124,7 +123,7 @@ test('registerPartial', async () => {
 
 test('registerHelper', async () => {
   const app = makeApp()
-  const view = new ViewManager(app)
+  const view = app.make('view')
   view.registerHelper('test', () => {
     return 'this-comes-from-test-helper'
   })

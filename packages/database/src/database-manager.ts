@@ -5,6 +5,9 @@ import { DatabaseConfig } from '@supercharge/contracts'
 import { DatabaseManagerProxy } from './database-manager-proxy'
 
 export class DatabaseManager {
+  /**
+   * Stores the database configuration object.
+   */
   private readonly config: DatabaseConfig
 
   /**

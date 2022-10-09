@@ -6,81 +6,39 @@ import Str from '@supercharge/strings'
 import Collect from '@supercharge/collections'
 import { esmResolve, tap } from '@supercharge/goodies'
 import Handlebars, { HelperDelegate } from 'handlebars'
-import { Application, ConfigStore, Logger, ViewEngine, ViewResponseConfig } from '@supercharge/contracts'
+import { Logger, ViewConfig, ViewEngine, ViewResponseConfig } from '@supercharge/contracts'
 
 export class HandlebarsCompiler implements ViewEngine {
   /**
-   * The instance meta data.
-   */
-  private readonly meta: {
-    /**
-     * The application instance.
-     */
-    app: Application
-
-    /**
      * The handlebars renderer instance.
      */
-    handlebars: typeof Handlebars
+  private readonly handlebars: typeof Handlebars
 
-    /**
+  /**
      * The view file extension.
      */
-    extension: string
-  }
+  private readonly extension: string
+
+  /**
+   * Stores the logger instance.
+   */
+  private readonly logger: Logger
+
+  /**
+   * Stores the handlebars config.
+   */
+  private readonly config: ViewConfig['handlebars']
 
   /**
    * Create a new renderer instance.
    *
    * @param app
    */
-  constructor (app: Application) {
-    this.meta = { app, handlebars: Handlebars.create(), extension: '.hbs' }
-  }
-
-  /**
-   * Returns the application instance.
-   *
-   * @returns {Application}
-   */
-  app (): Application {
-    return this.meta.app
-  }
-
-  /**
-   * Returns the view config.
-   *
-   * @returns {Application}
-   */
-  config (): ConfigStore {
-    return this.app().config()
-  }
-
-  /**
-   * Returns the logger instance.
-   *
-   * @returns {Logger}
-   */
-  logger (): Logger {
-    return this.app().logger()
-  }
-
-  /**
-   * Returns the handlebars renderer instance.
-   *
-   * @returns {Handlebars}
-   */
-  handlebars (): typeof Handlebars {
-    return this.meta.handlebars
-  }
-
-  /**
-   * Returns the view file extension.
-   *
-   * @returns {String}
-   */
-  extension (): string {
-    return this.meta.extension
+  constructor (logger: Logger, config: ViewConfig['handlebars']) {
+    this.config = config
+    this.logger = logger
+    this.extension = '.hbs'
+    this.handlebars = Handlebars.create()
   }
 
   /**
@@ -89,7 +47,7 @@ export class HandlebarsCompiler implements ViewEngine {
    * @returns {string}
    */
   async layoutLocation (): Promise<string> {
-    const layoutLocation = String(this.config().get('view.handlebars.layouts'))
+    const layoutLocation = String(this.config.layouts)
 
     if (await Fs.exists(layoutLocation)) {
       return layoutLocation
@@ -104,7 +62,7 @@ export class HandlebarsCompiler implements ViewEngine {
    * @returns {string}
    */
   defaultLayout (): string {
-    return this.config().get('view.handlebars.defaultLayout')
+    return this.config.defaultLayout
   }
 
   /**
@@ -113,7 +71,7 @@ export class HandlebarsCompiler implements ViewEngine {
    * @returns {string}
    */
   async viewsLocation (): Promise<string> {
-    const viewsLocation = String(this.config().get('view.handlebars.views'))
+    const viewsLocation = String(this.config.views)
 
     if (await Fs.exists(viewsLocation)) {
       return viewsLocation
@@ -128,9 +86,7 @@ export class HandlebarsCompiler implements ViewEngine {
    * @returns {string}
    */
   async partialsLocations (): Promise<string[]> {
-    return await Collect(
-      this.config().get<string[]>('view.handlebars.partials')
-    ).filter(async path => {
+    return await Collect(this.config.partials).filter(async path => {
       return await Fs.exists(path)
     }).all()
   }
@@ -142,7 +98,7 @@ export class HandlebarsCompiler implements ViewEngine {
    */
   async helpersLocations (): Promise<string[]> {
     return await Collect(Path.resolve(__dirname, 'helpers'))
-      .concat(this.config().get('view.handlebars.helpers'))
+      .concat(this.config.helpers)
       .filter(async path => {
         return await Fs.exists(path)
       }).all()
@@ -183,9 +139,7 @@ export class HandlebarsCompiler implements ViewEngine {
    * @returns {Boolean}
    */
   isViewFile (file: string): boolean {
-    return file.endsWith(
-      this.extension()
-    )
+    return file.endsWith(this.extension)
   }
 
   /**
@@ -199,7 +153,7 @@ export class HandlebarsCompiler implements ViewEngine {
         this.partialNameFrom(file, basePath), await Fs.content(file)
       )
     } catch (error: any) {
-      this.logger().warning(`WARNING: failed to register partial "${file}": ${String(error.message)}`)
+      this.logger.warning(`WARNING: failed to register partial "${file}": ${String(error.message)}`)
     }
   }
 
@@ -213,7 +167,7 @@ export class HandlebarsCompiler implements ViewEngine {
    */
   registerPartial (name: string, content: string): this {
     return tap(this, () => {
-      this.handlebars().registerPartial(name, content)
+      this.handlebars.registerPartial(name, content)
     })
   }
 
@@ -223,7 +177,7 @@ export class HandlebarsCompiler implements ViewEngine {
    * @param {string} name
    */
   hasPartial (name: string): boolean {
-    return !!this.handlebars().partials[name]
+    return !!this.handlebars.partials[name]
   }
 
   /**
@@ -241,7 +195,7 @@ export class HandlebarsCompiler implements ViewEngine {
     return Str(path)
       .ltrim(basePath)
       .ltrim(Path.sep)
-      .rtrim(this.extension())
+      .rtrim(this.extension)
       .rtrim('.')
       .get()
   }
@@ -289,7 +243,7 @@ export class HandlebarsCompiler implements ViewEngine {
    * @param {string} name
    */
   hasHelper (name: string): boolean {
-    return typeof this.handlebars().helpers[name] === 'function'
+    return typeof this.handlebars.helpers[name] === 'function'
   }
 
   /**
@@ -301,10 +255,10 @@ export class HandlebarsCompiler implements ViewEngine {
   registerHelper (name: string, fn: HelperDelegate): this {
     try {
       typeof fn === 'function'
-        ? this.handlebars().registerHelper(name, fn)
-        : this.logger().warning(`View helper "${name}" is not a function, received "${typeof fn}"`)
+        ? this.handlebars.registerHelper(name, fn)
+        : this.logger.warning(`View helper "${name}" is not a function, received "${typeof fn}"`)
     } catch (error: any) {
-      this.logger().warning(`WARNING: failed to load helper "${name}": ${String(error.message)}`)
+      this.logger.warning(`WARNING: failed to load helper "${name}": ${String(error.message)}`)
     }
 
     return this
@@ -401,7 +355,7 @@ export class HandlebarsCompiler implements ViewEngine {
    * @returns {Function}
    */
   async compile (view: string, options: ReadTemplateOptions = {}): Promise<HandlebarsTemplateDelegate> {
-    return this.handlebars().compile(
+    return this.handlebars.compile(
       await this.readTemplate(view, options)
     )
   }
@@ -447,9 +401,7 @@ export class HandlebarsCompiler implements ViewEngine {
    * @returns {String}
    */
   ensureHbs (template: string): string {
-    return Str(template).finish(
-      this.extension()
-    ).get()
+    return Str(template).finish(this.extension).get()
   }
 }
 
