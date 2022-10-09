@@ -3,11 +3,10 @@
 const { test } = require('uvu')
 const { expect } = require('expect')
 const { makeApp } = require('./helpers')
-const { ViewManager } = require('../dist')
 
 test('renders raw helper', async () => {
   const app = makeApp()
-  const view = new ViewManager(app)
+  const view = app.make('view')
   await view.boot()
 
   expect(
@@ -17,7 +16,7 @@ test('renders raw helper', async () => {
 
 test('renders stack helper', async () => {
   const app = makeApp()
-  const view = new ViewManager(app)
+  const view = app.make('view')
   await view.boot()
 
   expect(
@@ -27,7 +26,7 @@ test('renders stack helper', async () => {
 
 test('renders stack, append, prepend helpers', async () => {
   const app = makeApp()
-  const view = new ViewManager(app)
+  const view = app.make('view')
   await view.boot()
 
   expect(
@@ -37,7 +36,7 @@ test('renders stack, append, prepend helpers', async () => {
 
 test('json', async () => {
   const app = makeApp()
-  const view = new ViewManager(app)
+  const view = app.make('view')
   await view.boot()
 
   const data = { user: { name: 'Supercharge' } }
@@ -48,7 +47,7 @@ test('json', async () => {
 
 test('json prettry', async () => {
   const app = makeApp()
-  const view = new ViewManager(app)
+  const view = app.make('view')
   await view.boot()
 
   const data = { user: { name: 'Supercharge' } }

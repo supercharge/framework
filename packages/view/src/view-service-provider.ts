@@ -13,7 +13,9 @@ export class ViewServiceProvider extends ServiceProvider {
    */
   override register (): void {
     this.app().singleton('view', () => {
-      return new ViewManager(this.app())
+      const viewConfig = this.app().config().get('view')
+
+      return new ViewManager(this.app(), viewConfig)
     })
   }
 

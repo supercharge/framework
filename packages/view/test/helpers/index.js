@@ -2,6 +2,7 @@
 
 const Path = require('path')
 const { Application } = require('@supercharge/application')
+const { ViewServiceProvider } = require('../../dist')
 
 /**
  * Returns a test application.
@@ -23,6 +24,8 @@ exports.makeApp = function makeApp () {
       // defaultLayout: 'app'
     }
   })
+
+  app.register(new ViewServiceProvider(app))
 
   return app
 }
