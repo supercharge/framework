@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.10.0](https://github.com/supercharge/framework/compare/v3.9.1...v3.10.0) - 2022-10-xx
+## [3.10.0](https://github.com/supercharge/framework/compare/v3.9.1...v3.10.0) - 2022-10-09
 
 ### Added
 - run tests on Windows
