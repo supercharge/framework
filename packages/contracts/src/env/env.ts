@@ -35,6 +35,16 @@ export interface EnvStore {
   number (key: string, defaultValue?: number): number
 
   /**
+   * Returns the environment variable identified by the given `key` as a boolean value.
+   *
+   * @param {String} key
+   *
+   * @returns {Boolean}
+   */
+  boolean (key: string): boolean
+  boolean (key: string, defaultValue?: boolean): boolean
+
+  /**
    * Set the value of an environment variable.
    *
    * @param {String} key
