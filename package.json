@@ -42,6 +42,6 @@
     "dev": "lerna run dev",
     "lint": "lerna run lint",
     "test": "lerna run test",
-    "publish": "lerna publish --force-publish"
+    "publish": "npm run build && lerna publish --force-publish"
   }
 }
