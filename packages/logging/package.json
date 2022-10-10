@@ -1,7 +1,7 @@
 {
   "name": "@supercharge/logging",
   "description": "The Supercharge logging package",
-  "version": "3.11.1",
+  "version": "3.11.2",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
@@ -12,10 +12,10 @@
   "main": "dist",
   "types": "dist",
   "dependencies": {
-    "@supercharge/contracts": "^3.11.1",
+    "@supercharge/contracts": "^3.11.2",
     "@supercharge/goodies": "~1.11.1",
-    "@supercharge/manager": "^3.11.1",
-    "@supercharge/support": "^3.11.1",
+    "@supercharge/manager": "^3.11.2",
+    "@supercharge/support": "^3.11.2",
     "chalk": "~4.1.2",
     "winston": "~3.8.2"
   },

@@ -1,7 +1,7 @@
 {
   "name": "@supercharge/env",
   "description": "The Supercharge environment package",
-  "version": "3.11.1",
+  "version": "3.11.2",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
@@ -12,7 +12,7 @@
   "main": "dist",
   "types": "dist",
   "dependencies": {
-    "@supercharge/contracts": "^3.11.1",
+    "@supercharge/contracts": "^3.11.2",
     "@supercharge/fs": "~3.4.0",
     "@supercharge/strings": "~1.28.0",
     "dotenv": "~16.0.3"
