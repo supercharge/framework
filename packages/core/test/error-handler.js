@@ -52,7 +52,7 @@ test('renders an error view', async () => {
   expect(response.text).toEqual('<h1>error-view</h1>')
 })
 
-test('falls back to Youch when missing an error view', async () => {
+test('falls back to Youch during development when missing an error view', async () => {
   const app = createApp()
   const server = app.make(Server)
 
@@ -68,6 +68,53 @@ test('falls back to Youch when missing an error view', async () => {
 
   expect(response.text).toBeDefined()
   expect(response.text).toContain('Yo teapot')
+})
+
+test('falls back to JSON without stack trace in production', async () => {
+  const app = createApp()
+  app.env().set('NODE_ENV', 'production')
+
+  const server = app.make(Server)
+
+  server.use(async ({ response }) => {
+    return response.throw(425, 'Early bird!')
+  })
+
+  const response = await Supertest(
+    server.callback()
+  )
+    .get('/')
+    .expect(425)
+
+  expect(response.body).toMatchObject({
+    message: 'Early bird!',
+    statusCode: 425
+  })
+  expect(response.body.stack).toBeUndefined()
+})
+
+test('responds JSON with error stack', async () => {
+  const app = createApp()
+  app.env().set('NODE_ENV', 'development')
+
+  const server = app.make(Server)
+
+  server.use(async ({ response }) => {
+    return response.throw(401, 'Auth missing')
+  })
+
+  const response = await Supertest(
+    server.callback()
+  )
+    .get('/')
+    .set('accept', 'application/json')
+    .expect(401)
+
+  expect(response.body).toMatchObject({
+    message: 'Auth missing',
+    statusCode: 401
+  })
+  expect(response.body.stack).toBeDefined()
 })
 
 test('does not return the error stack in production', async () => {
@@ -92,27 +139,6 @@ test('does not return the error stack in production', async () => {
     statusCode: 418
   })
   expect(response.body.stack).toBeUndefined()
-})
-
-test('responds JSON when request is asking for it', async () => {
-  const app = createApp()
-  const server = app.make(Server)
-
-  server.use(async ({ response }) => {
-    return response.throw(401, 'Auth missing')
-  })
-
-  const response = await Supertest(
-    server.callback()
-  )
-    .get('/')
-    .set('accept', 'application/json')
-    .expect(401)
-
-  expect(response.body).toMatchObject({
-    message: 'Auth missing',
-    statusCode: 401
-  })
 })
 
 test('calls report callbacks', async () => {
