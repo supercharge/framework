@@ -1,14 +1,14 @@
 {
   "name": "@supercharge/console",
   "description": "The Supercharge console package",
-  "version": "3.10.0",
+  "version": "3.11.0",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
   },
   "dependencies": {
     "@supercharge/cedar": "~2.0.0",
-    "@supercharge/contracts": "^3.10.0"
+    "@supercharge/contracts": "^3.11.0"
   },
   "devDependencies": {
     "@supercharge/eslint-config-typescript": "~2.3.1",

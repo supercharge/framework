@@ -1,7 +1,7 @@
 {
   "name": "@supercharge/facades",
   "description": "The Supercharge facades package",
-  "version": "3.10.0",
+  "version": "3.11.0",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
@@ -12,7 +12,7 @@
     "dist"
   ],
   "dependencies": {
-    "@supercharge/contracts": "^3.10.0",
+    "@supercharge/contracts": "^3.11.0",
     "@supercharge/method-missing": "~1.0.0"
   },
   "devDependencies": {
