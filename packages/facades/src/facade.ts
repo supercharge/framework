@@ -10,11 +10,6 @@ export class Facade extends MethodMissing {
   static app: Application
 
   /**
-   * The resolved container instance for this facade.
-   */
-  resolvedInstance: any
-
-  /**
    * Set the application instance.
    *
    * @param {Application} app
@@ -46,11 +41,7 @@ export class Facade extends MethodMissing {
    * @returns {*}
    */
   resolveFacadeInstance (namespace: string): unknown {
-    if (!this.resolvedInstance) {
-      this.resolvedInstance = Facade.app.make(namespace)
-    }
-
-    return this.resolvedInstance
+    return Facade.app.make(namespace)
   }
 
   /**

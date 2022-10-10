@@ -3,6 +3,8 @@
 ## [3.11.0](https://github.com/supercharge/framework/compare/v3.10.0...v3.11.0) - 2022-10-xx
 
 ### Updated
+- `@supercharge/facades`:
+    - don’t cache instance and always resolve from container
 - `@supercharge/contracts`:
     - refine `ApplicationConfig` and make version optional
     - refine `ViewConfig` and make driver type `'handlebars' | string`
