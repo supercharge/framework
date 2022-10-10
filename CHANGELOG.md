@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.11.1](https://github.com/supercharge/framework/compare/v3.11.0...v3.11.1) - 2022-10-10
+
+### Fixed
+- `@supercharge/contracts`:
+    - add `Env.boolean(key, defaultValue?)` method to env store contract
+
+
 ## [3.11.0](https://github.com/supercharge/framework/compare/v3.10.0...v3.11.0) - 2022-10-10
 
 ### Added
