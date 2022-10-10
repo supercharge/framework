@@ -1,6 +1,10 @@
 # Changelog
 
-## [3.11.0](https://github.com/supercharge/framework/compare/v3.10.0...v3.11.0) - 2022-10-xx
+## [3.11.0](https://github.com/supercharge/framework/compare/v3.10.0...v3.11.0) - 2022-10-10
+
+### Added
+- `@supercharge/env`:
+    - add `Env.boolean(key, defaultValue?)` method: returns the given environment variable identified by `key` as a boolean value
 
 ### Updated
 - `@supercharge/facades`:
