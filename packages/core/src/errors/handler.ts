@@ -112,9 +112,15 @@ export class ErrorHandler implements ErrorHandlerContract {
    * @param {HttpError} error
    */
   async render (ctx: HttpContext, error: HttpError): Promise<any> {
-    return ctx.request.wantsJson()
-      ? this.renderJsonResponse(ctx, error)
-      : await this.renderViewResponse(ctx, error)
+    if (ctx.request.wantsJson()) {
+      return this.renderJsonResponse(ctx, error)
+    }
+
+    if (this.app.env().isProduction()) {
+      return this.renderJsonResponse(ctx, error)
+    }
+
+    return await this.renderViewResponse(ctx, error)
   }
 
   /**
