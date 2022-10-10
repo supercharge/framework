@@ -36,8 +36,27 @@ export class RouteServiceProvider extends ServiceProvider {
    */
   loadRoutesFrom (path: string): this {
     return this.loadRoutesUsing(() => {
+      this.clearRequireCacheFor(path)
       require(path)
     })
+  }
+
+  /**
+   * Delete the require cache entry for the given `path` if it exists.
+   *
+   * @see https://nodejs.org/api/modules.html#modules_caching
+   *
+   * @param path
+   *
+   * @returns {this}
+   */
+  protected clearRequireCacheFor (path: string): this {
+    if (require.cache[path]) {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+      delete require.cache[path]
+    }
+
+    return this
   }
 
   /**

@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.12.0](https://github.com/supercharge/framework/compare/v3.11.2...v3.12.0) - 2022-10-10
+
+### Added
+- `@supercharge/core`
+    - clear the [require cache](https://nodejs.org/api/modules.html#modules_caching) when registering a callback that loads routes from a given file path. This is required during testing because the route facade uses different app instances during tests and the app instance wouldn’t be resolved properly when not clearing the require cache before loading routes
+
+
 ## [3.11.2](https://github.com/supercharge/framework/compare/v3.11.1...v3.11.2) - 2022-10-10
 
 ### Fixed
