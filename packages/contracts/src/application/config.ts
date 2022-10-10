@@ -14,20 +14,20 @@ export interface ApplicationConfig {
   /**
    * The application description.
    */
-  description: string
+  description?: string
 
   /**
    * The application environment.
    */
-  env: string
+  env?: string
 
   /**
    * The application version.
    */
-  version: string
+  version?: string
 
   /**
    * Determine whether the application runs behind a proxy server.
    */
-  runsBehindProxy: boolean
+  runsBehindProxy?: boolean
 }

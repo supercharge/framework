@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.11.0](https://github.com/supercharge/framework/compare/v3.10.0...v3.11.0) - 2022-10-xx
+
+### Updated
+- `@supercharge/contracts`:
+    - refine `ApplicationConfig` and make version optional
+    - refine `ViewConfig` and make driver type `'handlebars' | string`
+
 ## [3.10.0](https://github.com/supercharge/framework/compare/v3.9.1...v3.10.0) - 2022-10-09
 
 ### Added

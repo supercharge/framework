@@ -4,7 +4,7 @@ export interface ViewConfig {
   /**
    * Defines the default view driver.
    */
-  driver: 'handlebars'
+  driver: 'handlebars' | string
 
   /**
    * The Handlebars view config.
