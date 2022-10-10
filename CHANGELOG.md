@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.11.2](https://github.com/supercharge/framework/compare/v3.11.1...v3.11.2) - 2022-10-10
+
+### Fixed
+- `@supercharge/contracts`
+    - add missing and refresh build outputs
+
+
 ## [3.11.1](https://github.com/supercharge/framework/compare/v3.11.0...v3.11.1) - 2022-10-10
 
 ### Fixed
