@@ -9,6 +9,11 @@
     - refine `ApplicationConfig` and make version optional
     - refine `ViewConfig` and make driver type `'handlebars' | string`
 
+### Fixed
+- `@supercharge/core`:
+    - the default error handler won’t use Youch in production which exposed way too much data
+
+
 ## [3.10.0](https://github.com/supercharge/framework/compare/v3.9.1...v3.10.0) - 2022-10-09
 
 ### Added
