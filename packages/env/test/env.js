@@ -119,4 +119,26 @@ test('number', () => {
     .toThrow('The value for environment variable "NUM_BOOLEAN" cannot be converted to a number.')
 })
 
+test('boolean', () => {
+  Env.set('TRUE', '1')
+  expect(Env.boolean('TRUE')).toEqual(true)
+  Env.set('TRUE', 'true')
+  expect(Env.boolean('TRUE')).toEqual(true)
+  Env.set('TRUE', 'TRUE')
+  expect(Env.boolean('TRUE')).toEqual(true)
+
+  Env.set('FALSE', '0')
+  expect(Env.boolean('FALSE')).toEqual(false)
+  Env.set('FALSE', 'false')
+  expect(Env.boolean('FALSE')).toEqual(false)
+  Env.set('FALSE', 'FALSE')
+  expect(Env.boolean('FALSE')).toEqual(false)
+
+  Env.set('TEST_VAR', 'trUE')
+  expect(Env.boolean('TEST_VAR')).toEqual(true)
+  expect(Env.boolean('TEST_VAR', false)).toEqual(true)
+  expect(Env.boolean('UNAVAILABLE_boolean_VAR', true)).toEqual(true)
+  expect(Env.boolean('UNAVAILABLE_boolean_VAR', false)).toEqual(false)
+})
+
 test.run()

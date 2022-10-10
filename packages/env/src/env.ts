@@ -58,6 +58,26 @@ export class Env implements EnvStore {
   }
 
   /**
+   * Returns the environment variable identified by the given `key` as a boolean value.
+   *
+   * @param {String} key
+   *
+   * @returns {Boolean}
+   */
+  boolean (key: string): boolean
+  boolean (key: string, defaultValue: boolean): boolean
+  boolean (key: string, defaultValue?: boolean): boolean {
+    const validTruthy = ['1', 'true']
+    key = this.get(key).toLowerCase()
+
+    if (validTruthy.includes(key)) {
+      return true
+    }
+
+    return defaultValue ?? false
+  }
+
+  /**
    * Set the value of an environment variable.
    *
    * @param {String} key
