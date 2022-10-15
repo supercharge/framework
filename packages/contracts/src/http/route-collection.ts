@@ -11,5 +11,15 @@ export interface HttpRouteCollection {
   /**
    * Returns all registered routes.
    */
-   all (): Route[]
+  all (): Route[]
+
+  /**
+   * Clear all registered routes.
+   */
+  clear (): this
+
+  /**
+   * Returns the number of routes registerd to this route collection.
+   */
+  count (): number
 }

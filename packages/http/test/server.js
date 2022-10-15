@@ -2,7 +2,7 @@
 
 const { test } = require('uvu')
 const { expect } = require('expect')
-const { Server } = require('../dist')
+const { Server, Route } = require('../dist')
 const Supertest = require('supertest')
 const { setupApp } = require('./helpers')
 
@@ -151,6 +151,23 @@ test('server.useRouteMiddleware()', async () => {
   const server = app.make(Server).useRouteMiddleware('noop', Middleware)
 
   expect(server.router().hasMiddleware('noop')).toBe(true)
+})
+
+test('server.clearRoutes()', async () => {
+  const server = app.make(Server)
+
+  server.router().routes().add(
+    new Route(['GET'], '/', () => {}, app)
+  )
+
+  expect(server.router().routes().count()).toBe(1)
+  server.clearRoutes()
+  expect(server.router().routes().count()).toBe(0)
+
+  // ensure no route matches
+  await Supertest(server.callback())
+    .get('/')
+    .expect(404)
 })
 
 test.run()

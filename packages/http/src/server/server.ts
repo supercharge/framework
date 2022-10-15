@@ -236,6 +236,17 @@ export class Server implements HttpServerContract {
   }
 
   /**
+   * Clear all registered routes from the router.
+   *
+   * @returns {this}
+   */
+  clearRoutes (): this {
+    return tap(this, () => {
+      this.router().routes().clear()
+    })
+  }
+
+  /**
    * Register a route-level middleware for the given `name` and `Middleware` to the HTTP router.
    */
   useRouteMiddleware (name: string, Middleware: MiddlewareCtor): this {

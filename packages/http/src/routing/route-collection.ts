@@ -38,4 +38,24 @@ export class RouteCollection implements HttpRouteCollection {
   public all (): Route[] {
     return this.routes
   }
+
+  /**
+   * Clear all registered routes.
+   *
+   * @returns {this}
+   */
+  public clear (): this {
+    return tap(this, () => {
+      this.routes = []
+    })
+  }
+
+  /**
+   * Returns the number of routes registerd to this route collection.
+   *
+   * @returns {Number}
+   */
+  public count (): number {
+    return this.routes.length
+  }
 }

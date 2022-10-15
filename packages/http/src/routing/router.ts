@@ -7,8 +7,8 @@ import Str from '@supercharge/strings'
 import { Arr } from '@supercharge/arrays'
 import { PendingRoute } from './pending-route'
 import { RouteCollection } from './route-collection'
+import { isNullish, tap } from '@supercharge/goodies'
 import KoaRouter, { RouterContext } from '@koa/router'
-import { isNullish, tap, upon } from '@supercharge/goodies'
 import { HttpContext, HttpRedirect, Response } from '../server'
 import { isFunction, isNotConstructor } from '@supercharge/classes'
 import { HttpRouter, RouteHandler, RouteAttributes, HttpMethods, MiddlewareCtor, NextHandler, Middleware, Application, HttpConfig } from '@supercharge/contracts'
@@ -94,9 +94,9 @@ export class Router implements HttpRouter {
    * @returns {Function}
    */
   createRoutingMiddleware (): any {
-    return upon(this.registerRoutesToRouter(), () => {
-      return this.router().middleware()
-    })
+    this.registerRoutesToRouter()
+
+    return this.router().middleware()
   }
 
   /**

@@ -15,6 +15,11 @@ export interface HttpServer {
   router (): HttpRouter
 
   /**
+   * Clear all registered routes from the router.
+   */
+  clearRoutes(): this
+
+  /**
    * Add the given `Middleware` as a global middleware to the HTTP server.
    */
   use (Middleware: MiddlewareCtor | InlineMiddlewareHandler): this
