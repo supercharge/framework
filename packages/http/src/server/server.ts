@@ -93,13 +93,20 @@ export class Server implements HttpServerContract {
    * Register an exception handler to process and respond for a given error.
    */
   registerErrorHandler (): void {
-    this.use(async (ctx: any, next: NextHandler) => {
+    /**
+     * This intermediate variable assignment ensures that the registered error
+     * handler middleware function receives the "errorHandler" variable name
+     * as it’s function name which is helpful during debugging sessions.
+     */
+    const errorHandler = async (ctx: any, next: NextHandler): Promise<void> => {
       try {
         await next()
       } catch (error: any) {
         await this.handleErrorFor(ctx, error)
       }
-    })
+    }
+
+    this.use(errorHandler)
   }
 
   /**
@@ -275,11 +282,19 @@ export class Server implements HttpServerContract {
     this.ensureHandleMethod(Middleware)
     this.bindMiddlewareClass(Middleware)
 
-    this.koa().use(async (ctx, next) => {
+    const middleware = async (ctx: any, next: NextHandler): Promise<any> => {
       return await this.app().make<MiddlewareContract>(Middleware).handle(
         this.createContext(ctx), next
       )
+    }
+
+    // assign the middleware class name as the middleware function name
+    const middlewareFunction = Object.defineProperty(middleware, 'name', {
+      value: Middleware.name,
+      writable: false
     })
+
+    this.koa().use(middlewareFunction)
   }
 
   /**
@@ -322,9 +337,17 @@ export class Server implements HttpServerContract {
    * @param {MiddlewareCtor} Middleware
    */
   private registerMiddlewareHandler (handler: InlineMiddlewareHandler): void {
-    this.koa().use(async (ctx, next) => {
+    const middleware = async (ctx: any, next: NextHandler): Promise<any> => {
       return await handler(this.createContext(ctx), next)
+    }
+
+    // assign the original handler’s function name as the middleware function name
+    const middlewareFunction = Object.defineProperty(middleware, 'name', {
+      value: handler.name,
+      writable: false
     })
+
+    this.koa().use(middlewareFunction)
   }
 
   /**
