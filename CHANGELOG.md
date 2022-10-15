@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.13.0](https://github.com/supercharge/framework/compare/v3.12.0...v3.13.0) - 2022-10-15
+
+### Added
+- `@supercharge/core`
+    - add `HttpKernel#prepare` method: run the configured bootstrappers but don’t register configured middleware or load routes. This is helpful during testing when you want to create an empty HTTP kernel and register your functionality using the given environment and config files
+    - add `HttpKernel#isNotBootstrapped` method: determine whether the HTTP kernel’s `bootstrap` has not been called
+- `@supercharge/http`
+    - add `Server#clearRoutes` method: remove all routes from the HTTP server. This can only be done before calling `server.callback()`, otherwise the routes are registered to the underlying Koa instance and can’t be removed
+    - add `RouteCollection#clear` method: removes all registered routes from the collection
+    - add `RouteCollection#count` method: returns the number of registered routes from the collection
+
+
 ## [3.12.0](https://github.com/supercharge/framework/compare/v3.11.2...v3.12.0) - 2022-10-10
 
 ### Added
