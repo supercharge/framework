@@ -73,13 +73,23 @@ export class ConsoleKernel implements ConsoleKernelContract {
   }
 
   /**
-   * Bootstrap the console application for Craft commands.
+   * Prepare the console application by running the configured bootstrappers.
+   * This method doesn’t register configured commands in the application.
+   * It prepares the console application which is useful for testing.
    */
-  async bootstrap (): Promise<void> {
+  async prepare (): Promise<this> {
     await this.app().bootstrapWith(
       this.bootstrappers()
     )
 
+    return this
+  }
+
+  /**
+   * Bootstrap the console application for Craft commands.
+   */
+  async bootstrap (): Promise<void> {
+    await this.prepare()
     await this.commands()
   }
 

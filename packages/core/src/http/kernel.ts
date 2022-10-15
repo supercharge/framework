@@ -77,6 +77,15 @@ export class HttpKernel implements HttpKernelContract {
   }
 
   /**
+   * Determine whether the HTTP kernel is not boostrapped yet.
+   *
+   * @returns {Boolean}
+   */
+  isNotBootstrapped (): boolean {
+    return !this.isBootstrapped()
+  }
+
+  /**
    * Mark this HTTP kernel as bootstrapped.
    *
    * @returns {this}
@@ -154,15 +163,12 @@ export class HttpKernel implements HttpKernelContract {
    * @returns {HttpServerHandler}
    */
   async serverCallback (): Promise<HttpServerHandler> {
-    if (this.isBootstrapped()) {
-      return this.server().callback()
+    if (this.isNotBootstrapped()) {
+      await this.bootstrap()
+      await this.runBootedCallbacks()
     }
 
-    await this.bootstrap()
-
-    return await tap(this.server().callback(), async () => {
-      await this.runBootedCallbacks()
-    })
+    return this.server().callback()
   }
 
   /**
@@ -197,19 +203,29 @@ export class HttpKernel implements HttpKernelContract {
   }
 
   /**
-   * Bootstrap the application by loading environment variables, load the
-   * configuration, register service providers into the IoC container
-   * and ultimately boot the registered providers.
+   * Prepare the application by running the configured bootstrappers. This
+   * method doesn’t register routes or middleware to the underlying HTTP
+   * server. It prepares the application which is useful for testing.
    */
-  protected async bootstrap (): Promise<void> {
-    if (this.isBootstrapped()) {
-      return
-    }
-
+  async prepare (): Promise<this> {
     await this.app().bootstrapWith(
       this.bootstrappers()
     )
 
+    return this
+  }
+
+  /**
+   * Bootstrap the HTTP kernel by loading environment variables and all files
+   * within the `config` directory, register and boot all the given service
+   * providers, and ultimately register the HTTP middleware and routes.
+   */
+  async bootstrap (): Promise<void> {
+    if (this.isBootstrapped()) {
+      return
+    }
+
+    await this.prepare()
     this.registerMiddleware()
     this.server().bootstrap()
     this.markAsBootstrapped()
