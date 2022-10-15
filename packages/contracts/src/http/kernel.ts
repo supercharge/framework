@@ -11,9 +11,27 @@ export interface HttpKernel {
   isBootstrapped (): boolean
 
   /**
+   * Determine whether the HTTP kernel is not boostrapped yet.
+   */
+  isNotBootstrapped (): boolean
+
+  /**
    * Mark this HTTP kernel as bootstrapped.
    */
   markAsBootstrapped (): this
+
+  /**
+   * Prepare the application by running the configured bootstrappers. This
+   * method doesn’t register the middleware stack to the underlying HTTP
+   * server. It prepares the application which is useful for testing.
+   */
+  prepare (): Promise<this>
+
+  /**
+   * Runs the `prepare` method booting configured service providers and also
+   * registers the app’s middleware stack and routes to the HTTP server.
+   */
+  bootstrap(): Promise<void>
 
   /**
    * Returns the app instance.
