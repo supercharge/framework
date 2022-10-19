@@ -1,14 +1,10 @@
 'use strict'
 
-/**
- * @typedef {import('@supercharge/contracts').Database } Database
- */
-const { test, setTimeout } = require('tap')
+const { test } = require('uvu')
+const { expect } = require('expect')
 const { DatabaseManager } = require('../dist')
 
 const { makeDb, makeApp } = require('./helpers')
-
-setTimeout(5000)
 
 test('throws for missing connection name', async t => {
   const app = makeApp({
@@ -16,32 +12,29 @@ test('throws for missing connection name', async t => {
     connections: { mysql: {} }
   })
 
-  t.throws(() => {
-    new DatabaseManager(app).connection()
-  }, 'Database connection "unavailable" is not configured')
+  const dbConfig = app.config().get('database')
 
-  t.throws(() => {
-    new DatabaseManager(app).connection('unavailable')
-  }, 'Database connection "unavailable" is not configured')
+  expect(() => {
+    new DatabaseManager(dbConfig).connection()
+  }).toThrow('Database connection "unavailable" is not configured')
 
-  t.throws(() => {
-    new DatabaseManager(app).isMissingConnection()
-  })
+  expect(() => {
+    new DatabaseManager(dbConfig).connection('unavailable')
+  }).toThrow('Database connection "unavailable" is not configured')
+
+  expect(() => {
+    new DatabaseManager(dbConfig).isMissingConnection()
+  }).toThrow()
 })
 
 test('throws when not providing a connection while checking for connections', async t => {
-  t.throws(() => {
-    new DatabaseManager().isMissingConnection()
-  })
+  expect(() => {
+    new DatabaseManager({}).isMissingConnection()
+  }).toThrow('You must provide a database connection "name"')
 })
 
 test('connects to the database', async t => {
-  const dbDirectory = t.testdir()
-
-  /**
-   * @type {Database}
-   */
-  const db = makeDb(null, dbDirectory)
+  const db = makeDb()
   const tableName = 'users'
 
   if (!await db.schema.hasTable(tableName)) {
@@ -61,8 +54,10 @@ test('connects to the database', async t => {
   await db.destroy()
 })
 
-test('fails to connect to the database', async t => {
-  t.throws(() => {
-    return new DatabaseManager(makeApp()).connection('postgres')
-  })
+test('fails to connect to the database', async () => {
+  expect(() => {
+    return new DatabaseManager({ connections: {} }).connection('postgres')
+  }).toThrow('Database connection "postgres" is not configured')
 })
+
+test.run()
