@@ -16,13 +16,13 @@
     "@supercharge/contracts": "^3.13.0",
     "@supercharge/goodies": "~1.11.1",
     "@supercharge/map": "~1.5.0",
-    "@supercharge/strings": "~1.28.0"
+    "@supercharge/strings": "~1.29.0"
   },
   "devDependencies": {
     "@supercharge/eslint-config-typescript": "~2.3.1",
     "c8": "~7.12.0",
-    "eslint": "~8.24.0",
-    "expect": "~29.1.2",
+    "eslint": "~8.25.0",
+    "expect": "~29.2.1",
     "typescript": "~4.8.4",
     "uvu": "~0.5.6"
   },

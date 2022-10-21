@@ -10,7 +10,7 @@
     "@supercharge/arrays": "~4.0.0",
     "@supercharge/contracts": "^3.13.0",
     "@supercharge/fs": "~3.4.0",
-    "@supercharge/strings": "~1.28.0",
+    "@supercharge/strings": "~1.29.0",
     "@supercharge/support": "^3.13.0"
   },
   "devDependencies": {
@@ -20,10 +20,10 @@
     "@supercharge/view": "^3.13.0",
     "@vitest/coverage-c8": "~0.23.4",
     "c8": "~7.12.0",
-    "eslint": "~8.24.0",
+    "eslint": "~8.25.0",
     "supertest": "~6.3.0",
     "typescript": "~4.8.4",
-    "vite": "~3.1.4",
+    "vite": "~3.1.8",
     "vitest": "~0.23.4"
   },
   "engines": {
