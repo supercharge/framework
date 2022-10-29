@@ -13,6 +13,11 @@ export class ErrorHandler implements ErrorHandlerContract {
   private readonly app: Application
 
   /**
+   * The list of error types to not report.
+   */
+  private readonly ignoredErrors: ErrorConstructor[]
+
+  /**
    * Stores the list of report callbacks.
    */
   private readonly reportCallbacks: Array<(ctx: HttpContext, error: HttpError) => void | Promise<void>>
@@ -22,6 +27,7 @@ export class ErrorHandler implements ErrorHandlerContract {
    */
   constructor (app: Application) {
     this.app = app
+    this.ignoredErrors = []
     this.reportCallbacks = []
 
     this.register()
@@ -46,13 +52,31 @@ export class ErrorHandler implements ErrorHandlerContract {
    * upstream to an error tracking service, like Sentry or Bugsnag.
    */
   register (): void {
-    /**
-     * We’re registering a default reportable handler here that logs the error
-     * message and context to the default logging transport. This "register"
-     * method should be overwritten in user-land to remove this default.
-     */
-    this.reportable((ctx, error) => {
-      this.logger().error(error.message, { ...this.context(ctx), error })
+    //
+  }
+
+  /**
+   * Tell the error handler to not report the `error` type.
+   */
+  ignore (error: ErrorConstructor): this {
+    return tap(this, () => {
+      this.ignoredErrors.push(error)
+    })
+  }
+
+  /**
+   * Returns an array of errors that should not be reported.
+   */
+  dontReport (): ErrorConstructor[] {
+    return ([] as ErrorConstructor[])
+  }
+
+  /**
+   * Determine whether to report the given `error`.
+   */
+  shouldntReport (error: any): boolean {
+    return this.dontReport().concat(this.ignoredErrors).some(ErrorConstructor => {
+      return error instanceof ErrorConstructor
     })
   }
 
@@ -63,10 +87,25 @@ export class ErrorHandler implements ErrorHandlerContract {
    *
    * @returns {ErrorHandler}
    */
-  reportable (reportUsing: (ctx: HttpContext, error: HttpError) => void | Promise<void>): ErrorHandler {
+  reportable (reportUsing: (ctx: HttpContext, error: any) => void | Promise<void>): ErrorHandler {
     return tap(this, () => {
       this.reportCallbacks.push(reportUsing)
     })
+  }
+
+  /**
+   * Returns the error’s context for logging.
+   *
+   * @param {*}error
+   *
+   * @returns {Record<string, any>}
+   */
+  errorContext (error: any): Record<string, any> {
+    if (typeof error.context === 'function') {
+      return { ...error.context() }
+    }
+
+    return {}
   }
 
   /**
@@ -86,11 +125,9 @@ export class ErrorHandler implements ErrorHandlerContract {
    * @param {HttpContext} ctx
    * @param {Error} error
    */
-  async handle (ctx: HttpContext, error: Error): Promise<void> {
-    const httpError = HttpError.wrap(error)
-
-    await this.report(ctx, httpError)
-    await this.render(ctx, httpError)
+  async handle (ctx: HttpContext, error: any): Promise<void> {
+    await this.report(ctx, error)
+    await this.render(ctx, error)
   }
 
   /**
@@ -99,10 +136,47 @@ export class ErrorHandler implements ErrorHandlerContract {
    * @param {HttpContext} ctx
    * @param {HttpError} error
    */
-  async report (ctx: HttpContext, error: HttpError): Promise<void> {
-    await Collect(this.reportCallbacks).forEach(async reportCallback => {
-      await reportCallback(ctx, error)
+  async report (ctx: HttpContext, error: any): Promise<void> {
+    if (this.shouldntReport(error)) {
+      return
+    }
+
+    if (await this.errorReported(ctx, error)) {
+      return
+    }
+
+    const handled = await Collect(this.reportCallbacks).any(async reportCallback => {
+      return await reportCallback(ctx, error)
     })
+
+    if (handled) {
+      return
+    }
+
+    const context = {
+      ...this.context(ctx),
+      ...this.errorContext(error),
+      error,
+    }
+
+    this.logger().error(error.message, context)
+  }
+
+  /**
+   * Determine whether the given `error` is implementing a `handle` method and
+   * that `handle` method returns a truthy value, like a valid HTTP response.
+   *
+   * @param {HttpContext} ctx
+   * @param {Error} error
+   *
+   * @returns {*}
+   */
+  async errorReported (ctx: HttpContext, error: any): Promise<unknown> {
+    if (typeof error.report !== 'function') {
+      return false
+    }
+
+    return await error.report(error, ctx)
   }
 
   /**
@@ -111,16 +185,39 @@ export class ErrorHandler implements ErrorHandlerContract {
    * @param {HttpContext} ctx
    * @param {HttpError} error
    */
-  async render (ctx: HttpContext, error: HttpError): Promise<any> {
+  async render (ctx: HttpContext, error: any): Promise<any> {
+    if (await this.errorHandled(ctx, error)) {
+      return
+    }
+
+    const httpError = HttpError.wrap(error)
+
     if (ctx.request.wantsJson()) {
-      return this.renderJsonResponse(ctx, error)
+      return this.renderJsonResponse(ctx, httpError)
     }
 
     if (this.app.env().isProduction()) {
-      return this.renderJsonResponse(ctx, error)
+      return this.renderJsonResponse(ctx, httpError)
     }
 
-    return await this.renderViewResponse(ctx, error)
+    return await this.renderViewResponse(ctx, httpError)
+  }
+
+  /**
+   * Determine whether the given `error` is implementing a `handle` method and
+   * that `handle` method returns a truthy value, like a valid HTTP response.
+   *
+   * @param {HttpContext} ctx
+   * @param {Error} error
+   *
+   * @returns {*}
+   */
+  async errorHandled (ctx: HttpContext, error: any): Promise<unknown> {
+    if (typeof error.handle !== 'function') {
+      return false
+    }
+
+    return await error.handle(ctx, error)
   }
 
   /**
