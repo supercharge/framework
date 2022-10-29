@@ -13,6 +13,11 @@ export type ErrorHandlerCtor =
 
 export interface ErrorHandler {
   /**
+   * Tell the error handler to not report the `error` type.
+   */
+  ignore(error: ErrorConstructor): this
+
+  /**
    * Handle the given error.
    */
   handle(ctx: HttpContext, error: Error): Promise<void>

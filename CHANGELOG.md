@@ -2,6 +2,15 @@
 
 ## [3.14.0](https://github.com/supercharge/framework/compare/v3.13.0...v3.14.0) - 2022-10-xx
 
+### Added
+- `@supercharge/application`
+    - register the error handler class provided to `Application#withErrorHandler` as an alias for `error.handler`
+- `@supercharge/contracts`
+    - add `ignore(error: ErrorConstructor)` method to error handler
+- `@supercharge/core`
+    - error handler: support (async) `report` method allowing you to implement your own error reporting
+    - error handler: support (async) `render` method allowing you to implement your own error rendering
+
 ### Updated
 - bump dependencies
 
