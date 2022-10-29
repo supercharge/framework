@@ -186,7 +186,7 @@ export class ErrorHandler implements ErrorHandlerContract {
    * @param {HttpError} error
    */
   async render (ctx: HttpContext, error: any): Promise<any> {
-    if (await this.errorHandled(ctx, error)) {
+    if (await this.errorRendered(ctx, error)) {
       return
     }
 
@@ -212,12 +212,12 @@ export class ErrorHandler implements ErrorHandlerContract {
    *
    * @returns {*}
    */
-  async errorHandled (ctx: HttpContext, error: any): Promise<unknown> {
-    if (typeof error.handle !== 'function') {
+  async errorRendered (ctx: HttpContext, error: any): Promise<unknown> {
+    if (typeof error.render !== 'function') {
       return false
     }
 
-    return await error.handle(ctx, error)
+    return await error.render(ctx, error)
   }
 
   /**

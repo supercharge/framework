@@ -314,7 +314,7 @@ test('ignore error', async () => {
   expect(logSpy.notCalled).toBe(true)
 })
 
-test('error.report can stop the reporting chain', async () => {
+test('error.report returning false proceeds the reporting chain', async () => {
   const app = createApp()
   const server = app.make(Server)
 
@@ -331,15 +331,15 @@ test('error.report can stop the reporting chain', async () => {
     .set('accept', 'application/json')
     .expect(422)
 
-  expect(logSpy.notCalled).toBe(true)
+  expect(logSpy.calledOnce).toBe(true)
 })
 
-test('supports error.handle method', async () => {
+test('supports error.render method', async () => {
   const app = createApp()
   const server = app.make(Server)
 
   server.use(async () => {
-    throw new ErrorHandlingError('error handles itself')
+    throw new RenderError('error handles itself')
   })
 
   const response = await Supertest(
@@ -352,6 +352,26 @@ test('supports error.handle method', async () => {
   expect(response.body).toMatchObject({
     message: 'error handles itself',
     foo: 'bar'
+  })
+})
+
+test('error.render returning false proceeds the rendering chain', async () => {
+  const app = createApp()
+  const server = app.make(Server)
+
+  server.use(async () => {
+    throw new RenderedError('error handles itself')
+  })
+
+  const response = await Supertest(
+    server.callback()
+  )
+    .get('/')
+    .set('accept', 'application/json')
+    .expect(405)
+
+  expect(response.body).toMatchObject({
+    message: 'error handles itself'
   })
 })
 
@@ -389,12 +409,12 @@ class ReportedError extends ReportingError {
 
   report () {
     super.report()
-    return true
+    return false
   }
 }
 
-class ErrorHandlingError extends Error {
-  handle (ctx, error) {
+class RenderError extends Error {
+  render (ctx, error) {
     return ctx.response.payload({
       message: error.message,
       foo: 'bar',
@@ -403,10 +423,15 @@ class ErrorHandlingError extends Error {
   }
 }
 
-// class UnhandledError extends Error {
-//   handle () {
-//     return false
-//   }
-// }
+class RenderedError extends Error {
+  constructor (message) {
+    super(message)
+    this.status = 405
+  }
+
+  render () {
+    return false
+  }
+}
 
 test.run()
