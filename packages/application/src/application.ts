@@ -70,7 +70,7 @@ export class Application extends Container implements ApplicationContract {
     return tap(this, () => {
       this.singleton('error.handler', () => {
         return new ErrorHandler(this)
-      })
+      }).alias('error.handler', ErrorHandler)
     })
   }
 
