@@ -7,7 +7,7 @@ type Callback = () => void
 
 export class ServiceProvider implements ServiceProviderContract {
   /**
-   * Stores service provider meta data.
+   * Stores the service provider meta data.
    */
   private readonly meta: {
     /**
