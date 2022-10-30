@@ -1,20 +1,37 @@
 'use strict'
 
-const Path = require('path')
-const Crypto = require('crypto')
+const Path = require('node:path')
+const Crypto = require('node:crypto')
+const Fs = require('node:fs/promises')
 const { DatabaseManager } = require('../../dist')
 const { Application } = require('@supercharge/core')
 
 exports.makeDb = makeDb
 exports.makeApp = makeApp
+exports.clearDbDirectory = clearDbDirectory
+
+const databaseDirectory = Path.resolve(__dirname, '..', 'fixtures')
 
 /**
  * @returns {Database}
  */
-function makeDb (app, dbDirectory) {
+function makeDb (app, dbDirectory = databaseDirectory) {
   const application = (app || makeApp(undefined, dbDirectory))
 
   return new DatabaseManager(application.config().get('database'))
+}
+
+/**
+ * @returns {Database}
+ */
+async function clearDbDirectory (dbDirectory = databaseDirectory) {
+  const sqliteFiles = [].concat(
+    await Fs.readdir(dbDirectory)
+  ).filter(file => file.endsWith('.sqlite'))
+
+  for (const file of sqliteFiles) {
+    await Fs.unlink(Path.join(dbDirectory, file))
+  }
 }
 
 /**

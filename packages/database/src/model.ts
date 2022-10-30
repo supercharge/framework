@@ -1,7 +1,7 @@
 'use strict'
 
 import { QueryBuilder } from './query-builder'
-import { Constructor, MaybeCompositeId, Model as BaseModel, TransactionOrKnex } from 'objection'
+import { Constructor, MaybeCompositeId, MaybeSingleQueryBuilder, Model as BaseModel, NumberQueryBuilder, QueryBuilderType, TransactionOrKnex } from 'objection'
 
 export class Model extends BaseModel {
   /**
@@ -14,16 +14,14 @@ export class Model extends BaseModel {
   /**
    * Find an item of this model for the given `id`.
    */
-  static findById<M extends Model> (this: Constructor<M>, id: MaybeCompositeId, trx?: TransactionOrKnex): QueryBuilder<M, M | undefined> {
-    // @ts-expect-error
-    return this.query(trx).findById(id) as any
+  static findById<M extends Model> (this: Constructor<M>, id: MaybeCompositeId, trx?: TransactionOrKnex): MaybeSingleQueryBuilder<QueryBuilderType<M>> {
+    return (this as unknown as typeof Model).query(trx).findById(id)
   }
 
   /**
    * Delete an item of this model for the given `id`.
    */
-  static deleteById<M extends Model> (this: Constructor<M>, id: MaybeCompositeId, trx?: TransactionOrKnex): QueryBuilder<M, number> {
-    // @ts-expect-error
-    return this.query(trx).deleteById(id) as any
+  static deleteById<M extends Model> (this: Constructor<M>, id: MaybeCompositeId, trx?: TransactionOrKnex): NumberQueryBuilder<QueryBuilderType<M>> {
+    return (this as unknown as typeof Model).query(trx).deleteById(id)
   }
 }
