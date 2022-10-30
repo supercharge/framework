@@ -10,7 +10,8 @@ import { RouteCollection } from './route-collection'
 import { isNullish, tap } from '@supercharge/goodies'
 import KoaRouter, { RouterContext } from '@koa/router'
 import { HttpContext, HttpRedirect, Response } from '../server'
-import { isFunction, isNotConstructor } from '@supercharge/classes'
+import { HandleErrorMiddleware } from '../middleware/handle-error'
+import { Class, isConstructor, isFunction, isNotConstructor } from '@supercharge/classes'
 import { HttpRouter, RouteHandler, RouteAttributes, HttpMethods, MiddlewareCtor, NextHandler, Middleware, Application, HttpConfig } from '@supercharge/contracts'
 
 export class Router implements HttpRouter {
@@ -115,9 +116,21 @@ export class Router implements HttpRouter {
    */
   private register (route: Route): void {
     this.router().register(route.path(), route.methods(), [
+      this.createErrorHandlerMiddleware(),
       ...this.createRouteMiddleware(route),
       this.createRouteHandler(route)
     ], { name: route.path() })
+  }
+
+  /**
+   * Register an exception handler to process and respond for a given error.
+   */
+  createErrorHandlerMiddleware (): any {
+    return async (ctx: any, next: NextHandler) => {
+      return await this.makeMiddleware(HandleErrorMiddleware).handle(
+        this.createContext(ctx), next
+      )
+    }
   }
 
   /**
@@ -181,7 +194,11 @@ export class Router implements HttpRouter {
    *
    * @returns {Middleware}
    */
-  private makeMiddleware (name: string): Middleware {
+  private makeMiddleware (name: string | Class<any>): Middleware {
+    if (isConstructor<any>(name)) {
+      return this.app().make(name)
+    }
+
     return this.app().make(
       this.meta.middleware.get(name) as MiddlewareCtor
     )

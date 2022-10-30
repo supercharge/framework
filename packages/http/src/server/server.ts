@@ -5,9 +5,10 @@ import { tap } from '@supercharge/goodies'
 import { HttpContext } from './http-context'
 import Collect from '@supercharge/collections'
 import { Server as NodeHttpServer } from 'http'
-import { BodyparserMiddleware } from './middleware'
+import { BodyparserMiddleware } from '../middleware'
 import { className, isConstructor } from '@supercharge/classes'
-import { Application, HttpServer as HttpServerContract, Middleware as MiddlewareContract, MiddlewareCtor, HttpRouter, ErrorHandler, HttpServerHandler, InlineMiddlewareHandler, NextHandler, ApplicationConfig, HttpConfig } from '@supercharge/contracts'
+import { HandleErrorMiddleware } from '../middleware/handle-error'
+import { Application, HttpServer as HttpServerContract, Middleware as MiddlewareContract, MiddlewareCtor, HttpRouter, HttpServerHandler, InlineMiddlewareHandler, ApplicationConfig, HttpConfig } from '@supercharge/contracts'
 
 type Callback = (server: Server) => unknown | Promise<unknown>
 
@@ -85,31 +86,9 @@ export class Server implements HttpServerContract {
    * Register middlware to the HTTP server.
    */
   registerBaseMiddleware (): void {
-    this.registerErrorHandler()
-    this.registerCoreMiddleware()
-  }
-
-  /**
-   * Register an exception handler to process and respond for a given error.
-   */
-  registerErrorHandler (): void {
-    this.use(async (ctx: any, next: NextHandler) => {
-      try {
-        await next()
-      } catch (error: any) {
-        await this.handleErrorFor(ctx, error)
-      }
-    })
-  }
-
-  /**
-   * Process the given `error` and HTTP `ctx` using the error handler.
-   *
-   * @param error
-   * @param ctx
-   */
-  private async handleErrorFor (ctx: HttpContext, error: Error): Promise<void> {
-    await this.app().make<ErrorHandler>('error.handler').handle(ctx, error)
+    this
+      .use(HandleErrorMiddleware)
+      .registerCoreMiddleware()
   }
 
   /**

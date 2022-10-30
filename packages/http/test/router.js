@@ -5,6 +5,7 @@ const { expect } = require('expect')
 const { Server } = require('../dist')
 const Supertest = require('supertest')
 const { setupApp } = require('./helpers')
+const { HttpError } = require('@supercharge/http-errors')
 
 let app = setupApp()
 
@@ -236,7 +237,7 @@ test('router.prefix().group() ', async () => {
 test('runs route middleware', async () => {
   let called = false
 
-  class CallerMiddlware {
+  class CallerMiddleware {
     async handle (_, next) {
       called = true
       await next()
@@ -244,7 +245,7 @@ test('runs route middleware', async () => {
   }
 
   const server = app.make(Server)
-  server.useRouteMiddleware('caller', CallerMiddlware)
+  server.useRouteMiddleware('caller', CallerMiddleware)
 
   const router = server.router()
 
@@ -294,7 +295,7 @@ test('fails when adding not-registered middleware to route', async () => {
 test('router.middleware()', async () => {
   let called = false
 
-  class CallerMiddlware {
+  class CallerMiddleware {
     async handle (_, next) {
       called = true
       await next()
@@ -305,7 +306,7 @@ test('router.middleware()', async () => {
   const router = server.router()
 
   router
-    .registerAliasMiddleware('caller', CallerMiddlware)
+    .registerAliasMiddleware('caller', CallerMiddleware)
     .middleware('caller')
     .get('/hello', () => 'Supercharge')
 
@@ -322,14 +323,14 @@ test('router.middleware() registers and calls multiple middleware', async () => 
   let calledOne = false
   let calledTwo = false
 
-  class FirstCallerMiddlware {
+  class FirstCallerMiddleware {
     async handle (_, next) {
       calledOne = true
       await next()
     }
   }
 
-  class SecondCallerMiddlware {
+  class SecondCallerMiddleware {
     async handle (_, next) {
       calledTwo = true
       await next()
@@ -340,8 +341,8 @@ test('router.middleware() registers and calls multiple middleware', async () => 
   const router = server.router()
 
   router
-    .registerAliasMiddleware('caller1', FirstCallerMiddlware)
-    .registerAliasMiddleware('caller2', SecondCallerMiddlware)
+    .registerAliasMiddleware('caller1', FirstCallerMiddleware)
+    .registerAliasMiddleware('caller2', SecondCallerMiddleware)
     .middleware(['caller1', 'caller2'])
     .get('/hello', () => 'Supercharge')
 
@@ -394,11 +395,24 @@ test('handles redirects', async () => {
     .expect(302)
 })
 
-test('throws when returning a null response', async () => {
+test('throws when returning null as a response', async () => {
   const server = app.make(Server)
   const router = server.router()
 
-  router.get('/name', ctx => null)
+  router.get('/name', () => null)
+
+  await server.bootstrap()
+
+  await Supertest(server.callback())
+    .get('/name')
+    .expect(500)
+})
+
+test('throws when returning undefined as a response', async () => {
+  const server = app.make(Server)
+  const router = server.router()
+
+  router.get('/name', () => null)
 
   await server.bootstrap()
 
@@ -408,14 +422,85 @@ test('throws when returning a null response', async () => {
 })
 
 test('register route middleware for single route in group', async () => {
-  // const server = app.make(Server)
-  // const router = server.router()
+  class ChangeStatusMiddleware {
+    async handle (ctx, next) {
+      await next()
+      return ctx.response.status(201)
+    }
+  }
 
-  // router.post('/name', ({ response }) => response.status(201).payload('Supercharge'))
+  const server = app.make(Server)
+  const router = server.router()
 
-  // await server.bootstrap()
+  router.registerAliasMiddleware('changeStatus', ChangeStatusMiddleware)
 
-  // await Supertest(server.callback()).post('/name').expect(201, 'Supercharge')
+  router.group('/prefix', () => {
+    router.get('/plain', () => 'plain')
+    router.get('/with-middleware', () => 'with-middleware').middleware('changeStatus')
+  })
+
+  await server.bootstrap()
+
+  const callback = server.callback()
+
+  await Supertest(callback).get('/prefix/plain').expect(200, 'plain')
+  await Supertest(callback).get('/prefix/with-middleware').expect(201, 'with-middleware')
+})
+
+test('handle route errors early', async () => {
+  class ThrowErrorMiddleware {
+    async handle (ctx, next) {
+      await next()
+      ctx.response.throw(418, 'Should not be reached')
+    }
+  }
+
+  const server = app.make(Server)
+  const router = server.router()
+
+  router.registerAliasMiddleware('throwErrorAfterHandler', ThrowErrorMiddleware)
+
+  router.get('/', () => {
+    throw HttpError.badRequest('Validation failed')
+  }).middleware('throwErrorAfterHandler')
+
+  await server.bootstrap()
+
+  const response = await Supertest(server.callback())
+    .get('')
+    .expect(400)
+
+  console.log(response.text)
+  expect(response.text).toEqual('Validation failed')
+})
+
+test('route middleware can handle errors before error handler is invoked', async () => {
+  class CatchErrorMiddleware {
+    async handle (ctx, next) {
+      try {
+        await next()
+      } catch (error) {
+        return ctx.response
+          .payload('Error handled by route middleware')
+          .status(418)
+      }
+    }
+  }
+
+  const server = app.make(Server)
+  const router = server.router()
+
+  router.registerAliasMiddleware('catchError', CatchErrorMiddleware)
+
+  router.get('/', ctx => {
+    return ctx.response.throw(400, 'Validation failed')
+  }).middleware('catchError')
+
+  await server.bootstrap()
+
+  await Supertest(server.callback())
+    .get('/')
+    .expect(418, 'Error handled by route middleware')
 })
 
 test.run()
