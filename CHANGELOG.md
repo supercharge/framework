@@ -1,18 +1,33 @@
 # Changelog
 
-## [3.14.0](https://github.com/supercharge/framework/compare/v3.13.0...v3.14.0) - 2022-10-xx
+## [3.14.0](https://github.com/supercharge/framework/compare/v3.13.0...v3.14.0) - 2022-11-01
 
 ### Added
+- added Node.js 19 to the testing matrix (besides v16 and v18)
 - `@supercharge/application`
     - register the error handler class provided to `Application#withErrorHandler` as an alias for `error.handler`
 - `@supercharge/contracts`
     - add `ignore(error: ErrorConstructor)` method to error handler
 - `@supercharge/core`
+    - error handler: implement `ignore` method (see changesin `@supercharge/contracts`) allowing users to define errors which should be ignored by the error handler
     - error handler: support (async) `report` method allowing you to implement your own error reporting
     - error handler: support (async) `render` method allowing you to implement your own error rendering
+- `@supercharge/http`
+    - wrap the route processing in a dedicated error handling middleware
 
 ### Updated
 - bump dependencies
+- `@supercharge/database`
+    - migrate tests from `tap` to UVU with `expect`
+    - refined return types for the static `findById` and `deleteById` methods
+    - refined error messages
+    - clean up database SQLite testing fixture files after running the tests
+- `@supercharge/http`
+    - move error handling middleware to a dedicated `HandleErrorMiddleware` class
+
+### Fixed
+- `@supercharge/database`
+    - `orFail`: fixed result check in the query builder properly determining whether a query should fail
 
 
 ## [3.13.0](https://github.com/supercharge/framework/compare/v3.12.0...v3.13.0) - 2022-10-15
