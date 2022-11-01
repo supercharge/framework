@@ -1,7 +1,7 @@
 {
   "name": "@supercharge/container",
   "description": "The Supercharge container package",
-  "version": "3.13.0",
+  "version": "3.14.0",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
@@ -13,7 +13,7 @@
   "types": "dist",
   "dependencies": {
     "@supercharge/classes": "~2.0.0",
-    "@supercharge/contracts": "^3.13.0",
+    "@supercharge/contracts": "^3.14.0",
     "@supercharge/goodies": "~1.11.1",
     "@supercharge/map": "~1.5.0",
     "@supercharge/strings": "~1.29.0"
