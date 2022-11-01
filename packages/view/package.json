@@ -12,7 +12,7 @@
     "dist"
   ],
   "dependencies": {
-    "@supercharge/collections": "~4.3.0",
+    "@supercharge/collections": "~5.0.1",
     "@supercharge/contracts": "^3.13.0",
     "@supercharge/fs": "~3.4.0",
     "@supercharge/goodies": "~1.11.1",

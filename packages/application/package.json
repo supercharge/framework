@@ -13,8 +13,8 @@
   "types": "dist",
   "dependencies": {
     "@supercharge/arrays": "~4.0.0",
-    "@supercharge/classes": "~1.10.0",
-    "@supercharge/collections": "~4.3.0",
+    "@supercharge/classes": "~2.0.0",
+    "@supercharge/collections": "~5.0.1",
     "@supercharge/config": "^3.13.0",
     "@supercharge/container": "^3.13.0",
     "@supercharge/contracts": "^3.13.0",

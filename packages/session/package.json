@@ -26,7 +26,7 @@
     "@supercharge/core": "^3.13.0",
     "@supercharge/eslint-config-typescript": "~2.3.1",
     "@supercharge/http": "^3.13.0",
-    "@types/lodash": "~4.14.186",
+    "@types/lodash": "~4.14.187",
     "@types/ms": "~0.7.31",
     "c8": "~7.12.0",
     "eslint": "~8.26.0",
