@@ -12,6 +12,7 @@
   "main": "dist",
   "types": "dist",
   "dependencies": {
+    "@supercharge/arrays": "~4.1.0",
     "@supercharge/contracts": "^3.14.0",
     "@supercharge/manager": "^3.14.0",
     "@supercharge/strings": "~1.29.0",
