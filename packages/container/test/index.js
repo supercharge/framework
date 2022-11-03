@@ -124,6 +124,27 @@ test('flush', () => {
   expect(container.isSingleton('singleton')).toBe(false)
 })
 
+test('alias fails when not providing source and alias names', () => {
+  const container = new Container()
+  container.bind('namespace', () => 'concrete')
+
+  expect(() => {
+    container.alias()
+  }).toThrow('You must provide a source namespace as the first argument when creating a container alias.')
+
+  expect(() => {
+    container.alias('')
+  }).toThrow('You must provide a source namespace as the first argument when creating a container alias.')
+
+  expect(() => {
+    container.alias('source')
+  }).toThrow('You must provide an alias name as the second argument when creating a container alias.')
+
+  expect(() => {
+    container.alias('source', '')
+  }).toThrow('You must provide an alias name as the second argument when creating a container alias.')
+})
+
 test('alias with string keys', () => {
   const container = new Container()
 
@@ -220,6 +241,32 @@ test('hasBinding', () => {
   expect(container.hasSingletonBinding('singleton')).toBe(false)
   expect(container.make('singleton')).toBeDefined()
   expect(container.hasSingletonBinding('singleton')).toBe(true)
+})
+
+test('forgetInstance', () => {
+  const container = new Container()
+
+  container.singleton('singleton', () => new Singleton())
+
+  const original = container.make('singleton')
+  expect(original).toBe(container.make('singleton'))
+
+  container.forgetInstance('singleton')
+  expect(original).not.toBe(container.make('singleton'))
+})
+
+test('forgetInstance for alias', () => {
+  const container = new Container()
+
+  container
+    .singleton('singleton', () => new User('Supercharge'))
+    .alias('singleton', 'aliasSingleton')
+
+  const original = container.make('singleton')
+  expect(original).toBe(container.make('singleton'))
+
+  container.forgetInstance('aliasSingleton')
+  expect(original).not.toBe(container.make('singleton'))
 })
 
 class Singleton {}
