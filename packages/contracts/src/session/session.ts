@@ -27,10 +27,17 @@ export interface Session {
   get<R = any | undefined> (key: string, defaultValue?: R): R
 
   /**
-   * Put a key-value-pair or an object of key-value-pairs into the session.
+   * Put a key-value-pair or an object of key-value-pairs to the session.
+   * This is an alias for the `set` method.
    */
-  set(key: string, value: any): this
+  put(values: Record<string, any>): this
+  put(key: string, value: any): this
+
+  /**
+   * Put a key-value-pair or an object of key-value-pairs to the session.
+   */
   set(values: Record<string, any>): this
+  set(key: string, value: any): this
 
   /**
    * Determine whether the session contains an entry for the given `key`.
@@ -51,6 +58,22 @@ export interface Session {
    * Removes all items from the session.
    */
   clear(): this
+
+  /**
+   * Push a the given `value` onto a session array stored for the given `key`.
+   */
+  push(key: string, value: any): this
+
+  /**
+    * Flash a key-value-pair or an object of key-value-pairs to the session.
+    */
+  flash(values: Record<string, any>): this
+  flash(key: string, value: any): this
+
+  /**
+    * Reflash all the session’s flash data or the given `keys`.
+    */
+  reflash(...keys: string[] | string[][]): this
 
   /**
    * Generate a new session ID.
