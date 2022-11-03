@@ -270,6 +270,14 @@ export class Container implements ContainerContract {
    * Alias a binding to a different name.
    */
   alias (namespace: string | Class, alias: string | Class): this {
+    if (!namespace) {
+      throw new Error('You must provide a source namespace as the first argument when creating a container alias.')
+    }
+
+    if (!alias) {
+      throw new Error('You must provide an alias name as the second argument when creating a container alias.')
+    }
+
     const resolvedAlias = this.resolveNamespace(alias)
     const resolvedNamespace = this.resolveNamespace(namespace)
 
@@ -295,6 +303,21 @@ export class Container implements ContainerContract {
     aliases.push(alias)
 
     this.aliases.set(namespace, aliases)
+
+    return this
+  }
+
+  /**
+   * Remove a resolved instance from the (singleton) cache.
+   */
+  forgetInstance (namespace: string | Class): this {
+    if (this.isAlias(namespace)) {
+      namespace = this.getAlias(namespace)
+    }
+
+    this.singletons.delete(
+      this.resolveNamespace(namespace)
+    )
 
     return this
   }

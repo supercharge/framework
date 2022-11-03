@@ -69,6 +69,12 @@ export interface Container<ContainerBindings extends string | Class = any> {
   isSingleton(namespace: string | Class): boolean
 
   /**
+   * Remove a resolved instance from the (singleton) cache.
+   */
+  forgetInstance<Binding extends keyof ContainerBindings>(namespace: Binding): this
+  forgetInstance(namespace: string | Class): this
+
+  /**
    * Flush all bindings and resolved instances from the containter.
    */
   flush (): this
