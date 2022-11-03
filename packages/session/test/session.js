@@ -11,7 +11,10 @@ const { StartSessionMiddleware } = require('../dist')
  * @returns {Server}
  */
 function createServer (app) {
-  return app.make(Server).use(StartSessionMiddleware)
+  return app
+    .forgetInstance(Server)
+    .make(Server)
+    .use(StartSessionMiddleware)
 }
 
 async function createInitialSession (app, data = {}) {
@@ -105,6 +108,27 @@ test.group('Session', () => {
       existing: true,
       notExisting: false
     })
+  })
+
+  test('put key-value-pair', async () => {
+    const app = await setupApp({ driver: 'memory' })
+
+    const { sessionCookie } = await createInitialSession(app)
+
+    const server = createServer(app).use(({ request, response }) => {
+      request.session().put('key', 'value')
+
+      return response.payload(
+        request.session().all()
+      )
+    })
+
+    const response = await Supertest(server.callback())
+      .get('/')
+      .expect(200)
+      .set('Cookie', sessionCookie)
+
+    expect(response.body).toMatchObject({ key: 'value' })
   })
 
   test('set key-value-pair', async () => {
@@ -224,7 +248,10 @@ test.group('Session', () => {
       .expect(200)
       .set('Cookie', sessionCookie)
 
-    expect(response.body).toEqual({ })
+    expect(response.body).toEqual({
+      __flash_old__: [],
+      __flash_new__: []
+    })
   })
 
   test('pull session items', async () => {
@@ -272,8 +299,36 @@ test.group('Session', () => {
 
     await Supertest(server.callback())
       .get('/')
-      .expect(200, {})
+      .expect(200, {
+        __flash_old__: [],
+        __flash_new__: []
+      })
       .set('Cookie', sessionCookie)
+  })
+
+  test('push', async () => {
+    const app = await setupApp({ driver: 'memory' })
+
+    const { sessionCookie } = await createInitialSession(app, {
+      foo: 'bar'
+    })
+
+    const server = createServer(app).use(({ request, response }) => {
+      request.session()
+        .push('array', 'first')
+        .push('array', 'second')
+
+      return response.payload(
+        request.session().all()
+      )
+    })
+
+    const response = await Supertest(server.callback())
+      .get('/')
+      .expect(200)
+      .set('Cookie', sessionCookie)
+
+    expect(response.body).toMatchObject({ array: ['first', 'second'] })
   })
 
   test('regenerate session id', async () => {
@@ -321,6 +376,56 @@ test.group('Session', () => {
       .set('Cookie', sessionCookie)
 
     expect(response.body.sessionId).not.toEqual(sessionId)
-    expect(response.body.values).toEqual({})
+    expect(response.body.values).toEqual({
+      __flash_old__: [],
+      __flash_new__: []
+    })
+  })
+})
+
+test.group('Session | Flash Messages', () => {
+  test('flash message lifecycle: set, get, forget', async () => {
+    const app = await setupApp({ driver: 'memory' })
+
+    const { sessionCookie } = await createInitialSession(app, {
+      name: 'Supercharge'
+    })
+
+    const server = createServer(app).use(({ request, response }) => {
+      request.session().flash('foo', 'bar')
+
+      return response.payload(
+        request.session().all()
+      )
+    })
+
+    const initialResponse = await Supertest(server.callback())
+      .get('/')
+      .expect(200)
+      .set('Cookie', sessionCookie)
+
+    expect(initialResponse.body).toMatchObject({ foo: 'bar' })
+
+    // send second request and grab all the session (flash) data without reflashing
+    const server2 = createServer(app).use(({ request, response }) => {
+      return response.payload(
+        { ...request.session().all() }
+      )
+    })
+
+    const flashResponse = await Supertest(server2.callback())
+      .get('/')
+      .expect(200)
+      .set('Cookie', sessionCookie)
+
+    expect(flashResponse.body).toMatchObject({ foo: 'bar' })
+
+    // session data should be empty
+    const emptyResponse = await Supertest(server2.callback())
+      .get('/')
+      .expect(200)
+      .set('Cookie', sessionCookie)
+
+    expect(emptyResponse.body).not.toMatchObject({ foo: 'bar' })
   })
 })
