@@ -111,8 +111,7 @@ test.group('Memory Session Driver', () => {
       .expect(200)
       .set('Cookie', sessionCookie)
 
-    expect(Object.keys(response.body).length).toBe(1)
-    expect(Object.keys(response.body)).toEqual(['_token'])
+    expect(Object.keys(response.body)).toEqual(['__token__', '__flash_old__', '__flash_new__'])
   })
 
   test('destroy a session', async () => {
@@ -134,7 +133,6 @@ test.group('Memory Session Driver', () => {
       .expect(200)
       .set('Cookie', sessionCookie)
 
-    expect(Object.keys(response.body.data).length).toBe(1)
-    expect(Object.keys(response.body.data)).toEqual(['_token'])
+    expect(Object.keys(response.body.data)).toEqual(['__token__', '__flash_old__', '__flash_new__'])
   })
 })

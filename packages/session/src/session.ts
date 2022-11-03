@@ -265,7 +265,7 @@ export class Session implements SessionContract {
    * @returns {this}
    */
   regenerateToken (): this {
-    this.set('_token', this.generateRandomToken())
+    this.set('__token__', this.generateRandomToken())
 
     return this
   }
@@ -276,7 +276,7 @@ export class Session implements SessionContract {
   async start (): Promise<this> {
     this.attributes = await this.driver.read(this.sessionId)
 
-    if (!this.has('_token')) {
+    if (!this.has('__token__')) {
       this.regenerateToken()
     }
 
