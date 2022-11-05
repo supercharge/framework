@@ -141,9 +141,9 @@ export class Session implements SessionContract {
   delete (...keys: string[] | string[][]): this {
     const keysToDelete = ([] as string[]).concat(...keys)
 
-    return keysToDelete.length === 0
-      ? this.clear()
-      : this.forget(...keys)
+    return keysToDelete.length > 0
+      ? this.forget(...keys)
+      : this.clear()
   }
 
   /**
@@ -191,9 +191,7 @@ export class Session implements SessionContract {
 
     keys.forEach(key => this.push('__flash_new__', key))
 
-    return this
-
-    // $this->removeFromOldFlashData([$key]);
+    return this.removeFromOldFlashData(keys)
   }
 
   /**
@@ -206,36 +204,47 @@ export class Session implements SessionContract {
       ? flashes
       : this.get('__flash_old__', [])
 
-    return this.mergeNewFlashes(keep).put('__flash_old__', [])
+    return this
+      .mergeNewFlashes(keep)
+      .removeFromOldFlashData(keep)
   }
 
   /**
    * Merge new flash keys into the new flash array.
    */
   protected mergeNewFlashes (keys: string[]): this {
-    const flashes = this.get<string[]>('__flash_new__', [])
+    const newFlashes = Arr.from(
+      this.get<string[]>('__flash_new__', [])
+    ).concat(keys).unique().toArray()
 
-    const newFlashKeys = Arr.from(flashes).append(keys).unique().toArray()
-
-    return this.put('__flash_new__', newFlashKeys)
+    return this.put('__flash_new__', newFlashes)
   }
 
   /**
    * Remove the given `keys` from the old flash data.
    */
   protected removeFromOldFlashData (keys: string[]): this {
-    return this.set('__flash_old__', Arr.from(
-      this.get('__flash_old__')
-    ).diff(keys).toArray())
+    const old = Arr.from(
+      this.get('__flash_old__', ([] as string[]))
+    ).diff(keys).toArray()
+
+    return this.set('__flash_old__', old)
   }
 
   /**
    * Age the flash data for the session.
    */
   ageFlashData (): this {
+    const oldFlashes = this.get('__flash_old__', [])
+    const newFlashes = this.get('__flash_new__', [])
+
+    if (Arr.from(oldFlashes).concat(newFlashes).isEmpty()) {
+      return this
+    }
+
     return this
-      .forget(this.get('__flash_old__', []))
-      .put('__flash_old__', this.get('__flash_new__', []))
+      .forget(oldFlashes)
+      .put('__flash_old__', newFlashes)
       .put('__flash_new__', [])
   }
 

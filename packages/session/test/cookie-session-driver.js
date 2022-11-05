@@ -111,28 +111,10 @@ test.group('Cookie Session Driver', () => {
       .expect(200)
       .set('Cookie', sessionCookie)
 
-    expect(Object.keys(response.body)).toEqual(['__token__', '__flash_old__', '__flash_new__'])
+    expect(Object.keys(response.body)).toEqual(['__token__'])
   })
 
   test('destroy a session', async () => {
-    const app = await setupApp({ driver: 'cookie' })
-    const sessionManager = app.make('session')
-
-    const { sessionId, sessionCookie } = await createInitialSession(app, { foo: 'bar' })
-    await sessionManager.driver().destroy(sessionId)
-
-    const server = createServer(app).use(({ request, response }) => {
-      return response.payload({
-        id: request.session().id(),
-        data: request.session().all()
-      })
-    })
-
-    const response = await Supertest(server.callback())
-      .get('/')
-      .expect(200)
-      .set('Cookie', sessionCookie)
-
-    expect(Object.keys(response.body.data)).toEqual(['__token__', '__flash_old__', '__flash_new__'])
+    // TODO
   }).skip()
 })
