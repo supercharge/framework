@@ -2,28 +2,29 @@
 
 import _ from 'lodash'
 import Str from '@supercharge/strings'
+import { Arr } from '@supercharge/arrays'
 import { Session as SessionContract, SessionDriver } from '@supercharge/contracts'
 
 export class Session implements SessionContract {
   /**
    * Stores the session ID.
    */
-  private sessionId: string
+  protected sessionId: string
 
   /**
    * Stores the session name.
    */
-  private readonly sessionName: string
+  protected readonly sessionName: string
 
   /**
    * Stores the session driver instance.
    */
-  private readonly driver: SessionDriver
+  protected readonly driver: SessionDriver
 
   /**
    * Stores the session data.
    */
-  private attributes: Record<string, any>
+  protected attributes: Record<string, any>
 
   /**
    * Create a new session instance.
@@ -116,10 +117,16 @@ export class Session implements SessionContract {
   }
 
   /**
+   * Put a key-value-pair or an object of key-value-pairs to the session.
+   * This is an alias for the `set` method.
+   */
+  put (key: string | Record<string, any>, value?: any): this {
+    return this.set(key, value)
+  }
+
+  /**
    * Put a key-value-pair or an object of key-value-pairs into the session.
    */
-  set (key: string, value: any): this
-  set (values: Record<string, any>): this
   set (key: string | Record<string, any>, value?: any): this {
     typeof key === 'object'
       ? _.merge(this.attributes, key)
@@ -129,16 +136,21 @@ export class Session implements SessionContract {
   }
 
   /**
-   * Remove one or more items from the session.
+   * Remove all `keys` from the session. Clears the session when no `keys` are provided.
    */
   delete (...keys: string[] | string[][]): this {
     const keysToDelete = ([] as string[]).concat(...keys)
 
-    if (keysToDelete.length === 0) {
-      return this.clear()
-    }
+    return keysToDelete.length > 0
+      ? this.forget(...keys)
+      : this.clear()
+  }
 
-    keysToDelete.forEach(key => {
+  /**
+   * Remove one or more items from the session.
+   */
+  forget (...keys: string[] | string[][]): this {
+    ([] as string[]).concat(...keys).forEach(key => {
       _.unset(this.attributes, key)
     })
 
@@ -152,6 +164,88 @@ export class Session implements SessionContract {
     this.attributes = {}
 
     return this
+  }
+
+  /**
+   * Push a the given `value` onto a session array stored for the given `key`.
+   */
+  push (key: string, value: any): this {
+    const val = this.get<any[]>(key, [])
+
+    val.push(value)
+
+    return this.set(key, val)
+  }
+
+  /**
+   * Flash a key-value-pair or an object of key-value-pairs to the session.
+   */
+  flash (values: Record<string, any>): this
+  flash (key: string, value: any): this
+  flash (key: string | Record<string, any>, value?: any): this {
+    this.set(key, value)
+
+    const keys = typeof key === 'string'
+      ? [key]
+      : Object.keys(key)
+
+    keys.forEach(key => this.push('__flash_new__', key))
+
+    return this.removeFromOldFlashData(keys)
+  }
+
+  /**
+   * Reflash all the session’s flash data or the given `keys`.
+   */
+  reflash (...keys: string[] | string[][]): this {
+    const flashes = ([] as string[]).concat(...keys)
+
+    const keep = flashes.length > 0
+      ? flashes
+      : this.get('__flash_old__', [])
+
+    return this
+      .mergeNewFlashes(keep)
+      .removeFromOldFlashData(keep)
+  }
+
+  /**
+   * Merge new flash keys into the new flash array.
+   */
+  protected mergeNewFlashes (keys: string[]): this {
+    const newFlashes = Arr.from(
+      this.get<string[]>('__flash_new__', [])
+    ).concat(keys).unique().toArray()
+
+    return this.put('__flash_new__', newFlashes)
+  }
+
+  /**
+   * Remove the given `keys` from the old flash data.
+   */
+  protected removeFromOldFlashData (keys: string[]): this {
+    const old = Arr.from(
+      this.get('__flash_old__', ([] as string[]))
+    ).diff(keys).toArray()
+
+    return this.set('__flash_old__', old)
+  }
+
+  /**
+   * Age the flash data for the session.
+   */
+  ageFlashData (): this {
+    const oldFlashes = this.get('__flash_old__', [])
+    const newFlashes = this.get('__flash_new__', [])
+
+    if (Arr.from(oldFlashes).concat(newFlashes).isEmpty()) {
+      return this
+    }
+
+    return this
+      .forget(oldFlashes)
+      .put('__flash_old__', newFlashes)
+      .put('__flash_new__', [])
   }
 
   /**
@@ -180,7 +274,7 @@ export class Session implements SessionContract {
    * @returns {this}
    */
   regenerateToken (): this {
-    this.set('_token', this.generateRandomToken())
+    this.set('__token__', this.generateRandomToken())
 
     return this
   }
@@ -191,7 +285,7 @@ export class Session implements SessionContract {
   async start (): Promise<this> {
     this.attributes = await this.driver.read(this.sessionId)
 
-    if (!this.has('_token')) {
+    if (!this.has('__token__')) {
       this.regenerateToken()
     }
 
@@ -202,6 +296,8 @@ export class Session implements SessionContract {
    * Save the session data to a storage.
    */
   async commit (): Promise<this> {
+    this.ageFlashData()
+
     await this.driver.write(this.sessionId, this.attributes)
 
     return this

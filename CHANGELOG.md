@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.15.0](https://github.com/supercharge/framework/compare/v3.14.0...v3.15.0) - 2022-11-01
+
+### Added
+- `@supercharge/session`
+    - add flash message support
+    - add `session.flash` method: save a flash message in the format of `session.flash(key, value)` or `session.flash({ key: value })`
+    - add `session.reflash` method: reflash all flash messags in the session to the next request using `session.reflash()`. You can reflash selected messages using `session.reflash('key', 'another-key')`
+
+
 ## [3.14.0](https://github.com/supercharge/framework/compare/v3.13.0...v3.14.0) - 2022-11-01
 
 ### Added

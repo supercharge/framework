@@ -30,7 +30,7 @@ export class StartSessionMiddleware extends InteractsWithTime {
 
     await next()
 
-    await this.addSessionCookieToResponse(session, response)
+    this.addSessionCookieToResponse(session, response)
 
     await session.commit()
   }
@@ -52,7 +52,7 @@ export class StartSessionMiddleware extends InteractsWithTime {
    *
    * @param {HttpRequest} request
    */
-  async addSessionCookieToResponse (session: Session, response: HttpResponse): Promise<void> {
+  addSessionCookieToResponse (session: Session, response: HttpResponse): void {
     response.cookie(session.name(), session.id(), cookie => {
       cookie
         .useConfig(this.sessionManager.sessionConfig().cookie().plain())
@@ -63,7 +63,7 @@ export class StartSessionMiddleware extends InteractsWithTime {
   /**
    * Returns the session cookie expiration date.
    */
-  private cookieExpirationDate (): Date {
+  protected cookieExpirationDate (): Date {
     const config = this.sessionManager.sessionConfig()
 
     if (config.expiresOnClose()) {
