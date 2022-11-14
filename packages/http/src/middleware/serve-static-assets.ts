@@ -5,7 +5,7 @@ import { Application, HttpContext, Middleware, NextHandler, StaticAssetsConfig }
 
 export class ServeStaticAssetsMiddleware implements Middleware {
   /**
-   * Stores the path to the "public" directory.
+   * Stores the application instance.
    */
   protected readonly app: Application
 
@@ -17,7 +17,7 @@ export class ServeStaticAssetsMiddleware implements Middleware {
   /**
    * Create a new middleware instance.
    *
-   * @param {Application} config
+   * @param {Application} app
    */
   constructor (app: Application) {
     this.app = app
