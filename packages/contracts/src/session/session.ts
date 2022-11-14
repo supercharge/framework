@@ -94,4 +94,14 @@ export interface Session {
    * Save the session data to a storage.
    */
   commit(): Promise<this>
+
+  /**
+   * Returns the CSRF token value.
+   */
+  token(): string
+
+  /**
+   * Regenerate the CSRF token value.
+   */
+  regenerateToken(): this
 }

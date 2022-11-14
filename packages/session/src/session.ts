@@ -269,6 +269,13 @@ export class Session implements SessionContract {
   }
 
   /**
+   * Returns the CSRF token value.
+   */
+  token (): string {
+    return this.get('__token__')
+  }
+
+  /**
    * Regenerate the CSRF token value.
    *
    * @returns {this}
