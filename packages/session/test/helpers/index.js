@@ -19,6 +19,9 @@ exports.setupApp = async function makeApp (sessionConfig = {}) {
 
   app.config()
     .set('app.key', 'app-key-1234')
+    .set('bodyparser', {
+      methods: ['POST']
+    })
     .set('http', {
       host: 'localhost',
       port: 1234
