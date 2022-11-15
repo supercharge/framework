@@ -1,12 +1,23 @@
 # Changelog
 
-## [3.15.0](https://github.com/supercharge/framework/compare/v3.14.0...v3.15.0) - 2022-11-01
+## [3.15.0](https://github.com/supercharge/framework/compare/v3.14.0...v3.15.0) - 2022-11-xx
 
 ### Added
 - `@supercharge/session`
     - add flash message support
+    - add `session.put` method: [alias for `session.set`](https://superchargejs.com/docs/3.x/session#storing-data)
+    - add `session.push` method: push the given `value` onto a session array stored for the given `key`.
     - add `session.flash` method: save a flash message in the format of `session.flash(key, value)` or `session.flash({ key: value })`
     - add `session.reflash` method: reflash all flash messags in the session to the next request using `session.reflash()`. You can reflash selected messages using `session.reflash('key', 'another-key')`
+    - add `session.token` method: returns the CSRF token
+    - add `session.regenerateToken` method: regenerate a new CSRF token and store it in the session
+    - add and export `VerifyCsrfTokenMiddleware`: a middleware to store CSRF tokens in the session and verify them on requests
+- `@supercharge/container`
+    - add `container.forgetInstance` method: delete an existing singleton instance and recreate it when requested via `make`
+
+### Updated
+- `@supercharge/container`
+    - `alias(namespace, alias)` method: require the `namespace` and `alias` parameters when adding an alias for a binding
 
 
 ## [3.14.0](https://github.com/supercharge/framework/compare/v3.13.0...v3.14.0) - 2022-11-01
