@@ -50,9 +50,16 @@ export interface Session {
   pull<R = any | undefined> (key: string, defaultValue?: R): R
 
   /**
-   * Remove one or more items from the session.
+   * Remove one or more items from the session. This method clears the session
+   * when calling it without any arguments. Otherwise, it forgets only the
+   * given `keys`.
    */
   delete(...keys: string[] | string[][]): this
+
+  /**
+   * Remove one or more items from the session.
+   */
+  forget (...keys: string[] | string[][]): this
 
   /**
    * Removes all items from the session.
@@ -60,7 +67,7 @@ export interface Session {
   clear(): this
 
   /**
-   * Push a the given `value` onto a session array stored for the given `key`.
+   * Push the given `value` onto a session array stored for the given `key`.
    */
   push(key: string, value: any): this
 
@@ -101,7 +108,7 @@ export interface Session {
   token(): string
 
   /**
-   * Regenerate the CSRF token value.
+   * Regenerate the CSRF token value and store it in the session.
    */
   regenerateToken(): this
 }
