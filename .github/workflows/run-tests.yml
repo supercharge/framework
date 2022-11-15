@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        node-version: [16.x, 18.x, 19.x]
+        node-version: [16.x, 18.x] #, 19.x] # we’re skipping Node.js 19 for now until it’s more stable
 
     name: Node ${{ matrix.node-version }}
 

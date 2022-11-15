@@ -19,6 +19,9 @@
 - `@supercharge/container`
     - `alias(namespace, alias)` method: require the `namespace` and `alias` parameters when adding an alias for a binding
 
+### Removed
+- remove Node.js 19 from the testing matrix because it’s failing tests in CI that we can’t reproduce locally
+
 
 ## [3.14.0](https://github.com/supercharge/framework/compare/v3.13.0...v3.14.0) - 2022-11-01
 
