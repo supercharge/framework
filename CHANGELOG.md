@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.15.0](https://github.com/supercharge/framework/compare/v3.14.0...v3.15.0) - 2022-11-xx
+## [3.15.0](https://github.com/supercharge/framework/compare/v3.14.0...v3.15.0) - 2022-11-16
 
 ### Added
 - `@supercharge/session`
@@ -16,6 +16,7 @@
     - add `container.forgetInstance` method: delete an existing singleton instance and recreate it when requested via `make`
 
 ### Updated
+- bump dependencies
 - `@supercharge/container`
     - `alias(namespace, alias)` method: require the `namespace` and `alias` parameters when adding an alias for a binding
 
