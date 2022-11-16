@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.16.0](https://github.com/supercharge/framework/compare/v3.14.1...v3.16.0) - 2022-11-xx
+
+### Updated
+- bump dependencies
+- `@supercharge/contracts`
+    - export all interfaces from the root `index.ts` instead of individual `index.ts` files in the foldes. Hopefully this fixes typing issues with module augmentation when extending the `@supercharge/contracts` module like `@supercharge/session` does (by adding a `request.session()` method to the request interface)
+- `@supercharge/http`
+    - `response.redirect().back()` returns `this` instead of `void` allowing you to chain further method calls and return the redirect instance
+
+
 ## [3.15.0](https://github.com/supercharge/framework/compare/v3.14.0...v3.15.0) - 2022-11-16
 
 ### Added
