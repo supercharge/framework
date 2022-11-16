@@ -4,7 +4,7 @@ export interface HttpRedirect {
   /**
    * Redirect the request back to the previous path.
    */
-  back(options?: { fallback: string }): void
+  back(options?: { fallback: string }): this
 
   /**
    * Redirect the request to the given URL `path`.

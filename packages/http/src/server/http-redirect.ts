@@ -24,10 +24,12 @@ export class HttpRedirect implements HttpRedirectContract {
    *
    * @param {Object} options
    */
-  back (options?: { fallback: string }): void {
+  back (options?: { fallback: string }): this {
     const fallback = options ? options.fallback : ''
 
     this.ctx.response.redirect('back', fallback)
+
+    return this
   }
 
   /**
