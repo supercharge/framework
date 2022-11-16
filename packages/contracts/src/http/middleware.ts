@@ -1,6 +1,6 @@
 'use strict'
 
-import { Application } from '../application'
+import { Application } from '..'
 import { HttpContext, NextHandler } from './context'
 
 export type InlineMiddlewareHandler =

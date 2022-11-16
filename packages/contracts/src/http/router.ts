@@ -1,6 +1,6 @@
 'use strict'
 
-import { Class } from '../utils'
+import { Class } from '..'
 import { HttpRoute } from './route'
 import { HttpContext } from './context'
 import { MiddlewareCtor } from './middleware'

@@ -1,6 +1,6 @@
 'use strict'
 
-import { RequestCookieBuilderCallback, ResponseCookieBuilderCallback } from '.'
+import { RequestCookieBuilderCallback, ResponseCookieBuilderCallback } from './cookie-options-builder'
 
 export interface CookieBag {
   /**

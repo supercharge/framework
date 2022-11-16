@@ -1,6 +1,6 @@
 'use strict'
 
-import { Class } from '../utils'
+import { Class } from '..'
 
 /**
  * Defines the shape of the container `factory` callback method.

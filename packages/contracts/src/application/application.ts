@@ -1,12 +1,6 @@
 'use strict'
 
-import { EnvStore } from '../env'
-import { Logger } from '../logging'
-import { ConfigStore } from '../config'
-import { Container } from '../container'
-import { ServiceProvider } from '../support'
-import { BootstrapperCtor } from '../core/bootstrapper'
-import { ErrorHandlerCtor } from '../core/error-handler'
+import { BootstrapperCtor, ErrorHandlerCtor, EnvStore, Logger, ConfigStore, Container, ServiceProvider } from '..'
 
 type Callback = (app: Application) => Promise<unknown> | unknown
 

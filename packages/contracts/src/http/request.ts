@@ -9,8 +9,9 @@ import { CookieOptions } from './cookie-options'
 import { MacroableCtor } from '@supercharge/macroable'
 import { RequestHeaderBag } from './request-header-bag'
 import { IncomingHttpHeaders, IncomingMessage } from 'http'
+import { InteractsWithState } from './concerns/interacts-with-state'
 import { RequestCookieBuilderCallback } from './cookie-options-builder'
-import { InteractsWithContentTypes, InteractsWithState } from './concerns'
+import { InteractsWithContentTypes } from './concerns/interacts-with-content-types'
 
 export interface HttpRequestCtor extends MacroableCtor {
   /**

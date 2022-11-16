@@ -40,7 +40,7 @@ export interface DatabaseQueue {
    *
    * @returns {String} the job ID
    */
-  push (data: DatabaseQueuePayload): Promise<number|string>
+  push (data: DatabaseQueuePayload): Promise<number | string>
 
   /**
    * Retrieve the next job from the queue.
@@ -72,5 +72,5 @@ export interface DatabaseQueue {
    *
    * @param  {String|Number} id
    */
-  delete (id: string|number): Promise<void>
+  delete (id: string | number): Promise<void>
 }

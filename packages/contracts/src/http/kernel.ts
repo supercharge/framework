@@ -1,6 +1,6 @@
 'use strict'
 
-import { Application } from '../application'
+import { Application } from '..'
 import { MiddlewareCtor } from './middleware'
 import { HttpServer, HttpServerHandler } from './server'
 

@@ -2,10 +2,11 @@
 
 import { HttpContext } from './context'
 import { CookieBag } from './cookie-bag'
+import { HttpRedirect } from './redirect'
 import { CookieOptions } from './cookie-options'
+import { ViewConfigBuilder, ViewEngine } from '..'
 import { MacroableCtor } from '@supercharge/macroable'
-import { ViewConfigBuilder, ViewEngine } from '../view'
-import { HttpRedirect, ResponseCookieBuilderCallback } from '.'
+import { ResponseCookieBuilderCallback } from './cookie-options-builder'
 import { InteractsWithState } from './concerns/interacts-with-state'
 
 export type ViewBuilderCallback = (viewBuilder: ViewConfigBuilder) => unknown
