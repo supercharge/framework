@@ -17,6 +17,9 @@ export interface ContainerBindings {
  */
 declare module '@supercharge/contracts' {
   export interface HttpRequest {
+    /**
+     * Returns the session instance.
+     */
     session (): Session
   }
 }
