@@ -26,18 +26,47 @@ test('redirect is chainable', async () => {
   expect(response.headers.location).toEqual('/path')
 })
 
-test('redirect.back()', async () => {
+test('redirect to URL path', async () => {
+  const server = app
+    .make(Server)
+    .use(({ response }) => {
+      return response.redirect().to('/path?with-query=param').withPayload()
+    })
+
+  const response = await Supertest(server.callback())
+    .get('/')
+    .expect(307)
+
+  expect(response.headers.location).toEqual('/path?with-query=param')
+})
+
+test('redirect.back() to referer', async () => {
   const server = app
     .make(Server)
     .use(({ response }) => {
       return response.redirect().back()
     })
 
-  const response = await Supertest(server.callback())
-    .get('/')
+  const backToPath = await Supertest(server.callback())
+    .get('/some-path?with-query=param')
+    .set('referer', '/some-path?with-query=param')
     .expect(302)
 
-  expect(response.headers.location).toEqual('/')
+  expect(backToPath.headers.location).toEqual('/some-path?with-query=param')
+})
+
+test('redirect.back() to root (/) when referer is not set', async () => {
+  const server = app
+    .make(Server)
+    .use(({ response }) => {
+      return response.redirect().back()
+    })
+
+  const backToRoot = await Supertest(server.callback())
+    .get('/some-path?with-query=param')
+    .expect(302)
+
+  expect(backToRoot.headers.location).toEqual('/')
 })
 
 test('redirect.back() with fallback', async () => {
