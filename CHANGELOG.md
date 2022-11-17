@@ -6,6 +6,8 @@
 - bump dependencies
 - `@supercharge/contracts`
     - export all interfaces from the root `index.ts` instead of individual `index.ts` files in the foldes. Hopefully this fixes typing issues with module augmentation when extending the `@supercharge/contracts` module like `@supercharge/session` does (by adding a `request.session()` method to the request interface)
+- `@supercharge/core`
+    - error handler: the wrapped HTTP errors keeps the stack trace from the original error
 - `@supercharge/http`
     - `response.redirect().back()` returns `this` instead of `void` allowing you to chain further method calls and return the redirect instance
 
