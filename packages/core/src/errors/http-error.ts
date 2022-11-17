@@ -9,7 +9,9 @@ export class HttpError extends BaseHttpError {
    * @param {String} message
    */
   constructor (message: string) {
-    super(message, 500)
+    super(message)
+
+    this.withStatus(500)
   }
 
   /**
@@ -20,9 +22,15 @@ export class HttpError extends BaseHttpError {
    * @returns {HttpError}
    */
   static wrap (error: Error): HttpError {
-    return new this(error.message).withStatus(
+    const err = new this(error.message).withStatus(
       this.retrieveStatusFrom(error)
     )
+
+    if (error.stack) {
+      err.withStack(error.stack)
+    }
+
+    return err
   }
 
   /**
