@@ -52,7 +52,7 @@ export class HttpError extends BaseHttpError {
    * registered reporters and logging for the given error instance.
    */
   report (_error: any, _ctx: HttpContext): any | Promise<any> {
-    return true
+    //
   }
 
   /**
@@ -61,6 +61,6 @@ export class HttpError extends BaseHttpError {
    *  the error instance into an HTTP response, like view or JSON.
    */
   render (_error: any, _ctx: HttpContext): any | Promise<any> {
-    return true
+    //
   }
 }
