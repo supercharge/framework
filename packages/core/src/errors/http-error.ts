@@ -1,5 +1,6 @@
 'use strict'
 
+import { HttpContext } from '@supercharge/contracts/src'
 import { HttpError as BaseHttpError } from '@supercharge/errors'
 
 export class HttpError extends BaseHttpError {
@@ -43,5 +44,23 @@ export class HttpError extends BaseHttpError {
    */
   private static retrieveStatusFrom (error: any): number {
     return error.status || error.statusCode || 500
+  }
+
+  /**
+   * Report the given `error` on the related HTTP `ctx`. Return a `falsy`
+   * value if you don’t want the Supercharge error handler to run the
+   * registered reporters and logging for the given error instance.
+   */
+  async report (_error: any, _ctx: HttpContext): Promise<any> {
+    return true
+  }
+
+  /**
+   * Render the given `error` on the related HTTP `ctx`. Return a `falsy`
+   * value if you don’t want the Supercharge error handler to render
+   *  the error instance into an HTTP response, like view or JSON.
+   */
+  async render (_error: any, _ctx: HttpContext): Promise<any> {
+    return true
   }
 }

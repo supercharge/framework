@@ -204,8 +204,8 @@ export class ErrorHandler implements ErrorHandlerContract {
   }
 
   /**
-   * Determine whether the given `error` is implementing a `handle` method and
-   * that `handle` method returns a truthy value, like a valid HTTP response.
+   * Determine whether the given `error` is implementing a `render` method and
+   * that `render` method returns a truthy value, like a valid HTTP response.
    *
    * @param {HttpContext} ctx
    * @param {Error} error
