@@ -272,9 +272,11 @@ export class HandlebarsCompiler implements ViewEngine {
    * @returns {Boolean}
    */
   async exists (view: string): Promise<boolean> {
-    return await Fs.exists(
+    const viewPath = this.ensureExtension(
       Path.resolve(await this.viewsLocation(), view)
     )
+
+    return await Fs.exists(viewPath)
   }
 
   /**
@@ -376,7 +378,7 @@ export class HandlebarsCompiler implements ViewEngine {
     await this.ensureViewExists(view)
 
     return await Fs.content(
-      this.ensureHbs(view)
+      this.ensureExtension(view)
     )
   }
 
@@ -386,7 +388,7 @@ export class HandlebarsCompiler implements ViewEngine {
    * @throws
    */
   async ensureViewExists (view: string): Promise<void> {
-    const file = this.ensureHbs(view)
+    const file = this.ensureExtension(view)
 
     if (await Fs.notExists(file)) {
       throw new Error(`View file does not exist. Tried to load ${file}`)
@@ -400,7 +402,7 @@ export class HandlebarsCompiler implements ViewEngine {
    *
    * @returns {String}
    */
-  ensureHbs (template: string): string {
+  ensureExtension (template: string): string {
     return Str(template).finish(this.extension).get()
   }
 }
