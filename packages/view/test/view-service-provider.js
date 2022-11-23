@@ -27,6 +27,11 @@ test('boot the registered view service provider', async () => {
 
   await app
     .register(new ViewServiceProvider(app))
+    .bind('response', () => {
+      return {
+        macro () { }
+      }
+    })
     .boot()
 
   expect(app.make('view') instanceof ViewManager).toBe(true)

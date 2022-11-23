@@ -4,18 +4,15 @@ import { HttpContext } from './context'
 import { CookieBag } from './cookie-bag'
 import { HttpRedirect } from './redirect'
 import { CookieOptions } from './cookie-options'
-import { ViewConfigBuilder, ViewEngine } from '..'
 import { MacroableCtor } from '@supercharge/macroable'
 import { ResponseCookieBuilderCallback } from './cookie-options-builder'
 import { InteractsWithState } from './concerns/interacts-with-state'
-
-export type ViewBuilderCallback = (viewBuilder: ViewConfigBuilder) => unknown
 
 export interface HttpResponseCtor extends MacroableCtor {
   /**
    * Create a new HTTP response instance.
    */
-  new (context: HttpContext, view: ViewEngine, cookieOptions: CookieOptions): HttpResponse
+  new (context: HttpContext, cookieOptions: CookieOptions): HttpResponse
 }
 
 export interface HttpResponse<T = any> extends InteractsWithState {
@@ -257,24 +254,6 @@ export interface HttpResponse<T = any> extends InteractsWithState {
    * ```
    */
   etag (etag: string): this
-
-  /**
-   * Render a view template as the response.
-   *
-   * @example
-   * ```
-   * response.view('welcome')
-   * response.view('welcome', view => {
-   *   view.layout('landing')
-   * })
-   * response.view('user/dashboard', { user: { id: 1, name: 'Supercharge' } })
-   * response.view('user/dashboard', { user: { id: 1, name: 'Supercharge' } }, view => {
-   *   view.layout('profile')
-   * })
-   * ```
-   */
-  view (template: string, viewBuilder?: ViewBuilderCallback): Promise<this>
-  view (template: string, data?: ViewBuilderCallback | any, viewBuilder?: ViewBuilderCallback): Promise<this>
 
   /**
    * Abort the request and throw an error with the given `status`. The status defaults

@@ -7,8 +7,10 @@ const { expect } = require('expect')
 const Supertest = require('supertest')
 const { Server } = require('@supercharge/http')
 const { Application, ErrorHandler } = require('../dist')
+const { ViewServiceProvider } = require('@supercharge/view')
 
 const viewMock = {
+  boot () { },
   render () {
     return '<h1>error-view</h1>'
   },
@@ -32,6 +34,16 @@ function createApp () {
       port: 1234,
       cookie: {}
     })
+    .set('view', {
+      driver: 'handlebars',
+      handlebars: {
+        views: app.resourcePath('views'),
+        partials: app.resourcePath('views/partials'),
+        helpers: app.resourcePath('views/helpers')
+        // layouts: app.resourcePath('views/layouts')
+        // defaultLayout: 'app'
+      }
+    })
 
   return app
 }
@@ -50,7 +62,28 @@ test('renders an error view', async () => {
     .get('/')
     .expect(401)
 
-  expect(response.text).toEqual('<h1>error-view</h1>')
+  expect(response.text).toEqual('<h1>Authentication token missing</h1>')
+})
+
+test('renders an error view using @supercharge/view', async () => {
+  const app = createApp()
+
+  app.register(new ViewServiceProvider(app))
+  await app.boot()
+
+  const server = app.make(Server)
+
+  server.use(async ({ response }) => {
+    return response.throw(401, 'Authentication token missing')
+  })
+
+  const response = await Supertest(
+    server.callback()
+  )
+    .get('/')
+    .expect(401)
+
+  expect(response.text).toEqual('<h1>error-view</h1>\n')
 })
 
 test('falls back to Youch during development when missing an error view', async () => {

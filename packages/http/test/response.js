@@ -8,8 +8,9 @@ const { Response, HttpRedirect, Server } = require('../dist')
 
 let app = setupApp()
 
-test.before.each(() => {
+test.before.each(async () => {
   app = setupApp()
+  await app.boot()
 })
 
 test('share', () => {

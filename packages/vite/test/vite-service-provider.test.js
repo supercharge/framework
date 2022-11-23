@@ -2,6 +2,7 @@
 
 import { EOL } from 'node:os'
 import { ViteServiceProvider } from '../dist'
+import { HttpServiceProvider } from '@supercharge/http'
 import { ViewServiceProvider } from '@supercharge/view'
 import { describe, test, expect, beforeEach } from 'vitest'
 import { clearViteHotReloadFile, clearViteManifest, createViteManifest, makeApp } from './helpers'
@@ -18,6 +19,7 @@ describe('ViteServiceProvider', () => {
     const app = makeApp()
 
     await app
+      .register(new HttpServiceProvider(app))
       .register(new ViewServiceProvider(app))
       .register(new ViteServiceProvider(app))
       .boot()
@@ -32,6 +34,7 @@ describe('ViteServiceProvider', () => {
     await createViteManifest(app)
 
     await app
+      .register(new HttpServiceProvider(app))
       .register(new ViewServiceProvider(app))
       .register(new ViteServiceProvider(app))
       .boot()
@@ -49,6 +52,7 @@ describe('ViteServiceProvider', () => {
     await createViteManifest(app)
 
     await app
+      .register(new HttpServiceProvider(app))
       .register(new ViewServiceProvider(app))
       .register(new ViteServiceProvider(app))
       .boot()
@@ -66,6 +70,7 @@ describe('ViteServiceProvider', () => {
     await createViteManifest(app)
 
     await app
+      .register(new HttpServiceProvider(app))
       .register(new ViewServiceProvider(app))
       .register(new ViteServiceProvider(app))
       .boot()

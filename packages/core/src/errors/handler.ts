@@ -245,9 +245,15 @@ export class ErrorHandler implements ErrorHandlerContract {
       return await this.renderYouchResponse(ctx, error)
     }
 
-    await ctx.response.status(error.status).view(
-      this.viewTemplateFor(error), { error }
-    )
+    // @ts-expect-error
+    if (typeof ctx.response.view === 'function') {
+      // @ts-expect-error
+      return await ctx.response.status(error.status).view(
+        this.viewTemplateFor(error), { error }
+      )
+    }
+
+    ctx.response.status(error.status).payload(`<h1>${error.message}</h1>`)
   }
 
   /**

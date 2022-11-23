@@ -2,9 +2,39 @@
 
 import { ViewManager } from './manager'
 import { ServiceProvider } from '@supercharge/support'
+import { View as ViewResponse } from './view-response'
+import { HttpResponse, HttpResponseCtor, ViewBuilderCallback } from '@supercharge/contracts'
 
+/**
+ * Add container bindings for the session service.
+ */
 export interface ContainerBindings {
   'view': ViewManager
+}
+
+/**
+ * Extend the Supercharge request interface with the session property.
+ */
+declare module '@supercharge/contracts' {
+  export interface HttpResponse {
+    /**
+     * Render a view template as the response.
+     *
+     * @example
+     * ```
+     * response.view('welcome')
+     * response.view('welcome', view => {
+     *   view.layout('landing')
+     * })
+     * response.view('user/dashboard', { user: { id: 1, name: 'Supercharge' } })
+     * response.view('user/dashboard', { user: { id: 1, name: 'Supercharge' } }, view => {
+     *   view.layout('profile')
+     * })
+     * ```
+     */
+    view (template: string, viewBuilder?: ViewBuilderCallback): Promise<this>
+    view (template: string, data?: ViewBuilderCallback | any, viewBuilder?: ViewBuilderCallback): Promise<this>
+  }
 }
 
 export class ViewServiceProvider extends ServiceProvider {
@@ -23,6 +53,13 @@ export class ViewServiceProvider extends ServiceProvider {
    * Boot application services.
    */
   override async boot (): Promise<void> {
-    await this.app().make<ViewManager>('view').boot()
+    const Response = this.app().make<HttpResponseCtor>('response')
+
+    const view = await this.app().make<ViewManager>('view')
+    await view.boot()
+
+    Response.macro('view', async function (this: HttpResponse, template: string, data?: ViewBuilderCallback | any, viewBuilder?: ViewBuilderCallback) {
+      return await new ViewResponse(this, view).render(template, data, viewBuilder)
+    })
   }
 }

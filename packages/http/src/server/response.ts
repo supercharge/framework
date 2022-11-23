@@ -6,9 +6,8 @@ import { tap } from '@supercharge/goodies'
 import { HttpRedirect } from './http-redirect'
 import { Macroable } from '@supercharge/macroable'
 import { ResponseHeaderBag } from './response-header-bag'
-import { ViewConfigBuilder } from './view-config-builder'
 import { InteractsWithState } from './interacts-with-state'
-import { CookieOptions, HttpContext, HttpResponse, ViewEngine, ViewBuilderCallback, ResponseCookieBuilderCallback, ViewResponseConfig } from '@supercharge/contracts'
+import { CookieOptions, HttpContext, HttpResponse, ResponseCookieBuilderCallback } from '@supercharge/contracts'
 
 export class Response extends Many(Macroable, InteractsWithState) implements HttpResponse {
   /**
@@ -22,11 +21,6 @@ export class Response extends Many(Macroable, InteractsWithState) implements Htt
   }
 
   /**
-   * The application instance.
-   */
-  private readonly viewEngine: ViewEngine
-
-  /**
    * The default cookie options.
    */
   private readonly cookieOptions: CookieOptions
@@ -37,11 +31,10 @@ export class Response extends Many(Macroable, InteractsWithState) implements Htt
    * @param ctx
    * @param cookieOptions
    */
-  constructor (ctx: HttpContext, viewEngine: ViewEngine, cookieOptions: CookieOptions) {
+  constructor (ctx: HttpContext, cookieOptions: CookieOptions) {
     super(ctx.raw)
 
     this.meta = { ctx }
-    this.viewEngine = viewEngine
     this.cookieOptions = cookieOptions
   }
 
@@ -264,49 +257,6 @@ export class Response extends Many(Macroable, InteractsWithState) implements Htt
     return statusCode
       ? statusCode === responseStatusCode
       : responseStatusCode >= 300 && responseStatusCode <= 399
-  }
-
-  /**
-   * Render a view template as the response.
-   *
-   * @param {String} template
-   * @param {*} data
-   * @param {Function} callback
-   *
-   * @returns {String}
-   */
-  async view (template: string, viewBuilder?: ViewBuilderCallback): Promise<this>
-  async view (template: string, data?: any, viewBuilder?: ViewBuilderCallback): Promise<this> {
-    if (typeof data === 'function') {
-      viewBuilder = data
-      data = {}
-    }
-
-    return this.payload(
-      await this.renderView(template, data, viewBuilder)
-    )
-  }
-
-  /**
-   * Assigns the rendered HTML of the given `template` as the response payload.
-   *
-   * @param {String} template
-   * @param {*} data
-   * @param {Function} viewBuilder
-   *
-   * @returns {String}
-   */
-  private async renderView (template: string, data?: any, viewBuilder?: ViewBuilderCallback): Promise<string> {
-    const viewData = { ...this.state().all(), ...data }
-    const viewConfig: ViewResponseConfig = {}
-
-    if (typeof viewBuilder === 'function') {
-      viewBuilder(
-        new ViewConfigBuilder(viewConfig)
-      )
-    }
-
-    return await this.viewEngine.render(template, viewData, viewConfig)
   }
 
   /**

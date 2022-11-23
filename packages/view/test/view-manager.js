@@ -106,7 +106,7 @@ test('exists', async () => {
   const view = app.make('view')
   await view.boot()
 
-  expect(await view.exists('test-view')).toBe(false)
+  expect(await view.exists('test-view')).toBe(true)
   expect(await view.exists('not-existing-test-view')).toBe(false)
 })
 
