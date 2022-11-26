@@ -224,7 +224,7 @@ function protocol (config: ResolvedConfig): 'http' | 'https' {
  * Returns the client protocol.
  */
 function clientProtocol (config: ResolvedConfig): 'https' | 'http' | undefined {
-  const configHmrProtocol = config.server.hmr === 'object'
+  const configHmrProtocol = typeof config.server.hmr === 'object'
     ? config.server.hmr.protocol
     : null
 
