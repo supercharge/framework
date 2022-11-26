@@ -95,8 +95,8 @@ export class VerifyCsrfTokenMiddleware implements Middleware {
    * @returns {String}
    */
   getCsrfTokenFrom (request: HttpRequest): string | undefined {
-    return request.input('_csrfToken') ||
-            request.input('_csrf') ||
+    return request.input('_csrfToken') || // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
+            request.input('_csrf') || // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
             request.header('xsrf-token', '') as string ||
             request.header('x-csrf-token', '') as string ||
             request.header('x-xsrf-token', '') as string
