@@ -2,6 +2,12 @@
 
 ## [3.16.0](https://github.com/supercharge/framework/compare/v3.14.1...v3.16.0) - 2022-11-xx
 
+### Added
+- `@supercharge/core`
+    - add `report` and `render` placeholder methods to `HttpError` allowing users to override them when needed
+- `@supercharge/view`
+    - register `response.view` method as a macro
+
 ### Updated
 - bump dependencies
 - `@supercharge/contracts`
@@ -11,6 +17,14 @@
     - HTTP error: implement `report` and `render` placeholder methods. Subclasses then know of their existence and may override them
 - `@supercharge/http`
     - `response.redirect().back()` returns `this` instead of `void` allowing you to chain further method calls and return the redirect instance
+
+### Fixed
+- `@supercharge/view`
+    - `view.exists(<template>)` ensures the file extension is appended to the `template` if not already present
+
+### Removed
+- `@supercharge/http`
+    - `response.view` is moved to a macro registered by the `@supercharge/view` package (see "Added" section of this version)
 
 
 ## [3.15.0](https://github.com/supercharge/framework/compare/v3.14.0...v3.15.0) - 2022-11-16
