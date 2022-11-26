@@ -51,7 +51,7 @@ export class HttpError extends BaseHttpError {
    * value if you don’t want the Supercharge error handler to run the
    * registered reporters and logging for the given error instance.
    */
-  report (_error: any, _ctx: HttpContext): any | Promise<any> {
+  report (_error: any, _ctx: HttpContext): Promise<any> | any {
     //
   }
 
@@ -60,7 +60,7 @@ export class HttpError extends BaseHttpError {
    * value if you don’t want the Supercharge error handler to render
    *  the error instance into an HTTP response, like view or JSON.
    */
-  render (_error: any, _ctx: HttpContext): any | Promise<any> {
+  render (_error: any, _ctx: HttpContext): Promise<any> | any {
     //
   }
 }
