@@ -31,9 +31,9 @@
     "knex": "~2.3.0"
   },
   "devDependencies": {
-    "@supercharge/eslint-config-typescript": "~2.3.2",
-    "eslint": "~8.27.0",
-    "typescript": "~4.8.4"
+    "@supercharge/eslint-config-typescript": "~2.3.3",
+    "eslint": "~8.28.0",
+    "typescript": "~4.9.3"
   },
   "scripts": {
     "build": "tsc --build tsconfig.json --force",
