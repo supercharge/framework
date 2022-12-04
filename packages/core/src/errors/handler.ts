@@ -10,17 +10,17 @@ export class ErrorHandler implements ErrorHandlerContract {
   /**
    * The application instance.
    */
-  private readonly app: Application
+  protected readonly app: Application
 
   /**
    * The list of error types to not report.
    */
-  private readonly ignoredErrors: ErrorConstructor[]
+  protected readonly ignoredErrors: ErrorConstructor[]
 
   /**
    * Stores the list of report callbacks.
    */
-  private readonly reportCallbacks: Array<(ctx: HttpContext, error: HttpError) => void | Promise<void>>
+  protected readonly reportCallbacks: Array<(ctx: HttpContext, error: HttpError) => void | Promise<void>>
 
   /**
    * Create a new error handler instance.
