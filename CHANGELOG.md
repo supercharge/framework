@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.17.0](https://github.com/supercharge/framework/compare/v3.16.0...v3.17.0) - 2022-12-xx
+
+### Updated
+- `@supercharge/contracts`
+    - update re-exports to support module augmentation when using `declare module '@supercharge/contracts' { … }` in packages
+
+
 ## [3.16.0](https://github.com/supercharge/framework/compare/v3.14.1...v3.16.0) - 2022-12-06
 
 ### Added
