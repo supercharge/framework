@@ -21,17 +21,15 @@ function createServer (app) {
 async function createInitialSession (app, data = {}) {
   const server = createServer(app)
 
-  server.use(async ({ request, response }, next) => {
+  server.use(async ({ request, response }) => {
     Object.entries(data).forEach(([key, value]) => {
       request.session().set(key, value)
     })
 
-    response.payload({
+    return response.payload({
       id: request.session().id(),
       data: request.session().all()
     })
-
-    await next()
   })
 
   const response = await Supertest(server.callback())
