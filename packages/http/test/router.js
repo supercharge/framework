@@ -13,6 +13,20 @@ test.before.each(() => {
   app = setupApp()
 })
 
+test('ensure matched route stops in middleware', async () => {
+  const server = app.make(Server).use(async ({ response }) => {
+    return response.status(201).payload('ok')
+  })
+
+  server.router().get('/', ({ response }) => {
+    return response.status(200).payload('from route handler')
+  })
+
+  server.bootstrap()
+
+  await Supertest(server.callback()).get('/').expect(201, 'ok')
+})
+
 test('router.get()', async () => {
   const server = app.make(Server)
   const router = server.router()
@@ -470,7 +484,6 @@ test('handle route errors early', async () => {
     .get('')
     .expect(400)
 
-  console.log(response.text)
   expect(response.text).toEqual('Validation failed')
 })
 
