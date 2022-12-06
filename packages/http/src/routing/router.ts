@@ -1,17 +1,19 @@
 'use strict'
 
+import compose from 'koa-compose'
 import { Route } from './route'
 import Map from '@supercharge/map'
 import { RouteGroup } from './group'
 import Str from '@supercharge/strings'
 import { Arr } from '@supercharge/arrays'
 import { PendingRoute } from './pending-route'
+import { HttpError } from '@supercharge/http-errors'
 import { RouteCollection } from './route-collection'
 import { isNullish, tap } from '@supercharge/goodies'
-import KoaRouter, { RouterContext } from '@koa/router'
 import { HttpContext, HttpRedirect, Response } from '../server'
 import { HandleErrorMiddleware } from '../middleware/handle-error'
 import { Class, isConstructor, isFunction, isNotConstructor } from '@supercharge/classes'
+import KoaRouter, { RouterContext, Middleware as KoaMiddleware, RouterParamContext } from '@koa/router'
 import { HttpRouter, RouteHandler, RouteAttributes, HttpMethods, MiddlewareCtor, NextHandler, Middleware, Application, HttpConfig } from '@supercharge/contracts'
 
 export class Router implements HttpRouter {
@@ -94,10 +96,29 @@ export class Router implements HttpRouter {
    *
    * @returns {Function}
    */
-  createRoutingMiddleware (): any {
+  createRoutingMiddleware (): KoaMiddleware {
     this.registerRoutesToRouter()
 
-    return this.router().middleware()
+    return compose([
+      this.router().middleware(),
+      this.ensureMatchedRoute(),
+      this.router().allowedMethods({ throw: true }),
+    ])
+  }
+
+  /**
+   * Ensure the router found a matching route for the request.
+   *
+   * @throws
+   */
+  private ensureMatchedRoute (): KoaMiddleware {
+    return async function ({ _matchedRoute }: RouterParamContext, next: NextHandler): Promise<void> {
+      await next()
+
+      if (typeof _matchedRoute === 'undefined') {
+        throw HttpError.notFound('No route found')
+      }
+    }
   }
 
   /**
