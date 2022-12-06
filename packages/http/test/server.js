@@ -41,16 +41,19 @@ test('proceeds middleware chain when calling next', async () => {
   let calledSecond = false
 
   const server = app.make(Server)
+
+  server
     .use(async (_, next) => {
       calledFirst = true
 
       await next()
     })
-    .use(async (ctx, next) => {
+    .use(async (_, next) => {
       calledSecond = true
 
       await next()
-
+    })
+    .router().get('/', (ctx) => {
       return ctx.response.payload('ok')
     })
 
