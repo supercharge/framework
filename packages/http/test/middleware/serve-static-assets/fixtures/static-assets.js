@@ -3,7 +3,7 @@
 module.exports = {
   maxage: 123,
 
-  defer: true,
+  defer: false,
 
   hidden: false,
 

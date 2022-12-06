@@ -13,7 +13,7 @@ const app = setupApp({
 })
 
 async function createHttpServer () {
-  const server = app.make(Server)
+  const server = app.forgetInstance(Server).make(Server)
     .use(ServeStaticAssetsMiddleware)
     .use(async (ctx, next) => {
       if (ctx.request.path() === '/unavailable.txt') {
@@ -22,6 +22,10 @@ async function createHttpServer () {
 
       await next()
     })
+
+  server.router().get('/:matchAll', ({ response }) => {
+    return response.getPayload() || 'route handler response'
+  })
 
   await server.bootstrap()
 

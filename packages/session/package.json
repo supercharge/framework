@@ -30,12 +30,12 @@
     "@supercharge/eslint-config-typescript": "~2.3.3",
     "@supercharge/http": "^3.15.0",
     "@supercharge/view": "^3.15.0",
-    "@types/lodash": "~4.14.190",
+    "@types/lodash": "~4.14.191",
     "@types/ms": "~0.7.31",
     "c8": "~7.12.0",
-    "eslint": "~8.28.0",
+    "eslint": "~8.29.0",
     "expect": "~29.3.1",
-    "supertest": "~6.3.1",
+    "supertest": "~6.3.2",
     "typescript": "~4.9.3"
   },
   "engines": {

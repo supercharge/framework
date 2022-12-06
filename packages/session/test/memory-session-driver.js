@@ -8,25 +8,21 @@ const { Server } = require('@supercharge/http')
 const { StartSessionMiddleware } = require('../dist')
 
 function createServer (app) {
-  const server = app.make(Server).use(StartSessionMiddleware)
-
-  return server
+  return app.forgetInstance(Server).make(Server).use(StartSessionMiddleware)
 }
 
 async function createInitialSession (app, data = {}) {
   const server = createServer(app)
 
-  server.use(async ({ request, response }, next) => {
+  server.use(async ({ request, response }) => {
     Object.entries(data).forEach(([key, value]) => {
       request.session().set(key, value)
     })
 
-    response.payload({
+    return response.payload({
       id: request.session().id(),
       data: request.session().all()
     })
-
-    await next()
   })
 
   const response = await Supertest(server.callback())

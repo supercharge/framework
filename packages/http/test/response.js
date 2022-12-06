@@ -35,15 +35,15 @@ test('state', () => {
 
 test('response.getPayload', async () => {
   function createAppUsing (createResponseCallback) {
-    const server = app.make(Server)
+    const server = app.forgetInstance(Server).make(Server)
 
-    return server.use(async ({ response }, next) => {
-      response.payload({
+    server.router().get('/', ({ response }) => {
+      return response.payload({
         payload: createResponseCallback(response)
       })
-
-      await next()
     })
+
+    return server
   }
 
   // the framework removes the response payload when not assigning any non-empty data
@@ -631,16 +631,18 @@ test('response.status()', async () => {
 })
 
 test('response.getStatus()', async () => {
-  const server = app
-    .make(Server)
+  const server = app.forgetInstance(Server).make(Server)
+
+  server
     .use(async ({ response }, next) => {
       response.status(201)
 
       await next()
     })
-    .use(async ({ response }, next) => {
-      response.payload({ statusCode: response.getStatus() })
-      await next()
+    .router().get('/', async ({ response }) => {
+      return response.payload({
+        statusCode: response.getStatus()
+      })
     })
 
   await Supertest(server.callback())
@@ -649,16 +651,14 @@ test('response.getStatus()', async () => {
 })
 
 test('response.hasStatus()', async () => {
-  const server = app
-    .make(Server)
-    .use(async ({ response }, next) => {
-      response.status(201).payload({
-        200: response.hasStatus(200),
-        201: response.hasStatus(201)
-      })
+  const server = app.make(Server)
 
-      await next()
+  server.router().get('/', async ({ response }) => {
+    return response.status(201).payload({
+      200: response.hasStatus(200),
+      201: response.hasStatus(201)
     })
+  })
 
   await Supertest(server.callback())
     .get('/')
@@ -670,15 +670,14 @@ test('response.hasStatus()', async () => {
 
 test('response.isOk()', async () => {
   function createAppUsingResponseStatus (code) {
-    return app
-      .make(Server)
-      .use(async ({ response }, next) => {
-        response.payload({
-          isOk: response.status(code).isOk()
-        })
+    const server = app.forgetInstance(Server).make(Server)
 
-        await next()
+    server.router().get('/', async ({ response }) => {
+      return response.payload({
+        isOk: response.status(code).isOk()
       })
+    })
+    return server
   }
 
   await Supertest(createAppUsingResponseStatus(200).callback())
@@ -692,26 +691,26 @@ test('response.isOk()', async () => {
 
 test('response.isEmpty() for 204', async () => {
   function createAppUsingResponseStatus (code) {
-    return app
-      .make(Server)
-      .use(async ({ response }, next) => {
-        response.payload({
-          isEmpty: response.status(code).isEmpty()
-        })
+    const server = app.forgetInstance(Server).make(Server)
 
-        // reset the response status code so that the payload will be sent
-        // otherwise, for status code 204 the framework removes the response body
-        response.status(200)
-
-        await next()
+    server.router().get('/', async ({ response }) => {
+      response.payload({
+        isEmpty: response.status(code).isEmpty()
       })
+
+      // reset the response status code so that the payload will be sent
+      // otherwise, for status code 204 the framework removes the response body
+      return response.status(200)
+    })
+
+    return server
   }
 
   await Supertest(createAppUsingResponseStatus(204).callback())
     .get('/')
     .expect(200, { isEmpty: true })
 
-  await Supertest(createAppUsingResponseStatus(204).callback())
+  await Supertest(createAppUsingResponseStatus(304).callback())
     .get('/')
     .expect(200, { isEmpty: true })
 
@@ -723,7 +722,7 @@ test('response.isEmpty() for 204', async () => {
 test('response.type()', async () => {
   const server = app
     .make(Server)
-    .use(async ({ response }, next) => {
+    .use(async ({ response }) => {
       return response.payload('html').type('foo/bar')
     })
 
@@ -737,7 +736,7 @@ test('response.type()', async () => {
 test('response.etag()', async () => {
   const server = app
     .make(Server)
-    .use(async ({ response }, next) => {
+    .use(async ({ response }) => {
       return response.payload('html').etag('md5HashSum')
     })
 
@@ -751,7 +750,7 @@ test('response.etag()', async () => {
 test('response.redirect()', async () => {
   const server = app
     .make(Server)
-    .use(async ({ response }, next) => {
+    .use(async ({ response }) => {
       const redirect = response.redirect()
       expect(redirect).toBeInstanceOf(HttpRedirect)
 
@@ -768,7 +767,7 @@ test('response.redirect()', async () => {
 test('response.redirect(withUrl)', async () => {
   const server = app
     .make(Server)
-    .use(async ({ response }, next) => {
+    .use(async ({ response }) => {
       const redirect = response.redirect()
       expect(response.redirect('/to')).toBeInstanceOf(HttpRedirect)
 
@@ -785,7 +784,7 @@ test('response.redirect(withUrl)', async () => {
 test('response.permanentRedirect()', async () => {
   const server = app
     .make(Server)
-    .use(async ({ response }, next) => {
+    .use(async ({ response }) => {
       const redirect = response.permanentRedirect()
       expect(redirect).toBeInstanceOf(HttpRedirect)
 
@@ -800,19 +799,18 @@ test('response.permanentRedirect()', async () => {
 })
 
 test('response.isRedirect()', async () => {
-  const server = app
-    .make(Server)
+  const server = app.forgetInstance(Server).make(Server)
+
+  server
     .use(async ({ response }, next) => {
       response.redirect().to('/uri')
 
       await next()
     })
-    .use(async ({ response }, next) => {
-      response.payload({
+    .router().get('/', ({ response }) => {
+      return response.payload({
         isRedirect: response.isRedirect()
       })
-
-      await next()
     })
 
   await Supertest(server.callback())
@@ -821,8 +819,9 @@ test('response.isRedirect()', async () => {
 })
 
 test('response.isRedirect() with specific status code', async () => {
-  const server = app
-    .make(Server)
+  const server = app.forgetInstance(Server).make(Server)
+
+  server
     .use(async ({ response }, next) => {
       response
         .permanentRedirect()
@@ -830,13 +829,11 @@ test('response.isRedirect() with specific status code', async () => {
 
       await next()
     })
-    .use(async ({ response }, next) => {
-      response.payload({
+    .router().get('/', ({ response }) => {
+      return response.payload({
         isPermanentRedirect: response.isRedirect(301),
         isTemporaryRedirect: response.isRedirect(302)
       })
-
-      await next()
     })
 
   await Supertest(server.callback())

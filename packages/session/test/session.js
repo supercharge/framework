@@ -25,12 +25,10 @@ async function createInitialSession (app, data = {}) {
       request.session().set(key, value)
     })
 
-    response.payload({
+    return response.payload({
       id: request.session().id(),
       data: request.session().all()
     })
-
-    await next()
   })
 
   const response = await Supertest(server.callback())

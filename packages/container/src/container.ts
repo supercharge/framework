@@ -311,6 +311,10 @@ export class Container implements ContainerContract {
    * Remove a resolved instance from the (singleton) cache.
    */
   forgetInstance (namespace: string | Class): this {
+    if (!namespace) {
+      throw new Error('You must provide a "namespace" as the first argument when calling container.forgetInstance(namespace).')
+    }
+
     if (this.isAlias(namespace)) {
       namespace = this.getAlias(namespace)
     }

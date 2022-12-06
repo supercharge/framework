@@ -7,6 +7,9 @@
     - add `report` and `render` placeholder methods to `HttpError` allowing users to override them when needed
 - `@supercharge/view`
     - register `response.view` method as a macro
+- `@supercharge/http`
+    - register Koa-Router’s `allowedMethod` middleware
+    - register a middleware that ensures a route is found, throw a 404 Not Found error otherwise
 
 ### Updated
 - bump dependencies
@@ -18,6 +21,8 @@
     - HTTP error: implement `report` and `render` placeholder methods. Subclasses then know of their existence and may override them
 - `@supercharge/http`
     - `response.redirect().back()` returns `this` instead of `void` allowing you to chain further method calls and return the redirect instance
+- `@supercharge/container`
+    - `container.forgetInstance(namespace)` throws an error when the given `namespace` is falsy
 
 ### Fixed
 - `@supercharge/view`
