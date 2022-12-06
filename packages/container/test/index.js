@@ -253,6 +253,10 @@ test('forgetInstance', () => {
 
   container.forgetInstance('singleton')
   expect(original).not.toBe(container.make('singleton'))
+
+  expect(() => container.forgetInstance()).toThrow('You must provide a "namespace" as the first argument when calling container.forgetInstance(namespace).')
+  expect(() => container.forgetInstance('')).toThrow('You must provide a "namespace" as the first argument when calling container.forgetInstance(namespace).')
+  expect(() => container.forgetInstance(null)).toThrow('You must provide a "namespace" as the first argument when calling container.forgetInstance(namespace).')
 })
 
 test('forgetInstance for alias', () => {
