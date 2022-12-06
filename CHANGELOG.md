@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.17.0](https://github.com/supercharge/framework/compare/v3.16.0...v3.17.0) - 2022-12-xx
+## [3.16.1](https://github.com/supercharge/framework/compare/v3.16.0...v3.16.1) - 2022-12-06
 
 ### Updated
 - `@supercharge/contracts`
