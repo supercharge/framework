@@ -1,7 +1,7 @@
 {
   "name": "@supercharge/encryption",
   "description": "The Supercharge encryption package",
-  "version": "3.15.0",
+  "version": "3.16.0",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
@@ -12,16 +12,16 @@
   "main": "dist",
   "types": "dist",
   "dependencies": {
-    "@supercharge/contracts": "^3.15.0",
+    "@supercharge/contracts": "^3.16.0",
     "@supercharge/json": "~2.0.0",
     "@supercharge/strings": "~1.29.1",
-    "@supercharge/support": "^3.15.0"
+    "@supercharge/support": "^3.16.0"
   },
   "devDependencies": {
     "@japa/run-failed-tests": "~1.1.0",
     "@japa/runner": "~2.2.2",
     "@japa/spec-reporter": "~1.3.2",
-    "@supercharge/application": "^3.15.0",
+    "@supercharge/application": "^3.16.0",
     "@supercharge/eslint-config-typescript": "~2.3.3",
     "c8": "~7.12.0",
     "eslint": "~8.29.0",
