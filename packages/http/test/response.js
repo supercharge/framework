@@ -905,15 +905,23 @@ test('response.view() with layout', async () => {
 })
 
 test('response.throw()', async () => {
-  const server = app
-    .make(Server)
-    .use(({ response }) => {
-      response.throw(418, 'Teapot Supercharge')
-    })
+  const server = app.make(Server)
+
+  server.router().get('/', ({ response }) => {
+    return response.throw(418, 'Teapot Supercharge')
+  })
+
+  server.router().get('/500', ({ response }) => {
+    return response.throw(500, '500 Error')
+  })
 
   await Supertest(server.callback())
     .get('/')
     .expect(418, 'Teapot Supercharge')
+
+  await Supertest(server.callback())
+    .get('/500')
+    .expect(500, '500 Error')
 })
 
 test.run()
