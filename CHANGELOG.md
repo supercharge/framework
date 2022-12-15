@@ -5,6 +5,7 @@
 ### Added
 - `@supercharge/contracts`
     - expose methods for `HttpRoute`: `path`, `methods`, `handler`, `run`
+    - add missing `Route.group(prefix, callback)` typing
 
 ### Updated
 - bump dependencies
