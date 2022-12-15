@@ -463,7 +463,8 @@ export class Router implements HttpRouter {
    *
    * @returns {RouteGroup}
    */
-  group (prefixOrCallback: string | (() => void)): void
+  group (callback: () => void): void
+  group (prefix: string, callback: (() => void)): void
   group (attributes: RouteAttributes, callback: () => void): void
   group (attributes: any, callback?: () => void): void {
     /**
