@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.17.0](https://github.com/supercharge/framework/compare/v3.16.1...v3.17.0) - 2022-12-xx
+
+### Added
+- `@supercharge/contracts`
+    - expose methods for `HttpRoute`: `path`, `methods`, `handler`, `run`
+
+### Updated
+- bump dependencies
+
+
 ## [3.16.1](https://github.com/supercharge/framework/compare/v3.16.0...v3.16.1) - 2022-12-06
 
 ### Updated
@@ -7,7 +17,7 @@
     - update re-exports to support module augmentation when using `declare module '@supercharge/contracts' { … }` in packages
 
 
-## [3.16.0](https://github.com/supercharge/framework/compare/v3.14.1...v3.16.0) - 2022-12-06
+## [3.16.0](https://github.com/supercharge/framework/compare/v3.15.0...v3.16.0) - 2022-12-06
 
 ### Added
 - `@supercharge/core`
