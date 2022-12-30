@@ -20,7 +20,7 @@ export class QueryBuilder<M extends Model, R = M[]> extends BaseQueryBuilder<M, 
    *
    * @returns {QueryBuilder}
    */
-  public orFail (callback?: () => void): this {
+  public orFail (callback?: () => any): QueryBuilder<M, M>['SingleQueryBuilderType'] {
     return this.runAfter((result: any) => {
       if (this.hasResults(result)) {
         return result
@@ -31,7 +31,7 @@ export class QueryBuilder<M extends Model, R = M[]> extends BaseQueryBuilder<M, 
       }
 
       throw new Error(`Failed to find instance for "${this.modelClass().name}"`)
-    })
+    }) as any
   }
 
   /**
