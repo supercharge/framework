@@ -5,7 +5,12 @@ import { Application, ConfigStore } from '@supercharge/contracts'
 
 export abstract class Manager {
   /**
-   * Theh application instance used to access the app configuration.
+   * Index signature to allow this[method] accessors.
+   */
+  [key: string]: any;
+
+  /**
+   * The application instance used to access the app configuration.
    */
   protected app: Application
 
@@ -41,6 +46,21 @@ export abstract class Manager {
   }
 
   /**
+   * Ensure the given config `key` is set in the application’s configuration.
+   *
+   * @param {String} key
+   *
+   * @example
+   * ```
+   * configValidator.ensureConfigExists('view')
+   * configValidator.ensureConfigExists('app.port')
+   * ```
+   */
+  ensureConfig (key: string, callback?: () => void): void {
+    this.config().ensure(key, callback)
+  }
+
+  /**
    * Returns the driver instance.
    *
    * @param {String} driver
@@ -65,10 +85,8 @@ export abstract class Manager {
   protected createDriver (driver: string): this {
     const method: string = `create${Str(driver).studly().get()}Driver`
 
-    const self = (this as any)
-
-    if (self[method]) {
-      return this.set(driver, self[method]())
+    if (typeof this[method] === 'function') {
+      return this.set(driver, this[method]())
     }
 
     throw new Error(`Unsupported driver "${driver}".`)
@@ -119,20 +137,5 @@ export abstract class Manager {
    */
   protected missing (driver: string): boolean {
     return !this.has(driver)
-  }
-
-  /**
-   * Ensure the given config `key` is set in the application’s configuration.
-   *
-   * @param {String} key
-   *
-   * @example
-   * ```
-   * configValidator.ensureConfigExists('view')
-   * configValidator.ensureConfigExists('app.port')
-   * ```
-   */
-  ensureConfig (key: string, callback?: () => void): void {
-    this.config().ensure(key, callback)
   }
 }
