@@ -9,6 +9,8 @@
 
 ### Updated
 - bump dependencies
+- `@supercharge/manager`
+    - add index signature to support `this[methodName]` accessors
 
 
 ## [3.16.1](https://github.com/supercharge/framework/compare/v3.16.0...v3.16.1) - 2022-12-06
