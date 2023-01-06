@@ -1,5 +1,5 @@
 'use strict'
 
-export * from './html-string'
-export * from './interacts-with-time'
-export * from './service-provider'
+export { HtmlString } from './html-string'
+export { InteractsWithTime } from './interacts-with-time'
+export { ServiceProvider } from './service-provider'

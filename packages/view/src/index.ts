@@ -1,7 +1,7 @@
 'use strict'
 
-export * from './manager'
-export * from './view-service-provider'
-export * from './engines'
-export * from './view-config-builder'
-export * from './view-response'
+export { HandlebarsCompiler } from './engines'
+export { ViewManager } from './manager'
+export { ViewConfigBuilder } from './view-config-builder'
+export { View } from './view-response'
+export { ViewServiceProvider, ContainerBindings } from './view-service-provider'

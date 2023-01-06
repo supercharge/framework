@@ -1,3 +1,3 @@
 'use strict'
 
-export * from './config'
+export { Config } from './config'

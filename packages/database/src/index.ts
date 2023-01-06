@@ -1,6 +1,6 @@
 'use strict'
 
-export * from './database-manager'
-export * from './database-service-provider'
-export * from './model'
-export * from './query-builder'
+export { DatabaseManager } from './database-manager'
+export { DatabaseServiceProvider, ContainerBindings } from './database-service-provider'
+export { Model } from './model'
+export { QueryBuilder } from './query-builder'

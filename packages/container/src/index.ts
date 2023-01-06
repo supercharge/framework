@@ -1,3 +1,3 @@
 'use strict'
 
-export * from './container'
+export { Container } from './container'

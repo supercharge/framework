@@ -1,4 +1,4 @@
 'use strict'
 
-export * from './encrypter'
-export * from './encryption-service-provider'
+export { Encrypter, EncrypterOptions } from './encrypter'
+export { EncryptionServiceProvider } from './encryption-service-provider'

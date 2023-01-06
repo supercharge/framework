@@ -1,4 +1,4 @@
 'use strict'
 
-export * from './application'
-export * from './command'
+export { Application } from './application'
+export { Command } from './command'

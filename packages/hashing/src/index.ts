@@ -1,5 +1,5 @@
 'use strict'
 
-export * from './bcrypt-hasher'
-export * from './hash-manager'
-export * from './hashing-service-provider'
+export { BcryptHasher } from './bcrypt-hasher'
+export { HashManager } from './hash-manager'
+export { HashingServiceProvider } from './hashing-service-provider'

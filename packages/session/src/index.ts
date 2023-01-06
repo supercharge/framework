@@ -1,7 +1,7 @@
 'use strict'
 
-export * from './middleware'
-export * from './session'
-export * from './session-config'
-export * from './session-manager'
-export * from './session-service-provider'
+export { StartSessionMiddleware, VerifyCsrfTokenMiddleware } from './middleware'
+export { Session } from './session'
+export { SessionConfig } from './session-config'
+export { SessionManager } from './session-manager'
+export { SessionServiceProvider, ContainerBindings } from './session-service-provider'
