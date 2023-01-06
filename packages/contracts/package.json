@@ -26,13 +26,13 @@
   "dependencies": {
     "@supercharge/macroable": "~2.0.1",
     "@types/koa__router": "~12.0.0",
-    "@types/node": "~18.11.17",
+    "@types/node": "~18.11.18",
     "handlebars": "~4.7.7",
     "knex": "~2.3.0"
   },
   "devDependencies": {
     "@supercharge/eslint-config-typescript": "~2.3.3",
-    "eslint": "~8.30.0",
+    "eslint": "~8.31.0",
     "typescript": "~4.9.4"
   },
   "scripts": {
