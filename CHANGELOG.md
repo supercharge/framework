@@ -6,6 +6,9 @@
 - `@supercharge/contracts`
     - expose methods for `HttpRoute`: `path`, `methods`, `handler`, `run`
     - add missing `Route.group(prefix, callback)` typing
+    - expose `ApplicationCtor` type
+- `@supercharge/core`
+    - create typed `Application` instance
 
 ### Updated
 - bump dependencies
