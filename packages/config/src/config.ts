@@ -7,7 +7,7 @@ export class Config implements ConfigStore {
   /**
    * The in-memory config store keeping all the config items.
    */
-  private config: { [key: string]: any } = {}
+  private config: { [key: string]: any }
 
   /**
    * Create a new config store instance.
