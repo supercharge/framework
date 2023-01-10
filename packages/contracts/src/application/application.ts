@@ -4,6 +4,8 @@ import { BootstrapperCtor, ErrorHandlerCtor, EnvStore, Logger, ConfigStore, Cont
 
 type Callback = (app: Application) => Promise<unknown> | unknown
 
+export type ApplicationCtor = new (basePath: string) => Application
+
 export interface Application extends Container {
   /**
    * Returns the logger instance.

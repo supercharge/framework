@@ -1,6 +1,6 @@
 'use strict'
 
-export { Application } from './application/application'
+export { Application, ApplicationCtor } from './application/application'
 export { ApplicationConfig } from './application/config'
 
 export { ConfigStore } from './config/store'
