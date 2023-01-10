@@ -12,7 +12,18 @@ import Collect from '@supercharge/collections'
 import { Container } from '@supercharge/container'
 import { esmRequire, tap, upon } from '@supercharge/goodies'
 import { LoggingServiceProvider } from '@supercharge/logging'
-import { EnvStore, ConfigStore, BootstrapperCtor, Bootstrapper as BootstrapperContract, ServiceProvider, ServiceProviderCtor, Application as ApplicationContract, ErrorHandlerCtor, Logger } from '@supercharge/contracts'
+import {
+  ApplicationCtor,
+  Application as ApplicationContract,
+  BootstrapperCtor,
+  Bootstrapper as BootstrapperContract,
+  ConfigStore,
+  EnvStore,
+  ErrorHandlerCtor,
+  Logger,
+  ServiceProvider,
+  ServiceProviderCtor
+} from '@supercharge/contracts'
 
 export class Application extends Container implements ApplicationContract {
   /**
@@ -53,8 +64,8 @@ export class Application extends Container implements ApplicationContract {
    *
    * @returns {Application}
    */
-  public static createWithAppRoot (basePath: string): ApplicationContract {
-    return new this(basePath)
+  public static createWithAppRoot<App extends ApplicationCtor> (this: App, basePath: string): InstanceType<App> {
+    return new this(basePath) as any
   }
 
   /**
