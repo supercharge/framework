@@ -11,6 +11,11 @@ test('has environment from NPM script', async () => {
 })
 
 test('get', async () => {
+  expect(Env.get('')).toEqual('')
+  expect(Env.get('')).toEqual('')
+  expect(Env.get(null)).toEqual('')
+  expect(Env.get('UNAVAILABLE_ENV_VAR')).toEqual('')
+
   Env.set('TEST_VAR', 1234)
   expect(Env.get('TEST_VAR')).toEqual('1234')
 
@@ -67,6 +72,10 @@ test('set', async () => {
   Env.set('Supercharge_TEMP', 'temp-value')
   expect(Env.get('Supercharge_TEMP')).toEqual('temp-value')
   delete process.env.Supercharge_TEMP
+
+  expect(
+    Env.set('NULL', null).get('NULL')
+  ).toEqual('null')
 })
 
 test('isProduction', async () => {
