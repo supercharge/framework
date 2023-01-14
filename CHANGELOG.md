@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.17.0](https://github.com/supercharge/framework/compare/v3.16.1...v3.17.0) - 2022-12-xx
+## [3.17.0](https://github.com/supercharge/framework/compare/v3.16.1...v3.17.0) - 2023-01-14
 
 ### Added
 - `@supercharge/contracts`
@@ -9,11 +9,21 @@
     - expose `ApplicationCtor` type
 - `@supercharge/core`
     - create typed `Application` instance
+    - load environment-specific `.env.<environment>` file if existing
+    - support multiple path arguments in:
+        - `app.configPath(...paths)`
+        - `app.resourcePath(...paths)`
+        - `app.storagePath(...paths)`
+        - `app.databasePath(...paths)`
 
 ### Updated
 - bump dependencies
 - `@supercharge/manager`
     - add index signature to support `this[methodName]` accessors
+
+### Fixed
+- `@supercharge/env`
+    - `Env.get()` now returns an empty string for unavailable environment variables instead of `'undefined'`
 
 
 ## [3.16.1](https://github.com/supercharge/framework/compare/v3.16.0...v3.16.1) - 2022-12-06
