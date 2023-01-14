@@ -8,7 +8,7 @@ const Supertest = require('supertest')
 const { Server } = require('@supercharge/http')
 const { HttpKernel, Application, ErrorHandler } = require('../dist')
 
-const app = createApp()
+let app = createApp()
 
 function createApp () {
   const app = Application
@@ -27,6 +27,10 @@ function createApp () {
 
   return app
 }
+
+test.before.each(() => {
+  app = createApp()
+})
 
 test('static .for(app)', async () => {
   expect(HttpKernel.for(app)).toBeInstanceOf(HttpKernel)
@@ -50,10 +54,20 @@ test('.bootstrappers()', async () => {
   expect(bootstrappers.length).toBe(6)
 })
 
-test.skip('fails to bootstrap the HTTP kernel when missing a .env file', async () => {
+test('fails to bootstrap the HTTP kernel when missing a .env file', async () => {
+  app.loadEnvironmentFrom('not-existing.env')
+
   await expect(
     HttpKernel.for(app).serverCallback()
-  ).rejects.toThrow('Invalid environment file')
+  ).rejects.toThrow('Invalid environment file. Cannot find env file')
+})
+
+test('loads specific environment from .env.testing file because of NODE_ENV=testing', async () => {
+  app.env().set('NODE_ENV', 'testing')
+
+  await HttpKernel.for(app).bootstrap()
+
+  expect(app.env().get('TESTING')).toEqual('set-when-loading-env-testing')
 })
 
 test('registers and calls booted callbacks', async () => {

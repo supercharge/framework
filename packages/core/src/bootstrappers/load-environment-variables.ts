@@ -1,7 +1,7 @@
 'use strict'
 
-import Dotenv from 'dotenv'
 import Fs from '@supercharge/fs'
+import Dotenv, { DotenvConfigOptions } from 'dotenv'
 import { Application, Bootstrapper } from '@supercharge/contracts'
 
 export class LoadEnvironmentVariables implements Bootstrapper {
@@ -33,26 +33,49 @@ export class LoadEnvironmentVariables implements Bootstrapper {
    * @throws
    */
   async loadEnvironment (): Promise<void> {
-    await this.ensureEnvironmentFileExists()
-
-    Dotenv.config({ path: this.environmentFile() })
+    await this.loadDefaultEnvironmentFile()
+    await this.loadSpecificEnvironmentFile()
   }
 
   /**
-   * Throws if the environment file does not exists.
-   *
-   * @throws
+   * Load the app’s configured environment file.
    */
-  async ensureEnvironmentFileExists (): Promise<void> {
-    if (await Fs.notExists(this.environmentFile())) {
-      throw new Error(`Invalid environment file. Cannot find env file "${this.environmentFile()}".`)
+  async loadDefaultEnvironmentFile (): Promise<void> {
+    const envPath = this.app.environmentFilePath()
+
+    if (await Fs.notExists(envPath)) {
+      throw new Error(`Invalid environment file. Cannot find env file "${envPath}".`)
     }
+
+    await this.loadEnvironmentFile(
+      this.app.environmentFilePath(), { override: false }
+    )
   }
 
   /**
-   * Returns the application’s environment file. By default: `.env`.
+   * Load the given environment `file` content into `process.env`.
    */
-  environmentFile (): string {
-    return this.app.environmentFilePath()
+  async loadEnvironmentFile (path: string, options: DotenvConfigOptions): Promise<void> {
+    Dotenv.config({ path, ...options })
+  }
+
+  /**
+   * Check if an environment file exists for the configured `NODE_ENV`. For example,
+   * if `NODE_ENV=testing`, check whether a `.env.testing` file exists and loadd it.
+   */
+  async loadSpecificEnvironmentFile (): Promise<void> {
+    const env = this.app.env().get('NODE_ENV').toLowerCase()
+
+    if (!env) {
+      return
+    }
+
+    const envFilePath = this.app.resolveFromBasePath(
+      this.app.environmentPath(), `.env.${env}`
+    )
+
+    if (await Fs.exists(envFilePath)) {
+      await this.loadEnvironmentFile(envFilePath, { override: true })
+    }
   }
 }
