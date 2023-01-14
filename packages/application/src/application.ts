@@ -221,8 +221,8 @@ export class Application extends Container implements ApplicationContract {
    *
    * @returns {String}
    */
-  configPath (path?: string): string {
-    return this.resolveFromBasePath('config', path ?? '')
+  configPath (...paths: string[]): string {
+    return this.resolveFromBasePath('config', ...paths)
   }
 
   /**
@@ -243,8 +243,8 @@ export class Application extends Container implements ApplicationContract {
    *
    * @returns {String}
    */
-  resourcePath (path?: string): string {
-    return this.resolveFromBasePath('resources', path ?? '')
+  resourcePath (...paths: string[]): string {
+    return this.resolveFromBasePath('resources', ...paths)
   }
 
   /**
@@ -254,8 +254,8 @@ export class Application extends Container implements ApplicationContract {
    *
    * @returns {String}
    */
-  storagePath (path?: string): string {
-    return this.resolveFromBasePath('storage', path ?? '')
+  storagePath (...paths: string[]): string {
+    return this.resolveFromBasePath('storage', ...paths)
   }
 
   /**
@@ -265,8 +265,8 @@ export class Application extends Container implements ApplicationContract {
    *
    * @returns {String}
    */
-  databasePath (path?: string): string {
-    return this.resolveFromBasePath('database', path ?? '')
+  databasePath (...paths: string[]): string {
+    return this.resolveFromBasePath('database', ...paths)
   }
 
   /**
@@ -300,7 +300,10 @@ export class Application extends Container implements ApplicationContract {
   }
 
   /**
-   * Set the environment file to be loaded while bootstrapping the application.
+   * Set the environment `file` name to be loaded while bootstrapping the application.
+   * Only pass the file name of your environment file as an argument and not a full
+   * file system path. Use the `app.useEnvironmentPath(<path>)` method to change
+   * the path from which your environment files will be loaded on app start.
    *
    * @param {String} file
    *
