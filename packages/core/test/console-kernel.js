@@ -54,8 +54,9 @@ test('.run()', async () => {
 
   await kernel.run(['test:command'])
 
-  expect(terminateStub.calledOnce).toBe(true)
-  expect(consoleLogStub.calledOnce).toBe(true)
+  expect(terminateStub.callCount).toBe(1)
+  expect(consoleLogStub.callCount).toBe(1)
+  expect(consoleLogStub.calledWith('running test:command')).toBe(true)
 
   terminateStub.restore()
   consoleLogStub.restore()

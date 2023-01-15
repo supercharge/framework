@@ -5,6 +5,7 @@ const Sinon = require('sinon')
 const { test } = require('uvu')
 const { expect } = require('expect')
 const Supertest = require('supertest')
+const MockedEnv = require('mocked-env')
 const { Server } = require('@supercharge/http')
 const { HttpKernel, Application, ErrorHandler } = require('../dist')
 
@@ -63,11 +64,19 @@ test('fails to bootstrap the HTTP kernel when missing a .env file', async () => 
 })
 
 test('loads specific environment from .env.testing file because of NODE_ENV=testing', async () => {
+  const restoreEnv = MockedEnv({ restore: true })
+
+  const env = app.env().get('NODE_ENV')
   app.env().set('NODE_ENV', 'testing')
 
   await HttpKernel.for(app).bootstrap()
 
   expect(app.env().get('TESTING')).toEqual('set-when-loading-env-testing')
+  expect(app.env().get('OVERWRITE')).toEqual('1')
+
+  app.env().set('NODE_ENV', env)
+
+  restoreEnv()
 })
 
 test('registers and calls booted callbacks', async () => {
@@ -108,7 +117,9 @@ test('bootstrap and .startServer()', async () => {
 
   await kernel.startServer()
 
+  expect(kernel.isBootstrapped()).toBe(true)
   expect(kernel.app().env().get('FOO')).toBe('bar')
+  expect(kernel.app().env().get('OVERWRITE')).toBe('0')
   expect(kernel.app().config().has('test.foo')).toBe(true)
   expect(kernel.app().config().get('test.foo')).toBe('bar')
   expect(kernel.app().config().isMissing('ignored.foo')).toBe(true)
