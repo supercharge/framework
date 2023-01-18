@@ -3,6 +3,7 @@
 import { Model } from './model'
 import { DatabaseManager } from './database-manager'
 import { ServiceProvider } from '@supercharge/support'
+import { DatabaseConfig } from '@supercharge/contracts'
 
 export interface ContainerBindings {
   'db': DatabaseManager
@@ -14,7 +15,7 @@ export class DatabaseServiceProvider extends ServiceProvider {
    */
   override register (): void {
     this.app().singleton('db', () => {
-      const databaseConfig = this.app().config().get('database')
+      const databaseConfig = this.app().config().get<DatabaseConfig>('database')
 
       return new DatabaseManager(databaseConfig)
     })
@@ -22,5 +23,14 @@ export class DatabaseServiceProvider extends ServiceProvider {
     Model.knex(
       this.app().make<DatabaseManager>('db').connection()
     )
+  }
+
+  /**
+   * Stop application services.
+   */
+  override async shutdown (): Promise<void> {
+    for (const connection of this.app().make<DatabaseManager>('db').connections()) {
+      await connection.destroy()
+    }
   }
 }
