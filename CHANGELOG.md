@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.18.0](https://github.com/supercharge/framework/compare/v3.17.0...v3.18.0) - 2023-01-xx
+
+### Added
+- `@supercharge/database`
+    - add `connections()` method returning all active `Knex` connections
+    - service provider: implement the `shutdown` method closing all connections on application shutdown
+
+
 ## [3.17.0](https://github.com/supercharge/framework/compare/v3.16.1...v3.17.0) - 2023-01-14
 
 ### Added
