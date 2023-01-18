@@ -14,7 +14,7 @@ export class DatabaseManager {
    * Stores the active database connections, like connections to
    * SQLite, MySQL, MariaDB, PostgreSQL, and so on.
    */
-  private readonly connections: Map<string, Knex>
+  private readonly activeConnections: Map<string, Knex>
 
   /**
    * Create a new database manager instance.
@@ -23,7 +23,7 @@ export class DatabaseManager {
    */
   constructor (config: DatabaseConfig) {
     this.config = config
-    this.connections = new Map()
+    this.activeConnections = new Map()
 
     return new Proxy(this, new DatabaseManagerProxy(this))
   }
@@ -33,11 +33,9 @@ export class DatabaseManager {
    *
    * @param {String} name
    * @param {Knex} connection
-   *
-   * @returns {DatabaseManager}
    */
   setConnection (name: string, connection: Knex): this {
-    this.connections.set(name, connection)
+    this.activeConnections.set(name, connection)
 
     return this
   }
@@ -46,15 +44,13 @@ export class DatabaseManager {
    * Determine whether an active connection exists for the given `name`.
    *
    * @param {String} name
-   *
-   * @returns {Boolean}
    */
   isMissingConnection (name: string): boolean {
     if (!name) {
       throw new Error('You must provide a database connection "name"')
     }
 
-    return !this.connections.has(name)
+    return !this.activeConnections.has(name)
   }
 
   /**
@@ -62,15 +58,20 @@ export class DatabaseManager {
    * for the configured default connection name if the name is not present.
    *
    * @param {String} name
-   *
-   * @returns {Knex}
    */
   connection (name: string = this.defaultConnection()): Knex {
     if (this.isMissingConnection(name)) {
       this.setConnection(name, this.createConnection(name))
     }
 
-    return this.connections.get(name) as Knex
+    return this.activeConnections.get(name) as Knex
+  }
+
+  /**
+   * Returns all active connections.
+   */
+  connections (): Knex[] {
+    return Array.from(this.activeConnections.values())
   }
 
   /**
