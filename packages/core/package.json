@@ -1,7 +1,7 @@
 {
   "name": "@supercharge/core",
   "description": "The Supercharge foundation package",
-  "version": "3.17.0",
+  "version": "3.18.0",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
@@ -12,23 +12,23 @@
   "main": "dist",
   "types": "dist",
   "dependencies": {
-    "@supercharge/application": "^3.17.0",
+    "@supercharge/application": "^3.18.0",
     "@supercharge/collections": "~5.0.1",
-    "@supercharge/console": "^3.17.0",
-    "@supercharge/contracts": "^3.17.0",
+    "@supercharge/console": "^3.18.0",
+    "@supercharge/contracts": "^3.18.0",
     "@supercharge/errors": "~2.0.1",
     "@supercharge/fs": "~3.4.0",
     "@supercharge/goodies": "~1.11.1",
-    "@supercharge/http": "^3.17.0",
+    "@supercharge/http": "^3.18.0",
     "@supercharge/set": "~2.2.1",
-    "@supercharge/support": "^3.17.0",
+    "@supercharge/support": "^3.18.0",
     "dotenv": "~16.0.3",
     "youch": "~3.2.2",
     "youch-terminal": "~2.1.5"
   },
   "devDependencies": {
     "@supercharge/eslint-config-typescript": "~2.3.3",
-    "@supercharge/view": "^3.17.0",
+    "@supercharge/view": "^3.18.0",
     "c8": "~7.12.0",
     "eslint": "~8.31.0",
     "expect": "~29.3.1",
