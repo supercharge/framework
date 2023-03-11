@@ -76,7 +76,7 @@ describe('Vite', () => {
   test('fails when manifest file is not available', async () => {
     expect(() => {
       Vite.generateTags(app, ['resources/css/app.css', 'resources/js/app.js'])
-    }).toThrow(`Vite manifest file not found at: ${app.publicPath('build/manifest.json')}`)
+    }).toThrow(`Vite manifest file not found at path: ${app.publicPath('build/manifest.json')}`)
   })
 
   test('fails when entrypoint is missing in manifest file', async () => {

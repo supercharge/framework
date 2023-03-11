@@ -99,8 +99,8 @@ function resolveSuperchargePlugin (pluginConfig: Required<PluginConfigContract>)
       const useSsr = !!userConfig.build?.ssr
 
       return {
-        base: command === 'build' ? resolveBase(pluginConfig) : '',
-        publicDir: false,
+        base: userConfig.base ?? (command === 'build' ? resolveBase(pluginConfig) : ''),
+        publicDir: userConfig.publicDir ?? false,
         build: {
           manifest: !useSsr,
           outDir: userConfig.build?.outDir ?? resolveOutDir(pluginConfig, useSsr),
@@ -132,7 +132,9 @@ function resolveSuperchargePlugin (pluginConfig: Required<PluginConfigContract>)
      */
     transform (code: string) {
       if (resolvedConfig.command === 'serve') {
-        return Str(code).replaceAll('__supercharge_vite_placeholder__', viteDevServerUrl).get()
+        return Str(code)
+          .replaceAll('__supercharge_vite_placeholder__', viteDevServerUrl)
+          .get()
       }
     },
 

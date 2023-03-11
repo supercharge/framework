@@ -7,10 +7,10 @@
     "url": "https://github.com/supercharge/framework/issues"
   },
   "dependencies": {
-    "@supercharge/arrays": "~4.2.0",
+    "@supercharge/arrays": "~4.3.0",
     "@supercharge/contracts": "^3.18.0",
     "@supercharge/fs": "~3.4.0",
-    "@supercharge/strings": "~1.29.1",
+    "@supercharge/strings": "~2.0.0",
     "@supercharge/support": "^3.18.0"
   },
   "devDependencies": {
@@ -19,13 +19,13 @@
     "@supercharge/http": "^3.18.0",
     "@supercharge/tsconfig": "~4.0.0",
     "@supercharge/view": "^3.18.0",
-    "@vitest/coverage-c8": "~0.24.5",
-    "c8": "~7.12.0",
-    "eslint": "~8.31.0",
+    "@vitest/coverage-c8": "~0.29.2",
+    "c8": "~7.13.0",
+    "eslint": "~8.36.0",
     "supertest": "~6.3.3",
-    "typescript": "~4.9.4",
-    "vite": "~3.2.5",
-    "vitest": "~0.24.5"
+    "typescript": "~4.9.5",
+    "vite": "~4.1.4",
+    "vitest": "~0.29.2"
   },
   "engines": {
     "node": ">=16"
@@ -46,7 +46,7 @@
   "license": "MIT",
   "main": "dist",
   "peerDependencies": {
-    "vite": "^3.0.0"
+    "vite": "^3.0.0 || ^4.0.0"
   },
   "publishConfig": {
     "access": "public"
