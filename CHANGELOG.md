@@ -1,6 +1,16 @@
 # Changelog
 
-## [3.18.0](https://github.com/supercharge/framework/compare/v3.17.0...v3.18.0) - 2023-01-xx
+## [3.19.0](https://github.com/supercharge/framework/compare/v3.18.0...v3.19.0) - 2023-03-11
+
+### Added
+- `@supercharge/vite`
+    - support Vite 4.x
+
+### Updated
+- bump dependencies
+
+
+## [3.18.0](https://github.com/supercharge/framework/compare/v3.17.0...v3.18.0) - 2023-01-18
 
 ### Added
 - `@supercharge/database`
