@@ -39,18 +39,7 @@ export class ViteManifest {
    */
   static ensureManifestExists (manifestPath: string): void {
     if (!Fs.existsSync(manifestPath)) {
-      throw new Error(`Vite manifest file not found at: ${manifestPath} `)
-    }
-  }
-
-  /**
-   * Ensure the given `entrypoint` exists in the manifest.
-   *
-   * @param entrypoint
-   */
-  ensureEntrypoint (entrypoint: string): void {
-    if (!this.hasEntrypoint(entrypoint)) {
-      throw new Error(`Entrypoint not found in manifest: ${entrypoint}`)
+      throw new Error(`Vite manifest file not found at path: ${manifestPath} `)
     }
   }
 
@@ -62,17 +51,25 @@ export class ViteManifest {
    * @returns {Boolean}
    */
   hasEntrypoint (entrypoint: string): boolean {
-    return !!this.getChunk(entrypoint)
+    try {
+      this.getChunk(entrypoint)
+      return true
+    } catch (error) {
+      return false
+    }
   }
 
   /**
-   * Returns the manifest chunk for the given `entrypoint`.
-   *
-   * @param entrypoint
-   *
-   * @returns {ManifestChunk | undefined}
+   * Returns the manifest chunk for the given `entrypoint`. Throws an error If no chunk
+   * exists
    */
-  getChunk (entrypoint: string): ManifestChunk | undefined {
-    return this.manifest[entrypoint]
+  getChunk (entrypoint: string): ManifestChunk {
+    const chunk = this.manifest[entrypoint]
+
+    if (!chunk) {
+      throw new Error(`Entrypoint not found in manifest: ${entrypoint}`)
+    }
+
+    return chunk
   }
 }
