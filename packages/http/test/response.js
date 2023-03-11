@@ -156,19 +156,22 @@ test('throws on response.cookie() when not providing expiration time', async () 
 })
 
 test('response.cookie() creates a cookie that expiresAt', async () => {
+  const inOneYear = new Date()
+  inOneYear.setFullYear(inOneYear.getFullYear() + 1)
+
   const server = app
     .make(Server)
     .use(({ response }) => {
       return response
         .payload('ok')
-        .cookie('name', 'Supercharge', cookie => cookie.unsigned().expiresAt(new Date()))
+        .cookie('name', 'Supercharge', cookie => cookie.unsigned().expiresAt(inOneYear))
     })
 
   const response = await Supertest(server.callback())
     .get('/')
     .expect(200)
 
-  expect(response.headers['set-cookie'][0]).toContain('expires=')
+  expect(response.headers['set-cookie'][0]).toContain(`expires=${inOneYear.toUTCString()}`)
 })
 
 test('throws on response.cookie() when not providing an argument to expiresAt', async () => {
