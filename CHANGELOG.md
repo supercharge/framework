@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.20.0](https://github.com/supercharge/framework/compare/v3.19.0...v3.20.0) - 2023-0x-xx
+
+### Added
+- `@supercharge/http`
+    - export a base `Middleware`
+
+
 ## [3.19.0](https://github.com/supercharge/framework/compare/v3.18.0...v3.19.0) - 2023-03-11
 
 ### Added
