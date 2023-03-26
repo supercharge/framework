@@ -1,6 +1,7 @@
 'use strict'
 
 export {
+  Middleware,
   BodyparserMiddleware,
   BodyparserBaseOptions,
   BodyparserJsonOptions,

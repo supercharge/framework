@@ -1,20 +1,9 @@
 'use strict'
 
-import { HttpContext, NextHandler, ErrorHandler, Application } from '@supercharge/contracts'
+import { Middleware } from './base'
+import { HttpContext, NextHandler, ErrorHandler } from '@supercharge/contracts'
 
-export class HandleErrorMiddleware {
-  /**
-   * Stores the application instance.
-   */
-  private readonly app: Application
-
-  /**
-   * Create a new instance.
-   */
-  constructor (app: Application) {
-    this.app = app
-  }
-
+export class HandleErrorMiddleware extends Middleware {
   /**
    * Handle the incoming request.
    *
