@@ -12,6 +12,16 @@ export class Session implements SessionContract {
   protected sessionId: string
 
   /**
+   * Stores the session ID for the current request.
+   */
+  protected originalSessionId: string
+
+  /**
+   * Determine whether the session ID has been regenerated.
+   */
+  protected hasRegeneratedSessionId: boolean = false
+
+  /**
    * Stores the session name.
    */
   protected readonly sessionName: string
@@ -31,6 +41,8 @@ export class Session implements SessionContract {
    */
   constructor (driver: SessionDriver, name: string, id?: string) {
     this.sessionId = ''
+    this.originalSessionId = ''
+
     this.attributes = {}
     this.driver = driver
     this.sessionName = name
@@ -61,6 +73,10 @@ export class Session implements SessionContract {
     this.sessionId = this.isValidId(id)
       ? id
       : this.generateRandomToken()
+
+    if (!this.hasRegeneratedSessionId) {
+      this.originalSessionId = this.sessionId
+    }
 
     return this
   }
@@ -252,7 +268,7 @@ export class Session implements SessionContract {
    * Generate a new session ID.
    */
   regenerate (): this {
-    // TODO trace regenerated session and delete old session
+    this.hasRegeneratedSessionId = true
 
     this.setId(
       this.generateRandomToken()
@@ -305,8 +321,20 @@ export class Session implements SessionContract {
   async commit (): Promise<this> {
     this.ageFlashData()
 
+    await this.cleanOldSession()
     await this.driver.write(this.sessionId, this.attributes)
 
     return this
+  }
+
+  /**
+   * Clean up session data for the original session ID. The session ID changes
+   * when generating a new session ID and migrating the data to it. Cleaning
+   * the old data keeps the session store clean from old, outdated values.
+   */
+  protected async cleanOldSession (): Promise<void> {
+    if (this.hasRegeneratedSessionId) {
+      await this.driver.destroy(this.originalSessionId)
+    }
   }
 }

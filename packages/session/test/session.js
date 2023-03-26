@@ -334,7 +334,8 @@ test.group('Session', () => {
       request.session().regenerate()
 
       return response.payload({
-        newSessionId: request.session().id()
+        newSessionId: request.session().id(),
+        values: request.session().all()
       })
     })
 
@@ -344,6 +345,42 @@ test.group('Session', () => {
       .set('Cookie', sessionCookie)
 
     expect(sessionId).not.toEqual(response.body.newSessionId)
+    expect(response.body.values).toMatchObject({ foo: 'bar' })
+  })
+
+  test('regenerate session id destroys the previous session', async () => {
+    const app = await setupApp({ driver: 'memory' })
+
+    const { sessionId, sessionCookie } = await createInitialSession(app, {
+      foo: 'bar'
+    })
+
+    const server = createServer(app).use(({ request, response }) => {
+      request.session().regenerate()
+
+      return response.payload({
+        newSessionId: request.session().id(),
+        values: request.session().all()
+      })
+    })
+
+    const response = await Supertest(server.callback())
+      .get('/')
+      .expect(200)
+      .set('Cookie', sessionCookie)
+
+    expect(sessionId).not.toEqual(response.body.newSessionId)
+    expect(response.body.values).toMatchObject({ foo: 'bar' })
+
+    const responseFromOldSessionCookie = await Supertest(server.callback())
+      .get('/')
+      .expect(200)
+      .set('Cookie', sessionCookie)
+
+    expect(sessionId).not.toEqual(responseFromOldSessionCookie.body.newSessionId)
+    expect(
+      Object.keys(responseFromOldSessionCookie.body.values)
+    ).toEqual(['__token__'])
   })
 
   test('invalidate session: clears values and regenerates the id', async () => {
