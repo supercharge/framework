@@ -1,21 +1,24 @@
 'use strict'
 
-export interface StateBag {
+import { RequestState } from './request-state'
+
+export interface StateBag<Entries extends RequestState = {}> {
   /**
    * Returns the state object.
    */
-  all(...keys: string[]): Record<string, any>
+  all(...keys: Array<keyof Entries | string>): Record<string, any>
 
   /**
    * Returns the saved state for the given `name`.
    */
-  get<R = any>(name: string): R | undefined
-  get<R = any>(name: string, defaultValue: R): R
+  get<R = any>(name: keyof Entries | string): R | undefined
+  get<R = any>(name: keyof Entries | string, defaultValue: R): R
 
   /**
    * Add a key-value-pair to the shared state or an object of key-value-pairs.
    */
-  add (name: string | Record<string, any>, value?: any): this
+  add (values: Record<string, any>): this
+  add (key: keyof Entries | string, value: any): this
 
   /**
    * Merge the given `data` object with the existing shared state.
@@ -25,16 +28,16 @@ export interface StateBag {
   /**
    * Determine whether a shared state item exists for the given `name`.
    */
-  has(name: string): boolean
+  has(name: keyof Entries | string): name is keyof Entries
   /**
    * Determine whether the shared state is missing an item for the given `name`.
    */
-  isMissing (name: string): boolean
+  isMissing (name: keyof Entries | string): name is string
 
   /**
    * Remove the shared state item for the given `name`.
    */
-  remove(name: string): this
+  remove(name: keyof Entries | string): this
 
   /**
    * Removes all shared state items.
