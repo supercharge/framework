@@ -45,6 +45,19 @@ export class SessionConfig {
   }
 
   /**
+   * Returns the file system path for session files.
+   */
+  fileLocation (): string {
+    const location = this.config.file?.location
+
+    if (location) {
+      return location
+    }
+
+    throw new Error(`Session file "location" value is not configured. Received "${typeof location}". Configure it in your "config/session.ts" file.`)
+  }
+
+  /**
    * Returns the session cookie lifetime in **seconds**.
    */
   lifetime (): number {
