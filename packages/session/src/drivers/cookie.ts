@@ -19,14 +19,14 @@ export class CookieSessionDriver extends InteractsWithTime implements SessionDri
   /**
    * Create a new cookie session driver instance.
    *
-   * @param {Number} seconds
+   * @param {Number} lifetimeInSeconds
    * @param {HttpRequest} ctx
    */
-  constructor (seconds: number, ctx: HttpContext) {
+  constructor (lifetimeInSeconds: number, ctx: HttpContext) {
     super()
 
     this.ctx = ctx
-    this.lifetimeInSeconds = seconds
+    this.lifetimeInSeconds = lifetimeInSeconds
   }
 
   /**

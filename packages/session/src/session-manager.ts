@@ -3,6 +3,7 @@
 import { Session } from './session'
 import { Manager } from '@supercharge/manager'
 import { SessionConfig } from './session-config'
+import { FileSessionDriver } from './drivers/file'
 import { MemorySessionDriver } from './drivers/memory'
 import { CookieSessionDriver } from './drivers/cookie'
 import { Application, HttpContext, SessionDriver } from '@supercharge/contracts'
@@ -121,6 +122,18 @@ export class SessionManager extends Manager {
   protected createMemoryDriver (): SessionDriver {
     return new MemorySessionDriver(
       this.sessionConfig().lifetime()
+    )
+  }
+
+  /**
+   * Returns a file session driver instance.
+   *
+   * @returns {SessionDriver}
+   */
+  protected createFileDriver (): SessionDriver {
+    return new FileSessionDriver(
+      this.sessionConfig().lifetime(),
+      this.sessionConfig().fileLocation(),
     )
   }
 }

@@ -1,5 +1,6 @@
 'use strict'
 
+export { CookieSessionDriver, FileSessionDriver, MemorySessionDriver } from './drivers'
 export { StartSessionMiddleware, VerifyCsrfTokenMiddleware } from './middleware'
 export { Session } from './session'
 export { SessionConfig } from './session-config'

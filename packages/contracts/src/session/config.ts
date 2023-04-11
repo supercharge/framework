@@ -4,7 +4,7 @@ export interface SessionConfig {
   /**
    * The session driver name.
    */
-  driver: string
+  driver: 'file' | 'memory' | 'cookie' | string
 
   /**
    * Stores the session cookie name.
@@ -55,5 +55,12 @@ export interface SessionConfig {
      * Determine whether the session cookie is sent along with cross-site requests.
      */
     sameSite?: 'strict' | 'lax' | 'none' | true | false
+  }
+
+  /**
+   * Stores the file driver options.
+   */
+  file?: {
+    location: string
   }
 }
