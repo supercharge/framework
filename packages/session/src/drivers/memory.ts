@@ -19,10 +19,10 @@ export class MemorySessionDriver extends InteractsWithTime implements SessionDri
   /**
    * Create a new memory session driver instance.
    */
-  constructor (seconds: number) {
+  constructor (lifetimeInSeconds: number) {
     super()
 
-    this.lifetimeInSeconds = seconds
+    this.lifetimeInSeconds = lifetimeInSeconds
     this.sessions = new Map<string, any>()
   }
 
