@@ -4,11 +4,19 @@
 
 ### Added
 - `@supercharge/contracts`
-    - export a `RequestStateData` interface. This interface can be extended in a project to define custom properties in the current request state (shared using `request.state().share()`)
+    - export a `RequestStateData` interface. This interface can be extended in your project to define custom properties in the current request state (shared using `request.state().share()`)
     ```ts
     declare module '@supercharge/contracts' {
         export interface RequestStateData {
             requestId: string
+        }
+    }
+    ```
+    - export a `ContainerBindings` interface. This interface can be extended in your project to define custom container bindings (bound using `app.bind(<binding-name>)` or `app.singleton(<binding-name>)`)
+    ```ts
+    declare module '@supercharge/contracts' {
+        export interface ContainerBindings {
+            'router': HttpRouter
         }
     }
     ```
