@@ -1,7 +1,7 @@
 'use strict'
 
-import compose from 'koa-compose'
 import { Route } from './route'
+import compose from 'koa-compose'
 import Map from '@supercharge/map'
 import { RouteGroup } from './group'
 import Str from '@supercharge/strings'

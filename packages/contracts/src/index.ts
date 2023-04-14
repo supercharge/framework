@@ -34,7 +34,7 @@ export { RequestCookieBuilder, RequestCookieBuilderCallback, ResponseCookieBuild
 export { CorsConfig, CorsOptions } from './http/cors-config'
 export { InteractsWithContentTypes } from './http/concerns/interacts-with-content-types'
 export { InteractsWithState } from './http/concerns/interacts-with-state'
-export { StateBag } from './http/concerns/state-bag'
+export { StateBag, RequestStateData } from './http/concerns/state-bag'
 export { FileBag } from './http/file-bag'
 export { InputBag } from './http/input-bag'
 export { ParameterBag } from './http/parameter-bag'
