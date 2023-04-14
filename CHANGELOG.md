@@ -1,10 +1,21 @@
 # Changelog
 
-## [3.20.0](https://github.com/supercharge/framework/compare/v3.19.0...v3.20.0) - 2023-0x-xx
+## [3.20.0](https://github.com/supercharge/framework/compare/v3.19.0...v3.20.0) - 2023-04-xx
 
 ### Added
+- `@supercharge/contracts`
+    - export a `RequestStateData` interface. This interface can be extended in a project to define custom properties in the current request state (shared using `request.state().share()`)
+    ```ts
+    declare module '@supercharge/contracts' {
+        export interface RequestStateData {
+            requestId: string
+        }
+    }
+    ```
 - `@supercharge/http`
     - export a base `Middleware`
+- `@supercharge/session`
+    - add `file` driver that stores sessions in files on local disc
 
 
 ## [3.19.0](https://github.com/supercharge/framework/compare/v3.18.0...v3.19.0) - 2023-03-11
