@@ -9,7 +9,7 @@ export { ConsoleApplication } from './console/application'
 export { Command } from './console/command'
 export { ConsoleKernel } from './console/kernel'
 
-export { Container, BindingFactory } from './container/container'
+export { Container, ContainerBindings, BindingFactory } from './container/container'
 
 export { DatabaseConfig } from './database/config'
 export { Database } from './database/database'

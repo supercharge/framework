@@ -7,13 +7,18 @@ import { Response } from './server/response'
 import { ServiceProvider } from '@supercharge/support'
 import { ApplicationConfig, HttpConfig } from '@supercharge/contracts'
 
-export interface ContainerBindings {
-  'route': Router
-  'router': Router
-  'server': Server
-  Server: Server
-  Request: typeof Request
-  Response: typeof Response
+/**
+ * Add container bindings for services from this provider.
+ */
+declare module '@supercharge/contracts' {
+  export interface ContainerBindings {
+    'route': Router
+    'router': Router
+    'server': Server
+    Server: Server
+    Request: typeof Request
+    Response: typeof Response
+  }
 }
 
 export class HttpServiceProvider extends ServiceProvider {
