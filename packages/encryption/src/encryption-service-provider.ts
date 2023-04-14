@@ -3,6 +3,16 @@
 import { Encrypter } from './encrypter'
 import { ServiceProvider } from '@supercharge/support'
 
+/**
+ * Add container bindings for services from this provider.
+ */
+declare module '@supercharge/contracts' {
+  export interface ContainerBindings {
+    'encrypter': Encrypter
+    'encryption': ContainerBindings['encrypter']
+  }
+}
+
 export class EncryptionServiceProvider extends ServiceProvider {
   /**
    * Register the encrypter into the container.

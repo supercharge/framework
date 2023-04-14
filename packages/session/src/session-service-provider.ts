@@ -8,8 +8,10 @@ import { HttpRequest, HttpRequestCtor, Session } from '@supercharge/contracts'
 /**
  * Add container bindings for the session service.
  */
-export interface ContainerBindings {
-  'session': SessionManager
+declare module '@supercharge/contracts' {
+  export interface ContainerBindings {
+    'session': SessionManager
+  }
 }
 
 /**

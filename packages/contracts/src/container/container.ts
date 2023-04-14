@@ -5,22 +5,41 @@ import { Class } from '..'
 /**
  * Defines the shape of the container `factory` callback method.
  */
-export type BindingFactory<ReturnValue extends any> = (container: Container) => ReturnValue
+export type BindingFactory<ReturnValue extends any = any> = (container: Container) => ReturnValue
+
+/**
+ * This interface defines the stored container bindings. It provides bound
+ * key-value-pairs in the container and allows other packages to extend
+ * this interface signalling what’s available inside of the container.
+ *
+ * You can extend this interface in your code like this:
+ *
+ * @example
+ *
+ * ```ts
+ *  declare module '@supercharge/contracts' {
+ *    export interface ContainerBindings {
+ *      'your': BindingType
+ *    }
+ *  }
+ * ```
+ */
+export type ContainerBindings = any
 
 /**
  * Defines the IoC Container interface.
  */
-export interface Container<ContainerBindings extends string | Class = any> {
+export interface Container<Bindings = ContainerBindings> {
   /**
    * Register a binding into the container.
    */
-  bind<Namespace extends keyof ContainerBindings> (
+  bind<Namespace extends keyof Bindings> (
     namespace: Namespace,
-    factory: BindingFactory<ContainerBindings[Namespace]>
+    factory: BindingFactory<Bindings[Namespace]>
   ): this
   bind<Namespace extends string | Class>(
     namespace: Namespace,
-    factory: BindingFactory<Namespace extends keyof ContainerBindings ? ContainerBindings[Namespace] : any>,
+    factory: BindingFactory<Namespace extends keyof Bindings ? Bindings[Namespace] : any>,
     options: { singleton?: boolean }
   ): this
 
@@ -28,21 +47,21 @@ export interface Container<ContainerBindings extends string | Class = any> {
    * Register a shared binding (singleton) in the container. It resolves the instance only once
    * and saves it in memory afterwards. Returns the cached instance on every subsequent call.
    */
-  singleton<Namespace extends keyof ContainerBindings> (
+  singleton<Namespace extends keyof Bindings> (
     namespace: Namespace,
-    factory: BindingFactory<ContainerBindings[Namespace]>
+    factory: BindingFactory<Bindings[Namespace]>
   ): this
   singleton<Namespace extends string | Class>(
     namespace: Namespace,
-    factory: BindingFactory<Namespace extends keyof ContainerBindings ? ContainerBindings[Namespace] : any>
+    factory: BindingFactory<Namespace extends keyof Bindings ? Bindings[Namespace] : any>
   ): this
 
   /**
    * Resolve the given namespace from the container.
    */
-  make<Namespace extends Extract<keyof ContainerBindings, string>> (
+  make<Namespace extends Extract<keyof Bindings, string>> (
     namespace: Namespace
-  ): Namespace extends keyof ContainerBindings ? ContainerBindings[Namespace] : InferMakeType<Namespace>
+  ): Namespace extends keyof Bindings ? Bindings[Namespace] : InferMakeType<Namespace>
   make<T> (namespace: Class<T>): T
   make<T = any> (namespace: string): T
 
@@ -59,19 +78,19 @@ export interface Container<ContainerBindings extends string | Class = any> {
   /**
    * Determine whether the given `namespace` is bound in the container.
    */
-  hasBinding<Binding extends keyof ContainerBindings>(namespace: Binding): boolean
+  hasBinding<Namespace extends keyof Bindings>(namespace: Namespace): boolean
   hasBinding(namespace: string | Class): boolean
 
   /**
    * Determine whether the given `namespace` is a singleton.
    */
-  isSingleton<Binding extends keyof ContainerBindings>(namespace: Binding): boolean
+  isSingleton<Namespace extends keyof Bindings>(namespace: Namespace): boolean
   isSingleton(namespace: string | Class): boolean
 
   /**
    * Remove a resolved instance from the (singleton) cache.
    */
-  forgetInstance<Binding extends keyof ContainerBindings>(namespace: Binding): this
+  forgetInstance<Binding extends keyof Bindings>(namespace: Binding): this
   forgetInstance(namespace: string | Class): this
 
   /**
