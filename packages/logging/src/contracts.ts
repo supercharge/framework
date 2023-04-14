@@ -2,6 +2,11 @@
 
 import { Logger } from '@supercharge/contracts'
 
-export interface ContainerBindings {
-  'logger': Logger
+/**
+ * Add container bindings for services from this provider.
+ */
+declare module '@supercharge/contracts' {
+  export interface ContainerBindings {
+    'logger': Logger
+  }
 }

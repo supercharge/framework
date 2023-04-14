@@ -5,8 +5,13 @@ import { DatabaseManager } from './database-manager'
 import { ServiceProvider } from '@supercharge/support'
 import { DatabaseConfig } from '@supercharge/contracts'
 
-export interface ContainerBindings {
-  'db': DatabaseManager
+/**
+ * Add container bindings for services from this provider.
+ */
+declare module '@supercharge/contracts' {
+  export interface ContainerBindings {
+    'db': DatabaseManager
+  }
 }
 
 export class DatabaseServiceProvider extends ServiceProvider {

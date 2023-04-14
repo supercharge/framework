@@ -25,6 +25,18 @@ import {
   ServiceProviderCtor
 } from '@supercharge/contracts'
 
+/**
+ * Add container bindings for services from this provider.
+ */
+declare module '@supercharge/contracts' {
+  export interface ContainerBindings {
+    'app': Application
+    'container': Application
+    'env': EnvStore
+    'config': ConfigStore
+  }
+}
+
 export class Application extends Container implements ApplicationContract {
   /**
    * Stores the application’s meta data, like the application’s root directory,
@@ -79,9 +91,11 @@ export class Application extends Container implements ApplicationContract {
    */
   withErrorHandler (ErrorHandler: ErrorHandlerCtor): this {
     return tap(this, () => {
-      this.singleton('error.handler', () => {
-        return new ErrorHandler(this)
-      }).alias('error.handler', ErrorHandler)
+      this
+        .singleton('error.handler', () => {
+          return new ErrorHandler(this)
+        })
+        .alias('error.handler', ErrorHandler)
     })
   }
 

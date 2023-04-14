@@ -35,4 +35,4 @@ export {
   UploadedFile
 } from './server'
 
-export { HttpServiceProvider, ContainerBindings } from './http-service-provider'
+export { HttpServiceProvider } from './http-service-provider'

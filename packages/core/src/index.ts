@@ -12,7 +12,6 @@ export {
 } from './bootstrappers'
 
 export { ConsoleKernel } from './console/kernel'
-export { ContainerBindings } from './contracts'
 export { ErrorHandler, HttpError } from './errors'
 export { HttpKernel } from './http/kernel'
 export { RouteServiceProvider } from './providers'
