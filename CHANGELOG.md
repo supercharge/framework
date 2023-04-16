@@ -1,13 +1,114 @@
 # Changelog
 
-## [3.16.0](https://github.com/supercharge/framework/compare/v3.14.1...v3.16.0) - 2022-11-xx
+## [3.20.0](https://github.com/supercharge/framework/compare/v3.19.0...v3.20.0) - 2023-04-xx
+
+### Added
+- `@supercharge/contracts`
+    - export a `RequestStateData` interface. This interface can be extended in your project to define custom properties in the current request state (shared using `request.state().share()`)
+    ```ts
+    declare module '@supercharge/contracts' {
+        export interface RequestStateData {
+            requestId: string
+        }
+    }
+    ```
+    - export a `ContainerBindings` interface. This interface can be extended in your project to define custom container bindings (bound using `app.bind(<binding-name>)` or `app.singleton(<binding-name>)`)
+    ```ts
+    declare module '@supercharge/contracts' {
+        export interface ContainerBindings {
+            'router': HttpRouter
+        }
+    }
+    ```
+- `@supercharge/http`
+    - export a base `Middleware`
+- `@supercharge/session`
+    - add `file` driver that stores sessions in files on local disc
+
+
+## [3.19.0](https://github.com/supercharge/framework/compare/v3.18.0...v3.19.0) - 2023-03-11
+
+### Added
+- `@supercharge/vite`
+    - support Vite 4.x
+
+### Updated
+- bump dependencies
+
+
+## [3.18.0](https://github.com/supercharge/framework/compare/v3.17.0...v3.18.0) - 2023-01-18
+
+### Added
+- `@supercharge/database`
+    - add `connections()` method returning all active `Knex` connections
+    - service provider: implement the `shutdown` method closing all connections on application shutdown
+
+
+## [3.17.0](https://github.com/supercharge/framework/compare/v3.16.1...v3.17.0) - 2023-01-14
+
+### Added
+- `@supercharge/contracts`
+    - expose methods for `HttpRoute`: `path`, `methods`, `handler`, `run`
+    - add missing `Route.group(prefix, callback)` typing
+    - expose `ApplicationCtor` type
+- `@supercharge/core`
+    - create typed `Application` instance
+    - load environment-specific `.env.<environment>` file if existing
+    - support multiple path arguments in:
+        - `app.configPath(...paths)`
+        - `app.resourcePath(...paths)`
+        - `app.storagePath(...paths)`
+        - `app.databasePath(...paths)`
+
+### Updated
+- bump dependencies
+- `@supercharge/manager`
+    - add index signature to support `this[methodName]` accessors
+
+### Fixed
+- `@supercharge/env`
+    - `Env.get()` now returns an empty string for unavailable environment variables instead of `'undefined'`
+
+
+## [3.16.1](https://github.com/supercharge/framework/compare/v3.16.0...v3.16.1) - 2022-12-06
+
+### Updated
+- `@supercharge/contracts`
+    - update re-exports to support module augmentation when using `declare module '@supercharge/contracts' { … }` in packages
+
+
+## [3.16.0](https://github.com/supercharge/framework/compare/v3.15.0...v3.16.0) - 2022-12-06
+
+### Added
+- `@supercharge/core`
+    - add `report` and `render` placeholder methods to `HttpError` allowing users to override them when needed
+- `@supercharge/view`
+    - register `response.view` method as a macro
+- `@supercharge/http`
+    - register Koa-Router’s `allowedMethod` middleware
+    - register a middleware that ensures a route is found, throw a 404 Not Found error otherwise
 
 ### Updated
 - bump dependencies
 - `@supercharge/contracts`
     - export all interfaces from the root `index.ts` instead of individual `index.ts` files in the foldes. Hopefully this fixes typing issues with module augmentation when extending the `@supercharge/contracts` module like `@supercharge/session` does (by adding a `request.session()` method to the request interface)
+    - HTTP `response.redirect().back()` returns `this` instead of `void` allowing you to chain further method calls and return the redirect
+- `@supercharge/core`
+    - error handler: the wrapped HTTP errors keeps the stack trace from the original error
+    - error handler: change the visibility of instance properties from `private` to `protected`
+    - HTTP error: implement `report` and `render` placeholder methods. Subclasses then know of their existence and may override them
 - `@supercharge/http`
     - `response.redirect().back()` returns `this` instead of `void` allowing you to chain further method calls and return the redirect instance
+- `@supercharge/container`
+    - `container.forgetInstance(namespace)` throws an error when the given `namespace` is falsy
+
+### Fixed
+- `@supercharge/view`
+    - `view.exists(<template>)` ensures the file extension is appended to the `template` if not already present
+
+### Removed
+- `@supercharge/http`
+    - `response.view` is moved to a macro registered by the `@supercharge/view` package (see "Added" section of this version)
 
 
 ## [3.15.0](https://github.com/supercharge/framework/compare/v3.14.0...v3.15.0) - 2022-11-16

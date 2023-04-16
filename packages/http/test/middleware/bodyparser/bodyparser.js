@@ -196,14 +196,13 @@ test('sets the raw request payload', async () => {
   const app = setupApp({ bodyparser: defaultBodyparserConfig })
 
   const server = app.make(Server)
-    .use(async (ctx, next) => {
-      ctx.response.payload({
-        payload: ctx.request.payload(),
-        rawPayload: ctx.request.rawPayload()
-      })
 
-      await next()
+  server.router().post('/', async ctx => {
+    return ctx.response.payload({
+      payload: ctx.request.payload(),
+      rawPayload: ctx.request.rawPayload()
     })
+  })
 
   const response = await Supertest(server.callback())
     .post('/')

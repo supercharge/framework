@@ -1,3 +1,3 @@
 'use strict'
 
-export * from './env'
+export { Env } from './env'

@@ -25,6 +25,7 @@ coverage
 # Secrets
 .env
 .env.**
+!test/fixtures/.env.testing
 
 # IDEs and editors
 .idea

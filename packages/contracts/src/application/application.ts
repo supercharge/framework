@@ -4,6 +4,8 @@ import { BootstrapperCtor, ErrorHandlerCtor, EnvStore, Logger, ConfigStore, Cont
 
 type Callback = (app: Application) => Promise<unknown> | unknown
 
+export type ApplicationCtor = new (basePath: string) => Application
+
 export interface Application extends Container {
   /**
    * Returns the logger instance.
@@ -40,12 +42,12 @@ export interface Application extends Container {
   /**
    * Returns the resolved path to `path` starting at the application’s base path.
    */
-  resolveFromBasePath(path: string): string
+  resolveFromBasePath(...paths: string[]): string
 
   /**
    * Returns the resolved path to `path` starting at the application’s base path.
    */
-  resolveGlobFromBasePath(path: string): string
+  resolveGlobFromBasePath(...paths: string[]): string
 
   /**
    * Returns the config store instance.
@@ -57,7 +59,7 @@ export interface Application extends Container {
    *
    * @param {String} path
    */
-  configPath (path?: string): string
+  configPath (...paths: string[]): string
 
   /**
    * Returns an absolute path into the application’s public directory.
@@ -71,21 +73,21 @@ export interface Application extends Container {
    *
    * @param {String} path
    */
-  resourcePath (path?: string): string
+  resourcePath (...paths: string[]): string
 
   /**
    * Returns an absolute path into the application’s storage directory.
    *
    * @param {String} path
    */
-  storagePath (path?: string): string
+  storagePath (...paths: string[]): string
 
   /**
    * Returns an absolute path into the application’s database directory.
    *
    * @param {String} path
    */
-  databasePath (path?: string): string
+  databasePath (...paths: string[]): string
 
   /**
    * The env store instance.
@@ -113,7 +115,10 @@ export interface Application extends Container {
   environmentFile(): string
 
   /**
-   * Set the environment file to be loaded while bootstrapping the application.
+   * Set the environment `file` name to be loaded while bootstrapping the application.
+   * Only pass the file name of your environment file as an argument and not a full
+   * file system path. Use the `app.useEnvironmentPath(<path>)` method to change
+   * the path from which your environment files will be loaded on app start.
    *
    * @param {String} file
    */

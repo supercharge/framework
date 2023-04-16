@@ -24,7 +24,7 @@ export class Vite {
   /**
    * Stores the relative path to the "build" directory.
    */
-  private readonly buildDirecotry: string
+  private readonly buildDirectory: string
 
   /**
    * Create a new instance.
@@ -32,16 +32,11 @@ export class Vite {
   constructor (app: Application, entrypoints: string | string[], buildDirectory?: string) {
     this.app = app
     this.entrypoints = Arr.from(entrypoints)
-    this.buildDirecotry = Str(buildDirectory ?? 'build').start('/').get()
+    this.buildDirectory = Str(buildDirectory ?? 'build').start('/').get()
   }
 
   /**
    * Generate HTML tags for the given `entrypoints`.
-   *
-   * @param entrypoints The entrypoints to handle.
-   * @param buildDirectory
-   *
-   * @returns {Vite}
    */
   static generateTags (app: Application, entrypoints: string[], buildDirectory?: string): string {
     return new this(app, entrypoints, buildDirectory).generateTags().toString()
@@ -49,28 +44,28 @@ export class Vite {
 
   /**
    * Generate HTML tags for the given Vite entrypoints.
-   *
-   * @returns {String}
    */
   generateTags (): HtmlString {
-    return this.hasExistingHotReloadFile()
+    const tags = this.hasExistingHotReloadFile()
       ? this.generateTagsForHotReload()
       : this.generateTagsFromManifest()
+
+    return HtmlString.from(tags)
   }
 
   /**
-   * Determine whether a hot-reload file exists.
-   *
-   * @returns {Boolean}
+   * Determine whether a hot-reload file exists. This method checks the file
+   * existence synchronously because we’re using the `generateTags` method
+   * in a Handlebars helper and they only support synchronous calls.
    */
   hasExistingHotReloadFile (): boolean {
-    return Fs.existsSync(this.hotReloadFilePath())
+    return Fs.existsSync(
+      this.hotReloadFilePath()
+    )
   }
 
   /**
    * Returns the path to the hot-reload file. The hot-reload file contains the Vite dev server URL.
-   *
-   * @returns {String}
    */
   hotReloadFilePath (): string {
     return this.app.publicPath('hot')
@@ -78,52 +73,48 @@ export class Vite {
 
   /**
    * Returns the generated HTML tags for the given `entrypoints` and Vite client.
-   *
-   * @returns {HtmlString}
    */
-  generateTagsForHotReload (): HtmlString {
+  generateTagsForHotReload (): string {
     const url = Fs.readFileSync(this.hotReloadFilePath(), 'utf8')
 
-    const tags = this.entrypoints
+    return this.entrypoints
       .prepend('@vite/client')
       .map(entrypoint => {
         return this.makeTagForChunk(entrypoint, `${url}/${String(entrypoint)}`)
       })
       .join('')
-
-    return HtmlString.from(tags)
   }
 
   /**
    * Returns the generated style and script HTML tags based on the Vite manifest.
    */
-  generateTagsFromManifest (): HtmlString {
+  generateTagsFromManifest (): string {
     const tags = []
     const manifest = this.manifest()
 
-    for (const entrypoint of this.entrypoints.toArray()) {
-      manifest.ensureEntrypoint(entrypoint)
+    for (const entrypoint of this.entrypoints) {
+      const chunk = manifest.getChunk(entrypoint)
 
-      const chunk = manifest.getChunk(entrypoint)!
-
-      tags.push(this.makeTagForChunk(entrypoint, `${this.buildDirecotry}/${chunk.file}`))
+      tags.push(
+        this.makeTagForChunk(entrypoint, `${this.buildDirectory}/${chunk.file}`)
+      )
 
       chunk.css?.forEach(cssFile => {
-        tags.push(this.makeTagForChunk(cssFile, `${this.buildDirecotry}/${cssFile}`))
+        tags.push(
+          this.makeTagForChunk(cssFile, `${this.buildDirectory}/${cssFile}`)
+        )
       })
     }
 
-    return HtmlString.from(tags.join(''))
+    return tags.join('')
   }
 
   /**
    * Returns the path to the hot-reload file. The hot-reload file contains the Vite dev server URL.
-   *
-   * @returns {String}
    */
   manifestPath (): string {
     return this.app.publicPath(
-      Str(this.buildDirecotry).ltrim('/').get(), 'manifest.json'
+      Str(this.buildDirectory).ltrim('/').get(), 'manifest.json'
     )
   }
 
@@ -136,11 +127,6 @@ export class Vite {
 
   /**
    * Returns a generated CSS link tag with the given `attributes` for the provided `url`.
-   *
-   * @param url The URL to render.
-   * @param attributes
-   *
-   * @returns {String}
    */
   protected makeTagForChunk (src: string, url: string): string {
     return this.isCssPath(src)
@@ -150,10 +136,6 @@ export class Vite {
 
   /**
    * Determine whether the given `path` is a CSS file.
-   *
-   * @param {String} path
-   *
-   * @returns {Boolean}
    */
   protected isCssPath (path: string): boolean {
     return Path.extname(path).match(/.(css|less|sass|scss|styl|stylus|pcss|postcss)/) != null
@@ -161,9 +143,6 @@ export class Vite {
 
   /**
    * Returns a generated CSS link tag for the provided `url` with given `attributes`.
-   *
-   * @param url
-   * @param attributes
    */
   protected makeStylesheetTagWithAttributes (url: string, attributes: Attributes): string {
     attributes = {
@@ -177,11 +156,6 @@ export class Vite {
 
   /**
    * Returns a generated JavaScript link tag for the provided `url` with given `attributes`.
-   *
-   * @param url
-   * @param attributes
-   *
-   * @returns {String}
    */
   protected makeScriptTagWithAttributes (url: string, attributes: Attributes): string {
     attributes = {
@@ -195,10 +169,6 @@ export class Vite {
 
   /**
    * Returns the key="value" pairs as a string for the given `attributes`.
-   *
-   * @param attributes
-   *
-   * @returns {String}
    */
   private attributesToString (attributes: Attributes): string {
     return Object

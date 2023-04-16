@@ -10,17 +10,17 @@ export class ErrorHandler implements ErrorHandlerContract {
   /**
    * The application instance.
    */
-  private readonly app: Application
+  protected readonly app: Application
 
   /**
    * The list of error types to not report.
    */
-  private readonly ignoredErrors: ErrorConstructor[]
+  protected readonly ignoredErrors: ErrorConstructor[]
 
   /**
    * Stores the list of report callbacks.
    */
-  private readonly reportCallbacks: Array<(ctx: HttpContext, error: HttpError) => void | Promise<void>>
+  protected readonly reportCallbacks: Array<(ctx: HttpContext, error: HttpError) => void | Promise<void>>
 
   /**
    * Create a new error handler instance.
@@ -204,8 +204,8 @@ export class ErrorHandler implements ErrorHandlerContract {
   }
 
   /**
-   * Determine whether the given `error` is implementing a `handle` method and
-   * that `handle` method returns a truthy value, like a valid HTTP response.
+   * Determine whether the given `error` is implementing a `render` method and
+   * that `render` method returns a truthy value, like a valid HTTP response.
    *
    * @param {HttpContext} ctx
    * @param {Error} error
@@ -245,9 +245,15 @@ export class ErrorHandler implements ErrorHandlerContract {
       return await this.renderYouchResponse(ctx, error)
     }
 
-    await ctx.response.status(error.status).view(
-      this.viewTemplateFor(error), { error }
-    )
+    // @ts-expect-error
+    if (typeof ctx.response.view === 'function') {
+      // @ts-expect-error
+      return await ctx.response.status(error.status).view(
+        this.viewTemplateFor(error), { error }
+      )
+    }
+
+    ctx.response.status(error.status).payload(`<h1>${error.message}</h1>`)
   }
 
   /**

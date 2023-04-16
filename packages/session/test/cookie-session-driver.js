@@ -7,26 +7,25 @@ const { setupApp } = require('./helpers')
 const { Server } = require('@supercharge/http')
 const { StartSessionMiddleware } = require('../dist')
 
+/**
+ * @returns {Server}
+ */
 function createServer (app) {
-  const server = app.make(Server).use(StartSessionMiddleware)
-
-  return server
+  return app.forgetInstance(Server).make(Server).use(StartSessionMiddleware)
 }
 
 async function createInitialSession (app, data = {}) {
   const server = createServer(app)
 
-  server.use(async ({ request, response }, next) => {
+  server.use(async ({ request, response }) => {
     Object.entries(data).forEach(([key, value]) => {
       request.session().set(key, value)
     })
 
-    response.payload({
+    return response.payload({
       id: request.session().id(),
       data: request.session().all()
     })
-
-    await next()
   })
 
   const response = await Supertest(server.callback())
@@ -115,6 +114,42 @@ test.group('Cookie Session Driver', () => {
   })
 
   test('destroy a session', async () => {
-    // TODO
-  }).skip()
+    const app = await setupApp({ driver: 'cookie' })
+
+    const { sessionId, sessionCookie } = await createInitialSession(app, {
+      name: 'Supercharge'
+    })
+
+    const server = createServer(app).use(({ request, response }) => {
+      if (request.query().has('invalidate')) {
+        request.session().invalidate()
+      }
+
+      return response.payload({
+        id: request.session().id(),
+        data: request.session().all()
+      })
+    })
+
+    const response = await Supertest(server.callback())
+      .get('/')
+      .expect(200)
+      .set('Cookie', sessionCookie)
+
+    expect(response.body.id).toEqual(sessionId)
+    expect(response.body.data).toMatchObject({ name: 'Supercharge' })
+
+    const invalidateSessionResponse = await Supertest(server.callback())
+      .get('/?invalidate=true')
+      .expect(200)
+      .set('Cookie', sessionCookie)
+
+    const emptySessionResponse = await Supertest(server.callback())
+      .get('/')
+      .expect(200)
+      .set('Cookie', invalidateSessionResponse.headers['set-cookie'])
+
+    expect(emptySessionResponse.body.id).not.toEqual(sessionId)
+    expect(emptySessionResponse.body.data).not.toMatchObject({ name: 'Supercharge' })
+  })
 })

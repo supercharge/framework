@@ -2,14 +2,10 @@
 
 import Koa from 'koa'
 import cors from '@koa/cors'
-import { Application, CorsConfig, HttpContext, Middleware, NextHandler } from '@supercharge/contracts'
+import { Middleware } from './base'
+import { Application, CorsConfig, HttpContext, NextHandler } from '@supercharge/contracts'
 
-export class HandleCorsMiddleware implements Middleware {
-  /**
-   * Stores the app instance.
-   */
-  protected readonly app: Application
-
+export class HandleCorsMiddleware extends Middleware {
   /**
    * The CORS handler for incoming requests.
    */
@@ -19,7 +15,8 @@ export class HandleCorsMiddleware implements Middleware {
    * Create a new middleware instance.
    */
   constructor (app: Application) {
-    this.app = app
+    super(app)
+
     this.handleCors = cors(this.createConfig())
   }
 

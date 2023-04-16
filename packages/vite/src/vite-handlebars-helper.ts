@@ -1,8 +1,8 @@
 'use strict'
 
 import { Vite } from './vite'
-import { Application } from '@supercharge/contracts'
 import { HelperOptions } from 'handlebars'
+import { Application } from '@supercharge/contracts'
 
 export class ViteHandlebarsHelper {
   /**

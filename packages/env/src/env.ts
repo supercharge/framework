@@ -15,7 +15,7 @@ export class Env implements EnvStore {
   get (key: string): string
   get (key: string, defaultValue: any): string
   get (key: string, defaultValue?: any): string {
-    return String(process.env[key] ?? defaultValue)
+    return String(process.env[key] ?? defaultValue ?? '')
   }
 
   /**
@@ -96,7 +96,7 @@ export class Env implements EnvStore {
    *
    * @returns {Boolean}
    */
-  isEmpty (value: string): boolean {
+  isEmpty (value?: string | null): boolean {
     switch (value) {
       case null:
       case 'null':

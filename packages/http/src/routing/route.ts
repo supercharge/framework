@@ -40,7 +40,7 @@ export class Route implements HttpRoute {
    *
    * @returns string
    */
-  public path (): string {
+  path (): string {
     return Str(this.attributes.path).trim('/').start('/').get()
   }
 
@@ -49,7 +49,7 @@ export class Route implements HttpRoute {
    *
    * @returns HttpMethods[]
    */
-  public methods (): HttpMethods[] {
+  methods (): HttpMethods[] {
     return this.attributes.methods
   }
 
@@ -58,7 +58,7 @@ export class Route implements HttpRoute {
    *
    * @returns RouteHandler
    */
-  public handler (): RouteHandler {
+  handler (): RouteHandler {
     return this.attributes.handler
   }
 
@@ -119,24 +119,6 @@ export class Route implements HttpRoute {
   }
 
   /**
-   * Determine whether the assigned handler for this route is a controller action.
-   *
-   * @returns {Boolean}
-   */
-  isInlineHandler (): boolean {
-    return typeof this.handler() === 'function'
-  }
-
-  /**
-   * Run the route handler
-   *
-   * @param ctx HttpContext
-   */
-  async runCallable (ctx: HttpContext): Promise<void> {
-    return await (this.handler() as Function)(ctx)
-  }
-
-  /**
    * Determine whether the assigned handler is a controller constructor.
    *
    * @returns {Boolean}
@@ -161,5 +143,23 @@ export class Route implements HttpRoute {
     }
 
     return await instance.handle(ctx)
+  }
+
+  /**
+   * Determine whether the assigned handler for this route is a controller action.
+   *
+   * @returns {Boolean}
+   */
+  isInlineHandler (): boolean {
+    return typeof this.handler() === 'function'
+  }
+
+  /**
+   * Run the route handler
+   *
+   * @param ctx HttpContext
+   */
+  async runCallable (ctx: HttpContext): Promise<void> {
+    return await (this.handler() as Function)(ctx)
   }
 }

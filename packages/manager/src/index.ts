@@ -1,3 +1,3 @@
 'use strict'
 
-export * from './manager'
+export { Manager } from './manager'

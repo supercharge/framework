@@ -6,7 +6,7 @@ import { Http2ServerRequest, Http2ServerResponse } from 'http2'
 import { InlineMiddlewareHandler, MiddlewareCtor } from './middleware'
 
 export type HttpServerHandler =
-  (req: IncomingMessage | Http2ServerRequest, res: ServerResponse | Http2ServerResponse) => void
+  (req: IncomingMessage | Http2ServerRequest, res: ServerResponse | Http2ServerResponse) => Promise<void>
 
 export interface HttpServer {
   /**

@@ -1,13 +1,14 @@
 'use strict'
 
 const Path = require('path')
+const ErrorHandler = require('./error-handler')
+const { Application } = require('@supercharge/core')
 const { SessionServiceProvider } = require('../../dist')
-const { Application, ErrorHandler } = require('@supercharge/core')
 
 /**
  * Returns a test application.
  *
- * @param {import('@supercharge/contracts').SessionConfig} [sessionConfig]
+ * @param {import('@supercharge/contracts').SessionConfig} sessionConfig
  *
  * @returns {Promise<Application>}
  */

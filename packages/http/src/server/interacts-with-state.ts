@@ -3,7 +3,7 @@
 import { StateBag } from './state-bag'
 import { tap } from '@supercharge/goodies'
 import { RouterContext } from '@koa/router'
-import { InteractsWithState as InteractsWithStateContract } from '@supercharge/contracts'
+import { InteractsWithState as InteractsWithStateContract, RequestStateData } from '@supercharge/contracts'
 
 export class InteractsWithState implements InteractsWithStateContract {
   /**
@@ -35,7 +35,10 @@ export class InteractsWithState implements InteractsWithStateContract {
    *
    * @returns {ThisType}
    */
-  share (key: string | Record<string, any>, value?: any): this {
+  share<K extends keyof RequestStateData> (key: K, value: RequestStateData[K]): this
+  share (key: string, value: any): this
+  share (values: RequestStateData): this
+  share<K extends keyof RequestStateData> (key: K | string | RequestStateData, value?: any): this {
     return tap(this, () => {
       this.state().add(key, value)
     })

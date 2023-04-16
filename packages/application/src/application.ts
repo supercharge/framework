@@ -12,7 +12,30 @@ import Collect from '@supercharge/collections'
 import { Container } from '@supercharge/container'
 import { esmRequire, tap, upon } from '@supercharge/goodies'
 import { LoggingServiceProvider } from '@supercharge/logging'
-import { EnvStore, ConfigStore, BootstrapperCtor, Bootstrapper as BootstrapperContract, ServiceProvider, ServiceProviderCtor, Application as ApplicationContract, ErrorHandlerCtor, Logger } from '@supercharge/contracts'
+import {
+  ApplicationCtor,
+  Application as ApplicationContract,
+  BootstrapperCtor,
+  Bootstrapper as BootstrapperContract,
+  ConfigStore,
+  EnvStore,
+  ErrorHandlerCtor,
+  Logger,
+  ServiceProvider,
+  ServiceProviderCtor
+} from '@supercharge/contracts'
+
+/**
+ * Add container bindings for services from this provider.
+ */
+declare module '@supercharge/contracts' {
+  export interface ContainerBindings {
+    'app': Application
+    'container': Application
+    'env': EnvStore
+    'config': ConfigStore
+  }
+}
 
 export class Application extends Container implements ApplicationContract {
   /**
@@ -53,8 +76,8 @@ export class Application extends Container implements ApplicationContract {
    *
    * @returns {Application}
    */
-  public static createWithAppRoot (basePath: string): ApplicationContract {
-    return new this(basePath)
+  public static createWithAppRoot<App extends ApplicationCtor> (this: App, basePath: string): InstanceType<App> {
+    return new this(basePath) as any
   }
 
   /**
@@ -68,9 +91,11 @@ export class Application extends Container implements ApplicationContract {
    */
   withErrorHandler (ErrorHandler: ErrorHandlerCtor): this {
     return tap(this, () => {
-      this.singleton('error.handler', () => {
-        return new ErrorHandler(this)
-      }).alias('error.handler', ErrorHandler)
+      this
+        .singleton('error.handler', () => {
+          return new ErrorHandler(this)
+        })
+        .alias('error.handler', ErrorHandler)
     })
   }
 
@@ -210,8 +235,8 @@ export class Application extends Container implements ApplicationContract {
    *
    * @returns {String}
    */
-  configPath (path?: string): string {
-    return this.resolveFromBasePath('config', path ?? '')
+  configPath (...paths: string[]): string {
+    return this.resolveFromBasePath('config', ...paths)
   }
 
   /**
@@ -232,8 +257,8 @@ export class Application extends Container implements ApplicationContract {
    *
    * @returns {String}
    */
-  resourcePath (path?: string): string {
-    return this.resolveFromBasePath('resources', path ?? '')
+  resourcePath (...paths: string[]): string {
+    return this.resolveFromBasePath('resources', ...paths)
   }
 
   /**
@@ -243,8 +268,8 @@ export class Application extends Container implements ApplicationContract {
    *
    * @returns {String}
    */
-  storagePath (path?: string): string {
-    return this.resolveFromBasePath('storage', path ?? '')
+  storagePath (...paths: string[]): string {
+    return this.resolveFromBasePath('storage', ...paths)
   }
 
   /**
@@ -254,8 +279,8 @@ export class Application extends Container implements ApplicationContract {
    *
    * @returns {String}
    */
-  databasePath (path?: string): string {
-    return this.resolveFromBasePath('database', path ?? '')
+  databasePath (...paths: string[]): string {
+    return this.resolveFromBasePath('database', ...paths)
   }
 
   /**
@@ -289,7 +314,10 @@ export class Application extends Container implements ApplicationContract {
   }
 
   /**
-   * Set the environment file to be loaded while bootstrapping the application.
+   * Set the environment `file` name to be loaded while bootstrapping the application.
+   * Only pass the file name of your environment file as an argument and not a full
+   * file system path. Use the `app.useEnvironmentPath(<path>)` method to change
+   * the path from which your environment files will be loaded on app start.
    *
    * @param {String} file
    *

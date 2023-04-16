@@ -2,7 +2,7 @@
 
 import { RouterContext } from '@koa/router'
 import { InteractsWithState } from './interacts-with-state'
-import { Application, HttpContext as HttpContextContract, HttpRequest, HttpResponse, ViewEngine, HttpResponseCtor, HttpRequestCtor, HttpConfig } from '@supercharge/contracts'
+import { Application, HttpContext as HttpContextContract, HttpRequest, HttpResponse, HttpResponseCtor, HttpRequestCtor, HttpConfig } from '@supercharge/contracts'
 
 export class HttpContext extends InteractsWithState implements HttpContextContract {
   /**
@@ -78,8 +78,6 @@ export class HttpContext extends InteractsWithState implements HttpContextContra
      */
     const Response = this.app.make<HttpResponseCtor>('response')
 
-    const view = this.app.make<ViewEngine>('view')
-
-    return new Response(this, view, this.cookieConfig)
+    return new Response(this, this.cookieConfig)
   }
 }

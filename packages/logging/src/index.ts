@@ -1,5 +1,4 @@
 'use strict'
 
-export * from './contracts'
-export * from './log-manager'
-export * from './logging-service-provider'
+export { LogManager } from './log-manager'
+export { LoggingServiceProvider } from './logging-service-provider'
