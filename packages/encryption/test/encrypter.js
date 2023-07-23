@@ -3,7 +3,7 @@
 const { expect } = require('expect')
 const { test } = require('@japa/runner')
 const { Encrypter } = require('../dist')
-const Str = require('@supercharge/strings')
+const { Str } = require('@supercharge/strings')
 
 test.group('Encryption', () => {
   test('encrypt a string value', async () => {

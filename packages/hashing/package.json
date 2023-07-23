@@ -22,11 +22,11 @@
   "devDependencies": {
     "uvu": "~0.5.6",
     "@supercharge/application": "^3.19.0",
-    "@supercharge/eslint-config-typescript": "~2.3.3",
-    "c8": "~7.13.0",
-    "eslint": "~8.36.0",
-    "expect": "~29.5.0",
-    "typescript": "~4.9.5"
+    "@supercharge/eslint-config-typescript": "~3.0.0",
+    "c8": "~8.0.0",
+    "eslint": "~8.45.0",
+    "expect": "~29.6.1",
+    "typescript": "~5.1.6"
   },
   "engines": {
     "node": ">=16"
