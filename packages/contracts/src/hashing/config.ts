@@ -4,7 +4,7 @@ export interface HashConfig {
   /**
    * The hashing driver name.
    */
-  driver: string
+  driver: 'bcrypt' | 'scrypt' | string
 
   /**
    * The bcrypt hashing config.
