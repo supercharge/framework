@@ -4,6 +4,14 @@ import { HttpContext } from './context'
 import { HttpMethods } from './methods'
 import { RouteHandler } from './router'
 
+export interface RouteObjectAttributes {
+  path: string
+  middleware: string[]
+  methods: HttpMethods[]
+  isInlineHandler: boolean
+  isControllerClass: boolean
+}
+
 export interface HttpRoute {
   /**
    * Assign a route prefix.
@@ -34,4 +42,9 @@ export interface HttpRoute {
    * Run the route handler.
    */
   run (ctx: HttpContext): Promise<any>
+
+  /**
+   * Returns the route object’s attributes.
+   */
+  toJSON (): RouteObjectAttributes
 }

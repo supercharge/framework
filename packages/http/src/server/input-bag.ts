@@ -7,7 +7,7 @@ export class InputBag<T> implements InputBagContract<T> {
   /**
    * Stores the request headers as an object.
    */
-  private attributes: Dict<T>
+  protected attributes: Dict<T>
 
   /**
    * Create a new instance.

@@ -19,12 +19,12 @@ export interface InputBag<T> {
    * Set an input for the given `name` and assign the `value`. This
    * overrides a possibly existing input with the same `name`.
    */
-  set (name: string, value: any): ThisType<T>
+  set (name: string, value: any): this
 
   /**
    * Removes the input with the given `name`.
    */
-  remove(name: keyof Dict<T>): ThisType<T>
+  remove(name: keyof Dict<T>): this
 
   /**
    * Determine whether the input for the given `name` exists.
