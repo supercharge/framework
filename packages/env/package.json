@@ -14,17 +14,17 @@
   "dependencies": {
     "@supercharge/contracts": "^3.19.0",
     "@supercharge/fs": "~3.4.0",
-    "@supercharge/strings": "~1.29.1",
-    "dotenv": "~16.0.3"
+    "@supercharge/strings": "~2.0.0",
+    "dotenv": "~16.3.1"
   },
   "devDependencies": {
-    "@supercharge/eslint-config-typescript": "~2.3.3",
-    "@types/lodash": "~4.14.191",
-    "c8": "~7.13.0",
+    "@supercharge/eslint-config-typescript": "~3.0.0",
+    "@types/lodash": "~4.14.195",
+    "c8": "~8.0.0",
     "cross-env": "~7.0.3",
-    "eslint": "~8.36.0",
-    "expect": "~29.5.0",
-    "typescript": "~4.9.5",
+    "eslint": "~8.45.0",
+    "expect": "~29.6.1",
+    "typescript": "~5.1.6",
     "uvu": "~0.5.6"
   },
   "engines": {
