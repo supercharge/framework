@@ -21,6 +21,8 @@
         }
     }
     ```
+- `@supercharge/hashing`
+    - add `scrypt` driver based on Node.js’ integrated [`scrypt` crypto methods](https://nodejs.org/docs/latest-v18.x/api/crypto.html#cryptoscryptpassword-salt-keylen-options-callback)
 - `@supercharge/http`
     - export a base `Middleware`
     - HTTP routes expose a `toJSON` method
@@ -28,6 +30,9 @@
     - HTTP input bag change the visibility of the `attributes` property from `private` to `protected`
 - `@supercharge/session`
     - add `file` driver that stores sessions in files on local disc
+
+### Updated
+- bump dependencies
 
 
 ## [3.19.0](https://github.com/supercharge/framework/compare/v3.18.0...v3.19.0) - 2023-03-11
