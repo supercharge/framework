@@ -1,7 +1,7 @@
 'use strict'
 
 import JSON from '@supercharge/json'
-import Str from '@supercharge/strings'
+import { Str } from '@supercharge/strings'
 import { Encrypter as EncryptionContract } from '@supercharge/contracts'
 import { createCipheriv, createDecipheriv, createHmac } from 'node:crypto'
 

@@ -15,17 +15,17 @@
     "@supercharge/contracts": "^3.19.0",
     "@supercharge/manager": "^3.19.0",
     "@supercharge/support": "^3.19.0",
-    "knex": "~2.4.2",
-    "objection": "~3.0.1",
-    "sqlite3": "~5.1.4"
+    "knex": "~2.5.1",
+    "objection": "~3.1.1",
+    "sqlite3": "~5.1.6"
   },
   "devDependencies": {
     "@supercharge/core": "^3.19.0",
-    "@supercharge/eslint-config-typescript": "~2.3.3",
-    "c8": "~7.13.0",
-    "eslint": "~8.36.0",
-    "expect": "~29.5.0",
-    "typescript": "~4.9.5",
+    "@supercharge/eslint-config-typescript": "~3.0.0",
+    "c8": "~8.0.0",
+    "eslint": "~8.45.0",
+    "expect": "~29.6.1",
+    "typescript": "~5.1.6",
     "uvu": "~0.5.6"
   },
   "engines": {

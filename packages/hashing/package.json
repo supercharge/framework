@@ -12,6 +12,7 @@
   "main": "dist",
   "types": "dist",
   "dependencies": {
+    "@phc/format": "~1.0.0",
     "@supercharge/contracts": "^3.19.0",
     "@supercharge/manager": "^3.19.0",
     "@supercharge/support": "^3.19.0",
@@ -19,15 +20,13 @@
     "bcrypt": "~5.1.0"
   },
   "devDependencies": {
-    "@japa/run-failed-tests": "~1.1.1",
-    "@japa/runner": "~2.5.1",
-    "@japa/spec-reporter": "~1.3.3",
+    "uvu": "~0.5.6",
     "@supercharge/application": "^3.19.0",
-    "@supercharge/eslint-config-typescript": "~2.3.3",
-    "c8": "~7.13.0",
-    "eslint": "~8.36.0",
-    "expect": "~29.5.0",
-    "typescript": "~4.9.5"
+    "@supercharge/eslint-config-typescript": "~3.0.0",
+    "c8": "~8.0.0",
+    "eslint": "~8.45.0",
+    "expect": "~29.6.1",
+    "typescript": "~5.1.6"
   },
   "engines": {
     "node": ">=16"
@@ -54,8 +53,9 @@
     "watch": "npm run build -- --watch",
     "lint": "eslint src --ext .js,.ts",
     "lint:fix": "npm run lint -- --fix",
-    "posttest": "c8 report --reporter=html",
     "test": "npm run build && npm run lint && npm run test:run",
-    "test:run": "c8 node bin/test.js"
+    "test:run": "cross-env NODE_ENV=testing c8 --include=dist uvu --ignore helpers --ignore fixtures",
+    "posttest": "c8 report --reporter=html --include=dist",
+    "test:report": "c8 report --reporter=html"
   }
 }
