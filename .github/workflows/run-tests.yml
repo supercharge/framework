@@ -3,8 +3,22 @@ name: Run tests
 on: [push, pull_request]
 
 jobs:
+  detect-noop:
+    runs-on: ubuntu-22.04
+    outputs:
+      noop: ${{ steps.noop.outputs.should_skip }}
+    steps:
+      - name: Detect No-op Changes
+        id: noop
+        uses: fkirc/skip-duplicate-actions@v5.3.0
+        with:
+          github_token: ${{ secrets.GH_PUBLISH_GPR_TOKEN }}
+          paths_ignore: '["**.md", "**.png", "**.jpg"]'
+          do_not_skip: '["workflow_dispatch", "schedule", "push"]'
+
   linux_tests:
     runs-on: ubuntu-latest
+    needs: detect-noop
 
     strategy:
       fail-fast: true
@@ -41,6 +55,7 @@ jobs:
 
   windows_tests:
     runs-on: windows-latest
+    needs: detect-noop
 
     strategy:
       fail-fast: true
