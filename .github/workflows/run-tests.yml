@@ -14,7 +14,8 @@ jobs:
         with:
           github_token: ${{ secrets.GH_PUBLISH_GPR_TOKEN }}
           paths_ignore: '["**.md", "**.png", "**.jpg"]'
-          do_not_skip: '["workflow_dispatch", "schedule", "push"]'
+          do_not_skip: '["workflow_dispatch", "schedule"]'
+          cancel_others: 'true'
 
   linux_tests:
     runs-on: ubuntu-latest
