@@ -1,6 +1,6 @@
 'use strict'
 
-import { HttpRoute as Route } from './route'
+import { HttpRoute as Route, RouteObjectAttributes } from './route'
 
 export interface HttpRouteCollection {
   /**
@@ -22,4 +22,9 @@ export interface HttpRouteCollection {
    * Returns the number of routes registerd to this route collection.
    */
   count (): number
+
+  /**
+   * Returns the attributes of all routes.
+   */
+  toJSON (): RouteObjectAttributes[]
 }

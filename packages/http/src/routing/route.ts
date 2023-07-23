@@ -3,21 +3,13 @@
 import Str from '@supercharge/strings'
 import { tap } from '@supercharge/goodies'
 import { isClass } from '@supercharge/classes'
-import { HttpRoute, HttpController, RouteHandler, HttpMethods, HttpContext, Application, Class } from '@supercharge/contracts'
+import { HttpRoute, HttpController, RouteHandler, HttpMethods, HttpContext, Application, Class, RouteObjectAttributes } from '@supercharge/contracts'
 
 interface RouteAttributes {
   path: string
   methods: HttpMethods[]
   handler: RouteHandler
   middleware: string[]
-}
-
-export interface RouteObjectAttributes {
-  path: string
-  middleware: string[]
-  methods: HttpMethods[]
-  isInlineHandler: boolean
-  isControllerClass: boolean
 }
 
 export class Route implements HttpRoute {
@@ -172,7 +164,7 @@ export class Route implements HttpRoute {
   }
 
   /**
-   * Returns the route object attributes.
+   * Returns the route object’s attributes.
    */
   toJSON (): RouteObjectAttributes {
     return {
