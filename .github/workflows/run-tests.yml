@@ -76,12 +76,6 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Bootstrap dependencies in packages
-      run: npm run bootstrap
-
-    - name: Build packages
-      run: npm run build
-
     - name: Run tests
       run: npm test
       env:
