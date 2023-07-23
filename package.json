@@ -34,14 +34,16 @@
     "url": "git+https://github.com/supercharge/framework.git"
   },
   "scripts": {
-    "clean": "lerna clean --yes",
-    "fresh": "npm run clean && npm run bootstrap",
-    "bootstrap": "lerna bootstrap --no-ci",
     "build": "lerna run build",
-    "watch": "npm run dev",
+    "clean": "lerna clean --yes",
     "dev": "lerna run dev",
+    "fresh": "npm run clean && npm run bootstrap",
     "lint": "lerna run lint",
+    "publish": "npm run build && lerna publish --force-publish",
     "test": "lerna run test",
-    "publish": "npm run build && lerna publish --force-publish"
-  }
+    "watch": "npm run dev"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }
