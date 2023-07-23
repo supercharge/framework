@@ -12,6 +12,14 @@ interface RouteAttributes {
   middleware: string[]
 }
 
+export interface RouteObjectAttributes {
+  path: string
+  middleware: string[]
+  methods: HttpMethods[]
+  isInlineHandler: boolean
+  isControllerClass: boolean
+}
+
 export class Route implements HttpRoute {
   /**
    * Stores the route attributes
@@ -161,5 +169,18 @@ export class Route implements HttpRoute {
    */
   async runCallable (ctx: HttpContext): Promise<void> {
     return await (this.handler() as Function)(ctx)
+  }
+
+  /**
+   * Returns the route object attributes.
+   */
+  toJSON (): RouteObjectAttributes {
+    return {
+      path: this.path(),
+      methods: this.methods(),
+      middleware: this.getMiddleware(),
+      isInlineHandler: this.isInlineHandler(),
+      isControllerClass: this.isControllerClass(),
+    }
   }
 }
