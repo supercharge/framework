@@ -42,50 +42,54 @@ jobs:
         CI: true
 
 
-  windows_tests:
-    runs-on: windows-latest
+  # We can’t support Windows testing at this point because no one uses Windows in our team.
+  # Please open an issue if you want Windows support for the project and can help out to
+  # make all tests pass on Windows. GitHub Action Runners using Windows are too slow.
 
-    strategy:
-      fail-fast: true
-      matrix:
-        node-version: [16.x, 18.x]
+  # windows_tests:
+  #   runs-on: windows-latest
 
-    name: Node ${{ matrix.node-version }} - Windows
+  #   strategy:
+  #     fail-fast: true
+  #     matrix:
+  #       node-version: [16.x, 18.x]
 
-    steps:
-    - name: Git checkout
-      uses: actions/checkout@v3
+  #   name: Node ${{ matrix.node-version }} - Windows
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
+  #   steps:
+  #   - name: Git checkout
+  #     uses: actions/checkout@v3
 
-    - if: ${{ runner.os == 'Windows' }}
-      name: Use GNU tar
-      shell: cmd
-      run: |
-        echo "Adding GNU tar to PATH"
-        echo C:\Program Files\Git\usr\bin>>"%GITHUB_PATH%"
+  #   - name: Use Node.js ${{ matrix.node-version }}
+  #     uses: actions/setup-node@v3
+  #     with:
+  #       node-version: ${{ matrix.node-version }}
 
-    - name: Restore dependencies
-      uses: actions/cache@v3
-      with:
-        path: |
-          node_modules
-          */*/node_modules
-        key: ${{ runner.os }}-node-${{ matrix.node-version}}-${{ hashFiles('**/package.json') }}
+  #   - if: ${{ runner.os == 'Windows' }}
+  #     name: Use GNU tar
+  #     shell: cmd
+  #     run: |
+  #       echo "Adding GNU tar to PATH"
+  #       echo C:\Program Files\Git\usr\bin>>"%GITHUB_PATH%"
 
-    - name: Install dependencies
-      run: npm install
+  #   - name: Restore dependencies
+  #     uses: actions/cache@v3
+  #     with:
+  #       path: |
+  #         node_modules
+  #         */*/node_modules
+  #       key: ${{ runner.os }}-node-${{ matrix.node-version}}-${{ hashFiles('**/package.json') }}
 
-    - name: Bootstrap dependencies in packages
-      run: npm run bootstrap
+  #   - name: Install dependencies
+  #     run: npm install
 
-    - name: Build packages
-      run: npm run build
+  #   - name: Bootstrap dependencies in packages
+  #     run: npm run bootstrap
 
-    - name: Run tests
-      run: npm test
-      env:
-        CI: true
+  #   - name: Build packages
+  #     run: npm run build
+
+  #   - name: Run tests
+  #     run: npm test
+  #     env:
+  #       CI: true
