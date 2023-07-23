@@ -57,8 +57,8 @@ export class ScryptHasher implements HasherContract {
    * Create a new instance.
    */
   constructor (config: HashConfig['scrypt'] = {}) {
-    this.validateConfig(config)
     this.config = { ...scryptDefaultConfig, ...config }
+    this.validateConfig(this.config)
 
     this.scryptOptions = {
       cost: this.config.cost,
@@ -73,7 +73,7 @@ export class ScryptHasher implements HasherContract {
    */
   private validateConfig (values: HashConfig['scrypt'] = {}): void {
     if (values.cost && (values.cost < 1 || values.cost % 2 !== 0)) {
-      throw new ScryptValidationError('The "cost" option must be a power of 2 greater than 1')
+      throw new ScryptValidationError('The "cost" option must be a number greater than 1 and a power of 2')
     }
 
     if (values.parallelization && (values.parallelization < 1 || values.parallelization > Number.MAX_SAFE_INTEGER)) {
@@ -84,7 +84,7 @@ export class ScryptHasher implements HasherContract {
 
     const maxMemory = 128 * (values.cost ?? scryptDefaultConfig.cost) * (values.blockSize ?? scryptDefaultConfig.blockSize)
 
-    if (values.maxMemory && values.maxMemory < maxMemory) {
+    if (values.maxMemory && (values.maxMemory < maxMemory)) {
       throw new ScryptValidationError(
         `The "maxMemory" option must be less than ${maxMemory}, found ${String(values.maxMemory)}`
       )
@@ -143,14 +143,19 @@ export class ScryptHasher implements HasherContract {
   async check (plain: string, hashedValue: string): Promise<boolean> {
     let deserializedHash: ParsedValue
 
+    if (!plain || !hashedValue) {
+      throw new ScryptValidationError('Received invalid arguments: you must provide a "plain" text and "hashed" value')
+    }
+
     try {
       deserializedHash = Phc.deserialize(hashedValue)
     } catch (error) {
+      console.log(error)
       throw new ScryptValidationError('Received invalid scrypt "hash" value. It must be a valid PHC string')
     }
 
     if (deserializedHash.id && !this.ids.includes(deserializedHash.id)) {
-      throw new ScryptValidationError(`Incompatible ${String(deserializedHash.id)} identifier found in the hash`)
+      throw new ScryptValidationError(`Incompatible "${String(deserializedHash.id)}" identifier found in the hash`)
     }
 
     if (deserializedHash.params && typeof deserializedHash.params !== 'object') {
@@ -159,25 +164,25 @@ export class ScryptHasher implements HasherContract {
 
     // cost validation
     if (typeof deserializedHash.params.n !== 'number' || !Number.isInteger(deserializedHash.params.n)) {
-      throw new ScryptValidationError('The "n" parameter must be an integer')
+      throw new ScryptValidationError('The "n" (cost) parameter must be an integer')
     }
 
     if (deserializedHash.params.n < 1 || deserializedHash.params.n % 2 !== 0) {
-      throw new ScryptValidationError('The "n" parameter must be a power of 2 greater than 1')
+      throw new ScryptValidationError('The "n" (cost) parameter must be a power of 2 greater than 1')
     }
 
     // blockSize validation
     if (typeof deserializedHash.params.r !== 'number' || !Number.isInteger(deserializedHash.params.r)) {
-      throw new ScryptValidationError("The 'r' parameter must be an integer")
+      throw new ScryptValidationError('The "r" (blockSize) parameter must be an integer')
     }
 
     // parallelization validation
     if (typeof deserializedHash.params.p !== 'number' || !Number.isInteger(deserializedHash.params.p)) {
-      throw new ScryptValidationError('The "p" parameter must be an integer')
+      throw new ScryptValidationError('The "p" (parallelization) parameter must be an integer')
     }
 
     if (deserializedHash.params.p < 1 || deserializedHash.params.p > Number.MAX_SAFE_INTEGER) {
-      throw new ScryptValidationError(`The "p" parameter must be in the range (1 <= parallelization <= ${Number.MAX_SAFE_INTEGER})`)
+      throw new ScryptValidationError(`The "p" (parallelization) parameter must be in the range (1 <= parallelization <= ${Number.MAX_SAFE_INTEGER})`)
     }
 
     if (typeof deserializedHash.salt === 'undefined') {
@@ -188,12 +193,16 @@ export class ScryptHasher implements HasherContract {
       throw new ScryptValidationError('Missing "hash" in the given hashed value')
     }
 
-    const derivedKey = await this.scrypt(plain, deserializedHash.salt, {
+    const config: HashConfig['scrypt'] & { maxmem: number } = {
       maxmem: this.config.maxMemory,
       cost: deserializedHash.params.n,
       blockSize: deserializedHash.params.r,
       parallelization: deserializedHash.params.p,
-    })
+    }
+
+    this.validateConfig(config)
+
+    const derivedKey = await this.scrypt(plain, deserializedHash.salt, config)
 
     return timingSafeEqual(
       Buffer.from(deserializedHash.hash), derivedKey
