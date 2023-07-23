@@ -30,6 +30,7 @@
     - HTTP input bag change the visibility of the `attributes` property from `private` to `protected`
 - `@supercharge/session`
     - add `file` driver that stores sessions in files on local disc
+- add ESLint to the root of the project
 
 ### Updated
 - bump dependencies
