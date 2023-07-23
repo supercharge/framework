@@ -42,7 +42,7 @@ export class Application extends Container implements ApplicationContract {
    * Stores the application’s meta data, like the application’s root directory,
    * name of the environment file or whether the app is running in the console.
    */
-  private meta: ApplicationMeta
+  private readonly meta: ApplicationMeta
 
   /**
    * Create a new application instance.
