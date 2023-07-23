@@ -1,5 +1,9 @@
 name: Run tests
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 on:
   workflow_dispatch:
   push:
@@ -13,7 +17,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        node-version: [16.x, 18.x] #, 19.x] # we’re skipping Node.js 19 for now until it’s more stable
+        node-version: [16.x, 18.x, 20.x]
 
     name: Node ${{ matrix.node-version }}
 
@@ -49,7 +53,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        node-version: [16.x, 18.x]
+        node-version: [16.x, 18.x, 20.x]
 
     name: Node ${{ matrix.node-version }} - Windows
 
