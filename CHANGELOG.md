@@ -1,9 +1,10 @@
 # Changelog
 
-## [3.20.0](https://github.com/supercharge/framework/compare/v3.19.0...v3.20.0) - 2023-04-xx
+## [3.20.0](https://github.com/supercharge/framework/compare/v3.19.0...v3.20.0) - 2023-07-xx
 
 ### Added
 - `@supercharge/contracts`
+    - HTTP input bag: `set` and `remove` methods return the `this` instance for seamless chaining
     - export a `RequestStateData` interface. This interface can be extended in your project to define custom properties in the current request state (shared using `request.state().share()`)
     ```ts
     declare module '@supercharge/contracts' {
@@ -22,6 +23,9 @@
     ```
 - `@supercharge/http`
     - export a base `Middleware`
+    - HTTP routes expose a `toJSON` method
+    - HTTP route collection expose a `toJSON` method
+    - HTTP input bag change the visibility of the `attributes` property from `private` to `protected`
 - `@supercharge/session`
     - add `file` driver that stores sessions in files on local disc
 
