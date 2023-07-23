@@ -38,6 +38,11 @@ export interface HashConfig {
     saltSize?: number
 
     /**
+     * The desired key length in bytes. Default: 64
+     */
+    keyLength?: number
+
+    /**
      * The parallelization parameter. Default: 1
      */
     parallelization?: number
@@ -46,10 +51,5 @@ export interface HashConfig {
      * The memory upper bound while generating the hash. Default: 16_777_216 (128 * costs * blockSize)
      */
     maxMemory?: number
-
-    /**
-     * The desired key length in bytes. Default: 64
-     */
-    keyLength?: number
   }
 }
