@@ -1,7 +1,7 @@
 'use strict'
 
 import _ from 'lodash'
-import Str from '@supercharge/strings'
+import { Str } from '@supercharge/strings'
 import { Arr } from '@supercharge/arrays'
 import { Session as SessionContract, SessionDriver } from '@supercharge/contracts'
 

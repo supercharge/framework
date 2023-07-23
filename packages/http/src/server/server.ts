@@ -16,7 +16,7 @@ export class Server implements HttpServerContract {
   /**
    * The server’s meta data.
    */
-  private meta: {
+  private readonly meta: {
     /**
      * The application instance.
      */

@@ -3,7 +3,7 @@
 const Path = require('path')
 const { expect } = require('expect')
 const { test } = require('@japa/runner')
-const Str = require('@supercharge/strings')
+const { Str } = require('@supercharge/strings')
 const { Application } = require('@supercharge/application')
 const { Encrypter, EncryptionServiceProvider } = require('../dist')
 
