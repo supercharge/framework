@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.20.0](https://github.com/supercharge/framework/compare/v3.19.0...v3.20.0) - 2023-07-xx
+## [3.20.0](https://github.com/supercharge/framework/compare/v3.19.0...v3.20.0) - 2023-07-25
 
 ### Added
 - `@supercharge/contracts`
@@ -34,6 +34,7 @@
 
 ### Updated
 - bump dependencies
+- remove `.eslintrc.js` file from every package (to only use the root ESLint config)
 
 
 ## [3.19.0](https://github.com/supercharge/framework/compare/v3.18.0...v3.19.0) - 2023-03-11
