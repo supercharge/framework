@@ -11,9 +11,7 @@
     "@supercharge/strings": "~2.0.0"
   },
   "devDependencies": {
-    "@supercharge/eslint-config-typescript": "~3.0.0",
     "c8": "~8.0.0",
-    "eslint": "~8.45.0",
     "expect": "~29.6.1",
     "sinon": "~15.2.0",
     "typescript": "~5.1.6",
