@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.20.1](https://github.com/supercharge/framework/compare/v3.20.0...v3.20.1) - 2023-07-xx
+
+### Updated
+- `@supercharge/contracts`
+    - export the `ContainerBindings` as an empty interface for proper module augmentation and declaration merging
+
+
 ## [3.20.0](https://github.com/supercharge/framework/compare/v3.19.0...v3.20.0) - 2023-07-25
 
 ### Added
