@@ -5,6 +5,9 @@
 ### Updated
 - `@supercharge/contracts`
     - export the `ContainerBindings` as an empty interface for proper module augmentation and declaration merging
+- `@supercharge/core`
+    - use proper `NodeJS.Signals` types in shutdown handler
+    - support multiple shutdown callbacks
 
 
 ## [3.20.0](https://github.com/supercharge/framework/compare/v3.19.0...v3.20.0) - 2023-07-25

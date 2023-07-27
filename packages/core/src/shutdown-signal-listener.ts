@@ -1,5 +1,6 @@
 'use strict'
 
+import Os from 'node:os'
 import Set from '@supercharge/set'
 import { Application } from '@supercharge/contracts'
 
@@ -14,26 +15,26 @@ export class ShutdownSignalListener {
   /**
    * Stores the shutdown signals to listen on.
    */
-  protected shutdownSignals: string[]
+  protected shutdownSignals: NodeJS.Signals[]
 
   /**
    * Stores the shutdown callback.
    */
-  protected onShutdownCallback: OnShutdownCallback
+  protected onShutdownCallbacks: OnShutdownCallback[]
 
   /**
    * Invoke callback and exit process
    */
-  protected kill = async function (this: ShutdownSignalListener) {
+  protected kill = async function (this: ShutdownSignalListener, signal: NodeJS.Signals) {
     try {
       await Promise.race([
-        this.onShutdownCallback(),
+        ...this.onShutdownCallbacks,
         new Promise((resolve) => {
           setTimeout(resolve, 3000)
         }),
       ])
 
-      process.exit(0)
+      process.exit(Os.constants.signals[signal])
     } catch (error) {
       process.exit(1)
     }
@@ -44,7 +45,7 @@ export class ShutdownSignalListener {
    */
   constructor (app: Application) {
     this.app = app
-    this.onShutdownCallback = () => {}
+    this.onShutdownCallbacks = []
     this.shutdownSignals = ['SIGINT', 'SIGTERM']
   }
 
@@ -52,7 +53,11 @@ export class ShutdownSignalListener {
    * Assign the given shutdown `callback` that runs when receiving a shutdown signal.
    */
   onShutdown (callback: OnShutdownCallback): this {
-    this.onShutdownCallback = callback
+    if (typeof callback !== 'function') {
+      throw new TypeError(`Invalid argument: you must provide a callback function to "onShutdown", received "${typeof callback}"`)
+    }
+
+    this.onShutdownCallbacks.push(callback)
 
     return this
   }
@@ -60,7 +65,7 @@ export class ShutdownSignalListener {
   /**
    * Close on SIGINT AND SIGTERM SIGNALS
    */
-  listen (...signals: string[] | string[][]): void {
+  listen (...signals: NodeJS.Signals[] | NodeJS.Signals[][]): void {
     this.runShutdownCallbackOn(...signals)
 
     /**
@@ -74,12 +79,15 @@ export class ShutdownSignalListener {
   /**
    * Register the shutdown handler to run for the given `signals`.
    */
-  private runShutdownCallbackOn (...signals: string[] | string[][]): void {
-    this.shutdownSignals = Set.from(...signals).concat(this.shutdownSignals).toArray()
+  private runShutdownCallbackOn (...signals: NodeJS.Signals[] | NodeJS.Signals[][]): void {
+    this.shutdownSignals = Set
+      .from<NodeJS.Signals>(...signals)
+      .concat(this.shutdownSignals)
+      .toArray()
 
     this.shutdownSignals.forEach(signal => {
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      process.on(signal, this.kill)
+      process.once(signal, this.kill)
     })
   }
 
@@ -93,7 +101,7 @@ export class ShutdownSignalListener {
       process.removeListener(signal, this.kill)
     })
 
-    this.onShutdownCallback = () => {}
+    this.onShutdownCallbacks = []
 
     return this
   }
