@@ -3,7 +3,6 @@
   "packages": [
     "packages/*"
   ],
-  "useNx": true,
   "command": {
     "publish": {
       "ignoreChanges": [
@@ -16,5 +15,6 @@
         "--no-package-lock"
       ]
     }
-  }
+  },
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }
