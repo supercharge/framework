@@ -7,9 +7,9 @@
     "url": "https://github.com/supercharge/framework/issues"
   },
   "devDependencies": {
-    "@supercharge/eslint-config-typescript": "~3.0.0",
+    "@supercharge/eslint-config-typescript": "~3.0.1",
     "@supercharge/tsconfig": "~4.0.0",
-    "@types/node": "~18.17.0",
+    "@types/node": "~18.17.1",
     "cross-env": "~7.0.3",
     "eslint": "~8.45.0",
     "lerna": "~7.1.4",

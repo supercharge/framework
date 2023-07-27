@@ -30,9 +30,9 @@
     "@supercharge/core": "^3.20.0",
     "@supercharge/http": "^3.20.0",
     "@supercharge/view": "^3.20.0",
-    "@types/lodash": "~4.14.195",
+    "@types/lodash": "~4.14.196",
     "@types/ms": "~0.7.31",
-    "c8": "~8.0.0",
+    "c8": "~8.0.1",
     "expect": "~29.6.1",
     "supertest": "~6.3.3",
     "typescript": "~5.1.6"

@@ -26,7 +26,7 @@
   "dependencies": {
     "@supercharge/macroable": "~2.0.1",
     "@types/koa__router": "~12.0.0",
-    "@types/node": "~18.17.0",
+    "@types/node": "~18.17.1",
     "handlebars": "~4.7.7",
     "knex": "~2.5.1"
   },
