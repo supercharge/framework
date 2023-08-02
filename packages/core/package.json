@@ -1,7 +1,7 @@
 {
   "name": "@supercharge/core",
   "description": "The Supercharge foundation package",
-  "version": "3.20.0",
+  "version": "3.20.1",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
@@ -12,22 +12,22 @@
   "main": "dist",
   "types": "dist",
   "dependencies": {
-    "@supercharge/application": "^3.20.0",
+    "@supercharge/application": "^3.20.1",
     "@supercharge/collections": "~5.0.1",
-    "@supercharge/console": "^3.20.0",
-    "@supercharge/contracts": "^3.20.0",
+    "@supercharge/console": "^3.20.1",
+    "@supercharge/contracts": "^3.20.1",
     "@supercharge/errors": "~2.0.1",
     "@supercharge/fs": "~3.4.0",
     "@supercharge/goodies": "~1.11.1",
-    "@supercharge/http": "^3.20.0",
+    "@supercharge/http": "^3.20.1",
     "@supercharge/set": "~2.2.1",
-    "@supercharge/support": "^3.20.0",
+    "@supercharge/support": "^3.20.1",
     "dotenv": "~16.3.1",
     "youch": "~3.2.3",
     "youch-terminal": "~2.2.2"
   },
   "devDependencies": {
-    "@supercharge/view": "^3.20.0",
+    "@supercharge/view": "^3.20.1",
     "c8": "~8.0.1",
     "expect": "~29.6.1",
     "mocked-env": "~1.3.5",
