@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.20.1](https://github.com/supercharge/framework/compare/v3.20.0...v3.20.1) - 2023-07-xx
+## [3.20.1](https://github.com/supercharge/framework/compare/v3.20.0...v3.20.1) - 2023-08-02
 
 ### Updated
 - `@supercharge/contracts`
@@ -8,6 +8,12 @@
 - `@supercharge/core`
     - use proper `NodeJS.Signals` types in shutdown handler
     - support multiple shutdown callbacks
+- `@supercharge/manager`
+    - refine error message for invalid drivers to be more precise which manager is missing which method
+
+### Fixed
+- `@supercharge/hashing`
+    - implement missing `HashManager#createScryptDriver` method
 
 
 ## [3.20.0](https://github.com/supercharge/framework/compare/v3.19.0...v3.20.0) - 2023-07-25
