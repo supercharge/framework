@@ -57,4 +57,13 @@ test('fallback to 12 rounds', async () => {
   expect(hash.needsRehash(hashValue)).toBe(false)
 })
 
+test('create scrypt hasher', async () => {
+  const app = await setupApp({ driver: 'scrypt' })
+  const hash = new HashManager(app)
+
+  const value = await hash.make('Supercharge')
+  expect(await hash.check('Supercharge', value)).toBe(true)
+  expect(await hash.check('Other-Supercharge', value)).toBe(false)
+})
+
 test.run()
