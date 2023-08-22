@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.20.2](https://github.com/supercharge/framework/compare/v3.20.1...v3.20.2) - 2023-08-xx
+
+### Fixed
+- `@supercharge/session`
+    - use existing session ID (if available) before generating a new one
+
+
 ## [3.20.1](https://github.com/supercharge/framework/compare/v3.20.0...v3.20.1) - 2023-08-02
 
 ### Updated
