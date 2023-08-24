@@ -9,11 +9,11 @@
   "devDependencies": {
     "@supercharge/eslint-config-typescript": "~3.0.1",
     "@supercharge/tsconfig": "~4.0.0",
-    "@types/node": "~18.17.1",
+    "@types/node": "~18.17.9",
     "cross-env": "~7.0.3",
-    "eslint": "~8.45.0",
-    "lerna": "~7.1.4",
-    "nx": "16.5.5"
+    "eslint": "~8.47.0",
+    "lerna": "~7.1.5",
+    "nx": "16.7.4"
   },
   "engines": {
     "node": ">=16"

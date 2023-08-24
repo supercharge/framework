@@ -18,10 +18,10 @@
     "dotenv": "~16.3.1"
   },
   "devDependencies": {
-    "@types/lodash": "~4.14.196",
+    "@types/lodash": "~4.14.197",
     "c8": "~8.0.1",
     "cross-env": "~7.0.3",
-    "expect": "~29.6.1",
+    "expect": "~29.6.3",
     "typescript": "~5.1.6",
     "uvu": "~0.5.6"
   },
