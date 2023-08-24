@@ -1,6 +1,9 @@
 # Changelog
 
-## [3.20.2](https://github.com/supercharge/framework/compare/v3.20.1...v3.20.2) - 2023-08-xx
+## [3.20.2](https://github.com/supercharge/framework/compare/v3.20.1...v3.20.2) - 2023-08-24
+
+### Updated
+- bump dependencies
 
 ### Fixed
 - `@supercharge/session`
