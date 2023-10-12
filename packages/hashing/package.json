@@ -15,9 +15,7 @@
     "@phc/format": "~1.0.0",
     "@supercharge/contracts": "^3.20.2",
     "@supercharge/manager": "^3.20.2",
-    "@supercharge/support": "^3.20.2",
-    "@types/bcrypt": "^5.0.0",
-    "bcrypt": "~5.1.1"
+    "@supercharge/support": "^3.20.2"
   },
   "devDependencies": {
     "@supercharge/application": "^3.20.2",
@@ -33,6 +31,7 @@
   "keywords": [
     "hashing",
     "bcrypt",
+    "scrypt",
     "supercharge",
     "superchargejs",
     "nodejs"
