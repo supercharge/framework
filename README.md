@@ -49,12 +49,7 @@ Follow these steps to set up a local development environment for the framework:
   npm install
   ```
 
-#### 3. Bootstrap package dependencies (using lerna)
-  ```bash
-  npm run bootstrap
-  ```
-
-#### 4. Build the packages
+#### 3. Build the packages
   ```bash
   npm run build
   ```
@@ -68,11 +63,14 @@ Testing the framework is the combination of running the tests of each package. E
 Run tests for a selected package by navigating to the package directory `cd packages/<package-name>` and run `npm test` in the terminal:
 
 
-### Run All Tests
+#### Run All Tests
 You can run all tests from the framework’s root directory unsing `npm test`. This triggers the tests of all packages.
 
+```bash
+npm test
+```
 
-### Testing a Single Package
+#### Testing a Single Package
 Let’s take the `logging` package as an example. You can test the logging package like this:
 
 ```bash

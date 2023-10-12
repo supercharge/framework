@@ -13,10 +13,10 @@ test.group('Session Manager', () => {
     const server = app.make(Server)
     const sessionManager = new SessionManager(app)
 
-    server.use(({ request, response }) => {
-      const session = sessionManager.createFrom(request)
+    server.use(ctx => {
+      const session = sessionManager.createFrom(ctx)
 
-      return response.payload(session.id())
+      return ctx.response.payload(session.id())
     })
 
     const response = await Supertest(server.callback())
@@ -44,11 +44,11 @@ test.group('Session Manager', () => {
 
     server
       .use(StartSessionMiddleware)
-      .use(({ request, response }) => {
-        const session = sessionManager.createFrom(request)
+      .use(ctx => {
+        const session = sessionManager.createFrom(ctx)
         session.set('foo', 'bar')
 
-        return response.payload(session.id())
+        return ctx.response.payload(session.id())
       })
 
     const response = await Supertest(server.callback())
@@ -74,11 +74,11 @@ test.group('Session Manager', () => {
 
     server
       .use(StartSessionMiddleware)
-      .use(({ request, response }) => {
-        const session = sessionManager.createFrom(request)
+      .use(ctx => {
+        const session = sessionManager.createFrom(ctx)
         session.set('foo', 'bar')
 
-        return response.payload(session.id())
+        return ctx.response.payload(session.id())
       })
 
     const response = await Supertest(server.callback())

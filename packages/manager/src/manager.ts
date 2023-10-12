@@ -89,7 +89,7 @@ export abstract class Manager {
       return this.set(driver, this[method]())
     }
 
-    throw new Error(`Unsupported driver "${driver}".`)
+    throw new Error(`Unsupported driver "${driver}". "${this.constructor.name}" does not implement the "${method}" method`)
   }
 
   /**

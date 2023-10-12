@@ -1,9 +1,36 @@
 # Changelog
 
-## [3.20.0](https://github.com/supercharge/framework/compare/v3.19.0...v3.20.0) - 2023-04-xx
+## [3.20.2](https://github.com/supercharge/framework/compare/v3.20.1...v3.20.2) - 2023-08-24
+
+### Updated
+- bump dependencies
+
+### Fixed
+- `@supercharge/session`
+    - use existing session ID (if available) before generating a new one
+
+
+## [3.20.1](https://github.com/supercharge/framework/compare/v3.20.0...v3.20.1) - 2023-08-02
+
+### Updated
+- `@supercharge/contracts`
+    - export the `ContainerBindings` as an empty interface for proper module augmentation and declaration merging
+- `@supercharge/core`
+    - use proper `NodeJS.Signals` types in shutdown handler
+    - support multiple shutdown callbacks
+- `@supercharge/manager`
+    - refine error message for invalid drivers to be more precise which manager is missing which method
+
+### Fixed
+- `@supercharge/hashing`
+    - implement missing `HashManager#createScryptDriver` method
+
+
+## [3.20.0](https://github.com/supercharge/framework/compare/v3.19.0...v3.20.0) - 2023-07-25
 
 ### Added
 - `@supercharge/contracts`
+    - HTTP input bag: `set` and `remove` methods return the `this` instance for seamless chaining
     - export a `RequestStateData` interface. This interface can be extended in your project to define custom properties in the current request state (shared using `request.state().share()`)
     ```ts
     declare module '@supercharge/contracts' {
@@ -20,10 +47,20 @@
         }
     }
     ```
+- `@supercharge/hashing`
+    - add `scrypt` driver based on Node.js’ integrated [`scrypt` crypto methods](https://nodejs.org/docs/latest-v18.x/api/crypto.html#cryptoscryptpassword-salt-keylen-options-callback)
 - `@supercharge/http`
     - export a base `Middleware`
+    - HTTP routes expose a `toJSON` method
+    - HTTP route collection expose a `toJSON` method
+    - HTTP input bag change the visibility of the `attributes` property from `private` to `protected`
 - `@supercharge/session`
     - add `file` driver that stores sessions in files on local disc
+- add ESLint to the root of the project
+
+### Updated
+- bump dependencies
+- remove `.eslintrc.js` file from every package (to only use the root ESLint config)
 
 
 ## [3.19.0](https://github.com/supercharge/framework/compare/v3.18.0...v3.19.0) - 2023-03-11

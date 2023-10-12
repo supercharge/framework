@@ -64,9 +64,9 @@ export class SessionManager extends Manager {
 
     this.ctx = ctx
 
-    const session = new Session(
-      this.driver(), this.sessionConfig().name()
-    )
+    const sessionName = this.sessionConfig().name()
+    const sessionId = ctx.request.cookie(sessionName)
+    const session = new Session(this.driver(), sessionName, sessionId)
 
     this.ctx.state().add('session', session)
 

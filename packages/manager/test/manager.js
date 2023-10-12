@@ -18,7 +18,9 @@ test('fails for missing createDriver function', () => {
 
   const manager = new TestManager(new App())
 
-  expect(() => manager.handle()).toThrow('Unsupported driver "test".')
+  expect(() => manager.handle()).toThrow(
+    'Unsupported driver "test". "TestManager" does not implement the "createTestDriver" method'
+  )
 })
 
 test('fails to access the config for missing app instance', () => {

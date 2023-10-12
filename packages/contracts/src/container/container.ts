@@ -24,7 +24,10 @@ export type BindingFactory<ReturnValue extends any = any> = (container: Containe
  *  }
  * ```
  */
-export type ContainerBindings = any
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface ContainerBindings {
+  //
+}
 
 /**
  * Defines the IoC Container interface.

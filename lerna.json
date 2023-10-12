@@ -1,9 +1,8 @@
 {
-  "version": "3.19.0",
+  "version": "3.20.2",
   "packages": [
     "packages/*"
   ],
-  "useNx": true,
   "command": {
     "publish": {
       "ignoreChanges": [
@@ -16,5 +15,6 @@
         "--no-package-lock"
       ]
     }
-  }
+  },
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }

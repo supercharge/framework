@@ -17,12 +17,7 @@ export class ViteManifest {
   }
 
   /**
-   * Generate HTML tags for the given `entrypoints`.
-   *
-   * @param entrypoints The entrypoints to handle.
-   * @param buildDirectory
-   *
-   * @returns {Vite}
+   * Load a Vite manifest file from the given `manifestPath`.
    */
   static loadFrom (manifestPath: string): ViteManifest {
     this.ensureManifestExists(manifestPath)
@@ -60,8 +55,7 @@ export class ViteManifest {
   }
 
   /**
-   * Returns the manifest chunk for the given `entrypoint`. Throws an error If no chunk
-   * exists
+   * Returns the manifest chunk for the given `entrypoint`. Throws an error if no chunk exists.
    */
   getChunk (entrypoint: string): ManifestChunk {
     const chunk = this.manifest[entrypoint]

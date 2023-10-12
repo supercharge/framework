@@ -3,7 +3,7 @@
 import Str from '@supercharge/strings'
 import { tap } from '@supercharge/goodies'
 import { isClass } from '@supercharge/classes'
-import { HttpRoute, HttpController, RouteHandler, HttpMethods, HttpContext, Application, Class } from '@supercharge/contracts'
+import { HttpRoute, HttpController, RouteHandler, HttpMethods, HttpContext, Application, Class, RouteObjectAttributes } from '@supercharge/contracts'
 
 interface RouteAttributes {
   path: string
@@ -161,5 +161,18 @@ export class Route implements HttpRoute {
    */
   async runCallable (ctx: HttpContext): Promise<void> {
     return await (this.handler() as Function)(ctx)
+  }
+
+  /**
+   * Returns the route object’s attributes.
+   */
+  toJSON (): RouteObjectAttributes {
+    return {
+      path: this.path(),
+      methods: this.methods(),
+      middleware: this.getMiddleware(),
+      isInlineHandler: this.isInlineHandler(),
+      isControllerClass: this.isControllerClass(),
+    }
   }
 }

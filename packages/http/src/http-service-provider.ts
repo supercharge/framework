@@ -84,6 +84,6 @@ export class HttpServiceProvider extends ServiceProvider {
    * Stop application services.
    */
   override async shutdown (): Promise<void> {
-    await this.app().make<Server>('server').stop()
+    await this.app().make('server').stop()
   }
 }

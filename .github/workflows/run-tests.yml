@@ -1,6 +1,14 @@
 name: Run tests
 
-on: [push, pull_request]
+concurrency:
+  group: ${{ github.ref }}   # `github.ref` references the git branch name
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch:
+  push:
+    paths-ignore:
+      - 'README.md'
 
 jobs:
   linux_tests:
@@ -9,7 +17,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        node-version: [16.x, 18.x] #, 19.x] # we’re skipping Node.js 19 for now until it’s more stable
+        node-version: [16.x, 18.x, 20.x]
 
     name: Node ${{ matrix.node-version }}
 
@@ -32,9 +40,6 @@ jobs:
 
     - name: Install dependencies
       run: npm install
-
-    - name: Build packages
-      run: npm run build
 
     - name: Run tests
       run: npm test

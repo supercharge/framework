@@ -2,7 +2,7 @@
 
 import { Route } from './route'
 import { tap } from '@supercharge/goodies'
-import { HttpRouteCollection } from '@supercharge/contracts'
+import { HttpRouteCollection, RouteObjectAttributes } from '@supercharge/contracts'
 
 export class RouteCollection implements HttpRouteCollection {
   /**
@@ -57,5 +57,14 @@ export class RouteCollection implements HttpRouteCollection {
    */
   public count (): number {
     return this.routes.length
+  }
+
+  /**
+   * Returns the attributes of all routes.
+   */
+  public toJSON (): RouteObjectAttributes[] {
+    return this.routes.map(route => {
+      return route.toJSON()
+    })
   }
 }

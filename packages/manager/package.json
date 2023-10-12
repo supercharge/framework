@@ -1,20 +1,18 @@
 {
   "name": "@supercharge/manager",
   "description": "The Supercharge manager package",
-  "version": "3.19.0",
+  "version": "3.20.2",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
   },
   "dependencies": {
-    "@supercharge/contracts": "^3.19.0",
+    "@supercharge/contracts": "^3.20.2",
     "@supercharge/strings": "~2.0.0"
   },
   "devDependencies": {
-    "@supercharge/eslint-config-typescript": "~3.0.0",
-    "c8": "~8.0.0",
-    "eslint": "~8.45.0",
-    "expect": "~29.6.1",
+    "c8": "~8.0.1",
+    "expect": "~29.6.3",
     "sinon": "~15.2.0",
     "typescript": "~5.1.6",
     "uvu": "~0.5.6"

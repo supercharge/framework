@@ -1,7 +1,7 @@
 {
   "name": "@supercharge/support",
   "description": "The Supercharge support package",
-  "version": "3.19.0",
+  "version": "3.20.2",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
@@ -12,15 +12,13 @@
     "dist"
   ],
   "dependencies": {
-    "@supercharge/contracts": "^3.19.0",
+    "@supercharge/contracts": "^3.20.2",
     "@supercharge/goodies": "~1.11.1"
   },
   "devDependencies": {
-    "@supercharge/eslint-config-typescript": "~3.0.0",
-    "c8": "~8.0.0",
+    "c8": "~8.0.1",
     "dayjs": "~1.11.9",
-    "eslint": "~8.45.0",
-    "expect": "~29.6.1",
+    "expect": "~29.6.3",
     "typescript": "~5.1.6",
     "uvu": "~0.5.6"
   },
