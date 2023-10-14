@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.20.3](https://github.com/supercharge/framework/compare/v3.20.1...v3.20.2) - 2023-10-14
+
+### Updated
+- `@supercharge/hashing`
+    - require `BcryptDriver` inside the `createBcryptDriver` method to only import dependencies when needed. This will support Supercharge to use Bun (the new runtime) because it doesn’t reference a bcrypt_napi bridge
+- bump dependencies
+
+
 ## [3.20.2](https://github.com/supercharge/framework/compare/v3.20.1...v3.20.2) - 2023-08-24
 
 ### Updated

@@ -1,7 +1,6 @@
 'use strict'
 
 import { Manager } from '@supercharge/manager'
-import { BcryptHasher } from './bcrypt-hasher'
 import { ScryptHasher } from './scrypt-hasher'
 import { Hasher } from '@supercharge/contracts'
 
@@ -27,6 +26,8 @@ export class HashManager extends Manager implements Hasher {
    * Create a bcrypt hasher instance.
    */
   protected createBcryptDriver (): Hasher {
+    const { BcryptHasher } = require('./bcrypt-hasher')
+
     return new BcryptHasher({
       rounds: this.config().get('hashing.bcrypt.rounds', 10)
     })
