@@ -1,14 +1,14 @@
 {
   "name": "@supercharge/console",
   "description": "The Supercharge console package",
-  "version": "3.20.2",
+  "version": "3.20.3",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
   },
   "dependencies": {
     "@supercharge/cedar": "~2.0.0",
-    "@supercharge/contracts": "^3.20.2"
+    "@supercharge/contracts": "^3.20.3"
   },
   "devDependencies": {
     "c8": "~8.0.1",
