@@ -17,9 +17,9 @@
   },
   "devDependencies": {
     "c8": "~8.0.1",
-    "dayjs": "~1.11.9",
-    "expect": "~29.6.3",
-    "typescript": "~5.1.6",
+    "dayjs": "~1.11.10",
+    "expect": "~29.7.0",
+    "typescript": "~5.2.2",
     "uvu": "~0.5.6"
   },
   "engines": {

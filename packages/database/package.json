@@ -16,14 +16,14 @@
     "@supercharge/manager": "^3.20.2",
     "@supercharge/support": "^3.20.2",
     "knex": "~2.5.1",
-    "objection": "~3.1.1",
+    "objection": "~3.1.2",
     "sqlite3": "~5.1.6"
   },
   "devDependencies": {
     "@supercharge/core": "^3.20.2",
     "c8": "~8.0.1",
-    "expect": "~29.6.3",
-    "typescript": "~5.1.6",
+    "expect": "~29.7.0",
+    "typescript": "~5.2.2",
     "uvu": "~0.5.6"
   },
   "engines": {

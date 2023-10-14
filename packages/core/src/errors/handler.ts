@@ -299,7 +299,7 @@ export class ErrorHandler implements ErrorHandlerContract {
    */
   async renderYouchResponse ({ request, response }: HttpContext, error: HttpError): Promise<void> {
     response.payload(
-      await new Youch(error, request.req()).toHTML()
+      await new Youch(error, request.req()).toHTML({})
     ).status(error.status)
   }
 }

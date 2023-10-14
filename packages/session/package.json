@@ -30,12 +30,12 @@
     "@supercharge/core": "^3.20.2",
     "@supercharge/http": "^3.20.2",
     "@supercharge/view": "^3.20.2",
-    "@types/lodash": "~4.14.197",
-    "@types/ms": "~0.7.31",
+    "@types/lodash": "~4.14.199",
+    "@types/ms": "~0.7.32",
     "c8": "~8.0.1",
-    "expect": "~29.6.3",
+    "expect": "~29.7.0",
     "supertest": "~6.3.3",
-    "typescript": "~5.1.6"
+    "typescript": "~5.2.2"
   },
   "engines": {
     "node": ">=16"
