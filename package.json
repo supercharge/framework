@@ -41,7 +41,8 @@
     "dev": "lerna run dev",
     "fresh": "npm run clean && npm install",
     "lint": "lerna run lint",
-    "publish": "npm run build && lerna publish --force-publish",
+    "publish": "npm run release",
+    "release": "npm run build && lerna publish --force-publish",
     "test": "lerna run test",
     "test:nocache": "npm test -- --skip-nx-cache",
     "watch": "npm run dev"
