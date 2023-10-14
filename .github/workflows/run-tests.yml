@@ -1,6 +1,9 @@
 name: Run tests
 
 concurrency:
+  # the group name is composed of two elements:
+  #   1. this workflow name "run-tests"
+  #   2. the branch name retrieved via the "github.ref" variable
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
