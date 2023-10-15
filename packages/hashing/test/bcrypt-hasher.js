@@ -2,7 +2,7 @@
 
 const { test } = require('uvu')
 const { expect } = require('expect')
-const { BcryptHasher } = require('../dist')
+const { BcryptHasher } = require('../dist/bcrypt-hasher')
 
 test('defaults to 12 rounds', async () => {
   const bcrypt = new BcryptHasher({})

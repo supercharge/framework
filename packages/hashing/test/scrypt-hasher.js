@@ -6,7 +6,8 @@
 
 const { test } = require('uvu')
 const { expect } = require('expect')
-const { ScryptHasher, ScryptValidationError } = require('../dist')
+const { ScryptValidationError } = require('../dist/')
+const { ScryptHasher } = require('../dist/scrypt-hasher')
 
 /**
  * @param {HashConfig['scrypt'] | undefined} config
