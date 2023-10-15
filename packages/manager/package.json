@@ -20,6 +20,8 @@
   "engines": {
     "node": ">=16"
   },
+  "type": "module",
+  "main": "dist",
   "files": [
     "dist"
   ],
@@ -30,7 +32,6 @@
     "nodejs"
   ],
   "license": "MIT",
-  "main": "dist",
   "publishConfig": {
     "access": "public"
   },

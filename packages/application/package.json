@@ -9,6 +9,7 @@
   "files": [
     "dist"
   ],
+  "type": "module",
   "main": "dist",
   "types": "dist",
   "dependencies": {

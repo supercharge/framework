@@ -10,6 +10,7 @@
     "contracts"
   ],
   "license": "MIT",
+  "type": "module",
   "main": "dist",
   "types": "dist",
   "files": [

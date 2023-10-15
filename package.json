@@ -3,6 +3,7 @@
   "description": "Supercharge Node.js framework",
   "version": "1.0.0-beta9",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
   },

@@ -6,6 +6,12 @@
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
   },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "main": "dist",
+  "types": "dist",
   "dependencies": {
     "@supercharge/arrays": "~4.3.0",
     "@supercharge/contracts": "^3.20.4",
@@ -29,9 +35,6 @@
   "engines": {
     "node": ">=16"
   },
-  "files": [
-    "dist"
-  ],
   "homepage": "https://superchargejs.com",
   "keywords": [
     "vite",
@@ -43,7 +46,6 @@
     "superchargejs"
   ],
   "license": "MIT",
-  "main": "dist",
   "peerDependencies": {
     "vite": "^3.0.0 || ^4.0.0"
   },
@@ -63,6 +65,5 @@
     "test": "npm run build && npm run lint && npm run test:run",
     "test:watch": "vitest",
     "test:run": "vitest run --coverage"
-  },
-  "types": "dist"
+  }
 }
