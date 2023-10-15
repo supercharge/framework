@@ -1,4 +1,3 @@
-'use strict'
 
 import { FileLogger } from './file-logger'
 import { Manager } from '@supercharge/manager'

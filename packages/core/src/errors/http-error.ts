@@ -1,4 +1,3 @@
-'use strict'
 
 import { HttpContext } from '@supercharge/contracts/src'
 import { HttpError as BaseHttpError } from '@supercharge/errors'

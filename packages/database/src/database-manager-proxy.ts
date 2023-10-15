@@ -1,4 +1,3 @@
-'use strict'
 
 export class DatabaseManagerProxy<T extends object> {
   /**

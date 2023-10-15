@@ -1,4 +1,3 @@
-'use strict'
 
 export * from './base'
 export * from './bodyparser'

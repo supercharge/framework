@@ -1,4 +1,3 @@
-'use strict'
 
 import { parse, match } from 'matchit'
 import { HttpError } from '@supercharge/http-errors'

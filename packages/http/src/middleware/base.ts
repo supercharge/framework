@@ -1,4 +1,3 @@
-'use strict'
 
 import { Application, HttpContext, Middleware as MiddlewareContract, NextHandler } from '@supercharge/contracts'
 

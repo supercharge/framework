@@ -1,4 +1,3 @@
-'use strict'
 
 const Path = require('path')
 const { test } = require('uvu')

@@ -1,4 +1,3 @@
-'use strict'
 
 import { knex, Knex } from 'knex'
 import { DatabaseConfig } from '@supercharge/contracts'

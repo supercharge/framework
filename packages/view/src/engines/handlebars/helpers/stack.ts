@@ -1,6 +1,4 @@
-'use strict'
 
-'use strict'
 
 /**
  * Stacks are like portals and allow to inject content into a section

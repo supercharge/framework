@@ -1,4 +1,3 @@
-'use strict'
 
 import { HttpContext } from './context'
 import { CookieBag } from './cookie-bag'

@@ -1,4 +1,3 @@
-'use strict'
 
 /**
  * @deprecated The `CorsOptions` is deprecated in favor of the `CorsConfig`

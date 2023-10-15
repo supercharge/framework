@@ -1,4 +1,3 @@
-'use strict'
 
 import * as Koa from 'koa'
 import { Files } from 'formidable'

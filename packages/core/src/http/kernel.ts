@@ -1,4 +1,3 @@
-'use strict'
 
 import { tap } from '@supercharge/goodies'
 import Collect from '@supercharge/collections'

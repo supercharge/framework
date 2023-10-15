@@ -1,4 +1,3 @@
-'use strict'
 
 import Fs from '@supercharge/fs'
 import Dotenv, { DotenvConfigOptions } from 'dotenv'

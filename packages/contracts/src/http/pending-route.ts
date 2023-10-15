@@ -1,4 +1,3 @@
-'use strict'
 
 import { HttpRoute } from './route'
 import { RouteHandler } from './router'

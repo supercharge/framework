@@ -1,4 +1,3 @@
-'use strict'
 
 module.exports = {
   maxage: 123,

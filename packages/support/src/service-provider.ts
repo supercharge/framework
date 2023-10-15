@@ -1,4 +1,3 @@
-'use strict'
 
 import { tap, esmRequire } from '@supercharge/goodies'
 import { Application, ConfigStore, ServiceProvider as ServiceProviderContract } from '@supercharge/contracts'

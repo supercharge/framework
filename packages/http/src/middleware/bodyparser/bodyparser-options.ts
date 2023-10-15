@@ -1,4 +1,3 @@
-'use strict'
 
 import Set from '@supercharge/set'
 import { BodyparserJsonOptions } from './bodyparser-json-options'

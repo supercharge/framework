@@ -1,4 +1,3 @@
-'use strict'
 
 import Bytes from 'bytes'
 import { BodyparserBaseOptions } from './bodyparser-base-options'

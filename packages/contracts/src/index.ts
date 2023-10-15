@@ -1,4 +1,3 @@
-'use strict'
 
 export { Application, ApplicationCtor } from './application/application'
 export { ApplicationConfig } from './application/config'

@@ -1,4 +1,3 @@
-'use strict'
 
 import ms from 'ms'
 import { tap } from '@supercharge/goodies'

@@ -1,4 +1,3 @@
-'use strict'
 
 /**
  * @typedef {import('@supercharge/contracts').Database } Database

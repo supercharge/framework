@@ -1,4 +1,3 @@
-'use strict'
 
 import JSON from '@supercharge/json'
 import { PassThrough } from 'stream'

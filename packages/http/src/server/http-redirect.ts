@@ -1,4 +1,3 @@
-'use strict'
 
 import { Context } from 'koa'
 import { tap } from '@supercharge/goodies'

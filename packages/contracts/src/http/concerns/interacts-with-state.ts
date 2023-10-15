@@ -1,4 +1,3 @@
-'use strict'
 
 import { StateBag } from './state-bag'
 

@@ -1,4 +1,3 @@
-'use strict'
 
 import { Model, Page, QueryBuilder as BaseQueryBuilder } from 'objection'
 

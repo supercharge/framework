@@ -1,4 +1,3 @@
-'use strict'
 
 import { CookieOptions } from './cookie-options'
 

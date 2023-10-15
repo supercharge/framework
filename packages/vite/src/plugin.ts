@@ -1,4 +1,3 @@
-'use strict'
 
 import Fs from 'fs'
 import Path from 'path'

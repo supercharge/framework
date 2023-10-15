@@ -1,4 +1,3 @@
-'use strict'
 
 import { InteractsWithTime } from '@supercharge/support'
 import { SessionDriver, HttpContext } from '@supercharge/contracts'

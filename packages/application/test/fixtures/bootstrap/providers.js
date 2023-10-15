@@ -1,4 +1,3 @@
-'use strict'
 
 const TestServiceProvider = require('./test-service-provider')
 

@@ -1,4 +1,3 @@
-'use strict'
 
 const Sinon = require('sinon')
 const { test } = require('uvu')

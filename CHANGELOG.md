@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.0.0](https://github.com/supercharge/framework/compare/v3.20.4...v4.0.0) - 2023-xx-xx
+
+### Updated
+- bump dependencies
+
+### Breaking Changes
+- all packages of the framework moved to ESM
+- require Node.js v20
+
+
 ## [3.20.4](https://github.com/supercharge/framework/compare/v3.20.3...v3.20.4) - 2023-10-15
 
 ### Updated

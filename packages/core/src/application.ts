@@ -1,4 +1,3 @@
-'use strict'
 
 import { HttpServiceProvider } from '@supercharge/http'
 import { Application as BaseApplication } from '@supercharge/application'

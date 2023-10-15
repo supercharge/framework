@@ -1,4 +1,3 @@
-'use strict'
 
 import { HelperDelegate } from 'handlebars'
 import { ViewResponseConfig } from './response-config'

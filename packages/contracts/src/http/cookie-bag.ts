@@ -1,4 +1,3 @@
-'use strict'
 
 import { RequestCookieBuilderCallback, ResponseCookieBuilderCallback } from './cookie-options-builder'
 

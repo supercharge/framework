@@ -1,4 +1,3 @@
-'use strict'
 
 import { Files } from 'formidable'
 import { tap } from '@supercharge/goodies'

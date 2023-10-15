@@ -1,4 +1,3 @@
-'use strict'
 
 export * from './handle-exceptions'
 export * from './handle-shutdown'

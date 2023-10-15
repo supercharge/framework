@@ -1,4 +1,3 @@
-'use strict'
 
 import { Logger } from './logger'
 import Winston, { format } from 'winston'

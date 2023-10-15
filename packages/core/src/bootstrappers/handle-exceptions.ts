@@ -1,4 +1,3 @@
-'use strict'
 
 import Youch from 'youch'
 // @ts-expect-error

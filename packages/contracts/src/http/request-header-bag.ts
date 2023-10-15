@@ -1,4 +1,3 @@
-'use strict'
 
 import { IncomingHttpHeaders } from 'http'
 

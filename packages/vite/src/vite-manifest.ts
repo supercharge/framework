@@ -1,4 +1,3 @@
-'use strict'
 
 import Fs from 'node:fs'
 import { Manifest, ManifestChunk } from 'vite'

@@ -1,4 +1,3 @@
-'use strict'
 
 import { HashManager } from './hash-manager'
 import { ServiceProvider } from '@supercharge/support'

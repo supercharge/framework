@@ -1,4 +1,3 @@
-'use strict'
 
 import { Command } from './command'
 import { Application as CedarApplication } from '@supercharge/cedar'

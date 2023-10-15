@@ -1,4 +1,3 @@
-'use strict'
 
 import { Manager } from '@supercharge/manager'
 import { ScryptHasher } from './scrypt-hasher'

@@ -1,4 +1,3 @@
-'use strict'
 
 const { Command } = require('@supercharge/console')
 

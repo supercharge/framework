@@ -1,4 +1,3 @@
-'use strict'
 
 /**
  * @typedef {import('@supercharge/contracts').HashConfig} HashConfig

@@ -1,4 +1,3 @@
-'use strict'
 
 import { ViewEngine } from '@supercharge/contracts'
 import { ServiceProvider } from '@supercharge/support'

@@ -1,4 +1,3 @@
-'use strict'
 
 import { Mixin as Many } from 'ts-mixer'
 import { CookieBag } from './cookie-bag'

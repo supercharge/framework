@@ -1,4 +1,3 @@
-'use strict'
 
 import { Application, Bootstrapper } from '@supercharge/contracts'
 import { ShutdownSignalListener } from '../shutdown-signal-listener'

@@ -1,4 +1,3 @@
-'use strict'
 
 import { HttpRouter } from './router'
 import { IncomingMessage, ServerResponse } from 'http'

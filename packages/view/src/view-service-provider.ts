@@ -1,4 +1,3 @@
-'use strict'
 
 import { ViewManager } from './manager'
 import { ServiceProvider } from '@supercharge/support'

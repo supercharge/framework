@@ -1,4 +1,3 @@
-'use strict'
 
 import { TemplateDelegate } from 'handlebars'
 

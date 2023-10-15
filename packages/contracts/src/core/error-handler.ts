@@ -1,4 +1,3 @@
-'use strict'
 
 import { HttpContext, Application } from '..'
 

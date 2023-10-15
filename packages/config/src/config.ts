@@ -1,4 +1,3 @@
-'use strict'
 
 import _ from 'lodash'
 import { ConfigStore } from '@supercharge/contracts'

@@ -1,4 +1,3 @@
-'use strict'
 
 export * from './bodyparser'
 export * from './bodyparser-options'

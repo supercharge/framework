@@ -1,4 +1,3 @@
-'use strict'
 
 import { LogChannelConfig } from '@supercharge/contracts'
 import Winston, { format, Logger as WinstonLogger } from 'winston'

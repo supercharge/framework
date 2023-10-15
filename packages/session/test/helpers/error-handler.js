@@ -1,4 +1,3 @@
-'use strict'
 
 const { ErrorHandler: Handler } = require('@supercharge/core')
 

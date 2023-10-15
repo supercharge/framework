@@ -1,4 +1,3 @@
-'use strict'
 
 import { HttpRoute as Route, RouteObjectAttributes } from './route'
 

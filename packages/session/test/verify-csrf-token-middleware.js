@@ -1,4 +1,3 @@
-'use strict'
 
 const { expect } = require('expect')
 const Supertest = require('supertest')

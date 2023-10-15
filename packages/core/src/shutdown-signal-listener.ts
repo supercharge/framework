@@ -1,4 +1,3 @@
-'use strict'
 
 import Os from 'node:os'
 import Set from '@supercharge/set'

@@ -1,4 +1,3 @@
-'use strict'
 
 import { tap } from '@supercharge/goodies'
 import { CookieOptions, RequestCookieBuilder as RequestCookieContract } from '@supercharge/contracts'

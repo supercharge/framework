@@ -1,4 +1,3 @@
-'use strict'
 
 import ms from 'ms'
 import { SessionCookieConfig } from './session-config-cookie'

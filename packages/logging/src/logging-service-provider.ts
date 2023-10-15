@@ -1,4 +1,3 @@
-'use strict'
 
 import { LogManager } from './log-manager'
 import { ServiceProvider } from '@supercharge/support'

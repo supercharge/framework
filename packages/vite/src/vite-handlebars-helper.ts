@@ -1,4 +1,3 @@
-'use strict'
 
 import { Vite } from './vite'
 import { HelperOptions } from 'handlebars'

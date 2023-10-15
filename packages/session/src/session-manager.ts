@@ -1,4 +1,3 @@
-'use strict'
 
 import { Session } from './session'
 import { Manager } from '@supercharge/manager'

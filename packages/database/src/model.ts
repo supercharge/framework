@@ -1,4 +1,3 @@
-'use strict'
 
 import { QueryBuilder } from './query-builder'
 import { Constructor, MaybeCompositeId, MaybeSingleQueryBuilder, Model as BaseModel, NumberQueryBuilder, QueryBuilderType, TransactionOrKnex } from 'objection'

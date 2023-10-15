@@ -1,4 +1,3 @@
-'use strict'
 
 import { BootstrapperCtor, ErrorHandlerCtor, EnvStore, Logger, ConfigStore, Container, ServiceProvider } from '..'
 

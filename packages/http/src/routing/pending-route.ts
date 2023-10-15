@@ -1,4 +1,3 @@
-'use strict'
 
 import { Route } from './route'
 import { Router } from './router'

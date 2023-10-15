@@ -1,4 +1,3 @@
-'use strict'
 
 /**
  * Defines the list of HTTP methods.

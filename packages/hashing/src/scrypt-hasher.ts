@@ -1,4 +1,3 @@
-'use strict'
 
 // @ts-expect-error "@phc/format" doesn’t provide type definitions
 import Phc from '@phc/format'

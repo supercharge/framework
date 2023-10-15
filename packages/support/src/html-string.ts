@@ -1,4 +1,3 @@
-'use strict'
 
 import { Htmlable } from '@supercharge/contracts'
 

@@ -1,4 +1,3 @@
-'use strict'
 
 import { Model } from './model'
 import { DatabaseManager } from './database-manager'

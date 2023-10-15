@@ -1,4 +1,3 @@
-'use strict'
 
 import Str from '@supercharge/strings'
 import { HttpRouteGroup, RouteAttributes } from '@supercharge/contracts'

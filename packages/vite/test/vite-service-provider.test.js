@@ -1,4 +1,3 @@
-'use strict'
 
 import { EOL } from 'node:os'
 import { ViteServiceProvider } from '../dist'

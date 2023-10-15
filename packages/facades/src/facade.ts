@@ -1,4 +1,3 @@
-'use strict'
 
 import { Application } from '@supercharge/contracts'
 import MethodMissing from '@supercharge/method-missing'

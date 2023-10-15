@@ -1,4 +1,3 @@
-'use strict'
 
 export { HandlebarsCompiler } from './engines'
 export { ViewManager } from './manager'

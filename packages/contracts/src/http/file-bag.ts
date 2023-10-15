@@ -1,4 +1,3 @@
-'use strict'
 
 import { UploadedFile } from './uploaded-file'
 

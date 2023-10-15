@@ -1,4 +1,3 @@
-'use strict'
 
 import { resolvePageComponent } from '../dist'
 import { describe, test, expect } from 'vitest'

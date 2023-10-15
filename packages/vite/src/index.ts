@@ -1,4 +1,3 @@
-'use strict'
 
 import { supercharge } from './plugin'
 

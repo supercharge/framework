@@ -1,4 +1,3 @@
-'use strict'
 
 import { Vite } from '../dist'
 import { describe, test, expect, beforeEach } from 'vitest'

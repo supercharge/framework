@@ -1,4 +1,3 @@
-'use strict'
 
 import { InputBag } from './input-bag'
 import { Dict, ParameterBag as ParameterBagContract } from '@supercharge/contracts'

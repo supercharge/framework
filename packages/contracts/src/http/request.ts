@@ -1,4 +1,3 @@
-'use strict'
 
 import { FileBag } from './file-bag'
 import { HttpMethods } from './methods'

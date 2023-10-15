@@ -1,4 +1,3 @@
-'use strict'
 
 import { Application, Bootstrapper } from '@supercharge/contracts'
 

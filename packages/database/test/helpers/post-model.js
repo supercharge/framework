@@ -1,4 +1,3 @@
-'use strict'
 
 const { Model } = require('../../dist')
 const UserModel = require('./user-model')

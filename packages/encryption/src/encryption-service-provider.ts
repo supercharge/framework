@@ -1,4 +1,3 @@
-'use strict'
 
 import { Encrypter } from './encrypter'
 import { ServiceProvider } from '@supercharge/support'

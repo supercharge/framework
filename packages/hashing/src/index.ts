@@ -1,4 +1,3 @@
-'use strict'
 
 export { HashManager } from './hash-manager'
 export { ScryptValidationError } from './scrypt-validation-error'

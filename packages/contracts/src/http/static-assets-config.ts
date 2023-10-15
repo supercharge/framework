@@ -1,4 +1,3 @@
-'use strict'
 
 /**
  * @deprecated The `StaticAssetsOptions` is deprecated in favor of the `StaticAssetsConfig`

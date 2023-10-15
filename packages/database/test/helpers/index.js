@@ -1,4 +1,3 @@
-'use strict'
 
 const Path = require('node:path')
 const Crypto = require('node:crypto')

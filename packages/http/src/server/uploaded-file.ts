@@ -1,4 +1,3 @@
-'use strict'
 
 import { File as FormidableFile } from 'formidable'
 import { UploadedFile as UploadedFileContract } from '@supercharge/contracts'

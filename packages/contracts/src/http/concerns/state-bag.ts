@@ -1,4 +1,3 @@
-'use strict'
 
 /**
  * This interface defines key-value-pairs stored in the shared request state.

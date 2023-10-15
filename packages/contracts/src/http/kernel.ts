@@ -1,4 +1,3 @@
-'use strict'
 
 import { Application } from '..'
 import { MiddlewareCtor } from './middleware'

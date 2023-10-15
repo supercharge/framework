@@ -1,4 +1,3 @@
-'use strict'
 
 import { AppFacade } from './app'
 import { EnvFacade } from './env'

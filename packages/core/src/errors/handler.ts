@@ -1,4 +1,3 @@
-'use strict'
 
 import Youch from 'youch'
 import { HttpError } from './http-error'

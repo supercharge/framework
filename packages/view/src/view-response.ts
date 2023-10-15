@@ -1,4 +1,3 @@
-'use strict'
 
 import { HttpResponse, ViewBuilderCallback, ViewEngine, ViewResponseConfig } from '@supercharge/contracts'
 import { ViewConfigBuilder } from './view-config-builder'

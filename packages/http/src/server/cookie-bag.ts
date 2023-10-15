@@ -1,4 +1,3 @@
-'use strict'
 
 import Cookie from 'cookie'
 import * as Cookies from 'cookies'

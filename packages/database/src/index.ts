@@ -1,4 +1,3 @@
-'use strict'
 
 export { DatabaseManager } from './database-manager'
 export { DatabaseServiceProvider } from './database-service-provider'

@@ -1,4 +1,3 @@
-'use strict'
 
 import { supercharge } from '../dist'
 import { describe, test, expect } from 'vitest'

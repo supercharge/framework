@@ -1,4 +1,3 @@
-'use strict'
 
 import { Middleware } from './base'
 import serveStaticFilesFrom from 'koa-static'

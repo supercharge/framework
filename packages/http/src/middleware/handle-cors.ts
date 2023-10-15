@@ -1,4 +1,3 @@
-'use strict'
 
 import Koa from 'koa'
 import cors from '@koa/cors'

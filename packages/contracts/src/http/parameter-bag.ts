@@ -1,4 +1,3 @@
-'use strict'
 
 import { Dict } from '..'
 import { InputBag } from './input-bag'

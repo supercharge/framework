@@ -1,4 +1,3 @@
-'use strict'
 
 import { SessionManager } from './session-manager'
 import { ServiceProvider } from '@supercharge/support'

@@ -1,4 +1,3 @@
-'use strict'
 
 export { CookieSessionDriver } from './cookie'
 export { FileSessionDriver } from './file'

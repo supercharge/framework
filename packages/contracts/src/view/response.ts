@@ -1,4 +1,3 @@
-'use strict'
 
 import { ViewConfigBuilder } from './config-builder'
 

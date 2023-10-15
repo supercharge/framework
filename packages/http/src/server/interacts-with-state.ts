@@ -1,4 +1,3 @@
-'use strict'
 
 import { StateBag } from './state-bag'
 import { tap } from '@supercharge/goodies'

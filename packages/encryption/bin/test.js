@@ -1,4 +1,3 @@
-'use strict'
 
 const { specReporter } = require('@japa/spec-reporter')
 const { runFailedTests } = require('@japa/run-failed-tests')

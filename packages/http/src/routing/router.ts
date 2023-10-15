@@ -1,4 +1,3 @@
-'use strict'
 
 import { Route } from './route'
 import compose from 'koa-compose'

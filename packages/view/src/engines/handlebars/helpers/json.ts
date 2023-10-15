@@ -1,4 +1,3 @@
-'use strict'
 
 import Handlebars, { SafeString } from 'handlebars'
 

@@ -1,4 +1,3 @@
-'use strict'
 
 export * from './cookie-bag'
 export * from './controller'

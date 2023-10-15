@@ -1,4 +1,3 @@
-'use strict'
 
 import { Class } from '..'
 import { HttpRoute } from './route'

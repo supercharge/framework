@@ -1,4 +1,3 @@
-'use strict'
 
 const { test } = require('uvu')
 const { Server } = require('../dist')

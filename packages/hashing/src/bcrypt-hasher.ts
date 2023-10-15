@@ -1,4 +1,3 @@
-'use strict'
 
 import Bcrypt from 'bcrypt'
 import { Hasher as HasherContract, HashConfig } from '@supercharge/contracts'

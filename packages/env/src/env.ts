@@ -1,4 +1,3 @@
-'use strict'
 
 import Str from '@supercharge/strings'
 import { EnvStore } from '@supercharge/contracts'

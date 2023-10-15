@@ -1,4 +1,3 @@
-'use strict'
 
 import { RouterContext } from '@koa/router'
 import { InteractsWithState } from './interacts-with-state'

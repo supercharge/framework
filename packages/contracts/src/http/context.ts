@@ -1,4 +1,3 @@
-'use strict'
 
 import { HttpRequest } from './request'
 import { HttpResponse } from './response'

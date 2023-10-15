@@ -1,4 +1,3 @@
-'use strict'
 
 import { Server } from './server'
 import { Router } from './routing'

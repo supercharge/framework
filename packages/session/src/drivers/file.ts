@@ -1,4 +1,3 @@
-'use strict'
 
 import Path from 'path'
 import Fs from '@supercharge/fs'

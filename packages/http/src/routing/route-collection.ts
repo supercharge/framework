@@ -1,4 +1,3 @@
-'use strict'
 
 import { Route } from './route'
 import { tap } from '@supercharge/goodies'

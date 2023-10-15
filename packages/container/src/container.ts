@@ -1,4 +1,3 @@
-'use strict'
 
 import Map from '@supercharge/map'
 import Str from '@supercharge/strings'

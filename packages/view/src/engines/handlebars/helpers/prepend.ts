@@ -1,4 +1,3 @@
-'use strict'
 
 /**
  * Push content to the beginning of an assets stack identified by the

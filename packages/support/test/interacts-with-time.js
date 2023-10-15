@@ -1,4 +1,3 @@
-'use strict'
 
 const Dayjs = require('dayjs')
 const { test } = require('uvu')
