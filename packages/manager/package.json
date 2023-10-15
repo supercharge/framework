@@ -13,7 +13,7 @@
   "devDependencies": {
     "c8": "~8.0.1",
     "expect": "~29.7.0",
-    "sinon": "~15.2.0",
+    "sinon": "~16.1.0",
     "typescript": "~5.2.2",
     "uvu": "~0.5.6"
   },
