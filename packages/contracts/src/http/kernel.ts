@@ -1,7 +1,7 @@
 
-import { Application } from '..'
-import { MiddlewareCtor } from './middleware'
-import { HttpServer, HttpServerHandler } from './server'
+import { Application } from '../index.js'
+import { MiddlewareCtor } from './middleware.js'
+import { HttpServer, HttpServerHandler } from './server.js'
 
 export interface HttpKernel {
   /**

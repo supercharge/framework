@@ -6,12 +6,15 @@
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
   },
-  "type": "module",
-  "main": "dist",
-  "types": "dist",
   "files": [
     "dist"
   ],
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist",
+  "exports": {
+    ".": "./dist/index.js"
+  },
   "dependencies": {
     "@supercharge/collections": "~5.0.1",
     "@supercharge/contracts": "^3.20.4",

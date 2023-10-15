@@ -1,11 +1,11 @@
 
-import { HttpContext } from './context'
-import { CookieBag } from './cookie-bag'
-import { HttpRedirect } from './redirect'
-import { CookieOptions } from './cookie-options'
+import { HttpContext } from './context.js'
+import { CookieBag } from './cookie-bag.js'
+import { HttpRedirect } from './redirect.js'
+import { CookieOptions } from './cookie-options.js'
 import { MacroableCtor } from '@supercharge/macroable'
-import { ResponseCookieBuilderCallback } from './cookie-options-builder'
-import { InteractsWithState } from './concerns/interacts-with-state'
+import { InteractsWithState } from './concerns/interacts-with-state.js'
+import { ResponseCookieBuilderCallback } from './cookie-options-builder.js'
 
 export interface HttpResponseCtor extends MacroableCtor {
   /**

@@ -1,7 +1,6 @@
 
-const { specReporter } = require('@japa/spec-reporter')
-const { runFailedTests } = require('@japa/run-failed-tests')
-const { processCliArgs, configure, run } = require('@japa/runner')
+import { spec } from '@japa/runner/reporters'
+import { processCLIArgs, configure, run } from '@japa/runner'
 
 /*
 |--------------------------------------------------------------------------
@@ -11,7 +10,7 @@ const { processCliArgs, configure, run } = require('@japa/runner')
 | The configure method accepts the configuration to configure the Japa
 | tests runner.
 |
-| The first method call "processCliArgs" process the command line arguments
+| The first method call "processCLIArgs" process the command line arguments
 | and turns them into a config object. Using this method is not mandatory.
 |
 | Please consult japa.dev/runner-config for the config docs.
@@ -20,20 +19,24 @@ const { processCliArgs, configure, run } = require('@japa/runner')
 const plugins = []
 
 if (!process.env.CI) {
-  plugins.push(runFailedTests())
+  plugins.push(
+    // TODO: add Japa plugin
+    )
 }
 
+processCLIArgs(process.argv.slice(2))
+
 configure({
-  ...processCliArgs(process.argv.slice(2)),
-  ...{
-    plugins,
-    timeout: 2000,
-    files: ['test/**/*.js'],
-    reporters: [specReporter()],
-    importer: (filePath) => require(filePath),
-    filters: {
-      // files: ['cookie-session-driver.js']
-    }
+  plugins,
+  timeout: 2000,
+  files: ['test/**/*.js'],
+  reporters: {
+    activated: ['spec'],
+    list: [spec()]
+  },
+  importer: (filePath) => import(filePath),
+  filters: {
+    // files: ['cookie-session-driver.js']
   }
 })
 

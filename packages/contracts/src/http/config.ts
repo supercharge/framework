@@ -1,5 +1,5 @@
 
-import { CookieOptions } from './cookie-options'
+import { CookieOptions } from './cookie-options.js'
 
 export interface HttpConfig {
   /**

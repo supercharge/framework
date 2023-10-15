@@ -1,5 +1,5 @@
 
-import { HttpContext } from './context'
+import { HttpContext } from './context.js'
 
 export interface HttpController {
   /**

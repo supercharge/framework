@@ -1,5 +1,5 @@
 
-import { HttpContext, Application } from '..'
+import { HttpContext, Application } from '../index.js'
 
 export type ErrorHandlerCtor =
   /**

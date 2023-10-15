@@ -1,6 +1,6 @@
 
-import { Dict } from '..'
-import { InputBag } from './input-bag'
+import { Dict } from '../index.js'
+import { InputBag } from './input-bag.js'
 
 export interface ParameterBag<T> extends InputBag<T> {
   /**

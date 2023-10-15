@@ -6,6 +6,15 @@
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
   },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist",
+  "exports": {
+    ".": "./dist/index.js"
+  },
   "dependencies": {
     "@supercharge/contracts": "^3.20.4",
     "@supercharge/strings": "~2.0.0"
@@ -20,11 +29,6 @@
   "engines": {
     "node": ">=16"
   },
-  "type": "module",
-  "main": "dist",
-  "files": [
-    "dist"
-  ],
   "keywords": [
     "supercharge",
     "superchargejs",
@@ -50,6 +54,5 @@
     "test:run": "uvu --ignore helpers --ignore fixtures",
     "test:coverage": "c8 --include=dist npm run test:run && npm run test:report",
     "test:report": "c8 report --reporter=html"
-  },
-  "types": "dist"
+  }
 }

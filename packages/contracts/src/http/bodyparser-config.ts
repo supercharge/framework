@@ -1,5 +1,5 @@
 
-import { HttpMethods } from './methods'
+import { HttpMethods } from './methods.js'
 
 /**
  * @deprecated The `BodyparserOptions` is deprecated in favor of the `BodyparserConfig`

@@ -7,8 +7,11 @@
     "url": "https://github.com/supercharge/framework/issues"
   },
   "type": "module",
-  "main": "dist",
+  "main": "dist/index.js",
   "types": "dist",
+  "exports": {
+    ".": "./dist/index.js"
+  },
   "files": [
     "dist"
   ],

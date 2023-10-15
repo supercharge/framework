@@ -6,6 +6,12 @@
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
   },
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist",
+  "exports": {
+    ".": "./dist/index.js"
+  },
   "dependencies": {
     "@supercharge/cedar": "~2.0.0",
     "@supercharge/contracts": "^3.20.4"
@@ -22,9 +28,6 @@
   "files": [
     "dist"
   ],
-  "type": "module",
-  "main": "dist",
-  "types": "dist",
   "homepage": "https://superchargejs.com",
   "keywords": [
     "config",

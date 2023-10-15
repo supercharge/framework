@@ -10,12 +10,15 @@
     "contracts"
   ],
   "license": "MIT",
-  "type": "module",
-  "main": "dist",
-  "types": "dist",
   "files": [
     "dist"
   ],
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist",
+  "exports": {
+    ".": "./dist/index.js"
+  },
   "publishConfig": {
     "access": "public"
   },

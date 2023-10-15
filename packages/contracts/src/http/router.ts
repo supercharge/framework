@@ -1,11 +1,11 @@
 
-import { Class } from '..'
-import { HttpRoute } from './route'
-import { HttpContext } from './context'
-import { MiddlewareCtor } from './middleware'
-import { HttpController } from './controller'
-import { PendingRoute } from './pending-route'
-import { HttpRouteCollection } from './route-collection'
+import { Class } from '../index.js'
+import { HttpRoute } from './route.js'
+import { HttpContext } from './context.js'
+import { MiddlewareCtor } from './middleware.js'
+import { HttpController } from './controller.js'
+import { PendingRoute } from './pending-route.js'
+import { HttpRouteCollection } from './route-collection.js'
 
 type ControllerAction = Class<HttpController>
 type InlineRouteHandler = (ctx: HttpContext) => any | Promise<any>

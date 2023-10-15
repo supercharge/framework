@@ -1,6 +1,6 @@
 
 import { HelperDelegate } from 'handlebars'
-import { ViewResponseConfig } from './response-config'
+import { ViewResponseConfig } from './response-config.js'
 
 export interface ViewEngine {
   /**

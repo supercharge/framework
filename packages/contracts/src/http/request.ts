@@ -1,16 +1,16 @@
 
-import { FileBag } from './file-bag'
-import { HttpMethods } from './methods'
-import { HttpContext } from './context'
-import { CookieBag } from './cookie-bag'
-import { ParameterBag } from './parameter-bag'
-import { CookieOptions } from './cookie-options'
+import { FileBag } from './file-bag.js'
+import { HttpMethods } from './methods.js'
+import { HttpContext } from './context.js'
+import { CookieBag } from './cookie-bag.js'
+import { ParameterBag } from './parameter-bag.js'
+import { CookieOptions } from './cookie-options.js'
 import { MacroableCtor } from '@supercharge/macroable'
-import { RequestHeaderBag } from './request-header-bag'
-import { IncomingHttpHeaders, IncomingMessage } from 'http'
-import { InteractsWithState } from './concerns/interacts-with-state'
-import { RequestCookieBuilderCallback } from './cookie-options-builder'
-import { InteractsWithContentTypes } from './concerns/interacts-with-content-types'
+import { RequestHeaderBag } from './request-header-bag.js'
+import { IncomingHttpHeaders, IncomingMessage } from 'node:http'
+import { InteractsWithState } from './concerns/interacts-with-state.js'
+import { RequestCookieBuilderCallback } from './cookie-options-builder.js'
+import { InteractsWithContentTypes } from './concerns/interacts-with-content-types.js'
 
 export interface HttpRequestCtor extends MacroableCtor {
   /**

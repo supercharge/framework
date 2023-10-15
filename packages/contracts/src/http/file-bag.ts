@@ -1,5 +1,5 @@
 
-import { UploadedFile } from './uploaded-file'
+import { UploadedFile } from './uploaded-file.js'
 
 export interface FileBag {
   /**

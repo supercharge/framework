@@ -10,8 +10,11 @@
     "dist"
   ],
   "type": "module",
-  "main": "dist",
+  "main": "dist/index.js",
   "types": "dist",
+  "exports": {
+    ".": "./dist/index.js"
+  },
   "dependencies": {
     "@supercharge/contracts": "^3.20.4",
     "@supercharge/goodies": "~1.11.1",

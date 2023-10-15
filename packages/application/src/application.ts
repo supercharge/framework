@@ -1,7 +1,7 @@
 
-import Fs from 'fs'
-import Path from 'path'
+import Fs from 'node:fs'
 import Glob from 'globby'
+import Path from 'node:path'
 import { Env } from '@supercharge/env'
 import { PackageJson } from 'type-fest'
 import { Arr } from '@supercharge/arrays'

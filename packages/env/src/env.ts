@@ -1,5 +1,5 @@
 
-import Str from '@supercharge/strings'
+import { Str } from '@supercharge/strings'
 import { EnvStore } from '@supercharge/contracts'
 
 export class Env implements EnvStore {

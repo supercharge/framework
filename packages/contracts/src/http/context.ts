@@ -1,8 +1,8 @@
 
-import { HttpRequest } from './request'
-import { HttpResponse } from './response'
+import { HttpRequest } from './request.js'
+import { HttpResponse } from './response.js'
 import { RouterContext } from '@koa/router'
-import { InteractsWithState } from './concerns/interacts-with-state'
+import { InteractsWithState } from './concerns/interacts-with-state.js'
 
 export type NextHandler = () => any | Promise<any>
 

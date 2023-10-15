@@ -1,7 +1,7 @@
 
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { Config } = require('../dist')
+import { test } from 'uvu'
+import { expect } from 'expect'
+import { Config } from '../dist/index.js'
 
 test('all', () => {
   expect(new Config().all()).toEqual({})

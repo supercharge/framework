@@ -1,6 +1,6 @@
 
-import { Application } from '..'
-import { HttpContext, NextHandler } from './context'
+import { Application } from '../index.js'
+import { HttpContext, NextHandler } from './context.js'
 
 export type InlineMiddlewareHandler =
     (ctx: HttpContext, next: NextHandler) => any | Promise<any>

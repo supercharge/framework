@@ -1,5 +1,5 @@
 
-import { StateBag } from './state-bag'
+import { StateBag } from './state-bag.js'
 
 export interface InteractsWithState {
   /**

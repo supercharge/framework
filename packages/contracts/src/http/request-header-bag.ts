@@ -1,5 +1,5 @@
 
-import { IncomingHttpHeaders } from 'http'
+import { IncomingHttpHeaders } from 'node:http'
 
 export interface RequestHeaderBag {
   /**

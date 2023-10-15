@@ -1,5 +1,5 @@
 
-import { Dict } from '..'
+import { Dict } from '../index.js'
 
 export interface InputBag<T> {
   /**

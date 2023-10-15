@@ -1,5 +1,5 @@
 
-import { Application } from '..'
+import { Application } from '../index.js'
 
 export type ServiceProviderCtor =
   /**

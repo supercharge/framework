@@ -1,5 +1,5 @@
 
-import { BootstrapperCtor, ErrorHandlerCtor, EnvStore, Logger, ConfigStore, Container, ServiceProvider } from '..'
+import { BootstrapperCtor, ErrorHandlerCtor, EnvStore, Logger, ConfigStore, Container, ServiceProvider } from '../index.js'
 
 type Callback = (app: Application) => Promise<unknown> | unknown
 
