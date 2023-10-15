@@ -1,7 +1,7 @@
 {
   "name": "@supercharge/application",
   "description": "The Supercharge application package",
-  "version": "3.20.3",
+  "version": "3.20.4",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
@@ -15,12 +15,12 @@
     "@supercharge/arrays": "~4.3.0",
     "@supercharge/classes": "~2.0.0",
     "@supercharge/collections": "~5.0.1",
-    "@supercharge/config": "^3.20.3",
-    "@supercharge/container": "^3.20.3",
-    "@supercharge/contracts": "^3.20.3",
-    "@supercharge/env": "^3.20.3",
+    "@supercharge/config": "^3.20.4",
+    "@supercharge/container": "^3.20.4",
+    "@supercharge/contracts": "^3.20.4",
+    "@supercharge/env": "^3.20.4",
     "@supercharge/goodies": "~1.11.1",
-    "@supercharge/logging": "^3.20.3",
+    "@supercharge/logging": "^3.20.4",
     "@supercharge/map": "~1.5.0",
     "@supercharge/strings": "~2.0.0",
     "normalize-path": "~3.0.0"

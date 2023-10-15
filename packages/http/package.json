@@ -1,7 +1,7 @@
 {
 	"name": "@supercharge/http",
 	"description": "The Supercharge http package",
-	"version": "3.20.3",
+	"version": "3.20.4",
 	"author": "Marcus Pöhls <marcus@superchargejs.com>",
 	"bugs": {
 		"url": "https://github.com/supercharge/framework/issues"
@@ -17,7 +17,7 @@
 		"@supercharge/arrays": "~4.3.0",
 		"@supercharge/classes": "~2.0.0",
 		"@supercharge/collections": "~5.0.1",
-		"@supercharge/contracts": "^3.20.3",
+		"@supercharge/contracts": "^3.20.4",
 		"@supercharge/fs": "~3.4.0",
 		"@supercharge/goodies": "~1.11.1",
 		"@supercharge/http-errors": "~2.0.0",
@@ -26,7 +26,7 @@
 		"@supercharge/map": "~1.5.0",
 		"@supercharge/set": "~2.2.1",
 		"@supercharge/strings": "~2.0.0",
-		"@supercharge/support": "^3.20.3",
+		"@supercharge/support": "^3.20.4",
 		"@types/lodash": "~4.14.199",
 		"@types/ms": "~0.7.32",
 		"bytes": "~3.1.2",
@@ -40,8 +40,8 @@
 		"ts-mixer": "~6.0.3"
 	},
 	"devDependencies": {
-		"@supercharge/application": "^3.20.3",
-		"@supercharge/view": "^3.20.3",
+		"@supercharge/application": "^3.20.4",
+		"@supercharge/view": "^3.20.4",
 		"@types/bytes": "~3.1.2",
 		"@types/cookie": "~0.5.2",
 		"@types/formidable": "~2.0.6",
