@@ -1,7 +1,7 @@
 {
   "name": "@supercharge/container",
   "description": "The Supercharge container package",
-  "version": "3.20.2",
+  "version": "3.20.4",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
@@ -13,15 +13,15 @@
   "types": "dist",
   "dependencies": {
     "@supercharge/classes": "~2.0.0",
-    "@supercharge/contracts": "^3.20.2",
+    "@supercharge/contracts": "^3.20.4",
     "@supercharge/goodies": "~1.11.1",
     "@supercharge/map": "~1.5.0",
     "@supercharge/strings": "~2.0.0"
   },
   "devDependencies": {
     "c8": "~8.0.1",
-    "expect": "~29.6.3",
-    "typescript": "~5.1.6",
+    "expect": "~29.7.0",
+    "typescript": "~5.2.2",
     "uvu": "~0.5.6"
   },
   "engines": {

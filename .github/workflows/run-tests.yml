@@ -1,7 +1,10 @@
 name: Run tests
 
 concurrency:
-  group: ${{ github.ref }}   # `github.ref` references the git branch name
+  # the group name is composed of two elements:
+  #   1. this workflow name "run-tests"
+  #   2. the branch name retrieved via the "github.ref" variable
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 on:
@@ -23,7 +26,7 @@ jobs:
 
     steps:
     - name: Git checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
@@ -63,7 +66,7 @@ jobs:
 
   #   steps:
   #   - name: Git checkout
-  #     uses: actions/checkout@v3
+  #     uses: actions/checkout@v4
 
   #   - name: Use Node.js ${{ matrix.node-version }}
   #     uses: actions/setup-node@v3

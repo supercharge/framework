@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.20.4](https://github.com/supercharge/framework/compare/v3.20.3...v3.20.4) - 2023-10-15
+
+### Updated
+- `@supercharge/hashing`
+    - remove exports for `BcryptDriver` and `ScryptDriver` from the package’s main entrypoint to avoid requiring the `bcrypt` package immediately, eventhough the bcrypt driver will not be used
+
+### Potentially Breaking Change
+This release removes exports for the `BcryptDriver` and `ScryptDriver` hashing drivers from the package’s main entrypoint. The driver exports shouldn’t be used standalone. The export was a convenience for testing and interested people. If you imported the drivers from the packge, please update your code to "deep imports" or "deep requires". Thank you!
+
+
+## [3.20.3](https://github.com/supercharge/framework/compare/v3.20.2...v3.20.3) - 2023-10-14
+
+### Updated
+- bump dependencies
+- `@supercharge/hashing`
+    - require `BcryptDriver` inside the `createBcryptDriver` method to only import dependencies when needed. This will support Supercharge to use Bun (the new runtime) because it doesn’t reference a bcrypt_napi bridge
+
+
 ## [3.20.2](https://github.com/supercharge/framework/compare/v3.20.1...v3.20.2) - 2023-08-24
 
 ### Updated
