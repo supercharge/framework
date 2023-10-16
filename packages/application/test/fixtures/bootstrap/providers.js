@@ -1,6 +1,6 @@
 
-const TestServiceProvider = require('./test-service-provider')
+import TestServiceProvider from './test-service-provider.js'
 
-module.exports.providers = [
+export const providers = [
   TestServiceProvider
 ]

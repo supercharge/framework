@@ -1,15 +1,16 @@
 
 import Fs from 'node:fs'
-import Glob from 'globby'
-import Path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { globbySync } from 'globby'
 import { Env } from '@supercharge/env'
 import { PackageJson } from 'type-fest'
 import { Arr } from '@supercharge/arrays'
+import { Str } from '@supercharge/strings'
 import NormalizePath from 'normalize-path'
 import { Config } from '@supercharge/config'
-import Collect from '@supercharge/collections'
+import { tap, upon } from '@supercharge/goodies'
+import { Collect } from '@supercharge/collections'
 import { Container } from '@supercharge/container'
-import { esmRequire, tap, upon } from '@supercharge/goodies'
 import { LoggingServiceProvider } from '@supercharge/logging'
 import {
   ApplicationCtor,
@@ -176,10 +177,11 @@ export class Application extends Container implements ApplicationContract {
    * @returns {String}
    */
   private readPackageJson (): PackageJson {
+    const packageJsonPath = this.resolveFromBasePath('package.json')
+    const packageJsonFilePath = new URL(packageJsonPath)
+
     return JSON.parse(
-      Fs.readFileSync(
-        this.resolveFromBasePath('package.json')
-      ).toString()
+      Fs.readFileSync(packageJsonFilePath).toString()
     )
   }
 
@@ -201,7 +203,11 @@ export class Application extends Container implements ApplicationContract {
    * @returns {String}
    */
   resolveFromBasePath (...destination: string[]): string {
-    return Path.resolve(this.basePath(), ...destination)
+    const basePath = Str(this.basePath()).rtrim('/').get()
+
+    return import.meta.resolve(
+      `${basePath}/${destination.join('/')}`
+    )
   }
 
   /**
@@ -214,14 +220,15 @@ export class Application extends Container implements ApplicationContract {
    * @returns {String}
    */
   resolveGlobFromBasePath (...destination: string[]): string {
-    const path = NormalizePath(
+    const fileUrl = NormalizePath(
       this.resolveFromBasePath(...destination)
     )
 
-    const glob = Glob.sync(path).pop()
+    const filePath = fileURLToPath(fileUrl)
+    const glob = globbySync(filePath).pop()
 
     if (!glob) {
-      throw new Error(`Failed to find a matching file for the given glob pattern: ${path}`)
+      throw new Error(`Failed to find a matching file for the given glob pattern: ${fileUrl}`)
     }
 
     return glob
@@ -334,8 +341,8 @@ export class Application extends Container implements ApplicationContract {
    * @returns {String}
    */
   environmentFilePath (): string {
-    return this.resolveFromBasePath(
-      this.environmentPath(), this.environmentFile()
+    return import.meta.resolve(
+      [this.environmentPath(), this.environmentFile()].join('/')
     )
   }
 
@@ -381,7 +388,7 @@ export class Application extends Container implements ApplicationContract {
   async registerConfiguredProviders (): Promise<void> {
     await Collect(
       await this.loadConfiguredProviders()
-    ).forEach(Provider => {
+    ).forEach((Provider: ServiceProviderCtor) => {
       this.register(new Provider(this))
     })
   }
@@ -391,7 +398,7 @@ export class Application extends Container implements ApplicationContract {
    * and store them locally to registering and booting them.
    */
   async loadConfiguredProviders (): Promise<ServiceProviderCtor[]> {
-    const { providers } = await this.require(
+    const { providers } = await this.import(
       this.resolveGlobFromBasePath('bootstrap/providers.**')
     )
 
@@ -417,18 +424,18 @@ export class Application extends Container implements ApplicationContract {
   }
 
   /**
-   * Returns the content of the required `path`.
+   * Returns the content of the dynamically imported `path`.
    *
    * @param path
    *
    * @returns {*}
    */
-  require (path: string): any {
+  async import<T = any> (path: string): Promise<T> {
     if (!path) {
-      throw new Error(`Cannot require missing or empty "path". Received "${path}" (${typeof path})`)
+      throw new Error(`Cannot import missing or empty "path". Received "${path}" (${typeof path})`)
     }
 
-    return esmRequire(path)
+    return await import(path)
   }
 
   /**
