@@ -1,6 +1,6 @@
 
-export { HandlebarsCompiler } from './engines'
-export { ViewManager } from './manager'
-export { ViewConfigBuilder } from './view-config-builder'
-export { View } from './view-response'
-export { ViewServiceProvider } from './view-service-provider'
+export { HandlebarsCompiler } from './engines/index.js'
+export { ViewManager } from './manager.js'
+export { ViewConfigBuilder } from './view-config-builder.js'
+export { View } from './view-response.js'
+export { ViewServiceProvider } from './view-service-provider.js'

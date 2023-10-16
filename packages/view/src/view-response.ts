@@ -1,6 +1,6 @@
 
+import { ViewConfigBuilder } from './view-config-builder.js'
 import { HttpResponse, ViewBuilderCallback, ViewEngine, ViewResponseConfig } from '@supercharge/contracts'
-import { ViewConfigBuilder } from './view-config-builder'
 
 export class View {
   /**

@@ -1,2 +1,2 @@
 
-export * from './handlebars'
+export * from './handlebars/index.js'

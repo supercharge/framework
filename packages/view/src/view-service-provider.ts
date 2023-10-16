@@ -1,7 +1,7 @@
 
-import { ViewManager } from './manager'
+import { ViewManager } from './manager.js'
 import { ServiceProvider } from '@supercharge/support'
-import { View as ViewResponse } from './view-response'
+import { View as ViewResponse } from './view-response.js'
 import { HttpResponse, HttpResponseCtor, ViewBuilderCallback } from '@supercharge/contracts'
 
 /**
