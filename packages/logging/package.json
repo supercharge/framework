@@ -13,7 +13,9 @@
   "main": "dist/index.js",
   "types": "dist",
   "exports": {
-    ".": "./dist/index.js"
+    ".": "./dist/index.js",
+    "./drivers/file": "./dist/file-logger.js",
+    "./drivers/console": "./dist/console-logger.js"
   },
   "dependencies": {
     "@supercharge/contracts": "^3.20.4",

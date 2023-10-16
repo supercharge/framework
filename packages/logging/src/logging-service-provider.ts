@@ -1,5 +1,5 @@
 
-import { LogManager } from './log-manager'
+import { LogManager } from './log-manager.js'
 import { ServiceProvider } from '@supercharge/support'
 import { ServiceProvider as ServiceProviderContract } from '@supercharge/contracts'
 

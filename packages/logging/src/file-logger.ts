@@ -1,8 +1,8 @@
 
-import { Logger } from './logger'
+import { Logger } from './logger.js'
 import Winston, { format } from 'winston'
-import { FileChannelConfig, Logger as LoggingContract } from '@supercharge/contracts'
 import { FileTransportInstance } from 'winston/lib/winston/transports'
+import { FileChannelConfig, Logger as LoggingContract } from '@supercharge/contracts'
 
 const { combine, timestamp, printf, splat } = format
 

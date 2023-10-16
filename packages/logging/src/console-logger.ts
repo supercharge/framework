@@ -1,7 +1,7 @@
 
-import { Logger } from './logger'
+import { Logger } from './logger.js'
 import Winston, { format } from 'winston'
-import Chalk, { ChalkFunction } from 'chalk'
+import Chalk, { ChalkInstance } from 'chalk'
 import { ConsoleTransportInstance } from 'winston/lib/winston/transports'
 import { ConsoleChannelConfig, Logger as LoggingContract } from '@supercharge/contracts'
 
@@ -75,7 +75,7 @@ export class ConsoleLogger extends Logger<ConsoleChannelConfig> implements Loggi
    *
    * @returns {Function}
    */
-  getColorForLevel (label: string): ChalkFunction {
+  getColorForLevel (label: string): ChalkInstance {
     return this.logColors()[label] || Chalk.white
   }
 

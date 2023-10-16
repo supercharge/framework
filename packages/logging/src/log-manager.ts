@@ -1,7 +1,7 @@
 
-import { FileLogger } from './file-logger'
+import { FileLogger } from './file-logger.js'
 import { Manager } from '@supercharge/manager'
-import { ConsoleLogger } from './console-logger'
+import { ConsoleLogger } from './console-logger.js'
 import { Application, Logger as LoggingContract, LoggingConfig } from '@supercharge/contracts'
 
 export class LogManager extends Manager implements LoggingContract {
