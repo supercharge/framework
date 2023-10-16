@@ -2,13 +2,14 @@
 import { expect } from 'expect'
 import { test } from 'node:test'
 import { Env } from '@supercharge/env'
+import { fileURLToPath } from 'node:url'
 import { Config } from '@supercharge/config'
 import { Application } from '../dist/index.js'
 import { LogManager } from '@supercharge/logging'
 import TestServiceProvider from './fixtures/bootstrap/test-service-provider.js'
 
-const appRootPath = import.meta.resolve('.')
-const fixturesPath = import.meta.resolve('./fixtures')
+const appRootPath = fileURLToPath(import.meta.resolve('.'))
+const fixturesPath = fileURLToPath(import.meta.resolve('./fixtures'))
 
 test('app.env()', async () => {
   const app = Application.createWithAppRoot(appRootPath)
@@ -91,7 +92,7 @@ test('app.environmentFilePath()', async () => {
     .useEnvironmentPath('fixtures')
 
   expect(app.environmentFilePath()).toEqual(
-    import.meta.resolve('./fixtures/secrets.env')
+    fileURLToPath(import.meta.resolve('./fixtures/secrets.env'))
   )
 })
 
@@ -99,7 +100,7 @@ test('app.configPath()', async () => {
   const app = Application.createWithAppRoot(appRootPath)
 
   expect(app.configPath()).toEqual(
-    import.meta.resolve('./config')
+    fileURLToPath(import.meta.resolve('./config'))
   )
 })
 
@@ -107,7 +108,7 @@ test('resolves configPath for parameter', async () => {
   const app = Application.createWithAppRoot(appRootPath)
 
   expect(app.configPath('service.js')).toEqual(
-    import.meta.resolve('./config/service.js')
+    fileURLToPath(import.meta.resolve('./config/service.js'))
   )
 })
 
@@ -115,19 +116,19 @@ test('app.publicPath()', async () => {
   const app = Application.createWithAppRoot(appRootPath)
 
   expect(app.publicPath()).toEqual(
-    import.meta.resolve('./public')
+    fileURLToPath(import.meta.resolve('./public'))
   )
 
   expect(app.publicPath('test')).toEqual(
-    import.meta.resolve('./public/test')
+    fileURLToPath(import.meta.resolve('./public/test'))
   )
 
   expect(app.publicPath('foo/bar')).toEqual(
-    import.meta.resolve('./public/foo/bar')
+    fileURLToPath(import.meta.resolve('./public/foo/bar'))
   )
 
   expect(app.publicPath('foo', 'bar')).toEqual(
-    import.meta.resolve('./public/foo/bar')
+    fileURLToPath(import.meta.resolve('./public/foo/bar'))
   )
 })
 
@@ -135,7 +136,7 @@ test('resolves publicPath for parameter', async () => {
   const app = Application.createWithAppRoot(appRootPath)
 
   expect(app.publicPath('assets/font.woff2')).toEqual(
-    import.meta.resolve('./public/assets/font.woff2')
+    fileURLToPath(import.meta.resolve('./public/assets/font.woff2'))
   )
 })
 
@@ -143,7 +144,7 @@ test('app.resourcePath()', async () => {
   const app = Application.createWithAppRoot(appRootPath)
 
   expect(app.resourcePath()).toEqual(
-    import.meta.resolve('./resources')
+    fileURLToPath(import.meta.resolve('./resources'))
   )
 })
 
@@ -151,7 +152,7 @@ test('resolves resourcePath for parameter', async () => {
   const app = Application.createWithAppRoot(appRootPath)
 
   expect(app.resourcePath('views/mails/test.hbs')).toEqual(
-    import.meta.resolve('./resources/views/mails/test.hbs')
+    fileURLToPath(import.meta.resolve('./resources/views/mails/test.hbs'))
   )
 })
 
@@ -159,7 +160,7 @@ test('app.storagePath()', async () => {
   const app = Application.createWithAppRoot(appRootPath)
 
   expect(app.storagePath()).toEqual(
-    import.meta.resolve('./storage')
+    fileURLToPath(import.meta.resolve('./storage'))
   )
 })
 
@@ -167,7 +168,7 @@ test('resolves storagePath for parameter', async () => {
   const app = Application.createWithAppRoot(appRootPath)
 
   expect(app.storagePath('cache/file.txt')).toEqual(
-    import.meta.resolve('./storage/cache/file.txt')
+    fileURLToPath(import.meta.resolve('./storage/cache/file.txt'))
   )
 })
 
@@ -175,7 +176,7 @@ test('app.databasePath()', async () => {
   const app = Application.createWithAppRoot(appRootPath)
 
   expect(app.databasePath()).toEqual(
-    import.meta.resolve('./database')
+    fileURLToPath(import.meta.resolve('./database'))
   )
 })
 
@@ -183,7 +184,7 @@ test('resolves databasePath for parameter', async () => {
   const app = Application.createWithAppRoot(appRootPath)
 
   expect(app.databasePath('migrations/file.sql')).toEqual(
-    import.meta.resolve('./database/migrations/file.sql')
+    fileURLToPath(import.meta.resolve('./database/migrations/file.sql'))
   )
 })
 

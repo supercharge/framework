@@ -1,9 +1,9 @@
 
 import Fs from 'node:fs'
-import { fileURLToPath } from 'node:url'
 import { globbySync } from 'globby'
 import { Env } from '@supercharge/env'
 import { PackageJson } from 'type-fest'
+import { fileURLToPath } from 'node:url'
 import { Arr } from '@supercharge/arrays'
 import { Str } from '@supercharge/strings'
 import NormalizePath from 'normalize-path'
@@ -46,14 +46,12 @@ export class Application extends Container implements ApplicationContract {
 
   /**
    * Create a new application instance.
-   *
-   * @param basePath - the application root path
    */
   constructor (basePath: string) {
     super()
 
     this.meta = {
-      appRoot: basePath,
+      appRoot: this.resolveFileURLToPath(basePath),
       bootingCallbacks: [],
       serviceProviders: Arr.from(),
 
@@ -70,11 +68,16 @@ export class Application extends Container implements ApplicationContract {
   }
 
   /**
+   * Returns the given `fileUrlOrPath` to a path without without the `file:` prefix.
+   */
+  private resolveFileURLToPath (fileUrlOrPath: string): string {
+    return (fileUrlOrPath ?? '').startsWith('file:')
+      ? fileURLToPath(fileUrlOrPath)
+      : fileUrlOrPath
+  }
+
+  /**
    * Create a new application instance with the given `basePath` as the app root.
-   *
-   * @param {String} basePath - absolute path to the application’s root directory
-   *
-   * @returns {Application}
    */
   public static createWithAppRoot<App extends ApplicationCtor> (this: App, basePath: string): InstanceType<App> {
     return new this(basePath) as any
@@ -84,10 +87,6 @@ export class Application extends Container implements ApplicationContract {
    * Assign the given error handler to this application instance. The error
    * handler is used to report errors on the default logging channel and
    * also to create responses for requests throwing errors.
-   *
-   * @param ErrorHandler
-   *
-   * @returns {this}
    */
   withErrorHandler (ErrorHandler: ErrorHandlerCtor): this {
     return tap(this, () => {
@@ -120,8 +119,6 @@ export class Application extends Container implements ApplicationContract {
 
   /**
    * Returns the env store instance.
-   *
-   * @returns {EnvStore}
    */
   env (): EnvStore {
     return this.meta.env
@@ -129,8 +126,6 @@ export class Application extends Container implements ApplicationContract {
 
   /**
    * Returns the config store instance.
-   *
-   * @returns {ConfigStore}
    */
   config (): ConfigStore {
     return this.meta.config
@@ -138,8 +133,6 @@ export class Application extends Container implements ApplicationContract {
 
   /**
    * Returns the application logger instance.
-   *
-   * @returns {Logger}
    */
   logger (): Logger {
     return this.make('logger')
@@ -147,8 +140,6 @@ export class Application extends Container implements ApplicationContract {
 
   /**
    * Returns the application key.
-   *
-   * @returns {String}
    *
    * @throws
    */
@@ -162,8 +153,6 @@ export class Application extends Container implements ApplicationContract {
 
   /**
    * Returns the application version defined in the `package.json` file.
-   *
-   * @returns {String}
    */
   version (): string | undefined {
     return upon(this.readPackageJson(), pkg => {
@@ -173,22 +162,17 @@ export class Application extends Container implements ApplicationContract {
 
   /**
    * Read the contents of the application’s `package.json` file.
-   *
-   * @returns {String}
    */
   private readPackageJson (): PackageJson {
     const packageJsonPath = this.resolveFromBasePath('package.json')
-    const packageJsonFilePath = new URL(packageJsonPath)
 
     return JSON.parse(
-      Fs.readFileSync(packageJsonFilePath).toString()
+      Fs.readFileSync(packageJsonPath).toString()
     )
   }
 
   /**
    * Returns the root path of the application directory.
-   *
-   * @returns {String}
    */
   basePath (): string {
     return this.meta.appRoot
@@ -197,34 +181,28 @@ export class Application extends Container implements ApplicationContract {
   /**
    * Resolves an absolute path to the given the given `destination` in
    * the application directory, starting at the application root.
-   *
-   * @param {String} destination
-   *
-   * @returns {String}
    */
   resolveFromBasePath (...destination: string[]): string {
     const basePath = Str(this.basePath()).rtrim('/').get()
 
-    return import.meta.resolve(
+    const filePath = import.meta.resolve(
       `${basePath}/${destination.join('/')}`
     )
+
+    return this.resolveFileURLToPath(filePath)
   }
 
   /**
    * Resolves the absolute path from the given `destination` in the
    * application directory, starting from the application root.
    * The destination supports a glob format, like 'providers/**'.
-   *
-   * @param destination
-   *
-   * @returns {String}
    */
   resolveGlobFromBasePath (...destination: string[]): string {
     const fileUrl = NormalizePath(
       this.resolveFromBasePath(...destination)
     )
 
-    const filePath = fileURLToPath(fileUrl)
+    const filePath = this.resolveFileURLToPath(fileUrl)
     const glob = globbySync(filePath).pop()
 
     if (!glob) {
@@ -236,10 +214,6 @@ export class Application extends Container implements ApplicationContract {
 
   /**
    * Returns an absolute path into the application’s config directory.
-   *
-   * @param {String} path
-   *
-   * @returns {String}
    */
   configPath (...paths: string[]): string {
     return this.resolveFromBasePath('config', ...paths)
@@ -247,10 +221,6 @@ export class Application extends Container implements ApplicationContract {
 
   /**
    * Returns an absolute path into the application’s public directory.
-   *
-   * @param {String} path
-   *
-   * @returns {String}
    */
   publicPath (...paths: string[]): string {
     return this.resolveFromBasePath('public', ...paths)
@@ -258,10 +228,6 @@ export class Application extends Container implements ApplicationContract {
 
   /**
    * Returns an absolute path into the application’s resources directory.
-   *
-   * @param {String} path
-   *
-   * @returns {String}
    */
   resourcePath (...paths: string[]): string {
     return this.resolveFromBasePath('resources', ...paths)
@@ -269,10 +235,6 @@ export class Application extends Container implements ApplicationContract {
 
   /**
    * Returns an absolute path into the application’s storage directory.
-   *
-   * @param {String} path
-   *
-   * @returns {String}
    */
   storagePath (...paths: string[]): string {
     return this.resolveFromBasePath('storage', ...paths)
@@ -280,10 +242,6 @@ export class Application extends Container implements ApplicationContract {
 
   /**
    * Returns an absolute path into the application’s database directory.
-   *
-   * @param {String} path
-   *
-   * @returns {String}
    */
   databasePath (...paths: string[]): string {
     return this.resolveFromBasePath('database', ...paths)
@@ -292,8 +250,6 @@ export class Application extends Container implements ApplicationContract {
   /**
    * Returns the path to directory of the environment file.
    * By default, this is the application's base path.
-   *
-   * @returns {String}
    */
   environmentPath (): string {
     return this.meta.environmentPath ?? this.basePath()
@@ -301,8 +257,6 @@ export class Application extends Container implements ApplicationContract {
 
   /**
    * Set the directory for the environment file.
-   *
-   * @param {String} path
    */
   useEnvironmentPath (path: string): this {
     return tap(this, () => {
@@ -312,8 +266,6 @@ export class Application extends Container implements ApplicationContract {
 
   /**
    * Returns the environment file of the application. By default, this is `.env`.
-   *
-   * @returns {String}
    */
   environmentFile (): string {
     return this.meta.environmentFile
@@ -324,10 +276,6 @@ export class Application extends Container implements ApplicationContract {
    * Only pass the file name of your environment file as an argument and not a full
    * file system path. Use the `app.useEnvironmentPath(<path>)` method to change
    * the path from which your environment files will be loaded on app start.
-   *
-   * @param {String} file
-   *
-   * @returns {Application}
    */
   loadEnvironmentFrom (file: string): this {
     return tap(this, () => {
@@ -337,13 +285,13 @@ export class Application extends Container implements ApplicationContract {
 
   /**
    * Returns the resolved path to the environment file.
-   *
-   * @returns {String}
    */
   environmentFilePath (): string {
-    return import.meta.resolve(
+    const environmentFilePath = import.meta.resolve(
       [this.environmentPath(), this.environmentFile()].join('/')
     )
+
+    return this.resolveFileURLToPath(environmentFilePath)
   }
 
   /**
@@ -363,8 +311,6 @@ export class Application extends Container implements ApplicationContract {
   /**
    * Register a booting callback that runs at the beginning of the app boot.
    *
-   * @param {Function} callback
-   *
    * @deprecated use the {@link onBooting} method
    */
   booting (callback: Callback): this {
@@ -373,8 +319,6 @@ export class Application extends Container implements ApplicationContract {
 
   /**
    * Register a booting callback that runs at the beginning of the app boot.
-   *
-   * @param {Function} callback
    */
   onBooting (callback: Callback): this {
     return tap(this, () => {
@@ -425,10 +369,6 @@ export class Application extends Container implements ApplicationContract {
 
   /**
    * Returns the content of the dynamically imported `path`.
-   *
-   * @param path
-   *
-   * @returns {*}
    */
   async import<T = any> (path: string): Promise<T> {
     if (!path) {
@@ -451,8 +391,6 @@ export class Application extends Container implements ApplicationContract {
 
   /**
    * Boot the given service `provider`.
-   *
-   * @param provider
    */
   private async bootProvider (provider: ServiceProvider): Promise<void> {
     provider.callBootingCallbacks()
@@ -466,8 +404,6 @@ export class Application extends Container implements ApplicationContract {
 
   /**
    * Prepare booting application by running the `bootstrappers`.
-   *
-   * @param {Array} bootstrappers
    */
   async bootstrapWith (bootstrappers: BootstrapperCtor[]): Promise<void> {
     await this.runAppCallbacks(this.bootingCallbacks())
@@ -479,8 +415,6 @@ export class Application extends Container implements ApplicationContract {
 
   /**
    * Call the given booting `callbacks` for this application.
-   *
-   * @param {Callback[]} callbacks
    */
   async runAppCallbacks (callbacks: Callback[]): Promise<void> {
     await Collect(callbacks).forEach(async callback => {
@@ -502,8 +436,6 @@ export class Application extends Container implements ApplicationContract {
 
   /**
    * Run the shutdown methods for the given service `provider`.
-   *
-   * @param provider
    */
   private async shutdownProvider (provider: ServiceProvider): Promise<void> {
     if (typeof provider.shutdown === 'function') {
@@ -513,8 +445,6 @@ export class Application extends Container implements ApplicationContract {
 
   /**
    * Determine whether the application is running in the console.
-   *
-   * @returns {Boolean}
    */
   isRunningInConsole (): boolean {
     return this.meta.isRunningInConsole
@@ -522,8 +452,6 @@ export class Application extends Container implements ApplicationContract {
 
   /**
    * Mark the application as running in the console.
-   *
-   * @returns {Application}
    */
   markAsRunningInConsole (): this {
     return tap(this, () => {
