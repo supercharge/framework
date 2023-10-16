@@ -1,6 +1,6 @@
 
 import Map from '@supercharge/map'
-import Str from '@supercharge/strings'
+import { Str } from '@supercharge/strings'
 import { className, isClass } from '@supercharge/classes'
 import { tap, upon, isFunction } from '@supercharge/goodies'
 import { Class, Container as ContainerContract, BindingFactory } from '@supercharge/contracts'

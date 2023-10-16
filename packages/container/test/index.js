@@ -1,7 +1,7 @@
 
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { Container } = require('../dist')
+import { test } from 'uvu'
+import { expect } from 'expect'
+import { Container } from '../dist/index.js'
 
 test('throws for invalid namespace when binding an instance', () => {
   const container = new Container()
