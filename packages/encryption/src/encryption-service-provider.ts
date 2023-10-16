@@ -1,5 +1,5 @@
 
-import { Encrypter } from './encrypter'
+import { Encrypter } from './encrypter.js'
 import { ServiceProvider } from '@supercharge/support'
 
 /**

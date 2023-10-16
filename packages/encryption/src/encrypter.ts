@@ -144,6 +144,10 @@ export class Encrypter implements EncryptionContract {
 
     const [encryptedEncoded, ivEncoded, hmac] = value.split('.')
 
+    if (!encryptedEncoded || !ivEncoded || !hmac) {
+      throw new Error('Invalid string value provided to the "decrypt" method, it does not contain the required fields.')
+    }
+
     const encrypted = this.base64UrlDecode(encryptedEncoded, 'hex')
     const iv = this.base64UrlDecode(ivEncoded)
 

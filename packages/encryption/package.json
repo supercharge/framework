@@ -22,7 +22,6 @@
     "@supercharge/support": "^3.20.4"
   },
   "devDependencies": {
-    "@japa/runner": "~3.0.1",
     "@supercharge/application": "^3.20.4",
     "c8": "~8.0.1",
     "expect": "~29.7.0",
@@ -55,6 +54,6 @@
     "lint:fix": "npm run lint -- --fix",
     "posttest": "c8 report --reporter=html",
     "test": "npm run build && npm run lint && npm run test:run",
-    "test:run": "c8 node bin/test.js"
+    "test:run": "c8 node --test"
   }
 }
