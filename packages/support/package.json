@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@supercharge/contracts": "^3.20.4",
-    "@supercharge/goodies": "~1.11.1"
+    "@supercharge/goodies": "~2.0.0"
   },
   "devDependencies": {
     "c8": "~8.0.1",

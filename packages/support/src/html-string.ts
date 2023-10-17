@@ -40,8 +40,6 @@ export class HtmlString implements Htmlable {
 
   /**
    * Determine whether the given HTML string is empty.
-   *
-   * @returns {Boolean}
    */
   isEmpty (): boolean {
     return this.html.length === 0
@@ -49,8 +47,6 @@ export class HtmlString implements Htmlable {
 
   /**
    * Determine whether the given HTML string is not empty.
-   *
-   * @returns {Boolean}
    */
   isNotEmpty (): boolean {
     return !this.isEmpty()

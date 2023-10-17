@@ -1,10 +1,10 @@
 
-const Dayjs = require('dayjs')
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { promisify } = require('util')
-const ChildProcess = require('child_process')
-const { InteractsWithTime } = require('../dist')
+import Dayjs from 'dayjs'
+import { test } from 'uvu'
+import { expect } from 'expect'
+import { promisify } from 'node:util'
+import ChildProcess from 'node:child_process'
+import { InteractsWithTime } from '../dist/index.js'
 
 const exec = promisify(ChildProcess.exec)
 
