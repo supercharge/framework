@@ -2,7 +2,7 @@
 import Path from 'node:path'
 import Fs from '@supercharge/fs'
 import { fileURLToPath } from 'node:url'
-import { tap } from '@supercharge/goodies'
+import { resolveDefaultImport, tap } from '@supercharge/goodies'
 import { Str } from '@supercharge/strings'
 import { Collect } from '@supercharge/collections'
 import Handlebars, { HelperDelegate } from 'handlebars'
@@ -201,10 +201,7 @@ export class HandlebarsCompiler implements ViewEngine {
    */
   async registerHelperFromFile (path: string): Promise<void> {
     const name = Fs.filename(path)
-
-    // TODO: use new resolveDefaultImport from `@supercharge/goodies`
-    const imported = await import(path)
-    const helper: HelperDelegate = imported.default
+    const helper: HelperDelegate = await resolveDefaultImport(path)
 
     this.registerHelper(name, helper)
   }
