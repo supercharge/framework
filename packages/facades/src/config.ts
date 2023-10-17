@@ -1,11 +1,9 @@
 
-import { Facade } from './facade'
+import { Facade } from './facade.js'
 
 export class ConfigFacade extends Facade {
   /**
    * Returns the container binding name.
-   *
-   * @returns {String}
    */
   override getContainerNamespace (): string {
     return 'config'
