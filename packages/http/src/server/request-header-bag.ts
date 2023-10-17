@@ -1,7 +1,7 @@
 
 import { tap } from '@supercharge/goodies'
-import { IncomingHttpHeaders } from 'http'
 import { RouterContext } from '@koa/router'
+import { IncomingHttpHeaders } from 'node:http'
 import { Dict, RequestHeaderBag as RequestHeaderBagContract } from '@supercharge/contracts'
 
 export class RequestHeaderBag implements RequestHeaderBagContract {

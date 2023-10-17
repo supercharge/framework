@@ -1,14 +1,14 @@
 
-const Path = require('path')
-const { test } = require('uvu')
-const Supertest = require('supertest')
-const { setupApp } = require('../../helpers')
-const defaultStaticAssetsConfig = require('./fixtures/static-assets')
-const { ServeStaticAssetsMiddleware, Server } = require('../../../dist')
+import { test } from 'uvu'
+import Supertest from 'supertest'
+import { fileURLToPath } from 'node:url'
+import { setupApp } from '../../helpers/index.js'
+import defaultStaticAssetsConfig from './fixtures/static-assets.js'
+import { ServeStaticAssetsMiddleware, Server } from '../../../dist/index.js'
 
 const app = setupApp({
   static: defaultStaticAssetsConfig,
-  appRoot: Path.resolve(__dirname, 'fixtures')
+  appRoot: fileURLToPath(import.meta.resolve('./fixtures'))
 })
 
 async function createHttpServer () {

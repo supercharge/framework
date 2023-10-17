@@ -1,6 +1,6 @@
 
-export * from './bodyparser'
-export * from './bodyparser-options'
-export * from './bodyparser-base-options'
-export * from './bodyparser-json-options'
-export * from './bodyparser-multipart-options'
+export * from './bodyparser.js'
+export * from './bodyparser-options.js'
+export * from './bodyparser-base-options.js'
+export * from './bodyparser-json-options.js'
+export * from './bodyparser-multipart-options.js'

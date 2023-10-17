@@ -1,11 +1,11 @@
 
 import { Mixin as Many } from 'ts-mixer'
-import { CookieBag } from './cookie-bag'
 import { tap } from '@supercharge/goodies'
-import { HttpRedirect } from './http-redirect'
+import { CookieBag } from './cookie-bag.js'
+import { HttpRedirect } from './http-redirect.js'
 import { Macroable } from '@supercharge/macroable'
-import { ResponseHeaderBag } from './response-header-bag'
-import { InteractsWithState } from './interacts-with-state'
+import { ResponseHeaderBag } from './response-header-bag.js'
+import { InteractsWithState } from './interacts-with-state.js'
 import { CookieOptions, HttpContext, HttpResponse, ResponseCookieBuilderCallback } from '@supercharge/contracts'
 
 export class Response extends Many(Macroable, InteractsWithState) implements HttpResponse {

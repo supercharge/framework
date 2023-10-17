@@ -1,5 +1,5 @@
 
-import Str from '@supercharge/strings'
+import { Str } from '@supercharge/strings'
 import { tap } from '@supercharge/goodies'
 import { isClass } from '@supercharge/classes'
 import { HttpRoute, HttpController, RouteHandler, HttpMethods, HttpContext, Application, Class, RouteObjectAttributes } from '@supercharge/contracts'

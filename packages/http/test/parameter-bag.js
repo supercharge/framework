@@ -1,7 +1,7 @@
 
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { ParameterBag } = require('../dist')
+import { test } from 'uvu'
+import { expect } from 'expect'
+import { ParameterBag } from '../dist/index.js'
 
 test('all', () => {
   expect(new ParameterBag({}).all()).toEqual({})

@@ -1,8 +1,8 @@
 
 import Set from '@supercharge/set'
-import { BodyparserJsonOptions } from './bodyparser-json-options'
-import { BodyparserBaseOptions } from './bodyparser-base-options'
-import { BodyparserMultipartOptions } from './bodyparser-multipart-options'
+import { BodyparserJsonOptions } from './bodyparser-json-options.js'
+import { BodyparserBaseOptions } from './bodyparser-base-options.js'
+import { BodyparserMultipartOptions } from './bodyparser-multipart-options.js'
 import { BodyparserConfig as BodyparserConfigContract, HttpMethods } from '@supercharge/contracts'
 
 export class BodyparserOptions {
@@ -13,8 +13,6 @@ export class BodyparserOptions {
 
   /**
    * Create a new instance.
-   *
-   * @param {BodyparserConfigContract} options
    */
   constructor (options: BodyparserConfigContract) {
     this.config = options ?? {}
@@ -22,8 +20,6 @@ export class BodyparserOptions {
 
   /**
    * Returns the configured encoding.
-   *
-   * @returns {BodyparserJsonOptions}
    */
   encoding (): BufferEncoding {
     return this.config.encoding ?? 'utf8'
@@ -37,8 +33,6 @@ export class BodyparserOptions {
    * new BodyparserOptions({ methods: ['post', 'PUT'] }).methods()
    * // ['post', 'put']
    * ```
-   *
-   * @returns {HttpMethods[]}
    */
   methods (): HttpMethods[] {
     return Set
@@ -49,8 +43,6 @@ export class BodyparserOptions {
 
   /**
    * Returns a JSON options instance.
-   *
-   * @returns {BodyparserJsonOptions}
    */
   json (): BodyparserJsonOptions {
     return new BodyparserJsonOptions(this.config.json)
@@ -58,8 +50,6 @@ export class BodyparserOptions {
 
   /**
    * Returns a form (form url encoded) options instance.
-   *
-   * @returns {BodyparserBaseOptions}
    */
   form (): BodyparserBaseOptions {
     return new BodyparserBaseOptions(this.config.form)
@@ -67,8 +57,6 @@ export class BodyparserOptions {
 
   /**
    * Returns a text options instance.
-   *
-   * @returns {BodyparserBaseOptions}
    */
   text (): BodyparserBaseOptions {
     return new BodyparserBaseOptions(this.config.text)
@@ -76,8 +64,6 @@ export class BodyparserOptions {
 
   /**
    * Returns a multipart options instance.
-   *
-   * @returns {BodyparserMultipartOptions}
    */
   multipart (): BodyparserMultipartOptions {
     return new BodyparserMultipartOptions(this.config.multipart ?? {})

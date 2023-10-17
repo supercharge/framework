@@ -22,6 +22,8 @@ export class UploadedFile implements UploadedFileContract {
     if (this.file.originalFilename) {
       return this.file.originalFilename
     }
+
+    return undefined
   }
 
   /**
@@ -46,6 +48,8 @@ export class UploadedFile implements UploadedFileContract {
     if (this.file.mimetype) {
       return this.file.mimetype
     }
+
+    return undefined
   }
 
   /**

@@ -2,7 +2,7 @@
 import Cookie from 'cookie'
 import * as Cookies from 'cookies'
 import { tap } from '@supercharge/goodies'
-import { RequestCookieBuilder, ResponseCookieBuilder } from './cookies'
+import { RequestCookieBuilder, ResponseCookieBuilder } from './cookies/index.js'
 import { CookieBag as CookieBagContract, CookieOptions, RequestCookieBuilderCallback, ResponseCookieBuilderCallback } from '@supercharge/contracts'
 
 export class CookieBag implements CookieBagContract {

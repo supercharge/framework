@@ -1,7 +1,7 @@
 
-import { Route } from './route'
-import { Router } from './router'
-import Str from '@supercharge/strings'
+import { Route } from './route.js'
+import { Router } from './router.js'
+import { Str } from '@supercharge/strings'
 import { tap } from '@supercharge/goodies'
 import { PendingRoute as PendingRouteContract, RouteHandler, RouteAttributes } from '@supercharge/contracts'
 

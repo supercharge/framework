@@ -1,7 +1,7 @@
 
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { BodyparserOptions } = require('../../../dist')
+import { test } from 'uvu'
+import { expect } from 'expect'
+import { BodyparserOptions } from '../../../dist/index.js'
 
 test('encoding', () => {
   expect(new BodyparserOptions({}).encoding()).toEqual('utf8')

@@ -1,9 +1,9 @@
 
-import Str from '@supercharge/strings'
+import { Str } from '@supercharge/strings'
 import { tap } from '@supercharge/goodies'
-import { OutgoingHttpHeaders } from 'http'
 import { RouterContext } from '@koa/router'
 import { Dict } from '@supercharge/contracts'
+import { OutgoingHttpHeaders } from 'node:http'
 
 export class ResponseHeaderBag {
   /**

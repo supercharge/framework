@@ -1,7 +1,7 @@
 
 import Koa from 'koa'
 import cors from '@koa/cors'
-import { Middleware } from './base'
+import { Middleware } from './base.js'
 import { Application, CorsConfig, HttpContext, NextHandler } from '@supercharge/contracts'
 
 export class HandleCorsMiddleware extends Middleware {

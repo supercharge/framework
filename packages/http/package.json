@@ -23,7 +23,7 @@
 		"@supercharge/collections": "~5.0.1",
 		"@supercharge/contracts": "^3.20.4",
 		"@supercharge/fs": "~3.4.0",
-		"@supercharge/goodies": "~1.11.1",
+		"@supercharge/goodies": "~2.0.0",
 		"@supercharge/http-errors": "~2.0.0",
 		"@supercharge/json": "~2.0.0",
 		"@supercharge/macroable": "~2.0.1",

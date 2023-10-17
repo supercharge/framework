@@ -1,12 +1,12 @@
 
 import Koa from 'koa'
 import { tap } from '@supercharge/goodies'
-import { HttpContext } from './http-context'
-import Collect from '@supercharge/collections'
-import { Server as NodeHttpServer } from 'http'
-import { BodyparserMiddleware } from '../middleware'
+import { HttpContext } from './http-context.js'
+import { Collect } from '@supercharge/collections'
+import { Server as NodeHttpServer } from 'node:http'
+import { BodyparserMiddleware } from '../middleware/index.js'
 import { className, isConstructor } from '@supercharge/classes'
-import { HandleErrorMiddleware } from '../middleware/handle-error'
+import { HandleErrorMiddleware } from '../middleware/handle-error.js'
 import { Application, HttpServer as HttpServerContract, Middleware as MiddlewareContract, MiddlewareCtor, HttpRouter, HttpServerHandler, InlineMiddlewareHandler, ApplicationConfig, HttpConfig } from '@supercharge/contracts'
 
 type Callback = (server: Server) => unknown | Promise<unknown>

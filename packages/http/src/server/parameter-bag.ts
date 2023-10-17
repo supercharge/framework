@@ -1,5 +1,5 @@
 
-import { InputBag } from './input-bag'
+import { InputBag } from './input-bag.js'
 import { Dict, ParameterBag as ParameterBagContract } from '@supercharge/contracts'
 
 export class ParameterBag<T> extends InputBag<T> implements ParameterBagContract<T> {

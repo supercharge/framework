@@ -1,7 +1,7 @@
 
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { StateBag } = require('../dist')
+import { test } from 'uvu'
+import { expect } from 'expect'
+import { StateBag } from '../dist/index.js'
 
 test('all', () => {
   expect(new StateBag({ state: {} }).all()).toEqual({})

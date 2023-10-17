@@ -1,5 +1,5 @@
 
-import Str from '@supercharge/strings'
+import { Str } from '@supercharge/strings'
 import { HttpRouteGroup, RouteAttributes } from '@supercharge/contracts'
 
 export class RouteGroup implements HttpRouteGroup {

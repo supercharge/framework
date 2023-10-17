@@ -1,5 +1,5 @@
 
-module.exports = class ErrorHandler {
+export default class ErrorHandler {
   handle (ctx, error) {
     // console.log('Received error in testing error handler', { error })
 

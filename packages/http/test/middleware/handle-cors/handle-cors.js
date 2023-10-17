@@ -1,9 +1,9 @@
 
-const { test } = require('uvu')
-const Supertest = require('supertest')
-const { setupApp } = require('../../helpers')
-const defaultCorsConfig = require('./fixtures/cors-config')
-const { HandleCorsMiddleware, Server } = require('../../../dist')
+import { test } from 'uvu'
+import Supertest from 'supertest'
+import { setupApp } from '../../helpers/index.js'
+import defaultCorsConfig from './fixtures/cors-config.js'
+import { HandleCorsMiddleware, Server } from '../../../dist/index.js'
 
 const app = setupApp({ cors: defaultCorsConfig })
 

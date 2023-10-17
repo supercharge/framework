@@ -1,8 +1,8 @@
 
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { setupApp } = require('./helpers')
-const { HttpServiceProvider, Server } = require('../dist')
+import { test } from 'uvu'
+import { expect } from 'expect'
+import { setupApp } from './helpers/index.js'
+import { HttpServiceProvider, Server } from '../dist/index.js'
 
 const app = setupApp()
 

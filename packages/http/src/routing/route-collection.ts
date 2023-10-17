@@ -1,5 +1,5 @@
 
-import { Route } from './route'
+import { Route } from './route.js'
 import { tap } from '@supercharge/goodies'
 import { HttpRouteCollection, RouteObjectAttributes } from '@supercharge/contracts'
 

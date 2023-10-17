@@ -1,7 +1,7 @@
 
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { FileBag } = require('../dist')
+import { test } from 'uvu'
+import { expect } from 'expect'
+import { FileBag } from '../dist/index.js'
 
 test('all', () => {
   expect(new FileBag().all()).toEqual({})

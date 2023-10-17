@@ -1,6 +1,6 @@
 
 import { RouterContext } from '@koa/router'
-import { InteractsWithState } from './interacts-with-state'
+import { InteractsWithState } from './interacts-with-state.js'
 import { Application, HttpContext as HttpContextContract, HttpRequest, HttpResponse, HttpResponseCtor, HttpRequestCtor, HttpConfig } from '@supercharge/contracts'
 
 export class HttpContext extends InteractsWithState implements HttpContextContract {

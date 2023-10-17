@@ -1,7 +1,7 @@
 
 import { Files } from 'formidable'
 import { tap } from '@supercharge/goodies'
-import { UploadedFile } from './uploaded-file'
+import { UploadedFile } from './uploaded-file.js'
 import { FileBag as FileBagContract } from '@supercharge/contracts'
 
 interface UploadedFileType {
@@ -31,10 +31,18 @@ export class FileBag implements FileBagContract {
   static createFromBase (files?: Files): FileBag {
     const uploadedFiles = Object
       .entries(files ?? {})
-      .reduce((carry: UploadedFileType, [name, value]) => {
-        carry[name] = Array.isArray(value)
-          ? value.map(file => new UploadedFile(file))
-          : new UploadedFile(value)
+      .reduce((carry: UploadedFileType, [filename, file]) => {
+        if (file == null) {
+          return carry
+        }
+
+        if (Array.isArray(file)) {
+          carry[filename] = file.length === 1
+            ? new UploadedFile(file.pop() as any)
+            : file.map(file => new UploadedFile(file))
+        } else {
+          carry[filename] = new UploadedFile(file as any)
+        }
 
         return carry
       }, {})

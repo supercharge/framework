@@ -1,5 +1,5 @@
 
-import { StateBag } from './state-bag'
+import { StateBag } from './state-bag.js'
 import { tap } from '@supercharge/goodies'
 import { RouterContext } from '@koa/router'
 import { InteractsWithState as InteractsWithStateContract, RequestStateData } from '@supercharge/contracts'

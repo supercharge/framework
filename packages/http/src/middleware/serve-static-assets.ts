@@ -1,5 +1,5 @@
 
-import { Middleware } from './base'
+import { Middleware } from './base.js'
 import serveStaticFilesFrom from 'koa-static'
 import { Application, HttpContext, NextHandler, StaticAssetsConfig } from '@supercharge/contracts'
 

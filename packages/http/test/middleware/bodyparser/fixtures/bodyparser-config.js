@@ -1,5 +1,5 @@
 
-module.exports = {
+export default {
   encoding: 'utf-8',
   methods: ['POST', 'PUT', 'PATCH'],
 

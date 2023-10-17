@@ -1,5 +1,5 @@
 
-import { Middleware } from './base'
+import { Middleware } from './base.js'
 import { HttpContext, NextHandler, ErrorHandler } from '@supercharge/contracts'
 
 export class HandleErrorMiddleware extends Middleware {

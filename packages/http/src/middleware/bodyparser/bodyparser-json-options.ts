@@ -1,6 +1,6 @@
 
 import Bytes from 'bytes'
-import { BodyparserBaseOptions } from './bodyparser-base-options'
+import { BodyparserBaseOptions } from './bodyparser-base-options.js'
 
 export class BodyparserJsonOptions extends BodyparserBaseOptions {
   /**

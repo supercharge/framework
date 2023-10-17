@@ -1,17 +1,17 @@
 
 import * as Koa from 'koa'
 import { Files } from 'formidable'
-import { FileBag } from './file-bag'
-import Str from '@supercharge/strings'
-import { CookieBag } from './cookie-bag'
+import { FileBag } from './file-bag.js'
 import { Mixin as Many } from 'ts-mixer'
 import { Arr } from '@supercharge/arrays'
+import { Str } from '@supercharge/strings'
 import { tap } from '@supercharge/goodies'
-import { ParameterBag } from './parameter-bag'
+import { CookieBag } from './cookie-bag.js'
+import { ParameterBag } from './parameter-bag.js'
 import { Macroable } from '@supercharge/macroable'
-import { RequestHeaderBag } from './request-header-bag'
-import { InteractsWithState } from './interacts-with-state'
-import { IncomingHttpHeaders, IncomingMessage } from 'http'
+import { RequestHeaderBag } from './request-header-bag.js'
+import { InteractsWithState } from './interacts-with-state.js'
+import { IncomingHttpHeaders, IncomingMessage } from 'node:http'
 import { CookieOptions, HttpContext, HttpMethods, HttpRequest, InteractsWithContentTypes, Protocol, RequestCookieBuilderCallback } from '@supercharge/contracts'
 
 declare module 'koa' {
@@ -244,7 +244,7 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
    *
    * @returns {this}
    */
-  setFiles (files: any): this {
+  setFiles (files: Files): this {
     return tap(this, () => {
       this.koaCtx.request.files = files
     })
