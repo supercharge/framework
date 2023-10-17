@@ -1,5 +1,5 @@
 
-import { Command } from './command'
+import { Command } from './command.js'
 import { Application as CedarApplication } from '@supercharge/cedar'
 import { ConsoleApplication as ConsoleApplicationContract, Application as App } from '@supercharge/contracts'
 
