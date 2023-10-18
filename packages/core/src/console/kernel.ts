@@ -1,12 +1,15 @@
 
 import Fs from '@supercharge/fs'
-import Collect from '@supercharge/collections'
-import { esmRequire } from '@supercharge/goodies'
+import { Collect } from '@supercharge/collections'
+import { resolveDefaultImport } from '@supercharge/goodies'
 import { Command, Application as Craft } from '@supercharge/console'
 import { Application, BootstrapperCtor, ConsoleKernel as ConsoleKernelContract } from '@supercharge/contracts'
-import { HandleExceptions, LoadConfiguration, LoadEnvironmentVariables, RegisterServiceProviders, BootServiceProviders } from '../bootstrappers'
+import { HandleExceptions, LoadConfiguration, LoadEnvironmentVariables, RegisterServiceProviders, BootServiceProviders } from '../bootstrappers/index.js'
 
 export class ConsoleKernel implements ConsoleKernelContract {
+  /**
+   * Stores the internal configuration.
+   */
   private readonly meta: {
     /**
      * The application instance.
@@ -21,17 +24,13 @@ export class ConsoleKernel implements ConsoleKernelContract {
 
   /**
    * Create a new console kernel instance.
-   *
-   * @param {Application} app
    */
   constructor (app: Application) {
     this.meta = { app }
   }
 
   /**
-   * Creates a new console kernel instance for the given `app`.
-   *
-   * @param {Application} app
+   * Create a new console kernel instance for the given `app`.
    */
   static for (app: Application): ConsoleKernel {
     return new this(app)
@@ -39,8 +38,6 @@ export class ConsoleKernel implements ConsoleKernelContract {
 
   /**
    * Returns the application instance.
-   *
-   * @returns {Application}
    */
   app (): Application {
     return this.meta.app
@@ -61,10 +58,6 @@ export class ConsoleKernel implements ConsoleKernelContract {
 
   /**
    * Handle an incoming console command for the given `input`.
-   *
-   * @param {Array} input - command line arguments (process.argv)
-   *
-   * @returns {Promise}
    */
   async run (input?: string[]): Promise<any> {
     await this.bootstrap()
@@ -101,43 +94,27 @@ export class ConsoleKernel implements ConsoleKernelContract {
 
   /**
    * Register all of the commands in the given `directories`.
-   *
-   * @param {Array} paths
    */
-  async loadFrom (...paths: string[]): Promise<void> {
+  async loadCommandsFromPaths (...paths: string[]): Promise<void> {
     await Collect(paths)
       .unique()
-      .filter(async (path: string) => {
-        return await Fs.exists(path)
-      })
-      .flatMap(async (path: string) => {
-        return await Fs.allFiles(path)
-      })
-      .map(async (commandFile: string) => {
-        return await this.resolve(commandFile)
-      })
-      .forEach((command: Command) => {
-        this.craft().add(command)
-      })
+      .filter(async path => await Fs.exists(path))
+      .flatMap(async path => await Fs.allFiles(path))
+      .map(async (commandFilePath: string) => await this.resolveCommandFrom(commandFilePath))
+      .forEach(command => this.craft().add(command))
   }
 
   /**
    * Requires the given file from disk.
-   *
-   * @param {String} commandFile
-   *
-   * @returns {Command}
    */
-  async resolve (commandFile: string): Promise<Command> {
-    const CommandCtor = esmRequire(commandFile)
+  async resolveCommandFrom (commandFile: string): Promise<Command> {
+    const CommandCtor = await resolveDefaultImport<{ default: typeof Command }>(commandFile)
 
     return new CommandCtor()
   }
 
   /**
    * Returns a Craft console application instance.
-   *
-   * @returns {Craft}
    */
   craft (): Craft {
     if (!this.meta.craft) {

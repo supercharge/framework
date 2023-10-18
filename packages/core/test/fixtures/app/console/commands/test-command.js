@@ -1,7 +1,7 @@
 
-const { Command } = require('@supercharge/console')
+import { Command } from '@supercharge/console'
 
-module.exports = class TestCommand extends Command {
+export default class TestCommand extends Command {
   configure () {
     this.name('test:command')
   }

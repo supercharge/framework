@@ -22,7 +22,7 @@
     "@supercharge/contracts": "^3.20.4",
     "@supercharge/errors": "~2.0.1",
     "@supercharge/fs": "~3.4.0",
-    "@supercharge/goodies": "~1.11.1",
+    "@supercharge/goodies": "~2.0.0",
     "@supercharge/http": "^3.20.4",
     "@supercharge/set": "~2.2.1",
     "@supercharge/support": "^3.20.4",

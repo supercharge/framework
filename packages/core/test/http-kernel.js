@@ -1,18 +1,20 @@
 
-const Path = require('path')
-const Sinon = require('sinon')
-const { test } = require('uvu')
-const { expect } = require('expect')
-const Supertest = require('supertest')
-const MockedEnv = require('mocked-env')
-const { Server } = require('@supercharge/http')
-const { HttpKernel, Application, ErrorHandler } = require('../dist')
+import Sinon from 'sinon'
+import { test } from 'uvu'
+import { expect } from 'expect'
+import Supertest from 'supertest'
+import MockedEnv from 'mocked-env'
+import { fileURLToPath } from 'node:url'
+import { Server } from '@supercharge/http'
+import { HttpKernel, Application, ErrorHandler } from '../dist/index.js'
+
+const appRootPath = fileURLToPath(import.meta.resolve('./fixtures'))
 
 let app = createApp()
 
 function createApp () {
   const app = Application
-    .createWithAppRoot(Path.resolve(__dirname, 'fixtures'))
+    .createWithAppRoot(appRootPath)
     .withErrorHandler(ErrorHandler)
     .bind('view', () => {
     // empty view mock

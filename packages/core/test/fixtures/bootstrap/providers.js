@@ -1,2 +1,2 @@
 
-module.exports.providers = []
+export const providers = []

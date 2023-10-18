@@ -1,5 +1,7 @@
 
+import Path from 'node:path'
 import Fs from '@supercharge/fs'
+import { Str } from '@supercharge/strings'
 import Dotenv, { DotenvConfigOptions } from 'dotenv'
 import { Application, Bootstrapper } from '@supercharge/contracts'
 
@@ -11,8 +13,6 @@ export class LoadEnvironmentVariables implements Bootstrapper {
 
   /**
    * Create a new instance.
-   *
-   * @param app Application
    */
   constructor (app: Application) {
     this.app = app
@@ -28,8 +28,6 @@ export class LoadEnvironmentVariables implements Bootstrapper {
   /**
    * Load the contents of the configured environment file. Throws an error
    * in case the environment file does not exist, an error will be thrown.
-   *
-   * @throws
    */
   async loadEnvironment (): Promise<void> {
     await this.loadDefaultEnvironmentFile()
@@ -69,9 +67,9 @@ export class LoadEnvironmentVariables implements Bootstrapper {
       return
     }
 
-    const envFilePath = this.app.resolveFromBasePath(
-      this.app.environmentPath(), `.env.${env}`
-    )
+    const envFilePath = Path.isAbsolute(this.app.environmentPath())
+      ? Str(this.app.environmentPath()).rtrim('/').finish('/').concat(`.env.${env}`).get()
+      : this.app.resolveFromBasePath(this.app.environmentPath(), `.env.${env}`)
 
     if (await Fs.exists(envFilePath)) {
       await this.loadEnvironmentFile(envFilePath, { override: true })

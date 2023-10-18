@@ -1,12 +1,12 @@
 
-const Path = require('path')
-const Sinon = require('sinon')
-const { test } = require('uvu')
-const { expect } = require('expect')
-const Supertest = require('supertest')
-const { Server } = require('@supercharge/http')
-const { Application, ErrorHandler } = require('../dist')
-const { ViewServiceProvider } = require('@supercharge/view')
+import Sinon from 'sinon'
+import { test } from 'uvu'
+import { expect } from 'expect'
+import Supertest from 'supertest'
+import { fileURLToPath } from 'node:url'
+import { Server } from '@supercharge/http'
+import { ViewServiceProvider } from '@supercharge/view'
+import { Application, ErrorHandler } from '../dist/index.js'
 
 const viewMock = {
   boot () { },
@@ -18,10 +18,12 @@ const viewMock = {
   }
 }
 
+const appRootPath = fileURLToPath(import.meta.resolve('./fixtures'))
+
 function createApp () {
-  const app = Application.createWithAppRoot(
-    Path.resolve(__dirname, 'fixtures')
-  ).withErrorHandler(ErrorHandler)
+  const app = Application
+    .createWithAppRoot(appRootPath)
+    .withErrorHandler(ErrorHandler)
 
   app
     .bind('view', () => viewMock)

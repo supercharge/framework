@@ -1,5 +1,5 @@
 
-import { HttpContext } from '@supercharge/contracts/src'
+import { HttpContext } from '@supercharge/contracts'
 import { HttpError as BaseHttpError } from '@supercharge/errors'
 
 export class HttpError extends BaseHttpError {

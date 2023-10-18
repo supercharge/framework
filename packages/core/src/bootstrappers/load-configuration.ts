@@ -1,15 +1,12 @@
 
 import Fs from '@supercharge/fs'
-import { extname, parse } from 'path'
-import Collect from '@supercharge/collections'
-import { esmRequire } from '@supercharge/goodies'
+import { Collect } from '@supercharge/collections'
+import { resolveDefaultImport } from '@supercharge/goodies'
 import { Application, Bootstrapper } from '@supercharge/contracts'
 
 export class LoadConfiguration implements Bootstrapper {
   /**
    * Bootstrap the given application.
-   *
-   * @param {Application} app
    */
   async bootstrap (app: Application): Promise<void> {
     ([] as any[]).concat(
@@ -21,10 +18,6 @@ export class LoadConfiguration implements Bootstrapper {
 
   /**
    * Load the configuration files from the disk.
-   *
-   * @param {Application} app
-   *
-   * @returns {object}
    */
   async loadConfigurations (app: Application): Promise<any> {
     return await this.resolve(
@@ -34,8 +27,6 @@ export class LoadConfiguration implements Bootstrapper {
 
   /**
    * Load the application’s configuration files from the local hard disk.
-   *
-   * @param {Application} app
    *
    * @returns {String[]}
    */
@@ -47,10 +38,6 @@ export class LoadConfiguration implements Bootstrapper {
 
   /**
    * Load the configuration files from the disk.
-   *
-   * @param {Application} app
-   *
-   * @returns {object}
    */
   async resolve (configurationFiles: string[]): Promise<any> {
     return await Collect(configurationFiles)
@@ -72,9 +59,8 @@ export class LoadConfiguration implements Bootstrapper {
          *   `{ app: { default: {…} }` -> `{ app: { {…} }`
          */
         return {
-          name: parse(configFile).name,
-          config: esmRequire(configFile)
-
+          name: Fs.filename(configFile),
+          config: await resolveDefaultImport(configFile)
         }
       })
   }
@@ -82,13 +68,15 @@ export class LoadConfiguration implements Bootstrapper {
   /**
    * Determine whether the given file name is a JS or TS file.
    *
-   * @param file
-   *
    * @returns {Boolean}
    */
   isJavascriptOrTypescript (file: string): boolean {
-    return file.endsWith('.d.ts')
-      ? false
-      : ['.js', '.ts'].includes(extname(file))
+    if (file.endsWith('.d.ts')) {
+      return false
+    }
+
+    return ['.js', '.ts'].includes(
+      Fs.extension(file)
+    )
   }
 }

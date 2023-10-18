@@ -1,2 +1,2 @@
 
-export * from './route-service-provider'
+export * from './route-service-provider.js'

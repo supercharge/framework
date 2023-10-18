@@ -1,11 +1,13 @@
 
-const Path = require('path')
-const Sinon = require('sinon')
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { Application, ConsoleKernel } = require('../dist')
+import Sinon from 'sinon'
+import { test } from 'uvu'
+import { expect } from 'expect'
+import { fileURLToPath } from 'node:url'
+import { Application, ConsoleKernel } from '../dist/index.js'
 
-const app = Application.createWithAppRoot(Path.resolve(__dirname, 'fixtures'))
+const appRootPath = fileURLToPath(import.meta.resolve('./fixtures'))
+
+const app = Application.createWithAppRoot(appRootPath)
 app.config().set('app.key', 1234)
 
 test('static .for(app)', async () => {
@@ -29,11 +31,11 @@ test('.bootstrap()', async () => {
   ).toEqual(['help'])
 })
 
-test('.loadFrom()', async () => {
+test('.loadCommandsFromPaths()', async () => {
+  const commandsPath = fileURLToPath(import.meta.resolve('./fixtures/app/console/commands'))
+
   const kernel = ConsoleKernel.for(app)
-  await kernel.loadFrom(
-    Path.resolve(__dirname, 'fixtures/app/console/commands')
-  )
+  await kernel.loadCommandsFromPaths(commandsPath)
 
   expect(
     kernel.craft().commands().map(command => {
@@ -43,10 +45,10 @@ test('.loadFrom()', async () => {
 })
 
 test('.run()', async () => {
+  const commandsPath = fileURLToPath(import.meta.resolve('./fixtures/app/console/commands'))
+
   const kernel = ConsoleKernel.for(app)
-  await kernel.loadFrom(
-    Path.resolve(__dirname, 'fixtures/app/console/commands')
-  )
+  await kernel.loadCommandsFromPaths(commandsPath)
 
   const consoleLogStub = Sinon.stub(console, 'log').returns()
   const terminateStub = Sinon.stub(kernel.craft(), 'terminate').returns()
