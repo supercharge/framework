@@ -1,8 +1,8 @@
 
-const { Model } = require('../../dist')
-const UserModel = require('./user-model')
+import UserModel from './user-model.js'
+import { Model } from '../../dist/index.js'
 
-module.exports = class PostModel extends Model {
+export default class PostModel extends Model {
   static get tableName () {
     return 'posts'
   }

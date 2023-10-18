@@ -1,7 +1,9 @@
 
-import { knex, Knex } from 'knex'
+import knex, { Knex } from 'knex'
 import { DatabaseConfig } from '@supercharge/contracts'
-import { DatabaseManagerProxy } from './database-manager-proxy'
+import { DatabaseManagerProxy } from './database-manager-proxy.js'
+
+// const { knex }
 
 export class DatabaseManager {
   /**

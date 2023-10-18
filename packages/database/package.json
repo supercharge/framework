@@ -59,7 +59,7 @@
     "lint": "eslint src --ext .js,.ts",
     "lint:fix": "npm run lint -- --fix",
     "test": "npm run build && npm run test:run",
-    "test:run": "c8 --include=dist uvu --ignore fixtures",
+    "test:run": "c8 --include=dist uvu --ignore fixtures --ignore helpers",
     "posttest": "npm run test:coverage",
     "test:coverage": "c8 report --reporter=html"
   }

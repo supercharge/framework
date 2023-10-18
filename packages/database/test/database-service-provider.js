@@ -1,8 +1,8 @@
 
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { makeApp } = require('./helpers')
-const { DatabaseServiceProvider, DatabaseManager } = require('../dist')
+import { test } from 'uvu'
+import { expect } from 'expect'
+import { makeApp } from './helpers/index.js'
+import { DatabaseServiceProvider, DatabaseManager } from '../dist/index.js'
 
 test('registers DB service provider', async t => {
   const app = makeApp()
