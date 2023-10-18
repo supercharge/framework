@@ -1,7 +1,7 @@
 
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { Env: EnvStore } = require('../dist')
+import { test } from 'uvu'
+import { expect } from 'expect'
+import { Env as EnvStore } from '../dist/index.js'
 
 const Env = new EnvStore()
 
