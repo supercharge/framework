@@ -1,6 +1,6 @@
 
+import { test } from 'uvu'
 import { expect } from 'expect'
-import { test } from 'node:test'
 import { Str } from '@supercharge/strings'
 import { Encrypter } from '../dist/index.js'
 
@@ -115,3 +115,5 @@ test('fails with an encryption key having less than 32 characters', async () => 
   expect(() => new Encrypter({ key: Str.random(32) })).not.toThrow()
   expect(() => new Encrypter({ key: Str.random(33) })).not.toThrow()
 })
+
+test.run()

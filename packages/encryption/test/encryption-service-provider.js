@@ -1,6 +1,6 @@
 
+import { test } from 'uvu'
 import { expect } from 'expect'
-import { test } from 'node:test'
 import { Str } from '@supercharge/strings'
 import { Application } from '@supercharge/application'
 import { Encrypter, EncryptionServiceProvider } from '../dist/index.js'
@@ -17,3 +17,5 @@ test('register encrypter and aliases', async () => {
   expect(app.make('encrypter')).toBeInstanceOf(Encrypter)
   expect(app.make('encryption')).toBeInstanceOf(Encrypter)
 })
+
+test.run()

@@ -25,7 +25,8 @@
     "@supercharge/application": "^3.20.4",
     "c8": "~8.0.1",
     "expect": "~29.7.0",
-    "typescript": "~5.2.2"
+    "typescript": "~5.2.2",
+    "uvu": "~0.5.6"
   },
   "engines": {
     "node": ">=16"
@@ -52,8 +53,9 @@
     "watch": "npm run build -- --watch",
     "lint": "eslint src --ext .js,.ts",
     "lint:fix": "npm run lint -- --fix",
-    "posttest": "c8 report --reporter=html",
     "test": "npm run build && npm run lint && npm run test:run",
-    "test:run": "c8 node --test"
+    "test:run": "uvu --ignore helpers --ignore fixtures",
+    "test:coverage": "c8 --include=dist npm run test:run && npm run test:report",
+    "test:report": "c8 report --reporter=html"
   }
 }
