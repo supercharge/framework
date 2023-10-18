@@ -1,8 +1,10 @@
 
-const Path = require('path')
-const ErrorHandler = require('./error-handler')
-const { Application } = require('@supercharge/core')
-const { SessionServiceProvider } = require('../../dist')
+import { fileURLToPath } from 'node:url'
+import ErrorHandler from './error-handler.js'
+import { Application } from '@supercharge/core'
+import { SessionServiceProvider } from '../../dist/index.js'
+
+const appRootPath = fileURLToPath(import.meta.resolve('./fixtures'))
 
 /**
  * Returns a test application.
@@ -11,9 +13,9 @@ const { SessionServiceProvider } = require('../../dist')
  *
  * @returns {Promise<Application>}
  */
-exports.setupApp = async function makeApp (sessionConfig = {}) {
+export async function setupApp (sessionConfig = {}) {
   const app = Application
-    .createWithAppRoot(Path.resolve(__dirname, '../fixtures'))
+    .createWithAppRoot(appRootPath)
     .withErrorHandler(ErrorHandler)
     .bind('view', () => viewMock)
 

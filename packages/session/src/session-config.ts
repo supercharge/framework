@@ -1,6 +1,6 @@
 
 import ms from 'ms'
-import { SessionCookieConfig } from './session-config-cookie'
+import { SessionCookieConfig } from './session-config-cookie.js'
 import { SessionConfig as SessionConfigContract } from '@supercharge/contracts'
 
 export class SessionConfig {

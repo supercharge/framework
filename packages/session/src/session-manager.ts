@@ -1,10 +1,10 @@
 
-import { Session } from './session'
+import { Session } from './session.js'
 import { Manager } from '@supercharge/manager'
-import { SessionConfig } from './session-config'
-import { FileSessionDriver } from './drivers/file'
-import { MemorySessionDriver } from './drivers/memory'
-import { CookieSessionDriver } from './drivers/cookie'
+import { SessionConfig } from './session-config.js'
+import { FileSessionDriver } from './drivers/file.js'
+import { MemorySessionDriver } from './drivers/memory.js'
+import { CookieSessionDriver } from './drivers/cookie.js'
 import { Application, HttpContext, SessionDriver } from '@supercharge/contracts'
 
 export class SessionManager extends Manager {

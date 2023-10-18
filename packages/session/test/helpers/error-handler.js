@@ -1,7 +1,7 @@
 
-const { ErrorHandler: Handler } = require('@supercharge/core')
+import { ErrorHandler as Handler } from '@supercharge/core'
 
-module.exports = class ErrorHandler extends Handler {
+export default class ErrorHandler extends Handler {
   handle (ctx, error) {
     // console.error('Received error in testing error handler', { error })
 

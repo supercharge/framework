@@ -1,5 +1,5 @@
 
-import { SessionManager } from '../session-manager'
+import { SessionManager } from '../session-manager.js'
 import { InteractsWithTime } from '@supercharge/support'
 import { Session, HttpContext, HttpResponse, NextHandler, HttpRequest } from '@supercharge/contracts'
 

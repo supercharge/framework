@@ -1,7 +1,7 @@
 
-import { SessionManager } from './session-manager'
+import { SessionManager } from './session-manager.js'
 import { ServiceProvider } from '@supercharge/support'
-import { StartSessionMiddleware } from './middleware/start-session'
+import { StartSessionMiddleware } from './middleware/start-session.js'
 import { HttpRequest, HttpRequestCtor, Session } from '@supercharge/contracts'
 
 /**
