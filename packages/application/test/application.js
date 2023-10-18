@@ -1,6 +1,6 @@
 
+import { test } from 'uvu'
 import { expect } from 'expect'
-import { test } from 'node:test'
 import { Env } from '@supercharge/env'
 import { fileURLToPath } from 'node:url'
 import { Config } from '@supercharge/config'
@@ -281,3 +281,5 @@ test('shutdown', async () => {
   stopped = app.make('stopped')
   expect(stopped).toBe(true)
 })
+
+test.run()
