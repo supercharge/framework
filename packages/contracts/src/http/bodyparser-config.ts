@@ -154,9 +154,18 @@ export interface BodyparserConfig {
      * Multipart File Size Limit
      * ------------------------------------------------------------------------
      *
-     * This option configures the limit of an uploaded file.
+     * This option configures the size limit of a single uploaded file.
      */
     maxFileSize: string | number
+
+    /**
+     * ------------------------------------------------------------------------
+     * Multipart Batch File Size Limit
+     * ------------------------------------------------------------------------
+     *
+     * This option configures the size limit of all uploaded files.
+     */
+    maxTotalFileSize: string | number
 
     /**
      * ------------------------------------------------------------------------
