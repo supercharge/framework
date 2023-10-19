@@ -2,9 +2,10 @@
 import { test } from 'uvu'
 import { expect } from 'expect'
 import Fs from '@supercharge/fs'
+import { fileURLToPath } from 'node:url'
 import { FileLogger } from '../dist/file-logger.js'
 
-const logFile = import.meta.resolve('./test.log')
+const logFile = fileURLToPath(import.meta.resolve('./test.log'))
 
 function logWrite () {
   return new Promise(resolve => {
