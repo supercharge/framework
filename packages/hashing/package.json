@@ -13,7 +13,9 @@
   "main": "dist/index.js",
   "types": "dist",
   "exports": {
-    ".": "./dist/index.js"
+    ".": "./dist/index.js",
+    "./drivers/bcrypt": "./dist/bcrypt-hasher.js",
+    "./drivers/scrypt": "./dist/scrypt-hasher.js"
   },
   "dependencies": {
     "@phc/format": "~1.0.0",

@@ -1,4 +1,6 @@
 
+export type HasherCtor = new(...args: any[]) => Hasher
+
 export interface Hasher {
   /**
    * Hash the given `value`.

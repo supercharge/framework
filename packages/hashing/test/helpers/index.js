@@ -1,7 +1,9 @@
 
-const Path = require('path')
-const { HashingServiceProvider } = require('../../dist')
-const { Application } = require('@supercharge/application')
+import { fileURLToPath } from 'node:url'
+import { Application } from '@supercharge/application'
+import { BcryptHasher } from '../../dist/bcrypt-hasher.js'
+import { ScryptHasher } from '../../dist/scrypt-hasher.js'
+import { HashingServiceProvider } from '../../dist/index.js'
 
 /**
  * Returns a test application.
@@ -10,15 +12,19 @@ const { Application } = require('@supercharge/application')
  *
  * @returns {Promise<Application>}
  */
-exports.setupApp = async function makeApp (hashConfig = {}) {
+export async function setupApp (hashConfig = {}) {
   const app = Application.createWithAppRoot(
-    Path.resolve(__dirname)
+    fileURLToPath(import.meta.resolve('./'))
   )
 
   app.config()
     .set('app.key', 'app-key-1234')
     .set('hashing', {
       driver: 'bcrypt',
+      drivers: {
+        bcrypt: BcryptHasher,
+        scrypt: ScryptHasher
+      },
       bcrypt: {
         rounds: 10,
         ...hashConfig.bcrypt

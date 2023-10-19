@@ -1,5 +1,5 @@
 
-import { HashManager } from './hash-manager'
+import { HashManager } from './hash-manager.js'
 import { ServiceProvider } from '@supercharge/support'
 
 /**

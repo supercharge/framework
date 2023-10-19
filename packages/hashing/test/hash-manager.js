@@ -1,8 +1,8 @@
 
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { setupApp } = require('./helpers')
-const { HashManager } = require('../dist')
+import { test } from 'uvu'
+import { expect } from 'expect'
+import { setupApp } from './helpers/index.js'
+import { HashManager } from '../dist/index.js'
 
 test('make hash', async () => {
   const app = await setupApp()

@@ -3,8 +3,8 @@
 import Phc from '@phc/format'
 import { promisify } from 'node:util'
 import type { BinaryLike, ScryptOptions } from 'node:crypto'
-import { ScryptValidationError } from './scrypt-validation-error'
 import { randomBytes, scrypt, timingSafeEqual } from 'node:crypto'
+import { ScryptValidationError } from './scrypt-validation-error.js'
 import { Hasher as HasherContract, HashConfig } from '@supercharge/contracts'
 
 type RequiredHashConfig = Required<HashConfig>

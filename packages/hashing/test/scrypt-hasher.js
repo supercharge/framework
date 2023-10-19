@@ -3,10 +3,10 @@
  * @typedef {import('@supercharge/contracts').HashConfig} HashConfig
  */
 
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { ScryptValidationError } = require('../dist/')
-const { ScryptHasher } = require('../dist/scrypt-hasher')
+import { test } from 'uvu'
+import { expect } from 'expect'
+import { ScryptHasher } from '../dist/scrypt-hasher.js'
+import { ScryptValidationError } from '../dist/index.js'
 
 /**
  * @param {HashConfig['scrypt'] | undefined} config
