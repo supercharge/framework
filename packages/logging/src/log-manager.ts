@@ -4,7 +4,7 @@ import { Manager } from '@supercharge/manager'
 import { ConsoleLogger } from './console-logger.js'
 import { Application, Logger as LoggingContract, LoggingConfig } from '@supercharge/contracts'
 
-export class LogManager extends Manager implements LoggingContract {
+export class LogManager extends Manager<Application> implements LoggingContract {
   /**
    * Stores the logging config.
    */
@@ -12,8 +12,6 @@ export class LogManager extends Manager implements LoggingContract {
 
   /**
    * Create a new logs manager instance.
-   *
-   * @param {Application} app
    */
   constructor (app: Application, config: LoggingConfig) {
     super(app)
@@ -23,8 +21,6 @@ export class LogManager extends Manager implements LoggingContract {
 
   /**
    * Log the given `message` at debug level.
-   *
-   * @param message
    */
   debug (message: string, ...context: any[]): void {
     this.driver().debug(message, ...context)
@@ -32,8 +28,6 @@ export class LogManager extends Manager implements LoggingContract {
 
   /**
    * Log the given `message` at info level.
-   *
-   * @param message
    */
   info (message: string, ...context: any[]): void {
     this.driver().info(message, ...context)
@@ -41,8 +35,6 @@ export class LogManager extends Manager implements LoggingContract {
 
   /**
    * Log the given `message` at notice level.
-   *
-   * @param message
    */
   notice (message: string, ...context: any[]): void {
     this.driver().notice(message, ...context)
@@ -50,8 +42,6 @@ export class LogManager extends Manager implements LoggingContract {
 
   /**
    * Log the given `message` at warning level.
-   *
-   * @param message
    */
   warning (message: string, ...context: any[]): void {
     this.driver().warning(message, ...context)
@@ -59,8 +49,6 @@ export class LogManager extends Manager implements LoggingContract {
 
   /**
    * Log the given `message` at error level.
-   *
-   * @param message
    */
   error (message: string, ...context: any[]): void {
     this.driver().error(message, ...context)
@@ -68,8 +56,6 @@ export class LogManager extends Manager implements LoggingContract {
 
   /**
    * Log the given `message` at critical level.
-   *
-   * @param message
    */
   critical (message: string, ...context: any[]): void {
     this.driver().critical(message, ...context)
@@ -77,8 +63,6 @@ export class LogManager extends Manager implements LoggingContract {
 
   /**
    * Log the given `message` at alert level.
-   *
-   * @param message
    */
   alert (message: string, ...context: any[]): void {
     this.driver().alert(message, ...context)
@@ -86,8 +70,6 @@ export class LogManager extends Manager implements LoggingContract {
 
   /**
    * Log the given `message` at emergency level.
-   *
-   * @param message
    */
   emergency (message: string, ...context: any[]): void {
     this.driver().emergency(message, ...context)
@@ -95,8 +77,6 @@ export class LogManager extends Manager implements LoggingContract {
 
   /**
    * Returns the default logging driver name.
-   *
-   * @returns {String}
    */
   protected defaultDriver (): string {
     return this.options.driver ?? 'console'
@@ -105,10 +85,6 @@ export class LogManager extends Manager implements LoggingContract {
   /**
    * Returns the driver instance. This method exists to retrieve
    * IntelliSense because of the method’s specific return value.
-   *
-   * @param {String} name
-   *
-   * @returns {ViewEngine}
    */
   override driver (name?: string): LoggingContract {
     return super.driver(name)
@@ -116,8 +92,6 @@ export class LogManager extends Manager implements LoggingContract {
 
   /**
    * Create a file logging driver.
-   *
-   * @returns {FileLogger}
    */
   protected createFileDriver (): LoggingContract {
     return new FileLogger(this.options.channels.file ?? {} as any)
@@ -125,8 +99,6 @@ export class LogManager extends Manager implements LoggingContract {
 
   /**
    * Create a a console logging driver.
-   *
-   * @returns {Logger}
    */
   protected createConsoleDriver (): LoggingContract {
     return new ConsoleLogger(this.options.channels.console ?? { } as any)

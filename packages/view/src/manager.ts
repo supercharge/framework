@@ -5,7 +5,7 @@ import { Manager } from '@supercharge/manager'
 import { HandlebarsCompiler } from './engines/handlebars/index.js'
 import { Application, ViewConfig, ViewEngine, ViewResponseConfig } from '@supercharge/contracts'
 
-export class ViewManager extends Manager implements ViewEngine {
+export class ViewManager extends Manager<Application> implements ViewEngine {
   /**
    * Stores the internal view configuration object.
    */
@@ -27,11 +27,11 @@ export class ViewManager extends Manager implements ViewEngine {
    * Validate the view config.
    */
   private validateConfig (): void {
-    this.ensureConfig('view', () => {
+    this.app.config().ensure('view', () => {
       throw new Error('Missing view configuration file. Make sure the "config/view.ts" file exists.')
     })
 
-    this.ensureConfig('view.driver')
+    this.app.config().ensure('view.driver')
   }
 
   /**
