@@ -6,7 +6,7 @@ export class HashManager extends Manager<Application> implements Hasher {
   /**
    * Returns the hashing config.
    */
-  protected config (): HashConfig {
+  protected hashConfig (): HashConfig {
     return this.app.config().get<HashConfig>('hashing')
   }
 
@@ -14,14 +14,14 @@ export class HashManager extends Manager<Application> implements Hasher {
    * Returns the default hashing driver name.
    */
   protected defaultDriver (): string {
-    return this.config().driver
+    return this.hashConfig().driver
   }
 
   /**
    * Create a bcrypt hasher instance.
    */
   protected createBcryptDriver (): Hasher {
-    const BcryptHasher = this.config().drivers.bcrypt
+    const BcryptHasher = this.hashConfig().drivers.bcrypt
 
     return new BcryptHasher({
       rounds: this.app.config().get('hashing.bcrypt.rounds', 10)
@@ -32,10 +32,10 @@ export class HashManager extends Manager<Application> implements Hasher {
    * Create an scrypt hasher instance.
   */
   protected createScryptDriver (): Hasher {
-    const ScryptHasher = this.config().drivers.scrypt
+    const ScryptHasher = this.hashConfig().drivers.scrypt
 
     return new ScryptHasher(
-      this.config().scrypt
+      this.hashConfig().scrypt
     )
   }
 
