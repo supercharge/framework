@@ -1,7 +1,7 @@
 
 import { ViewEngine } from '@supercharge/contracts'
 import { ServiceProvider } from '@supercharge/support'
-import { ViteHandlebarsHelper } from './vite-handlebars-helper'
+import { ViteHandlebarsHelper } from './vite-handlebars-helper.js'
 
 export class ViteServiceProvider extends ServiceProvider {
   /**

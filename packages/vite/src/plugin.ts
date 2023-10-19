@@ -1,9 +1,9 @@
 
-import Fs from 'fs'
-import Path from 'path'
-import { AddressInfo } from 'net'
-import Str from '@supercharge/strings'
-import { DevServerUrl, PluginConfigContract } from './contracts/plugin'
+import Fs from 'node:fs'
+import Path from 'node:path'
+import { AddressInfo } from 'node:net'
+import { Str } from '@supercharge/strings'
+import { DevServerUrl, PluginConfigContract } from './contracts/plugin.js'
 import { ConfigEnv, Plugin, ResolvedConfig, UserConfig, ViteDevServer } from 'vite'
 
 /**
@@ -130,11 +130,13 @@ function resolveSuperchargePlugin (pluginConfig: Required<PluginConfigContract>)
      * Hook into Vite’s code transform lifecycle setp.
      */
     transform (code: string) {
-      if (resolvedConfig.command === 'serve') {
-        return Str(code)
-          .replaceAll('__supercharge_vite_placeholder__', viteDevServerUrl)
-          .get()
+      if (resolvedConfig.command !== 'serve') {
+        return
       }
+
+      return Str(code)
+        .replaceAll('__supercharge_vite_placeholder__', viteDevServerUrl)
+        .get()
     },
 
     /**

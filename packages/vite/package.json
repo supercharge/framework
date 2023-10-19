@@ -27,13 +27,12 @@
     "@supercharge/http": "^3.20.4",
     "@supercharge/tsconfig": "~7.0.0",
     "@supercharge/view": "^3.20.4",
-    "@vitest/coverage-c8": "~0.33.0",
-    "@vitest/coverage-v8": "~0.34.6",
     "c8": "~8.0.1",
+    "expect": "~29.7.0",
     "supertest": "~6.3.3",
     "typescript": "~5.2.2",
-    "vite": "~4.4.11",
-    "vitest": "~0.34.6"
+    "uvu": "~0.5.6",
+    "vite": "~4.4.11"
   },
   "engines": {
     "node": ">=16"
@@ -65,8 +64,9 @@
     "dev": "tsc --watch",
     "lint": "eslint src",
     "lint:fix": "npm run lint -- --fix",
-    "test": "npm run build && npm run lint && npm run test:run",
-    "test:watch": "vitest",
-    "test:run": "vitest run --coverage"
+    "posttest": "c8 report --reporter=html",
+    "test": "npm run build && npm run lint && npm run test:coverage",
+    "test:coverage": "c8 --include=dist npm run test:run",
+    "test:run": "uvu --ignore helpers --ignore fixtures"
   }
 }
