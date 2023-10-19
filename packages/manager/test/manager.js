@@ -1,8 +1,8 @@
 
-const Sinon = require('sinon')
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { Manager } = require('../dist')
+import Sinon from 'sinon'
+import { test } from 'uvu'
+import { expect } from 'expect'
+import { Manager } from '../dist/index.js'
 
 test('fails for missing createDriver function', () => {
   class TestManager extends Manager {
@@ -29,9 +29,7 @@ test('fails to access the config for missing app instance', () => {
     }
 
     createTestDriver () {
-      class TestDriver { }
-
-      return new TestDriver(this.config())
+      this.app.config()
     }
 
     handle () {
@@ -68,7 +66,7 @@ test('creates a driver instance', () => {
         }
       }
 
-      return new TestDriver(this.config())
+      return new TestDriver()
     }
   }
 
@@ -89,7 +87,7 @@ test('creates a driver instance by name', () => {
         }
       }
 
-      return new TestDriver(this.config())
+      return new TestDriver()
     }
   }
 
@@ -110,41 +108,18 @@ test('reuses created driver instance', () => {
         }
       }
 
-      return new TestDriver(this.config())
+      return new TestDriver()
     }
   }
 
   const manager = new TestManager(new App())
   const spy = Sinon.spy(manager, 'createDriver')
 
-  expect(manager.has('test')).toBe(false)
+  expect(manager.isCached('test')).toBe(false)
   expect(manager.driver().handle()).toEqual('works')
-  expect(manager.has('test')).toBe(true)
+  expect(manager.isCached('test')).toBe(true)
   expect(manager.driver().handle()).toEqual('works')
   expect(spy.calledOnce).toBe(true)
-})
-
-test('ensures driver config', () => {
-  class TestManager extends Manager {
-    defaultDriver () {
-      return 'test'
-    }
-
-    createSuperchargeDriver () {
-      this.ensureConfig('config.shouldBePresent')
-
-      class TestDriver {
-        handle () {
-          return 'Supercharged!'
-        }
-      }
-
-      return new TestDriver(this.config())
-    }
-  }
-
-  const manager = new TestManager(new App())
-  expect(manager.driver('supercharge').handle()).toEqual('Supercharged!')
 })
 
 class App {
