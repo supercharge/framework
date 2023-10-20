@@ -40,7 +40,7 @@
     "uvu": "~0.5.6"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=20"
   },
   "homepage": "https://superchargejs.com",
   "keywords": [

@@ -35,7 +35,7 @@
     "vite": "~4.4.11"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=20"
   },
   "homepage": "https://superchargejs.com",
   "keywords": [

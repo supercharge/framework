@@ -16,7 +16,7 @@
     "nx": "16.10.0"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=20"
   },
   "homepage": "https://superchargejs.com",
   "keywords": [
