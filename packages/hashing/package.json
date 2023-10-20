@@ -59,8 +59,7 @@
     "lint": "eslint src --ext .js,.ts",
     "lint:fix": "npm run lint -- --fix",
     "test": "npm run build && npm run lint && npm run test:run",
-    "test:run": "cross-env NODE_ENV=testing c8 --include=dist uvu --ignore helpers --ignore fixtures",
-    "posttest": "c8 report --reporter=html --include=dist",
-    "test:report": "c8 report --reporter=html"
+    "test:run": "c8 --include=dist uvu --ignore helpers --ignore fixtures",
+    "posttest": "c8 report --reporter=html"
   }
 }

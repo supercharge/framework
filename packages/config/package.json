@@ -51,9 +51,8 @@
         "watch": "npm run dev",
         "lint": "eslint src --ext .js,.ts",
         "lint:fix": "npm run lint -- --fix",
-        "test": "npm run build && npm run lint && npm run test:coverage",
-        "test:run": "uvu --ignore helpers --ignore fixtures",
-        "test:coverage": "c8 --include=dist npm run test:run && npm run test:report",
-        "test:report": "c8 report --reporter=html"
+        "test": "npm run build && npm run lint && npm run test:run",
+        "test:run": "c8 --include=dist uvu --ignore helpers --ignore fixtures",
+        "posttest": "c8 report --reporter=html"
     }
 }
