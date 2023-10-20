@@ -64,8 +64,6 @@ export class Router implements HttpRouter {
 
   /**
    * Returns the app instance.
-   *
-   * @returns {Application}
    */
   private app (): Application {
     return this.meta.app
@@ -73,8 +71,6 @@ export class Router implements HttpRouter {
 
   /**
    * Returns the Koa router instance.
-   *
-   * @returns {KoaRouter}
    */
   private router (): KoaRouter {
     return this.meta.instance
@@ -82,8 +78,6 @@ export class Router implements HttpRouter {
 
   /**
    * Returns the route collection.
-   *
-   * @returns {RouteCollection}
    */
   routes (): RouteCollection {
     return this.meta.routes
@@ -92,8 +86,6 @@ export class Router implements HttpRouter {
   /**
    * Returns a middleware-function for the HTTP server handling
    * the route-matching for an incoming request to the server.
-   *
-   * @returns {Function}
    */
   createRoutingMiddleware (): KoaMiddleware {
     this.registerRoutesToRouter()
@@ -107,8 +99,6 @@ export class Router implements HttpRouter {
 
   /**
    * Ensure the router found a matching route for the request.
-   *
-   * @throws
    */
   private ensureMatchedRoute (): KoaMiddleware {
     return async function ({ _matchedRoute }: RouterParamContext, next: NextHandler): Promise<void> {
@@ -131,8 +121,6 @@ export class Router implements HttpRouter {
 
   /**
    * Register the given `route` and related route-level middleware to the router.
-   *
-   * @param route Route
    */
   private register (route: Route): void {
     this.router().register(route.path(), route.methods(), [
@@ -155,10 +143,6 @@ export class Router implements HttpRouter {
 
   /**
    * Creates and returns the route-level middleware stack.
-   *
-   * @param route Route
-   *
-   * @returns {Function[]}
    */
   private createRouteMiddleware (route: Route): any[] {
     return route.getMiddleware().map(name => {
@@ -174,10 +158,6 @@ export class Router implements HttpRouter {
 
   /**
    * Throws if the given middleware `name` is not registered in the middleware stack.
-   *
-   * @param name String
-   *
-   * @throws
    */
   ensureMiddlewareExists (name: string): void {
     if (this.isMissingMiddleware(name)) {
@@ -187,10 +167,6 @@ export class Router implements HttpRouter {
 
   /**
    * Determine whether the given middleware is not registered.
-   *
-   * @param name String
-   *
-   * @returns {Boolean}
    */
   isMissingMiddleware (name: string): boolean {
     return !this.hasMiddleware(name)
@@ -198,10 +174,6 @@ export class Router implements HttpRouter {
 
   /**
    * Determine whether the given middleware is registered.
-   *
-   * @param name String
-   *
-   * @returns {Boolean}
    */
   hasMiddleware (name: string): boolean {
     return this.meta.middleware.has(name)
@@ -209,10 +181,6 @@ export class Router implements HttpRouter {
 
   /**
    * Returns a new middleware instance.
-   *
-   * @param name String
-   *
-   * @returns {Middleware}
    */
   private makeMiddleware (name: string | Class<any>): Middleware {
     if (isConstructor<any>(name)) {
@@ -226,10 +194,6 @@ export class Router implements HttpRouter {
 
   /**
    * Returns a Koa-compatible route handler.
-   *
-   * @param route Route
-   *
-   * @returns {Function}
    */
   private createRouteHandler (route: Route): Function {
     return async (ctx: RouterContext, next: NextHandler) => {
@@ -240,9 +204,6 @@ export class Router implements HttpRouter {
 
   /**
    * Handle the given request context for the related route.
-   *
-   * @param route Route
-   * @param ctx Koa Context
    */
   async handleRequest (route: Route, ctx: HttpContext): Promise<void> {
     const response = await route.run(ctx)
@@ -288,10 +249,6 @@ export class Router implements HttpRouter {
 
   /**
    * Wrap the given Koa `ctx` into a Supercharge ctx.
-   *
-   * @param ctx
-   *
-   * @returns {HttpContext}
    */
   private createContext (ctx: any): HttpContext {
     return HttpContext.wrap(ctx, this.app(), this.meta.httpConfig.cookie)
@@ -299,8 +256,6 @@ export class Router implements HttpRouter {
 
   /**
    * Returns the route group stack.
-   *
-   * @returns {RouteGroup[]}
    */
   groupStack (): RouteGroup[] {
     return this.meta.groupStack
@@ -308,12 +263,6 @@ export class Router implements HttpRouter {
 
   /**
    * Create a GET route.
-   *
-   * @param {String} path
-   * @param {RouteHandler} handler
-   * @param {String[]} middleware
-   *
-   * @returns {Route}
    */
   get (path: string, handler: RouteHandler, middleware?: string[]): Route {
     return this.addRoute(['GET', 'HEAD'], path, handler, middleware)
@@ -321,12 +270,6 @@ export class Router implements HttpRouter {
 
   /**
    * Create a POST route.
-   *
-   * @param {String} path
-   * @param {RouteHandler} handler
-   * @param {String[]} middleware
-   *
-   * @returns {Route}
    */
   post (path: string, handler: RouteHandler, middleware?: string[]): Route {
     return this.addRoute(['POST'], path, handler, middleware)
@@ -334,12 +277,6 @@ export class Router implements HttpRouter {
 
   /**
    * Create a PUT route.
-   *
-   * @param {String} path
-   * @param {RouteHandler} handler
-   * @param {String[]} middleware
-   *
-   * @returns {Route}
    */
   put (path: string, handler: RouteHandler, middleware?: string[]): Route {
     return this.addRoute(['PUT'], path, handler, middleware)
@@ -347,12 +284,6 @@ export class Router implements HttpRouter {
 
   /**
    * Create a DELETE route.
-   *
-   * @param {String} path
-   * @param {RouteHandler} handler
-   * @param {String[]} middleware
-   *
-   * @returns {Route}
    */
   delete (path: string, handler: RouteHandler, middleware?: string[]): Route {
     return this.addRoute(['DELETE'], path, handler, middleware)
@@ -360,12 +291,6 @@ export class Router implements HttpRouter {
 
   /**
    * Create a PATCH route.
-   *
-   * @param {String} path
-   * @param {RouteHandler} handler
-   * @param {String[]} middleware
-   *
-   * @returns {Route}
    */
   patch (path: string, handler: RouteHandler, middleware?: string[]): Route {
     return this.addRoute(['PATCH'], path, handler, middleware)
@@ -373,12 +298,6 @@ export class Router implements HttpRouter {
 
   /**
    * Create an OPTIONS route.
-   *
-   * @param {String} path
-   * @param {RouteHandler} handler
-   * @param {String[]} middleware
-   *
-   * @returns {Route}
    */
   options (path: string, handler: RouteHandler): Route {
     return this.addRoute(['OPTIONS'], path, handler)
@@ -386,12 +305,6 @@ export class Router implements HttpRouter {
 
   /**
    * Create a new route and add it to the routes collection.
-   *
-   * @param {HttpMethods} method
-   * @param {String} path
-   * @param {RouteHandler} handler
-   *
-   * @returns {Route}
    */
   addRoute (methods: HttpMethods[], path: string, handler: RouteHandler, middleware?: string[]): Route {
     return tap(this.createRoute(methods, path, handler, middleware), route => {
@@ -401,12 +314,6 @@ export class Router implements HttpRouter {
 
   /**
    * Create a new route instance.
-   *
-   * @param {HttpMethods} method
-   * @param {String} path
-   * @param {RouteHandler} handler
-   *
-   * @returns {Route}
    */
   createRoute (methods: HttpMethods[], path: string, handler: RouteHandler, middleware?: string[]): Route {
     const route = new Route(methods, path, handler, this.app()).middleware(middleware)
@@ -420,8 +327,6 @@ export class Router implements HttpRouter {
 
   /**
    * Determine whether an active route group exists.
-   *
-   * @returns {Boolean}
    */
   hasGroupStack (): boolean {
     return Arr.from(
@@ -431,8 +336,6 @@ export class Router implements HttpRouter {
 
   /**
    * Returns the last route group.
-   *
-   * @returns {RouteGroup | undefined}
    */
   getLastGroup (): RouteGroup | undefined {
     return Arr.from(
@@ -442,8 +345,6 @@ export class Router implements HttpRouter {
 
   /**
    * Merge the group attributes into the given route.
-   *
-   * @param {Route} route
    */
   mergeGroupAttributesIntoRoute (route: Route): void {
     const group = this.getLastGroup()
@@ -457,10 +358,6 @@ export class Router implements HttpRouter {
 
   /**
    * Create a new route group.
-   *
-   * @param callback Function
-   *
-   * @returns {RouteGroup}
    */
   group (callback: () => void): void
   group (prefix: string, callback: (() => void)): void
@@ -504,10 +401,6 @@ export class Router implements HttpRouter {
 
   /**
    * Assign the given `prefix` to a route path or all routes defined in a route group.
-   *
-   * @param prefix String
-   *
-   * @returns PendingRoute
    */
   prefix (prefix: string): PendingRoute {
     return new PendingRoute(this).prefix(prefix)
@@ -515,10 +408,6 @@ export class Router implements HttpRouter {
 
   /**
    * Assign the given `middleware` stack to a route or all routes defined in a route group.
-   *
-   * @param middleware String|String[]
-   *
-   * @returns PendingRoute
    */
   middleware (middleware: string): PendingRoute {
     return new PendingRoute(this).middleware(middleware)
@@ -526,11 +415,6 @@ export class Router implements HttpRouter {
 
   /**
    * Register a named middleware.
-   *
-   * @param name string
-   * @param Middleware class
-   *
-   * @returns {Router}
    */
   registerAliasMiddleware (name: string, Middleware: MiddlewareCtor): Router {
     if (Str(name).isEmpty()) {

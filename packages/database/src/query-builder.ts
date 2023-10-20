@@ -14,10 +14,6 @@ export class QueryBuilder<M extends Model, R = M[]> extends BaseQueryBuilder<M, 
   /**
    * Fails the query if the result set is empty. Use the given `callback` to
    * throw a custom error. Otherwise, this method throws a generic `Error`.
-   *
-   * @param {Function} callback
-   *
-   * @returns {QueryBuilder}
    */
   public orFail (callback?: () => any): QueryBuilder<M, M>['SingleQueryBuilderType'] {
     return this.runAfter((result: any) => {
@@ -35,10 +31,6 @@ export class QueryBuilder<M extends Model, R = M[]> extends BaseQueryBuilder<M, 
 
   /**
    * Determine whether the given `result` contains items in the query result.
-   *
-   * @param result
-   *
-   * @returns {Boolean}
    */
   protected hasResults (result: any): boolean {
     if (Array.isArray(result)) {

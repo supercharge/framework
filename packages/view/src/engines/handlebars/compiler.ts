@@ -311,8 +311,6 @@ export class HandlebarsCompiler implements ViewEngine {
 
   /**
    * Ensure the view file exists.
-   *
-   * @throws
    */
   async ensureViewExists (view: string): Promise<void> {
     const file = this.ensureExtension(view)

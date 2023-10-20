@@ -19,9 +19,6 @@ export class RequestHeaderBag implements RequestHeaderBagContract {
 
   /**
    * Returns the lowercased string value for the given `name`.
-   *
-   * @param name
-   * @returns
    */
   private resolveName (name: keyof IncomingHttpHeaders): string {
     return String(name).toLowerCase()
@@ -29,10 +26,6 @@ export class RequestHeaderBag implements RequestHeaderBagContract {
 
   /**
    * Returns an object with all `keys` existing in the input bag.
-   *
-   * @param keys
-   *
-   * @returns
    */
   all<Key extends keyof IncomingHttpHeaders = string> (...keys: Key[] | Key[][]): { [Key in keyof IncomingHttpHeaders]: IncomingHttpHeaders[Key] } {
     if (keys.length === 0) {
@@ -52,11 +45,6 @@ export class RequestHeaderBag implements RequestHeaderBagContract {
   /**
    * Returns the input value for the given `name`. Returns `undefined`
    * if the given `name` does not exist in the input bag.
-   *
-   * @param {Header} name
-   * @param {Value} defaultValue
-   *
-   * @returns {Value | Dict<T>[Header] |undefined}
    */
   get<Header extends keyof IncomingHttpHeaders> (name: Header): IncomingHttpHeaders[Header]
   get<T, Header extends keyof IncomingHttpHeaders> (name: Header, defaultValue: T): IncomingHttpHeaders[Header] | T
@@ -75,11 +63,6 @@ export class RequestHeaderBag implements RequestHeaderBagContract {
   /**
    * Set an input for the given `name` and assign the `value`. This
    * overrides a possibly existing input with the same `name`.
-   *
-   * @param {String} name
-   * @param {*} value
-   *
-   * @returns {this}
    */
   set (name: string, value: any): this {
     const key = this.resolveName(name)
@@ -91,10 +74,6 @@ export class RequestHeaderBag implements RequestHeaderBagContract {
 
   /**
    * Removes the input with the given `name`.
-   *
-   * @param {String} name
-   *
-   * @returns {this}
    */
   remove (name: string): this {
     const key = this.resolveName(name)
@@ -108,10 +87,6 @@ export class RequestHeaderBag implements RequestHeaderBagContract {
 
   /**
    * Determine whether the HTTP header for the given `name` exists.
-   *
-   * @param {String} name
-   *
-   * @returns {Boolean}
    */
   has (name: keyof IncomingHttpHeaders): name is keyof IncomingHttpHeaders {
     return !!this.get(name)

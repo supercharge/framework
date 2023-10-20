@@ -26,11 +26,6 @@ export class CookieBag implements CookieBagContract {
 
   /**
    * Returns the attribute value for the given `name` or the `defaultValue`.
-   *
-   * @param {String} name
-   * @param {RequestCookieBuilderCallback} callback
-   *
-   * @returns {String|undefined}
    */
   get (name: string, callback?: RequestCookieBuilderCallback): string | undefined {
     if (typeof callback === 'function') {
@@ -44,11 +39,6 @@ export class CookieBag implements CookieBagContract {
   /**
    * Set an attribute for the given `name` and assign the `value`.
    * This will override an existing attribute for the given `name`.
-   *
-   * @param {String} name
-   * @param {String?} value
-   *
-   * @returns {ThisType}
    */
   set (name: string, value?: string | null, cookieBuilder?: ResponseCookieBuilderCallback): this {
     if (typeof cookieBuilder === 'function') {
@@ -63,10 +53,6 @@ export class CookieBag implements CookieBagContract {
 
   /**
    * Determine whether the attribute for the given `name` exists.
-   *
-   * @param {String} name
-   *
-   * @returns {Boolean}
    */
   has (name: string): boolean {
     const parsed = Cookie.parse(this.cookies.request.headers.cookie ?? '')
@@ -76,10 +62,6 @@ export class CookieBag implements CookieBagContract {
 
   /**
    * Deletes a cookie with the given `name`.
-   *
-   * @param {String} name
-   *
-   * @returns {this}
    */
   delete (name: string): this {
     return this.set(name, undefined)

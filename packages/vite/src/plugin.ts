@@ -8,10 +8,6 @@ import { ConfigEnv, Plugin, ResolvedConfig, UserConfig, ViteDevServer } from 'vi
 
 /**
  * Supercharge plugin for Vite.
- *
- * @param config - the config object or paths relative path to assets to be compiled
- *
- * @returns {Plugin}
  */
 export function supercharge (config: string | string[] | PluginConfigContract): Plugin {
   const pluginConfig = resolvePluginConfig(config)
@@ -21,10 +17,6 @@ export function supercharge (config: string | string[] | PluginConfigContract): 
 
 /**
  * Returns the validated plugin configuration, with default values where necessary.
- *
- * @param config The user configuration.
- *
- * @returns {Required<PluginConfigContract>}
  */
 function resolvePluginConfig (config: string | string[] | PluginConfigContract): Required<PluginConfigContract> {
   if (!config) {
@@ -162,8 +154,6 @@ function resolveSuperchargePlugin (pluginConfig: Required<PluginConfigContract>)
 
 /**
  * Returns the resolved base option based on the build directory.
- *
- * @returns {string}
  */
 function resolveBase (pluginConfig: Required<PluginConfigContract>): string {
   return `/${pluginConfig.buildDirectory}/`
@@ -171,8 +161,6 @@ function resolveBase (pluginConfig: Required<PluginConfigContract>): string {
 
 /**
  * Returns the output path for the compiled assets.
- *
- * @returns {string}
  */
 function resolveOutDir (pluginConfig: Required<PluginConfigContract>, useSsr: boolean): string {
   const { publicDirectory, buildDirectory, ssrOutputDirectory } = pluginConfig
@@ -184,8 +172,6 @@ function resolveOutDir (pluginConfig: Required<PluginConfigContract>, useSsr: bo
 
 /**
  * Returns the input path for the Vite configuration.
- *
- * @returns {string | string[] | undefined}
  */
 function resolveInput (pluginConfig: Required<PluginConfigContract>, useSsr: boolean): string | string[] | undefined {
   return useSsr

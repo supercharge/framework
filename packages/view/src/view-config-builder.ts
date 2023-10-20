@@ -18,10 +18,6 @@ export class ViewConfigBuilder implements ViewConfigBuilderContract {
   /**
    * Set the base layout used to render this view. The given `name` identifies
    * the file name of the layout file in the configured layouts folder.
-   *
-   * @param {String} name
-   *
-   * @returns {ViewConfigBuilder}
    */
   layout (name: string): this {
     return tap(this, () => {

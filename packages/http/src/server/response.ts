@@ -26,9 +26,6 @@ export class Response extends Many(Macroable, InteractsWithState) implements Htt
 
   /**
    * Create a new response instance.
-   *
-   * @param ctx
-   * @param cookieOptions
    */
   constructor (ctx: HttpContext, cookieOptions: CookieOptions) {
     super(ctx.raw)
@@ -46,8 +43,6 @@ export class Response extends Many(Macroable, InteractsWithState) implements Htt
 
   /**
    * Set the response payload.
-   *
-   * @returns {Response}
    */
   payload (payload: any): this {
     return tap(this, () => {
@@ -64,8 +59,6 @@ export class Response extends Many(Macroable, InteractsWithState) implements Htt
 
   /**
    * Returns the response header bag.
-   *
-   * @returns {HeaderBag}
    */
   headers (): ResponseHeaderBag {
     return new ResponseHeaderBag(this.koaCtx)
@@ -73,8 +66,6 @@ export class Response extends Many(Macroable, InteractsWithState) implements Htt
 
   /**
    * Set a response header with the given `name` and `value`.
-   *
-   * @returns {this}
    */
   header (name: string, value: string | string[] | number): this {
     return tap(this, () => {
@@ -84,8 +75,6 @@ export class Response extends Many(Macroable, InteractsWithState) implements Htt
 
   /**
    * Assign the object’s key-value pairs as response headers.
-   *
-   * @returns {Response}
    */
   withHeaders (headers: { [key: string]: string | string[] | number }): this {
     Object.entries(headers).forEach(([key, value]) => {
@@ -98,8 +87,6 @@ export class Response extends Many(Macroable, InteractsWithState) implements Htt
   /**
    * Append a header to the response. If you want to replance a possibly
    * existing response header, use the `response.header()` method.
-   *
-   * @returns {Response}
    */
   appendHeader (key: string, value: string | string[]): this {
     return tap(this, () => {
@@ -109,10 +96,6 @@ export class Response extends Many(Macroable, InteractsWithState) implements Htt
 
   /**
    * Remove the header field for the given `name` from the response.
-   *
-   * @param {String} name
-   *
-   * @returns {Response}
    */
   removeHeader (name: string): this {
     return tap(this, () => {
@@ -143,10 +126,6 @@ export class Response extends Many(Macroable, InteractsWithState) implements Htt
 
   /**
    * Set a response status code to the given `code`.
-   *
-   * @param {Number} code
-   *
-   * @returns {Response}
    */
   status (code: number): this {
     return tap(this, () => {
@@ -156,8 +135,6 @@ export class Response extends Many(Macroable, InteractsWithState) implements Htt
 
   /**
    * Returns the response status code.
-   *
-   * @returns {Number}
    */
   getStatus (): number {
     return this.koaCtx.response.status
@@ -196,8 +173,6 @@ export class Response extends Many(Macroable, InteractsWithState) implements Htt
    * Set the response `Content-Type` header. This will look up the mime type
    * and set the related value as the content type header field. It also
    * removes the content type header if no valid mime type is available.
-   *
-   * @returns {Response}
    */
   type (contentType: string): this {
     return tap(this, () => {
@@ -207,8 +182,6 @@ export class Response extends Many(Macroable, InteractsWithState) implements Htt
 
   /**
    * Set the response ETag. This will normalize quotes if necessary.
-   *
-   * @returns {Response}
    */
   etag (etag: string): this {
     return tap(this, () => {
@@ -219,10 +192,6 @@ export class Response extends Many(Macroable, InteractsWithState) implements Htt
   /**
    * Temporarily redirect the request using HTTP status code 302. You can customize
    * the redirect when omitting any parameter to this `response.redirect()` method.
-   *
-   * @param {String} url
-   *
-   * @returns {HttpRedirect}
    */
   redirect (): HttpRedirect
   redirect (url: string): HttpRedirect
@@ -234,10 +203,6 @@ export class Response extends Many(Macroable, InteractsWithState) implements Htt
 
   /**
    * Permanently redirect the request using HTTP status code 301.
-   *
-   * @param {String} url
-   *
-   * @returns {HttpRedirect}
    */
   permanentRedirect (): HttpRedirect
   permanentRedirect (url: string): HttpRedirect
@@ -262,8 +227,6 @@ export class Response extends Many(Macroable, InteractsWithState) implements Htt
    * Abort the request and throw an error with the given `status`. The status defaults
    * to 500. You may pass an error message or error instance as the second argument.
    * Use the third, optional argument for properties in the error response.
-   *
-   * @returns {Response}
    */
   throw (status: number, message?: string | Error, properties?: {}): void
   throw (...properties: any[]): void {

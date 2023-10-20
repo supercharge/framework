@@ -69,10 +69,6 @@ export class Server implements HttpServerContract {
 
   /**
    * Returns the initialized Koa instance.
-   *
-   * @param app
-   *
-   * @returns {Koa}
    */
   private createKoaInstance (appConfig: ApplicationConfig): Koa {
     return new Koa({
@@ -103,8 +99,6 @@ export class Server implements HttpServerContract {
 
   /**
    * Returns an array of middleware that will be registered when creating the HTTP server.
-   *
-   * @returns {MiddlewareCtor[]}
    */
   coreMiddleware (): MiddlewareCtor[] {
     return [
@@ -114,8 +108,6 @@ export class Server implements HttpServerContract {
 
   /**
    * Returns the Koa application instance.
-   *
-   * @returns {Koa}
    */
   koa (): Koa {
     return this.meta.koa
@@ -123,8 +115,6 @@ export class Server implements HttpServerContract {
 
   /**
    * Returns the HTTP server instance. Returns `undefined ` if the Koa server wasn’t started.
-   *
-   * @returns {NodeHttpServer | undefined}
    */
   private startedServer (): NodeHttpServer | undefined {
     return this.meta.server
@@ -132,8 +122,6 @@ export class Server implements HttpServerContract {
 
   /**
    * Register a booted callback that runs after the HTTP server started.
-   *
-   * @returns {this}
    */
   booted (callback: Callback): this {
     return tap(this, () => {
@@ -143,8 +131,6 @@ export class Server implements HttpServerContract {
 
   /**
    * Returns the booted callbacks.
-   *
-   * @returns {Callback[]}
    */
   private bootedCallbacks (): Callback[] {
     return this.meta.bootedCallbacks
@@ -161,8 +147,6 @@ export class Server implements HttpServerContract {
 
   /**
    * Call the given kernal `callbacks`.
-   *
-   * @param {Callback[]} callbacks
    */
   protected async runCallbacks (callbacks: Callback[]): Promise<void> {
     await Collect(callbacks).forEach(async callback => {
@@ -173,8 +157,6 @@ export class Server implements HttpServerContract {
 
   /**
    * Returns the application instance.
-   *
-   * @returns {Application}
    */
   app (): Application {
     return this.meta.app
@@ -182,8 +164,6 @@ export class Server implements HttpServerContract {
 
   /**
    * Determine whether the HTTP server is already boostrapped.
-   *
-   * @returns {Boolean}
    */
   isBootstrapped (): boolean {
     return this.meta.isBootstrapped
@@ -191,8 +171,6 @@ export class Server implements HttpServerContract {
 
   /**
    * Mark this HTTP server as bootstrapped.
-   *
-   * @returns {this}
    */
   markAsBootstrapped (): this {
     return tap(this, () => {
@@ -202,8 +180,6 @@ export class Server implements HttpServerContract {
 
   /**
    * Returns the router instance.
-   *
-   * @returns {HttpRouter}
    */
   router (): HttpRouter {
     if (!this.meta.router) {
@@ -215,8 +191,6 @@ export class Server implements HttpServerContract {
 
   /**
    * Clear all registered routes from the router.
-   *
-   * @returns {this}
    */
   clearRoutes (): this {
     return tap(this, () => {
@@ -246,8 +220,6 @@ export class Server implements HttpServerContract {
 
   /**
    * Register the given HTTP middleware to the IoC container and HTTP server instance.
-   *
-   * @param {MiddlewareCtor} Middleware
    */
   private bindAndRegisterMiddlewareClass (Middleware: MiddlewareCtor): void {
     this.ensureHandleMethod(Middleware)
@@ -262,8 +234,6 @@ export class Server implements HttpServerContract {
 
   /**
    * Bind the given `Middleware` into the container if it’s not already bound.
-   *
-   * @param Middleware BaseMiddleware
    */
   private bindMiddlewareClass (Middleware: MiddlewareCtor): void {
     if (this.app().hasBinding(Middleware)) {
@@ -277,10 +247,6 @@ export class Server implements HttpServerContract {
 
   /**
    * Ensure that the given `Middleware` implements a `handle` method.
-   *
-   * @param Middleware
-   *
-   * @throws
    */
   private ensureHandleMethod (Middleware: MiddlewareCtor): void {
     const middleware = this.app().hasBinding(Middleware)
@@ -296,8 +262,6 @@ export class Server implements HttpServerContract {
 
   /**
    * Register the given HTTP middleware to the IoC container and HTTP server instance.
-   *
-   * @param {MiddlewareCtor} Middleware
    */
   private registerMiddlewareHandler (handler: InlineMiddlewareHandler): void {
     this.koa().use(async (ctx, next) => {
@@ -307,8 +271,6 @@ export class Server implements HttpServerContract {
 
   /**
    * Returns a request handler callback compatible with Node.js’ native HTTP server.
-   *
-   * @returns {HttpServerHandler}
    */
   callback (): HttpServerHandler {
     this.bootstrap()
@@ -330,8 +292,6 @@ export class Server implements HttpServerContract {
 
   /**
    * Wrap the given Koa `ctx` into a Supercharge context.
-   *
-   * @param ctx
    */
   private createContext (ctx: any): HttpContext {
     return HttpContext.wrap(ctx, this.app(), this.cookieConfig())
@@ -384,8 +344,6 @@ export class Server implements HttpServerContract {
 
   /**
    * Returns the HTTP cookie configuration object.
-   *
-   * @returns {HttpConfig['cookie']}
    */
   private cookieConfig (): HttpConfig['cookie'] {
     return this.meta.httpConfig.cookie
@@ -393,8 +351,6 @@ export class Server implements HttpServerContract {
 
   /**
    * Returns the local port on which the server listens for connections.
-   *
-   * @returns {Number}
    */
   private port (): number {
     return this.meta.httpConfig.port
@@ -402,8 +358,6 @@ export class Server implements HttpServerContract {
 
   /**
    * Returns the hostname on which the server listens for connections.
-   *
-   * @returns {String}
    */
   private hostname (): string {
     return this.meta.httpConfig.host

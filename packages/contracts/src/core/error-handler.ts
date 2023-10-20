@@ -4,8 +4,6 @@ import { HttpContext, Application } from '../index.js'
 export type ErrorHandlerCtor =
   /**
    * Create a new error handler instance.
-   *
-   * @param {Application} app - the application instance
    */
   new(app: Application) => ErrorHandler
 

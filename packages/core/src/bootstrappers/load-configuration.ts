@@ -27,8 +27,6 @@ export class LoadConfiguration implements Bootstrapper {
 
   /**
    * Load the application’s configuration files from the local hard disk.
-   *
-   * @returns {String[]}
    */
   async loadConfigurationFilesFromDisk (app: Application): Promise<string[]> {
     return await Fs.allFiles(
@@ -67,8 +65,6 @@ export class LoadConfiguration implements Bootstrapper {
 
   /**
    * Determine whether the given file name is a JS or TS file.
-   *
-   * @returns {Boolean}
    */
   isJavascriptOrTypescript (file: string): boolean {
     if (file.endsWith('.d.ts')) {

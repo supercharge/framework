@@ -130,10 +130,6 @@ export class StateBag implements StateBagContract {
 
   /**
    * Determine whether the given `input` is an object.
-   *
-   * @param input
-   *
-   * @returns {Boolean}
    */
   private isObject (input: any): input is Record<string, any> {
     return !!input && input.constructor.name === 'Object'

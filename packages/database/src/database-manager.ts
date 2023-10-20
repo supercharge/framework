@@ -19,8 +19,6 @@ export class DatabaseManager {
 
   /**
    * Create a new database manager instance.
-   *
-   * @param app
    */
   constructor (config: DatabaseConfig) {
     this.config = config
@@ -31,9 +29,6 @@ export class DatabaseManager {
 
   /**
    * Assign the given `connection` to the related `name`.
-   *
-   * @param {String} name
-   * @param {Knex} connection
    */
   setConnection (name: string, connection: Knex): this {
     this.activeConnections.set(name, connection)
@@ -43,8 +38,6 @@ export class DatabaseManager {
 
   /**
    * Determine whether an active connection exists for the given `name`.
-   *
-   * @param {String} name
    */
   isMissingConnection (name: string): boolean {
     if (!name) {
@@ -57,8 +50,6 @@ export class DatabaseManager {
   /**
    * Returns an active connection for the given `name`. Returns a connection
    * for the configured default connection name if the name is not present.
-   *
-   * @param {String} name
    */
   connection (name: string = this.defaultConnection()): Knex {
     if (this.isMissingConnection(name)) {
@@ -77,8 +68,6 @@ export class DatabaseManager {
 
   /**
    * Creates a new knex instance using the given.
-   *
-   * @returns {Knex}
    */
   protected createConnection (name: string): Knex {
     return knex(
@@ -88,10 +77,6 @@ export class DatabaseManager {
 
   /**
    * Returns the configuration for the given `connectionName`.
-   *
-   * @param {String} connectionName
-   *
-   * @returns {Knex.Config | String}
    */
   protected configuration (connectionName: string): Knex.Config | string {
     const connection = this.config.connections[connectionName]
@@ -105,8 +90,6 @@ export class DatabaseManager {
 
   /**
    * Returns the default database connection name.
-   *
-   * @returns {String}
    */
   protected defaultConnection (): string {
     return this.config.default ?? this.config.connection

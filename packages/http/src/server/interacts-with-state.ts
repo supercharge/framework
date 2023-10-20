@@ -12,8 +12,6 @@ export class InteractsWithState implements InteractsWithStateContract {
 
   /**
    * Create a new instance.
-   *
-   * @param ctx
    */
   constructor (ctx: RouterContext) {
     this.koaCtx = ctx
@@ -21,8 +19,6 @@ export class InteractsWithState implements InteractsWithStateContract {
 
   /**
    * Returns the shared state bag for this HTTP context.
-   *
-   * @returns {StateBag}
    */
   state (): StateBag {
     return StateBag.from(this.koaCtx)
@@ -31,8 +27,6 @@ export class InteractsWithState implements InteractsWithStateContract {
   /**
    * Share a given `state` across HTTP requests. Any previously
    * set state will be merged with the given `state`.
-   *
-   * @returns {ThisType}
    */
   share<K extends keyof RequestStateData> (key: K, value: RequestStateData[K]): this
   share (key: string, value: any): this

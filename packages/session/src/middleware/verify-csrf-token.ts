@@ -11,8 +11,6 @@ export class VerifyCsrfTokenMiddleware implements Middleware {
 
   /**
    * Create a new middleware instance.
-   *
-   * @param {Application} app
    */
   constructor (app: Application) {
     this.app = app
@@ -20,8 +18,6 @@ export class VerifyCsrfTokenMiddleware implements Middleware {
 
   /**
    * Returns an array of URIs that should be excluded from CSRF verfication.
-   *
-   * @returns {Array}
    */
   exclude (): string[] {
     return []
@@ -29,9 +25,6 @@ export class VerifyCsrfTokenMiddleware implements Middleware {
 
   /**
    * Handle the incoming request.
-   *
-   * @param ctx HttpContext
-   * @param next NextHandler
    */
   async handle ({ request, response }: HttpContext, next: NextHandler): Promise<any> {
     if (this.shouldValidate(request)) {
@@ -47,10 +40,6 @@ export class VerifyCsrfTokenMiddleware implements Middleware {
 
   /**
    * Determine whether to skip checking the CSRF token on the given `request`.
-   *
-   * @param {HttpRequest} request
-   *
-   * @returns {Boolean}
    */
   shouldValidate (request: HttpRequest): boolean {
     return !request.isMethod(['GET', 'HEAD', 'OPTIONS']) && this.urlIsNotExcluded(request)
@@ -58,10 +47,6 @@ export class VerifyCsrfTokenMiddleware implements Middleware {
 
   /**
    * Determine whether the `request`’s URI is not excluded from CSRF verification.
-   *
-   * @param {HttpRequest} request
-   *
-   * @returns {Boolean}
    */
   urlIsNotExcluded (request: HttpRequest): boolean {
     const excludes = ([] as string[])
@@ -75,8 +60,6 @@ export class VerifyCsrfTokenMiddleware implements Middleware {
 
   /**
    * Validate the CSRF tokens and throw an exception in case they don’t match.
-   *
-   * @param {HttpRequest} request
    */
   validateCsrfToken (request: HttpRequest): void {
     const token = this.getCsrfTokenFrom(request)
@@ -88,10 +71,6 @@ export class VerifyCsrfTokenMiddleware implements Middleware {
 
   /**
    * Retrieve the incoming CSRF token from the request.
-   *
-   * @param {Request} request
-   *
-   * @returns {String}
    */
   getCsrfTokenFrom (request: HttpRequest): string | undefined {
     return request.input('_csrfToken') || // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
@@ -103,8 +82,6 @@ export class VerifyCsrfTokenMiddleware implements Middleware {
 
   /**
    * Regenerate the CSRF token.
-   *
-   * @param {HttpRequest} request
    */
   rotateToken (request: HttpRequest): this {
     request.session().regenerateToken()
@@ -114,8 +91,6 @@ export class VerifyCsrfTokenMiddleware implements Middleware {
 
   /**
    * Append the `XSRF-Token` to the response using an encrypted cookie.
-   *
-   * @param {HttpContext} ctx
    */
   addCookieToResponse (request: HttpRequest, response: HttpResponse): void {
     response.cookie('XSRF-TOKEN', request.session().token())

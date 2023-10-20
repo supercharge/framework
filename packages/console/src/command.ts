@@ -10,8 +10,6 @@ export class Command extends CedarCommand {
 
   /**
    * Returns the Supercharge application instance.
-   *
-   * @returns {Application}
    */
   supercharge (): Application {
     if (!this._supercharge) {
@@ -23,10 +21,6 @@ export class Command extends CedarCommand {
 
   /**
    * Set the supercharge application instance for this command.
-   *
-   * @param app
-   *
-   * @returns {Command}
    */
   setSupercharge (app: Application): Command {
     this._supercharge = app

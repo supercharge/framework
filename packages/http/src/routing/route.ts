@@ -24,10 +24,6 @@ export class Route implements HttpRoute {
 
   /**
    * Create a new route instance.
-   *
-   * @param method string
-   * @param path string
-   * @param handler RouteHandler
    */
   constructor (methods: HttpMethods[], path: string, handler: RouteHandler, app: Application) {
     this.app = app
@@ -36,8 +32,6 @@ export class Route implements HttpRoute {
 
   /**
    * Returns the route path.
-   *
-   * @returns string
    */
   path (): string {
     return Str(this.attributes.path).trim('/').start('/').get()
@@ -45,8 +39,6 @@ export class Route implements HttpRoute {
 
   /**
    * Returns the HTTP methods.
-   *
-   * @returns HttpMethods[]
    */
   methods (): HttpMethods[] {
     return this.attributes.methods
@@ -54,8 +46,6 @@ export class Route implements HttpRoute {
 
   /**
    * Returns the route handler.
-   *
-   * @returns RouteHandler
    */
   handler (): RouteHandler {
     return this.attributes.handler
@@ -63,10 +53,6 @@ export class Route implements HttpRoute {
 
   /**
    * Assign the given `prefix` to this route.
-   *
-   * @param prefix String
-   *
-   * @returns Route
    */
   prefix (prefix: string): this {
     return tap(this, () => {
@@ -76,10 +62,6 @@ export class Route implements HttpRoute {
 
   /**
    * Assign the given `middleware` stack to this route.
-   *
-   * @param middleware String|String[]
-   *
-   * @returns Route
    */
   middleware (middleware?: string | string[]): this {
     return tap(this, () => {
@@ -91,8 +73,6 @@ export class Route implements HttpRoute {
 
   /**
    * Returns the middleware stack for this route.
-   *
-   * @returns {string[]}
    */
   getMiddleware (): string[] {
     return this.attributes.middleware
@@ -100,10 +80,6 @@ export class Route implements HttpRoute {
 
   /**
    * Run the route handler.
-   *
-   * @param ctx HttpContext
-   *
-   * @returns {Promise<*>}
    */
   async run (ctx: HttpContext): Promise<any> {
     if (this.isControllerClass()) {
@@ -119,8 +95,6 @@ export class Route implements HttpRoute {
 
   /**
    * Determine whether the assigned handler is a controller constructor.
-   *
-   * @returns {Boolean}
    */
   isControllerClass (): boolean {
     return isClass(this.handler())
@@ -129,8 +103,6 @@ export class Route implements HttpRoute {
   /**
    * Resolve the route controller instance and run
    * the `handle` method for the given HTTP `ctx`.
-   *
-   * @param ctx HttpContext
    */
   async runControllerClass (ctx: HttpContext): Promise<void> {
     const instance = this.app.make<HttpController>(
@@ -146,8 +118,6 @@ export class Route implements HttpRoute {
 
   /**
    * Determine whether the assigned handler for this route is a controller action.
-   *
-   * @returns {Boolean}
    */
   isInlineHandler (): boolean {
     return typeof this.handler() === 'function'
@@ -155,8 +125,6 @@ export class Route implements HttpRoute {
 
   /**
    * Run the route handler
-   *
-   * @param ctx HttpContext
    */
   async runCallable (ctx: HttpContext): Promise<void> {
     return await (this.handler() as Function)(ctx)

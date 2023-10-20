@@ -9,8 +9,6 @@ export class Controller {
 
   /**
    * Create a new controller instance.
-   *
-   * @param app
    */
   constructor (app: Application) {
     this.app = app

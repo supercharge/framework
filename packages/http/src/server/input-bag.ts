@@ -35,11 +35,6 @@ export class InputBag<T> implements InputBagContract<T> {
   /**
    * Returns the input value for the given `name`. Returns `undefined`
    * if the given `name` does not exist in the input bag.
-   *
-   * @param {Key} name
-   * @param {Value} defaultValue
-   *
-   * @returns {Value | Dict<T>[Key] |undefined}
    */
   get<Value = any, Key extends keyof Dict<T> = string> (name: Key): Value | Dict<T>[Key] | undefined
   get<Value = any, Key extends keyof Dict<T> = string> (name: Key, defaultValue: Value): Value | Dict<T>[Key]
@@ -50,11 +45,6 @@ export class InputBag<T> implements InputBagContract<T> {
   /**
    * Set an input for the given `name` and assign the `value`. This
    * overrides a possibly existing input with the same `name`.
-   *
-   * @param {String} name
-   * @param {*} value
-   *
-   * @returns {this}
    */
   set (name: string, value: any): this {
     return tap(this, () => {
@@ -64,10 +54,6 @@ export class InputBag<T> implements InputBagContract<T> {
 
   /**
    * Removes the input with the given `name`.
-   *
-   * @param {String} name
-   *
-   * @returns {this}
    */
   remove (name: string): this {
     return tap(this, () => {
@@ -79,10 +65,6 @@ export class InputBag<T> implements InputBagContract<T> {
 
   /**
    * Determine whether the HTTP header for the given `name` exists.
-   *
-   * @param {String} name
-   *
-   * @returns {Boolean}
    */
   has (name: keyof Dict<T>): boolean {
     return !!this.get(name)

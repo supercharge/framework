@@ -100,10 +100,6 @@ export class ScryptHasher implements HasherContract {
 
   /**
    * Hash the given `value`.
-   *
-   * @param value
-   *
-   * @returns {String}
    */
   async make (value: string): Promise<string> {
     const salt = await randomBytesAsync(this.config.saltSize)
@@ -210,10 +206,6 @@ export class ScryptHasher implements HasherContract {
 
   /**
    * Determine whether the given hash value has been hashed using the configured options.
-   *
-   * @param {String} hashedValue
-   *
-   * @returns {Boolean}
    */
   needsRehash (hashedValue: string): boolean {
     if (typeof hashedValue !== 'string') {

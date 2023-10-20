@@ -5,8 +5,6 @@ import { Application as BaseApplication } from '@supercharge/application'
 export class Application extends BaseApplication {
   /**
    * Create a new application instance.
-   *
-   * @param basePath - the application root path
    */
   constructor (basePath: string) {
     super(basePath)

@@ -26,11 +26,6 @@ export class Config implements ConfigStore {
    * Returns the requested config value for the given `key`. You may pass in
    * a default value as the second argument. The default value will be
    * returned if the config value for `key` is not existent.
-   *
-   * @param {String} key
-   * @param {String} defaultValue
-   *
-   * @returns {*}
    */
   get<T extends any = any> (key: string, defaultValue?: T): T {
     return _.get(this.config, key, defaultValue)
@@ -38,9 +33,6 @@ export class Config implements ConfigStore {
 
   /**
    * Set a value in the config store.
-   *
-   * @param {String} key
-   * @param {String} value
    */
   set (key: string, value: any): this {
     _.set(this.config, key, value)
@@ -50,10 +42,6 @@ export class Config implements ConfigStore {
 
   /**
    * Determine whether the config store contains an item for the given `key`.
-   *
-   * @param {String} key
-   *
-   * @returns {Boolean}
    */
   has (key: string): boolean {
     return _.has(this.all(), key)
@@ -61,10 +49,6 @@ export class Config implements ConfigStore {
 
   /**
    * Determine whether the config store is missing an item for the given `key`.
-   *
-   * @param {String} key
-   *
-   * @returns {Boolean}
    */
   isMissing (key: string): boolean {
     return !this.has(key)
@@ -72,9 +56,6 @@ export class Config implements ConfigStore {
 
   /**
    * Ensure the given config `key` in the application’s configuration.
-   *
-   * @param {String} key
-   * @param {Function} callback
    *
    * @example
    * ```

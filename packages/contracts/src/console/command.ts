@@ -14,9 +14,6 @@ export interface Command {
 
   /**
    * Handle the console command.
-   *
-   * @param {*} parameters
-   * @param {*} options
    */
   handle(...args: any[]): any
 }

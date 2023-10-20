@@ -15,8 +15,6 @@ export class View {
 
   /**
    * Create a new view manager instance.
-   *
-   * @param {Application} app
    */
   constructor (response: HttpResponse, view: ViewEngine) {
     this.response = response
@@ -25,12 +23,6 @@ export class View {
 
   /**
    * Render a view template as the response.
-   *
-   * @param {String} template
-   * @param {*} data
-   * @param {Function} callback
-   *
-   * @returns {String}
    */
   async render (template: string, dataOrViewBuilder?: ViewBuilderCallback | any): Promise<HttpResponse>
   async render (template: string, data?: any, viewBuilder?: ViewBuilderCallback): Promise<HttpResponse>
@@ -47,12 +39,6 @@ export class View {
 
   /**
     * Assigns the rendered HTML of the given `template` as the response payload.
-    *
-    * @param {String} template
-    * @param {*} data
-    * @param {Function} viewBuilder
-    *
-    * @returns {String}
     */
   private async renderView (template: string, data?: any, viewBuilder?: ViewBuilderCallback): Promise<string> {
     const viewData = { ...this.response.state().all(), ...data }

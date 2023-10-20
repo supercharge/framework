@@ -40,9 +40,6 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
 
   /**
    * Create a new response instance.
-   *
-   * @param ctx
-   * @param cookieOptions
    */
   constructor (ctx: HttpContext, cookieOptions: CookieOptions) {
     super(ctx.raw)
@@ -197,10 +194,6 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
 
   /**
    * Assign the given `payload` as the request body.
-   *
-   * @param {*} payload
-   *
-   * @returns {this}
    */
   setPayload (payload: any): this {
     return tap(this, () => {
@@ -217,10 +210,6 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
 
   /**
    * Store the given raw `payload` for this request.
-   *
-   * @param {*} payload
-   *
-   * @returns {this}
    */
   setRawPayload (payload: any): this {
     return tap(this, () => {
@@ -230,8 +219,6 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
 
   /**
    * Returns all files on the request.
-   *
-   * @returns {FileBag}
    */
   files (): FileBag {
     return FileBag.createFromBase(this.koaCtx.request.files)
@@ -239,10 +226,6 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
 
   /**
    * Assign the given `files` to the request.
-   *
-   * @param {Files} files
-   *
-   * @returns {this}
    */
   setFiles (files: Files): this {
     return tap(this, () => {
@@ -260,11 +243,6 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
   /**
    * Returns the request header identified by the given `key`. The default
    * value will be returned if no header is present for the given key.
-   *
-   * @param {String} key
-   * @param {String|String[]} defaultValue
-   *
-   * @returns {String}
    */
   header<Header extends keyof IncomingHttpHeaders> (key: Header): IncomingHttpHeaders[Header]
   header<T, Header extends keyof IncomingHttpHeaders> (key: Header, defaultValue: T): IncomingHttpHeaders[Header] | T
@@ -274,8 +252,6 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
 
   /**
    * Determine whether the request contains a header with the given `key`.
-   *
-   * @returns {Boolean}
    */
   hasHeader (key: string): boolean {
     return this.headers().has(key)
@@ -283,8 +259,6 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
 
   /**
    * Determine whether the request is sending JSON payload.
-   *
-   * @returns {Boolean}
    */
   isJson (): boolean {
     return Str(
@@ -294,8 +268,6 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
 
   /**
    * Determine whether the request is asking for a JSON response.
-   *
-   * @returns {Boolean}
    */
   wantsJson (): boolean {
     return Str(
@@ -305,8 +277,6 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
 
   /**
    * Determine whether the request is asking for an HTML response.
-   *
-   * @returns {Boolean}
    */
   wantsHtml (): boolean {
     return Str(
@@ -373,8 +343,6 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
    * Cacheable methods are `HEAD` and `GET`.
    *
    * @see https://tools.ietf.org/html/rfc7231#section-4.2.3
-   *
-   * @returns {Boolean}
    */
   isMethodCacheable (): boolean {
     return ['GET', 'HEAD'].includes(this.method().toUpperCase())
@@ -385,8 +353,6 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
    * Not cacheable methods are `POST`, `PUT`, `DELETE`, `PATCH`, and `OPTIONS`.
    *
    * @see https://tools.ietf.org/html/rfc7231#section-4.2.3
-   *
-   * @returns {Boolean}
    */
   isMethodNotCacheable (): boolean {
     return !this.isMethodCacheable()

@@ -24,7 +24,6 @@ import { TemplateDelegate } from 'handlebars'
  * Find more details in the Handlebars documentation:
  * https://handlebarsjs.com/block_helpers.html#raw-blocks
  *
- * @returns String - JSON
  */
 export default function raw (options: any): TemplateDelegate {
   return options.fn()

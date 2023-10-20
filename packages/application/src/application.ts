@@ -140,8 +140,6 @@ export class Application extends Container implements ApplicationContract {
 
   /**
    * Returns the application key.
-   *
-   * @throws
    */
   key (): string {
     if (this.config().has('app.key')) {

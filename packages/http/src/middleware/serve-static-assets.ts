@@ -11,8 +11,6 @@ export class ServeStaticAssetsMiddleware extends Middleware {
 
   /**
    * Create a new middleware instance.
-   *
-   * @param {Application} app
    */
   constructor (app: Application) {
     super(app)
@@ -24,8 +22,6 @@ export class ServeStaticAssetsMiddleware extends Middleware {
 
   /**
    * Returns the path to the asset files.
-   *
-   * @returns {Array}
    */
   assetsLocation (): string {
     return this.app.publicPath()
@@ -33,8 +29,6 @@ export class ServeStaticAssetsMiddleware extends Middleware {
 
   /**
    * Returns the options determining how to serve assets.
-   *
-   * @returns {StaticAssetsConfig}
    */
   config (): StaticAssetsConfig {
     return this.app.config().get<StaticAssetsConfig>('static')
@@ -42,9 +36,6 @@ export class ServeStaticAssetsMiddleware extends Middleware {
 
   /**
    * Handle the incoming request.
-   *
-   * @param ctx HttpContext
-   * @param next NextHandler
    */
   async handle (ctx: HttpContext, next: NextHandler): Promise<void> {
     return await this.handleAssets(ctx.raw, next)

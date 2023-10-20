@@ -4,8 +4,6 @@ import Handlebars, { SafeString } from 'handlebars'
 /**
  * Creates a JSON string from the content parameter.
  *
- * @returns {String} JSON
- *
  * @example
  * ```hbs
  * {{json user}}

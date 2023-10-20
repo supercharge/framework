@@ -2,8 +2,6 @@
 export interface Job {
   /**
    * Returns the job ID.
-   *
-   * @returns {String}
    */
   id (): string | number | undefined
 

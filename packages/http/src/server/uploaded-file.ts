@@ -61,8 +61,6 @@ export class UploadedFile implements UploadedFileContract {
 
   /**
    * Returns the JSON object of this file.
-   *
-   * @returns {Object}
    */
   toJSON (): { [key: string]: any } {
     return {

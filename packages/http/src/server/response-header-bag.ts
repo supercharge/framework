@@ -38,11 +38,6 @@ export class ResponseHeaderBag {
   /**
     * Returns the input value for the given `name`. Returns `undefined`
     * if the given `name` does not exist in the input bag.
-    *
-    * @param {String} name
-    * @param {String} defaultValue
-    *
-    * @returns {string | undefined}
     */
   get (name: string, defaultValue?: string): string | undefined {
     const header = this.ctx.response.get(name)
@@ -55,11 +50,6 @@ export class ResponseHeaderBag {
   /**
     * Set an input for the given `name` and assign the `value`. This
     * overrides a possibly existing input with the same `name`.
-    *
-    * @param {String} name
-    * @param {*} value
-    *
-    * @returns {this}
     */
   set (name: string, value: string | string[] | number): this {
     const stringValue = typeof value === 'number' ? String(value) : value
@@ -71,10 +61,6 @@ export class ResponseHeaderBag {
 
   /**
     * Removes the input with the given `name`.
-    *
-    * @param {String} name
-    *
-    * @returns {this}
     */
   remove (name: string): this {
     return tap(this, () => {
@@ -84,10 +70,6 @@ export class ResponseHeaderBag {
 
   /**
     * Determine whether the HTTP header for the given `name` exists.
-    *
-    * @param {String} name
-    *
-    * @returns {Boolean}
     */
   has (name: string): boolean {
     return !!this.get(name)

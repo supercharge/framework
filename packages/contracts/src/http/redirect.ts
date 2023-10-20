@@ -7,8 +7,6 @@ export interface HttpRedirect {
 
   /**
    * Redirect the request to the given URL `path`.
-   *
-   * @param url string
    */
   to(path: string): this
 

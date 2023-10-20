@@ -82,8 +82,6 @@ export class Session implements SessionContract {
 
   /**
    * Determine whether the given `id` is a valid session id.
-   *
-   * @returns {String}
    */
   protected isValidId (id?: string): id is string {
     return Str.isAlphaNumeric(id) && Str(id).hasLength(40)
@@ -91,8 +89,6 @@ export class Session implements SessionContract {
 
   /**
    * Returns a new, random alpha-numeric token.
-   *
-   * @returns {String}
    */
   protected generateRandomToken (): string {
     return Str.random(use => {
@@ -292,8 +288,6 @@ export class Session implements SessionContract {
 
   /**
    * Regenerate the CSRF token value.
-   *
-   * @returns {this}
    */
   regenerateToken (): this {
     this.set('__token__', this.generateRandomToken())

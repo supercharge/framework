@@ -5,9 +5,6 @@ import { HttpContext, NextHandler, ErrorHandler } from '@supercharge/contracts'
 export class HandleErrorMiddleware extends Middleware {
   /**
    * Handle the incoming request.
-   *
-   * @param {HttpContext} ctx
-   * @param {NextHandler} next
    */
   async handle (ctx: HttpContext, next: NextHandler): Promise<void> {
     try {
@@ -19,9 +16,6 @@ export class HandleErrorMiddleware extends Middleware {
 
   /**
    * Process the given `error` and HTTP `ctx` using the error handler.
-   *
-   * @param error
-   * @param ctx
    */
   private async handleError (ctx: HttpContext, error: Error): Promise<void> {
     if (this.app.hasBinding('error.handler')) {

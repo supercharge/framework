@@ -17,8 +17,6 @@ export class RequestCookieBuilder implements RequestCookieContract {
 
   /**
    * Retrieve the unsigned cookie value.
-   *
-   * @returns {this}
    */
   unsigned (): this {
     return tap(this, () => {

@@ -10,8 +10,6 @@ export class RouteGroup implements HttpRouteGroup {
 
   /**
    * Create a new route group instance.
-   *
-   * @param attributes RouteAttributes
    */
   constructor (attributes: RouteAttributes) {
     this.attributes = attributes
@@ -19,8 +17,6 @@ export class RouteGroup implements HttpRouteGroup {
 
   /**
    * Returns the route group prefix.
-   *
-   * @returns string
    */
   prefix (): string {
     return Str(this.attributes.prefix).ltrim('/').start('/').get()
@@ -28,8 +24,6 @@ export class RouteGroup implements HttpRouteGroup {
 
   /**
    * Returns the route group middleware stack.
-   *
-   * @returns string[]
    */
   middleware (): string[] {
     return this.attributes.middleware ?? []
