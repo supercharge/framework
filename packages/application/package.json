@@ -31,7 +31,7 @@
     "normalize-path": "~3.0.0"
   },
   "devDependencies": {
-    "@types/normalize-path": "~3.0.0",
+    "@types/normalize-path": "~3.0.1",
     "c8": "~8.0.1",
     "expect": "~29.7.0",
     "typescript": "~5.2.2",
