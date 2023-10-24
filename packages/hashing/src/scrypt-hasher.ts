@@ -2,6 +2,7 @@
 // @ts-expect-error "@phc/format" doesn’t provide type definitions
 import Phc from '@phc/format'
 import { promisify } from 'node:util'
+import { BaseHasher } from './base-hasher.js'
 import type { BinaryLike, ScryptOptions } from 'node:crypto'
 import { randomBytes, scrypt, timingSafeEqual } from 'node:crypto'
 import { ScryptValidationError } from './scrypt-validation-error.js'
@@ -31,7 +32,7 @@ const scryptDefaultConfig = Object.freeze({
   maxMemory: 32 * 1024 * 1024,
 })
 
-export class ScryptHasher implements HasherContract {
+export class ScryptHasher extends BaseHasher implements HasherContract {
   /**
    * Stores a list of IDs to find in a hash to know whether it belongs to this driver.
    */
@@ -56,6 +57,8 @@ export class ScryptHasher implements HasherContract {
    * Create a new instance.
    */
   constructor (config: HashConfig['scrypt'] = {}) {
+    super()
+
     this.config = { ...scryptDefaultConfig, ...config }
     this.validateConfig(this.config)
 

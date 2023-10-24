@@ -1,8 +1,9 @@
 
 import Bcrypt from 'bcrypt'
+import { BaseHasher } from './base-hasher.js'
 import { Hasher as HasherContract, HashConfig } from '@supercharge/contracts'
 
-export class BcryptHasher implements HasherContract {
+export class BcryptHasher extends BaseHasher implements HasherContract {
   /**
    * The cost factor.
    */
@@ -12,6 +13,8 @@ export class BcryptHasher implements HasherContract {
    * Create a new instance.
    */
   constructor ({ rounds }: HashConfig['bcrypt'] = {}) {
+    super()
+
     this.rounds = rounds ?? this.rounds
   }
 
