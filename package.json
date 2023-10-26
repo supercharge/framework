@@ -10,7 +10,7 @@
   "devDependencies": {
     "@supercharge/eslint-config-typescript": "~4.0.0",
     "@supercharge/tsconfig": "~7.0.0",
-    "@types/node": "~20.8.7",
+    "@types/node": "~20.8.9",
     "eslint": "~8.52.0",
     "lerna": "~7.4.1",
     "nx": "16.10.0"
