@@ -37,6 +37,60 @@ test('request.query() returns the querystring', async () => {
     .expect(200, { name: 'Supercharge', marcus: 'isCool' })
 })
 
+test('request.query().toQuerystring() returns the querystring', async () => {
+  const server = app
+    .make(Server)
+    .use(({ request, response }) => {
+      if (request.query().has('addFoo')) {
+        request.query().set('foo', 'bar')
+      }
+      return response.payload(
+        request.query().toQuerystring()
+      )
+    })
+
+  await Supertest(server.callback())
+    .get('/')
+    .expect(200, '')
+
+  await Supertest(server.callback())
+    .get('/?name=Supercharge&marcus=isCool')
+    .expect(200, 'name=Supercharge&marcus=isCool')
+
+  await Supertest(server.callback())
+    .get('/?addFoo=1&name=Supercharge')
+    .expect(200, 'addFoo=1&name=Supercharge&foo=bar')
+})
+
+test('request.query().toQuerystringDecoded()', async () => {
+  const server = app
+    .make(Server)
+    .use(({ request, response }) => {
+      if (request.query().has('addFoo')) {
+        request.query().set('foo', 'bar')
+      }
+      return response.payload(
+        request.query().toQuerystringDecoded()
+      )
+    })
+
+  await Supertest(server.callback())
+    .get('/')
+    .expect(200, '')
+
+  await Supertest(server.callback())
+    .get('/?name=Supercharge&marcus=isCool')
+    .expect(200, 'name=Supercharge&marcus=isCool')
+
+  await Supertest(server.callback())
+    .get('/?name=Supercharge&marcus[]=isCool&marcus[]=isQuery')
+    .expect(200, 'name=Supercharge&marcus[]=isCool,isQuery')
+
+  await Supertest(server.callback())
+    .get('/?addFoo=1&name=Supercharge')
+    .expect(200, 'addFoo=1&name=Supercharge&foo=bar')
+})
+
 test('request.all() returns merged query params, payload, and files', async () => {
   const server = app
     .make(Server)
@@ -651,6 +705,10 @@ test('querystring', async () => {
   await Supertest(server.callback())
     .get('/?name=Supercharge')
     .expect(200, { querystring: 'name=Supercharge' })
+
+  await Supertest(server.callback())
+    .get('/?name=Supercharge&foo=bar')
+    .expect(200, { querystring: 'name=Supercharge&foo=bar' })
 })
 
 test('fullUrl', async () => {

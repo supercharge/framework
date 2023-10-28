@@ -11,6 +11,7 @@ import { IncomingHttpHeaders, IncomingMessage } from 'node:http'
 import { InteractsWithState } from './concerns/interacts-with-state.js'
 import { RequestCookieBuilderCallback } from './cookie-options-builder.js'
 import { InteractsWithContentTypes } from './concerns/interacts-with-content-types.js'
+import { QueryParameterBag } from './query-parameter-bag.js'
 
 export interface HttpRequestCtor extends MacroableCtor {
   /**
@@ -66,7 +67,7 @@ export interface HttpRequest extends InteractsWithState, InteractsWithContentTyp
   /**
    * Returns the query parameter bag.
    */
-  query(): ParameterBag<string | string[]>
+  query(): QueryParameterBag<string | string[]>
 
   /**
    * Returns the plain query string, without the leading ?.

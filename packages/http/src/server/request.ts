@@ -10,6 +10,7 @@ import { CookieBag } from './cookie-bag.js'
 import { ParameterBag } from './parameter-bag.js'
 import { Macroable } from '@supercharge/macroable'
 import { RequestHeaderBag } from './request-header-bag.js'
+import { QueryParameterBag } from './query-parameter-bag.js'
 import { InteractsWithState } from './interacts-with-state.js'
 import { IncomingHttpHeaders, IncomingMessage } from 'node:http'
 import { CookieOptions, HttpContext, HttpMethods, HttpRequest, InteractsWithContentTypes, Protocol, RequestCookieBuilderCallback } from '@supercharge/contracts'
@@ -88,8 +89,8 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
   /**
    * Returns the request’s query parameters.
    */
-  query (): ParameterBag<string | string[]> {
-    return new ParameterBag<string | string[]>(this.koaCtx.query)
+  query (): QueryParameterBag<string | string[]> {
+    return new QueryParameterBag(this.koaCtx.query)
   }
 
   /**

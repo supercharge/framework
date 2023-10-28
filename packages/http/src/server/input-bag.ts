@@ -11,7 +11,7 @@ export class InputBag<T> implements InputBagContract<T> {
   /**
    * Create a new instance.
    */
-  constructor (attributes: Dict<T>) {
+  constructor (attributes: Dict<T> | undefined) {
     this.attributes = attributes ?? {}
   }
 
