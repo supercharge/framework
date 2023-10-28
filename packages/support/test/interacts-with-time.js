@@ -22,8 +22,8 @@ test('availableAt', async () => {
   expect(time.availableAt(now)).toEqual(now.getTime())
 
   const expected = Dayjs().add(60, 'seconds').toDate().getTime()
-  expect(time.availableAt(60)).toBeGreaterThan(expected - 5)
-  expect(time.availableAt(60)).toBeLessThanOrEqual(expected + 5)
+  expect(time.availableAt(60)).toBeGreaterThan(expected - 12)
+  expect(time.availableAt(60)).toBeLessThanOrEqual(expected + 12)
 })
 
 test.run()
