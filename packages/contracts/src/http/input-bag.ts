@@ -11,8 +11,8 @@ export interface InputBag<T> {
    * Returns the input value for the given `name`. This method returns
    * `undefined` if the input bag doesn’t contain the given `name`.
    */
-  get<Value = any, Header extends keyof Dict<T> = string> (name: Header): Value | Dict<T>[Header] | undefined
-  get<Value = any, Header extends keyof Dict<T> = string> (name: Header, defaultValue: Value): Value | Dict<T>[Header]
+  get<Value = any, Key extends keyof Dict<T> = string> (name: Key): Value | Dict<T>[Key] | undefined
+  get<Value = any, Key extends keyof Dict<T> = string> (name: Key, defaultValue: Value): Value | Dict<T>[Key]
 
   /**
    * Set an input for the given `name` and assign the `value`. This
