@@ -2,9 +2,9 @@
 import _ from 'lodash'
 import { tap } from '@supercharge/goodies'
 import { RouterContext } from '@koa/router'
-import { Dict, StateBag as StateBagContract, RequestStateData } from '@supercharge/contracts'
+import { Dict, StateBag as StateBagContract, HttpStateData } from '@supercharge/contracts'
 
-export class StateBag implements StateBagContract {
+export class StateBag implements StateBagContract<HttpStateData> {
   /**
    * Stores the request context object.
    */
@@ -27,7 +27,8 @@ export class StateBag implements StateBagContract {
   /**
    * Returns the state object.
    */
-  all<K extends keyof RequestStateData> (...keys: K[]): Pick<RequestStateData, K>
+  all<Data = HttpStateData> (): Data
+  all<K extends keyof HttpStateData> (...keys: K[]): Pick<HttpStateData, K>
   all<R = Record<string, any>> (...keys: string[]): R
   all (...keys: string[]): Dict<any> {
     if (keys.length === 0) {
@@ -46,7 +47,7 @@ export class StateBag implements StateBagContract {
   /**
    * Returns the saved state for the given `name`.
    */
-  get<K extends keyof RequestStateData> (name: K): RequestStateData[K]
+  get<K extends keyof HttpStateData> (name: K): HttpStateData[K]
   get<R = any> (name: string, defaultValue?: R): R
   get<R = any> (name: string, defaultValue?: R): R {
     const value = _.get(this.ctx.state, name)
@@ -59,11 +60,11 @@ export class StateBag implements StateBagContract {
   /**
    * Add a key-value-pair to the shared state or an object of key-value-pairs.
    */
-  add<K extends keyof RequestStateData> (name: K, value: RequestStateData[K]): this
+  add<K extends keyof HttpStateData> (name: K, value: HttpStateData[K]): this
   add (name: string, value: any): this
-  add (values: RequestStateData): this
-  add<K extends keyof RequestStateData> (name: K | string | Record<string, any>, value?: any): this
-  add<K extends keyof RequestStateData> (name: K | string | Record<string, any>, value?: any): this {
+  add (values: Partial<HttpStateData>): this
+  add<K extends keyof HttpStateData> (name: K | string | Partial<HttpStateData>, value?: any): this
+  add<K extends keyof HttpStateData> (name: K | string | Partial<HttpStateData>, value?: any): this {
     if (typeof name === 'string') {
       _.set(this.ctx.state, name, value)
 
@@ -93,9 +94,9 @@ export class StateBag implements StateBagContract {
   /**
    * Remove the shared state item for the given `name`.
    */
-  remove<K extends keyof RequestStateData> (name: K): this
+  remove<K extends keyof HttpStateData> (name: K): this
   remove (name: string): this
-  remove<K extends keyof RequestStateData> (name: K): this {
+  remove<K extends keyof HttpStateData> (name: K): this {
     return tap(this, () => {
       _.unset(this.ctx.state, name)
     })
@@ -111,21 +112,30 @@ export class StateBag implements StateBagContract {
   }
 
   /**
+   * Determine whether the state bag contains an item for the given `key`.
+   */
+  exists<K extends keyof HttpStateData> (key: K): K extends undefined ? false : true
+  exists (key: string): boolean
+  exists<K extends keyof HttpStateData> (key: K | string): boolean {
+    return _.has(this.ctx.state, key)
+  }
+
+  /**
    * Determine whether a shared state item exists for the given `name`.
    */
-  has<K extends keyof RequestStateData> (name: K): boolean
+  has<K extends keyof HttpStateData> (name: K): HttpStateData[K] extends undefined ? false : true
   has (name: string): boolean
-  has<K extends keyof RequestStateData> (name: K | string): boolean {
-    return _.has(this.ctx.state, name)
+  has<K extends keyof HttpStateData> (name: K | string): boolean {
+    return this.get(name as any) !== undefined
   }
 
   /**
    * Determine whether the shared state is missing an item for the given `name`.
    */
-  isMissing<K extends keyof RequestStateData> (name: K): boolean
+  isMissing<K extends keyof HttpStateData> (name: K): HttpStateData[K] extends undefined ? true : false
   isMissing (name: string): boolean
-  isMissing<K extends keyof RequestStateData> (name: K | string): boolean {
-    return !this.has(name)
+  isMissing<K extends keyof HttpStateData> (name: K | string): boolean {
+    return !this.has(name as any)
   }
 
   /**

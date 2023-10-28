@@ -7,6 +7,15 @@ import { MemorySessionDriver } from './drivers/memory.js'
 import { CookieSessionDriver } from './drivers/cookie.js'
 import { Application, HttpContext, SessionDriver } from '@supercharge/contracts'
 
+/**
+ * Add HTTP state bindings for the session.
+ */
+declare module '@supercharge/contracts' {
+  export interface HttpStateData {
+    'session': Session | undefined
+  }
+}
+
 export class SessionManager extends Manager<Application> {
   /**
    * Stores the HTTP request instance. The cookie driver needs the request
@@ -49,8 +58,10 @@ export class SessionManager extends Manager<Application> {
    * Returns a new session instance for the given `request`.
    */
   createFrom (ctx: HttpContext): Session {
-    if (ctx.state().has('session')) {
-      return ctx.state().get('session') as Session
+    const existingSession = ctx.state().get('session')
+
+    if (existingSession) {
+      return existingSession
     }
 
     this.ctx = ctx

@@ -33,7 +33,7 @@ export { RequestCookieBuilder, RequestCookieBuilderCallback, ResponseCookieBuild
 export { CorsConfig, CorsOptions } from './http/cors-config.js'
 export { InteractsWithContentTypes } from './http/concerns/interacts-with-content-types.js'
 export { InteractsWithState } from './http/concerns/interacts-with-state.js'
-export { StateBag, RequestStateData } from './http/concerns/state-bag.js'
+export { StateBag, HttpStateData } from './http/concerns/state-bag.js'
 export { FileBag } from './http/file-bag.js'
 export { InputBag } from './http/input-bag.js'
 export { ParameterBag } from './http/parameter-bag.js'

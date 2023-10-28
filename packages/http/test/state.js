@@ -77,26 +77,39 @@ test('merge', () => {
     .toThrow('Invalid argument when merging state via "state().merge()". Expected an object. Received "string".')
 })
 
+test('exists', () => {
+  expect(new StateBag({ state: {} }).exists()).toBe(false)
+  expect(new StateBag({ state: {} }).exists('test')).toBe(false)
+  expect(new StateBag({ state: { a: 'b' } }).exists('c')).toBe(false)
+
+  expect(new StateBag({ state: { a: '' } }).exists('a')).toBe(true)
+  expect(new StateBag({ state: { a: 'b' } }).exists('a')).toBe(true)
+  expect(new StateBag({ state: { a: null } }).exists('a')).toBe(true)
+  expect(new StateBag({ state: { a: false } }).exists('a')).toBe(true)
+  expect(new StateBag({ state: { a: undefined } }).exists('a')).toBe(true)
+  expect(new StateBag({ state: { a: { b: { u: undefined } } } }).exists('a.b.u')).toBe(true)
+})
+
 test('has', () => {
   expect(new StateBag({ state: {} }).has()).toBe(false)
   expect(new StateBag({ state: {} }).has('test')).toBe(false)
   expect(new StateBag({ state: { a: 'b' } }).has('c')).toBe(false)
+  expect(new StateBag({ state: { a: undefined } }).has('a')).toBe(false)
 
   expect(new StateBag({ state: { a: '' } }).has('a')).toBe(true)
   expect(new StateBag({ state: { a: 'b' } }).has('a')).toBe(true)
   expect(new StateBag({ state: { a: null } }).has('a')).toBe(true)
   expect(new StateBag({ state: { a: false } }).has('a')).toBe(true)
-  expect(new StateBag({ state: { a: undefined } }).has('a')).toBe(true)
 })
 
 test('has: works with nested fields', () => {
   expect(new StateBag({ state: { a: { b: { c: true } } } }).has('a')).toBe(true)
   expect(new StateBag({ state: { a: { b: { c: true } } } }).has('a.b')).toBe(true)
+  expect(new StateBag({ state: { a: { b: { u: undefined } } } }).has('a.b.u')).toBe(false)
 
   expect(new StateBag({ state: { a: { b: { e: '' } } } }).has('a.b.e')).toBe(true)
   expect(new StateBag({ state: { a: { b: { n: null } } } }).has('a.b.n')).toBe(true)
   expect(new StateBag({ state: { a: { b: { f: false } } } }).has('a.b.f')).toBe(true)
-  expect(new StateBag({ state: { a: { b: { u: undefined } } } }).has('a.b.u')).toBe(true)
 
   expect(new StateBag({ state: { a: { b: { c: true } } } }).has('a.c')).toBe(false)
   expect(new StateBag({ state: { a: { b: { c: true } } } }).has('a.b.d')).toBe(false)
@@ -106,22 +119,22 @@ test('isMissing', () => {
   expect(new StateBag({ state: {} }).isMissing()).toBe(true)
   expect(new StateBag({ state: {} }).isMissing('test')).toBe(true)
   expect(new StateBag({ state: { a: 'b' } }).isMissing('c')).toBe(true)
+  expect(new StateBag({ state: { a: undefined } }).isMissing('a')).toBe(true)
 
   expect(new StateBag({ state: { a: '' } }).isMissing('a')).toBe(false)
   expect(new StateBag({ state: { a: 'b' } }).isMissing('a')).toBe(false)
   expect(new StateBag({ state: { a: null } }).isMissing('a')).toBe(false)
   expect(new StateBag({ state: { a: false } }).isMissing('a')).toBe(false)
-  expect(new StateBag({ state: { a: undefined } }).isMissing('a')).toBe(false)
 })
 
 test('isMissing: works with nested fields', () => {
   expect(new StateBag({ state: { a: { b: { c: true } } } }).isMissing('a')).toBe(false)
   expect(new StateBag({ state: { a: { b: { c: true } } } }).isMissing('a.b')).toBe(false)
+  expect(new StateBag({ state: { a: { b: { u: undefined } } } }).isMissing('a.b.u')).toBe(true)
 
   expect(new StateBag({ state: { a: { b: { e: '' } } } }).isMissing('a.b.e')).toBe(false)
   expect(new StateBag({ state: { a: { b: { n: null } } } }).isMissing('a.b.n')).toBe(false)
   expect(new StateBag({ state: { a: { b: { f: false } } } }).isMissing('a.b.f')).toBe(false)
-  expect(new StateBag({ state: { a: { b: { u: undefined } } } }).isMissing('a.b.u')).toBe(false)
 
   expect(new StateBag({ state: { a: { b: { c: true } } } }).isMissing('a.c')).toBe(true)
   expect(new StateBag({ state: { a: { b: { c: true } } } }).isMissing('a.b.d')).toBe(true)

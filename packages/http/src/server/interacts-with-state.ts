@@ -2,7 +2,7 @@
 import { StateBag } from './state-bag.js'
 import { tap } from '@supercharge/goodies'
 import { RouterContext } from '@koa/router'
-import { InteractsWithState as InteractsWithStateContract, RequestStateData } from '@supercharge/contracts'
+import { InteractsWithState as InteractsWithStateContract, HttpStateData } from '@supercharge/contracts'
 
 export class InteractsWithState implements InteractsWithStateContract {
   /**
@@ -28,10 +28,10 @@ export class InteractsWithState implements InteractsWithStateContract {
    * Share a given `state` across HTTP requests. Any previously
    * set state will be merged with the given `state`.
    */
-  share<K extends keyof RequestStateData> (key: K, value: RequestStateData[K]): this
+  share<K extends keyof HttpStateData> (key: K, value: HttpStateData[K]): this
   share (key: string, value: any): this
-  share (values: RequestStateData): this
-  share<K extends keyof RequestStateData> (key: K | string | RequestStateData, value?: any): this {
+  share (values: Partial<HttpStateData>): this
+  share<K extends keyof HttpStateData> (key: K | string | HttpStateData, value?: any): this {
     return tap(this, () => {
       this.state().add(key, value)
     })
