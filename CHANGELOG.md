@@ -13,7 +13,10 @@
 - `@supercharge/contracts`
     - removed export `RequestStateData`, use `HttpStateData` instead
     - `StateBag`: the `has(key)` method now determines whether the value for a given `key` is not `undefined`. If you want to check whether a given `key` is present in the state bag, independently from the value, use the newly added `exists(key)` method
-    - `StateBag`: the `isMissing(key)` method now determines whether a value for a given `key` is `undefined` (related to `has(key)`, because `isMissing` is doing the opposite of `has`)
+    - `StateBag`:
+        - the `isMissing(key)` method now determines whether a value for a given `key` is `undefined` (related to `has(key)`, because `isMissing` is doing the opposite of `has`)
+        - rename the `add(key, value)` method to `set(key, value)`
+        - remove the `add(key, value)` method
 
 
 ## [3.20.4](https://github.com/supercharge/framework/compare/v3.20.3...v3.20.4) - 2023-10-15
