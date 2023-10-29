@@ -1,9 +1,9 @@
 'use strict'
 
-import { ParameterBag } from './parameter-bag.js'
+import { InputBag } from './input-bag.js'
 import { QueryParameterBag as QueryParameterBagContract } from '@supercharge/contracts'
 
-export class QueryParameterBag<T> extends ParameterBag<T> implements QueryParameterBagContract<T> {
+export class QueryParameterBag<Properties> extends InputBag<Properties> implements QueryParameterBagContract<Properties> {
   /**
    * Returns the query string created from all items in this query parameter bag,
    * without the leading question mark `?`.

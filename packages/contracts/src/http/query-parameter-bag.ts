@@ -1,7 +1,7 @@
 
-import { ParameterBag } from '../index.js'
+import { InputBag } from './input-bag.js'
 
-export interface QueryParameterBag<T> extends ParameterBag<T> {
+export interface QueryParameterBag<Properties> extends InputBag<Properties> {
   /**
    * Returns the querystring created from all items in this query parameter bag,
    * without the leading question mark `?`.

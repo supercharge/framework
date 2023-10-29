@@ -1,17 +1,17 @@
 
 import { FileBag } from './file-bag.js'
+import { InputBag } from './input-bag.js'
 import { HttpMethods } from './methods.js'
 import { HttpContext } from './context.js'
 import { CookieBag } from './cookie-bag.js'
-import { ParameterBag } from './parameter-bag.js'
 import { CookieOptions } from './cookie-options.js'
 import { MacroableCtor } from '@supercharge/macroable'
 import { RequestHeaderBag } from './request-header-bag.js'
+import { QueryParameterBag } from './query-parameter-bag.js'
 import { IncomingHttpHeaders, IncomingMessage } from 'node:http'
 import { InteractsWithState } from './concerns/interacts-with-state.js'
 import { RequestCookieBuilderCallback } from './cookie-options-builder.js'
 import { InteractsWithContentTypes } from './concerns/interacts-with-content-types.js'
-import { QueryParameterBag } from './query-parameter-bag.js'
 
 export interface HttpRequestCtor extends MacroableCtor {
   /**
@@ -67,7 +67,7 @@ export interface HttpRequest extends InteractsWithState, InteractsWithContentTyp
   /**
    * Returns the query parameter bag.
    */
-  query(): QueryParameterBag<string | string[]>
+  query<QueryParams extends Record<string, string | string[]> = {}>(): QueryParameterBag<QueryParams>
 
   /**
    * Returns the plain query string, without the leading ?.
@@ -77,7 +77,7 @@ export interface HttpRequest extends InteractsWithState, InteractsWithContentTyp
   /**
    * Returns the path parameter bag.
    */
-  params(): ParameterBag<string>
+  params<PathParams extends Record<string, string> = {}> (): InputBag<PathParams>
 
   /**
    * Returns the path parameter for the given `name`. Returns the

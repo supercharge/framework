@@ -24,7 +24,7 @@ export {
   FileBag,
   HttpContext,
   HttpRedirect,
-  ParameterBag,
+  InputBag,
   Request,
   RequestHeaderBag,
   Response,
