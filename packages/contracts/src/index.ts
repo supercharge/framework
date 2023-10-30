@@ -20,7 +20,9 @@ export { EnvStore } from './env/env.js'
 export { Bootstrapper, BootstrapperCtor } from './core/bootstrapper.js'
 export { ErrorHandler, ErrorHandlerCtor } from './core/error-handler.js'
 
+export { HashBuilder, HashBuilderCallback, HashBuilderOptions } from './hashing/hash-builder.js'
 export { HashConfig } from './hashing/config.js'
+export { BaseHasher } from './hashing/base-hasher.js'
 export { Hasher } from './hashing/hasher.js'
 
 export { BodyparserConfig, BodyparserOptions } from './http/bodyparser-config.js'

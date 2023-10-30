@@ -1,7 +1,9 @@
 
+import { HashBuilder } from './hash-builder.js'
 import Crypto, { BinaryLike, Encoding, Hash } from 'node:crypto'
+import { BaseHasher as BaseHasherContract, HashBuilderCallback, HashBuilderOptions } from '@supercharge/contracts'
 
-export class BaseHasher {
+export class BaseHasher implements BaseHasherContract {
   /**
    * Creates and returns a Node.js `Hash` instance for the given `algorithm`
    * and the related `input` with (optional) `inputEncoding`. When `input`
@@ -16,27 +18,55 @@ export class BaseHasher {
   /**
    * Returns an MD5 hash instance for the given `content`.
    */
-  md5 (input: BinaryLike): Hash
+  md5 (input: BinaryLike): string
+  md5 (input: BinaryLike, hashBuilder: HashBuilderCallback): string
   md5 (input: string, inputEncoding: Encoding): Hash
-  md5 (input: string | BinaryLike, inputEncoding?: Encoding): Hash {
-    return this.createHash('md5', input, inputEncoding)
+  md5 (input: string | BinaryLike, inputEncodingOrHashBuilder?: Encoding | HashBuilderCallback): Hash | string {
+    return this.hash('md5', input, inputEncodingOrHashBuilder)
   }
 
   /**
    * Returns a SHA256 hash instance using SHA-2 for the given `content`.
    */
-  sha256 (input: BinaryLike): Hash
+  sha256 (input: BinaryLike): string
+  sha256 (input: BinaryLike, hashBuilder: HashBuilderCallback): string
   sha256 (input: string, inputEncoding: Encoding): Hash
-  sha256 (input: string | BinaryLike, inputEncoding?: Encoding): Hash {
-    return this.createHash('sha256', input, inputEncoding)
+  sha256 (input: string | BinaryLike, inputEncodingOrHashBuilder?: Encoding | HashBuilderCallback): Hash | string {
+    return this.hash('sha256', input, inputEncodingOrHashBuilder)
   }
 
   /**
    * Returns a SHA512 hash instance using SHA-2 for the given `content`.
    */
-  sha512 (input: BinaryLike): Hash
+  sha512 (input: BinaryLike): string
+  sha512 (input: BinaryLike, hashBuilder: HashBuilderCallback): string
   sha512 (input: string, inputEncoding: Encoding): Hash
-  sha512 (input: string | BinaryLike, inputEncoding?: Encoding): Hash {
-    return this.createHash('sha512', input, inputEncoding)
+  sha512 (input: string | BinaryLike, inputEncodingOrHashBuilder?: Encoding | HashBuilderCallback): Hash | string {
+    return this.hash('sha512', input, inputEncodingOrHashBuilder)
+  }
+
+  /**
+   * Returns the hashed string value or the `Hash` instance, depending on the
+   * user input. This function resolves a hash builder callback and creates
+   * the hash value for the provided algorithm and i/o encoding options.
+   */
+  private hash (algorithm: string, input: string | BinaryLike, inputEncodingOrHashBuilder?: Encoding | HashBuilderCallback): Hash | string {
+    if (typeof inputEncodingOrHashBuilder === 'string') {
+      return this.createHash(algorithm, input, inputEncodingOrHashBuilder)
+    }
+
+    if (typeof inputEncodingOrHashBuilder === 'function') {
+      const hashBuilderOptions: HashBuilderOptions = { outputEncoding: 'base64' }
+      const builder = new HashBuilder(hashBuilderOptions)
+      inputEncodingOrHashBuilder(builder)
+
+      return this
+        .createHash(algorithm, input, hashBuilderOptions.inputEncoding)
+        .digest(hashBuilderOptions.outputEncoding)
+    }
+
+    return this
+      .createHash(algorithm, input, inputEncodingOrHashBuilder)
+      .digest('base64')
   }
 }
