@@ -3,6 +3,7 @@ import { test } from 'uvu'
 import { expect } from 'expect'
 import { setupApp } from './helpers/index.js'
 import { HashManager } from '../dist/index.js'
+import { Hash } from 'node:crypto'
 
 test('make hash', async () => {
   const app = await setupApp()
@@ -63,6 +64,34 @@ test('create scrypt hasher', async () => {
   const value = await hash.make('Supercharge')
   expect(await hash.check('Supercharge', value)).toBe(true)
   expect(await hash.check('Other-Supercharge', value)).toBe(false)
+})
+
+test('createHash', async () => {
+  const app = await setupApp({ driver: 'scrypt' })
+  const hash = new HashManager(app)
+
+  expect(hash.createHash('sha512', 'supercharge') instanceof Hash).toBe(true)
+})
+
+test('md5', async () => {
+  const app = await setupApp({ driver: 'scrypt' })
+  const hash = new HashManager(app)
+
+  expect(typeof hash.md5('supercharge') === 'string').toBe(true)
+})
+
+test('sha256', async () => {
+  const app = await setupApp({ driver: 'scrypt' })
+  const hash = new HashManager(app)
+
+  expect(typeof hash.sha256('supercharge') === 'string').toBe(true)
+})
+
+test('sha512', async () => {
+  const app = await setupApp({ driver: 'scrypt' })
+  const hash = new HashManager(app)
+
+  expect(typeof hash.sha512('supercharge') === 'string').toBe(true)
 })
 
 test.run()

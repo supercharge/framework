@@ -1,7 +1,7 @@
 
 import type { BinaryLike, Encoding, Hash } from 'node:crypto'
 import { Manager } from '@supercharge/manager'
-import { Application, Hasher, HashConfig } from '@supercharge/contracts'
+import { Application, Hasher, HashConfig, HashBuilderCallback } from '@supercharge/contracts'
 
 export class HashManager extends Manager<Application> implements Hasher {
   /**
@@ -81,27 +81,33 @@ export class HashManager extends Manager<Application> implements Hasher {
   /**
    * Returns an MD5 hash instance for the given `content`.
    */
-  md5 (input: BinaryLike): Hash
+  md5 (input: BinaryLike): string
+  md5 (input: BinaryLike, hashBuilder: HashBuilderCallback): string
   md5 (input: string, inputEncoding: Encoding): Hash
-  md5 (input: string | BinaryLike, inputEncoding?: Encoding): Hash {
-    return this.driver().md5(input, inputEncoding)
+  md5 (input: string | BinaryLike, inputEncodingOrHashBuilder?: Encoding | HashBuilderCallback): Hash | string {
+    // @ts-expect-error TODO
+    return this.driver().md5(input, inputEncodingOrHashBuilder)
   }
 
   /**
    * Returns a SHA256 hash instance using SHA-2 for the given `content`.
    */
-  sha256 (input: BinaryLike): Hash
+  sha256 (input: BinaryLike): string
+  sha256 (input: BinaryLike, hashBuilder: HashBuilderCallback): string
   sha256 (input: string, inputEncoding: Encoding): Hash
-  sha256 (input: string | BinaryLike, inputEncoding?: Encoding): Hash {
-    return this.driver().sha256(input, inputEncoding)
+  sha256 (input: string | BinaryLike, inputEncodingOrHashBuilder?: Encoding | HashBuilderCallback): Hash | string {
+    // @ts-expect-error TODO
+    return this.driver().sha256(input, inputEncodingOrHashBuilder)
   }
 
   /**
    * Returns a SHA512 hash instance using SHA-2 for the given `content`.
    */
-  sha512 (input: BinaryLike): Hash
+  sha512 (input: BinaryLike): string
+  sha512 (input: BinaryLike, hashBuilder: HashBuilderCallback): string
   sha512 (input: string, inputEncoding: Encoding): Hash
-  sha512 (input: string | BinaryLike, inputEncoding?: Encoding): Hash {
-    return this.driver().sha512(input, inputEncoding)
+  sha512 (input: string | BinaryLike, inputEncodingOrHashBuilder?: Encoding | HashBuilderCallback): Hash | string {
+    // @ts-expect-error TODO
+    return this.driver().sha512(input, inputEncodingOrHashBuilder)
   }
 }
