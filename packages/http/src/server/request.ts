@@ -3,11 +3,12 @@ import * as Koa from 'koa'
 import { Files } from 'formidable'
 import { FileBag } from './file-bag.js'
 import { Mixin as Many } from 'ts-mixer'
+import { InputBag } from './input-bag.js'
 import { Arr } from '@supercharge/arrays'
 import { Str } from '@supercharge/strings'
 import { tap } from '@supercharge/goodies'
 import { CookieBag } from './cookie-bag.js'
-import { ParameterBag } from './parameter-bag.js'
+import { ParsedUrlQuery } from 'node:querystring'
 import { Macroable } from '@supercharge/macroable'
 import { RequestHeaderBag } from './request-header-bag.js'
 import { QueryParameterBag } from './query-parameter-bag.js'
@@ -89,8 +90,8 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
   /**
    * Returns the request’s query parameters.
    */
-  query (): QueryParameterBag<string | string[]> {
-    return new QueryParameterBag(this.koaCtx.query)
+  query<QueryParams = ParsedUrlQuery> (): QueryParameterBag<QueryParams> {
+    return new QueryParameterBag<QueryParams>(this.koaCtx.query as QueryParams)
   }
 
   /**
@@ -103,18 +104,14 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
   /**
    * Returns the request’s path parameters.
    */
-  params (): ParameterBag<string> {
+  params<PathParams extends Record<string, string> = {}> (): InputBag<PathParams> {
     if (!this.koaCtx.params) {
       this.koaCtx.params = {}
     }
 
-    return new ParameterBag(this.koaCtx.params)
+    return new InputBag<PathParams>(this.koaCtx.params as PathParams)
   }
 
-  /**
-   * Returns the path parameter for the given `name`. Returns the
-   * `defaultValue` if a parameter for the name doesn’t exist.
-   */
   param (name: string): string | undefined
   param (name: string, defaultValue: string): string
   param (name: string, defaultValue?: string): string | undefined {
