@@ -16,7 +16,7 @@ import { RequestHeaderBag } from './request-header-bag.js'
 import { QueryParameterBag } from './query-parameter-bag.js'
 import { InteractsWithState } from './interacts-with-state.js'
 import {
-  CookieOptions,
+  CookieConfig,
   InteractsWithContentTypes,
   HttpContext,
   HttpMethods,
@@ -48,16 +48,16 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
   /**
    * The default cookie options.
    */
-  private readonly cookieOptions: CookieOptions
+  private readonly cookieConfig: CookieConfig
 
   /**
    * Create a new response instance.
    */
-  constructor (ctx: HttpContext, cookieOptions: CookieOptions) {
+  constructor (ctx: HttpContext, cookieConfig: CookieConfig) {
     super(ctx.raw)
 
     this.meta = { ctx }
-    this.cookieOptions = cookieOptions
+    this.cookieConfig = cookieConfig
   }
 
   /**
@@ -132,7 +132,7 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
    * Returns the cookie bag.
    */
   cookies (): CookieBag {
-    return new CookieBag(this.koaCtx.cookies, this.cookieOptions)
+    return new CookieBag(this.koaCtx.cookies, this.cookieConfig)
   }
 
   /**

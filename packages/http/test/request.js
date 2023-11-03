@@ -454,14 +454,14 @@ test('request.cookies().has(cookieName) works without request cookies', async ()
 
 test('creating a cookie uses default options', async () => {
   const cookieTTL = 123
-  const cookieOptions = {
+  const cookieConfig = {
     maxAge: cookieTTL,
     path: '/path',
     sameSite: 'lax',
     signed: false
   }
 
-  const server = setupApp({ http: { cookie: cookieOptions } })
+  const server = setupApp({ http: { cookie: cookieConfig } })
     .make(Server)
     .use(({ response }) => {
       return response.payload('ok').cookie('foo', 'bar')

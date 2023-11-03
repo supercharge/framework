@@ -1,7 +1,7 @@
 
 import { HashBuilder } from './hash-builder.js'
 import Crypto, { BinaryLike, Encoding, Hash } from 'node:crypto'
-import { BaseHasher as BaseHasherContract, HashBuilderCallback, HashBuilderOptions } from '@supercharge/contracts'
+import { BaseHasher as BaseHasherContract, HashBuilderCallback, HashBuilderConfig } from '@supercharge/contracts'
 
 export class BaseHasher implements BaseHasherContract {
   /**
@@ -56,13 +56,13 @@ export class BaseHasher implements BaseHasherContract {
     }
 
     if (typeof inputEncodingOrHashBuilder === 'function') {
-      const hashBuilderOptions: HashBuilderOptions = { outputEncoding: 'base64' }
-      const builder = new HashBuilder(hashBuilderOptions)
+      const hashBuilderConfig: HashBuilderConfig = { outputEncoding: 'base64' }
+      const builder = new HashBuilder(hashBuilderConfig)
       inputEncodingOrHashBuilder(builder)
 
       return this
-        .createHash(algorithm, input, hashBuilderOptions.inputEncoding)
-        .digest(hashBuilderOptions.outputEncoding)
+        .createHash(algorithm, input, hashBuilderConfig.inputEncoding)
+        .digest(hashBuilderConfig.outputEncoding)
     }
 
     return this

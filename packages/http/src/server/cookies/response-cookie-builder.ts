@@ -1,7 +1,7 @@
 
 import ms from 'ms'
 import { tap } from '@supercharge/goodies'
-import { CookieOptions, ResponseCookieBuilder as ResponseCookieBuilderContract } from '@supercharge/contracts'
+import { CookieConfig, ResponseCookieBuilder as ResponseCookieBuilderContract } from '@supercharge/contracts'
 
 type Units =
   | 'Years'
@@ -39,13 +39,13 @@ export class ResponseCookieBuilder implements ResponseCookieBuilderContract {
   /**
    * Stores the cookies options used to set a cookie value on the response.
    */
-  private readonly responseCookieOptions: CookieOptions
+  private readonly responseCookieConfig: CookieConfig
 
   /**
    * Create a new instance.
    */
-  constructor (options: CookieOptions) {
-    this.responseCookieOptions = options
+  constructor (options: CookieConfig) {
+    this.responseCookieConfig = options
   }
 
   /**
@@ -53,9 +53,9 @@ export class ResponseCookieBuilder implements ResponseCookieBuilderContract {
    */
   expiresIn (time: StringTime | number): this {
     if (typeof time === 'string') {
-      this.responseCookieOptions.maxAge = ms(time)
+      this.responseCookieConfig.maxAge = ms(time)
     } else if (typeof time === 'number') {
-      this.responseCookieOptions.maxAge = time
+      this.responseCookieConfig.maxAge = time
     } else {
       throw new Error(`Strings and numbers are supported arguments in method "expiresIn".Received ${typeof time}`)
     }
@@ -72,7 +72,7 @@ export class ResponseCookieBuilder implements ResponseCookieBuilderContract {
     }
 
     return tap(this, () => {
-      this.responseCookieOptions.expires = date
+      this.responseCookieConfig.expires = date
     })
   }
 
@@ -81,7 +81,7 @@ export class ResponseCookieBuilder implements ResponseCookieBuilderContract {
    */
   path (path: string): this {
     return tap(this, () => {
-      this.responseCookieOptions.path = path
+      this.responseCookieConfig.path = path
     })
   }
 
@@ -90,7 +90,7 @@ export class ResponseCookieBuilder implements ResponseCookieBuilderContract {
    */
   domain (domain: string): this {
     return tap(this, () => {
-      this.responseCookieOptions.domain = domain
+      this.responseCookieConfig.domain = domain
     })
   }
 
@@ -99,7 +99,7 @@ export class ResponseCookieBuilder implements ResponseCookieBuilderContract {
    */
   secure (): this {
     return tap(this, () => {
-      this.responseCookieOptions.secure = true
+      this.responseCookieConfig.secure = true
     })
   }
 
@@ -108,7 +108,7 @@ export class ResponseCookieBuilder implements ResponseCookieBuilderContract {
    */
   unsecured (): this {
     return tap(this, () => {
-      this.responseCookieOptions.secure = false
+      this.responseCookieConfig.secure = false
     })
   }
 
@@ -118,7 +118,7 @@ export class ResponseCookieBuilder implements ResponseCookieBuilderContract {
     */
   httpOnly (httpOnly?: boolean): this {
     return tap(this, () => {
-      this.responseCookieOptions.httpOnly = httpOnly ?? true
+      this.responseCookieConfig.httpOnly = httpOnly ?? true
     })
   }
 
@@ -127,7 +127,7 @@ export class ResponseCookieBuilder implements ResponseCookieBuilderContract {
    */
   sameSite (attribute: 'strict' | 'lax' | 'none' | true): this {
     return tap(this, () => {
-      this.responseCookieOptions.sameSite = attribute
+      this.responseCookieConfig.sameSite = attribute
     })
   }
 
@@ -136,7 +136,7 @@ export class ResponseCookieBuilder implements ResponseCookieBuilderContract {
    */
   signed (): this {
     return tap(this, () => {
-      this.responseCookieOptions.signed = true
+      this.responseCookieConfig.signed = true
     })
   }
 
@@ -145,7 +145,7 @@ export class ResponseCookieBuilder implements ResponseCookieBuilderContract {
    */
   unsigned (): this {
     return tap(this, () => {
-      this.responseCookieOptions.signed = false
+      this.responseCookieConfig.signed = false
     })
   }
 
@@ -154,16 +154,16 @@ export class ResponseCookieBuilder implements ResponseCookieBuilderContract {
    */
   overwrite (): this {
     return tap(this, () => {
-      this.responseCookieOptions.overwrite = true
+      this.responseCookieConfig.overwrite = true
     })
   }
 
   /**
    * Merge the given `config` with the default HTTP cookie config.
    */
-  useConfig (config: Partial<CookieOptions>): this {
+  useConfig (config: Partial<CookieConfig>): this {
     return tap(this, () => {
-      Object.assign(this.responseCookieOptions, { ...config })
+      Object.assign(this.responseCookieConfig, { ...config })
     })
   }
 }

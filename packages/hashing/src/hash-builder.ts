@@ -1,26 +1,38 @@
 
-import { HashBuilder as HashBuilderContract, HashBuilderOptions } from '@supercharge/contracts'
-import { BinaryToTextEncoding, Encoding } from 'crypto'
+import { BinaryToTextEncoding, Encoding } from 'node:crypto'
+import { HashBuilder as HashBuilderContract, HashBuilderConfig } from '@supercharge/contracts'
 
 export class HashBuilder implements HashBuilderContract {
   /**
-   * Stores the hash builder options.
+   * Stores the hash builder config.
    */
-  private readonly options: HashBuilderOptions
+  private readonly config: HashBuilderConfig
 
-  constructor (options: HashBuilderOptions) {
-    this.options = options
+  /**
+   * Create a new instance.
+   */
+  constructor (options: HashBuilderConfig) {
+    this.config = options
   }
 
+  /**
+   * Set the input encoding for the related value.
+   */
   inputEncoding (inputEncoding: Encoding): this {
-    this.options.inputEncoding = inputEncoding
+    this.config.inputEncoding = inputEncoding
     return this
   }
 
+  /**
+   * Calculate the final hash string value.
+   */
   digest (encoding: BinaryToTextEncoding): void {
-    this.options.outputEncoding = encoding
+    this.config.outputEncoding = encoding
   }
 
+  /**
+   * This is an alias for the `digest` method that calculates the final hash string.
+   */
   toString (encoding: BinaryToTextEncoding): void {
     this.digest(encoding)
   }
