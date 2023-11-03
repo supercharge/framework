@@ -10,16 +10,16 @@ export class HandleErrorMiddleware extends Middleware {
     try {
       await next()
     } catch (error: any) {
-      await this.handleError(ctx, error)
+      await this.handleError(error, ctx)
     }
   }
 
   /**
    * Process the given `error` and HTTP `ctx` using the error handler.
    */
-  private async handleError (ctx: HttpContext, error: Error): Promise<void> {
+  private async handleError (error: Error, ctx: HttpContext): Promise<void> {
     if (this.app.hasBinding('error.handler')) {
-      return await this.app.make<ErrorHandler>('error.handler').handle(ctx, error)
+      return await this.app.make<ErrorHandler>('error.handler').handle(error, ctx)
     }
 
     throw error
