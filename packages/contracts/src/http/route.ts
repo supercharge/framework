@@ -1,8 +1,7 @@
-'use strict'
 
-import { HttpContext } from './context'
-import { HttpMethods } from './methods'
-import { RouteHandler } from './router'
+import { HttpContext } from './context.js'
+import { HttpMethods } from './methods.js'
+import { RouteHandler } from './router.js'
 
 export interface RouteObjectAttributes {
   path: string

@@ -1,8 +1,7 @@
-'use strict'
 
-import { Logger } from './logger'
+import { Logger } from './logger.js'
 import Winston, { format } from 'winston'
-import Chalk, { ChalkFunction } from 'chalk'
+import Chalk, { ChalkInstance } from 'chalk'
 import { ConsoleTransportInstance } from 'winston/lib/winston/transports'
 import { ConsoleChannelConfig, Logger as LoggingContract } from '@supercharge/contracts'
 
@@ -11,8 +10,6 @@ const { combine, timestamp, printf, splat } = format
 export class ConsoleLogger extends Logger<ConsoleChannelConfig> implements LoggingContract {
   /**
    * Create a new console logger instance.
-   *
-   * @param config
    */
   constructor (config: ConsoleChannelConfig) {
     super(config)
@@ -31,8 +28,6 @@ export class ConsoleLogger extends Logger<ConsoleChannelConfig> implements Loggi
 
   /**
    * Create a file transport channel.
-   *
-   * @returns {ConsoleTransportInstance}
    */
   createConsoleTransport (): ConsoleTransportInstance {
     return new Winston.transports.Console({
@@ -47,10 +42,6 @@ export class ConsoleLogger extends Logger<ConsoleChannelConfig> implements Loggi
 
   /**
    * Returns a log message.
-   *
-   * @param {Object} logItem
-   *
-   * @returns {String}
    */
   createLogMessage (logItem: any): string {
     const { level, message, [Symbol.for('splat')]: meta } = logItem
@@ -71,19 +62,13 @@ export class ConsoleLogger extends Logger<ConsoleChannelConfig> implements Loggi
    * info  => green
    * warn  => yellow
    * error => bold red
-   *
-   * @param {integer} label - Winston log level as a string label
-   *
-   * @returns {Function}
    */
-  getColorForLevel (label: string): ChalkFunction {
+  getColorForLevel (label: string): ChalkInstance {
     return this.logColors()[label] || Chalk.white
   }
 
   /**
    * Color levels, ranked ascending from freakout to chilly.
-   *
-   * @returns {Object}
    */
   logColors (): any {
     return {
@@ -100,10 +85,6 @@ export class ConsoleLogger extends Logger<ConsoleChannelConfig> implements Loggi
 
   /**
    * Returns the time of the log item in milliseconds.
-   *
-   * @param {Object} logItem
-   *
-   * @returns {Number}
    */
   private retrieveLogTimeFrom (logItem: any): number {
     return new Date(logItem.timestamp).getTime()

@@ -1,12 +1,12 @@
-'use strict'
 
 import JSON from '@supercharge/json'
-import { PassThrough } from 'stream'
-import { URLSearchParams } from 'url'
-import Str from '@supercharge/strings'
+import { Str } from '@supercharge/strings'
+import { URLSearchParams } from 'node:url'
 import { HttpError } from '@supercharge/http-errors'
 import Formidable, { Fields, Files } from 'formidable'
-import { BodyparserOptions } from './bodyparser-options'
+import { BodyparserOptions } from './bodyparser-options.js'
+// @ts-expect-error deep requiring
+import { firstValues } from 'formidable/src/helpers/firstValues.js'
 import { Application, HttpContext, HttpRequest, Middleware, NextHandler } from '@supercharge/contracts'
 
 export class BodyparserMiddleware implements Middleware {
@@ -17,8 +17,6 @@ export class BodyparserMiddleware implements Middleware {
 
   /**
    * Create a new middleware instance.
-   *
-   * @param {Application} app
    */
   constructor (app: Application) {
     this.app = app
@@ -26,8 +24,6 @@ export class BodyparserMiddleware implements Middleware {
 
   /**
    * Returns the options determining how to serve assets.
-   *
-   * @returns {CorsOptions}
    */
   options (): BodyparserOptions {
     return new BodyparserOptions(
@@ -37,9 +33,6 @@ export class BodyparserMiddleware implements Middleware {
 
   /**
    * Handle the incoming request.
-   *
-   * @param ctx HttpContext
-   * @param next NextHandler
    */
   async handle ({ request }: HttpContext, next: NextHandler): Promise<void> {
     if (this.shouldParsePayload(request)) {
@@ -51,10 +44,6 @@ export class BodyparserMiddleware implements Middleware {
 
   /**
    * Determine whether to parse incoming request body.
-   *
-   * @param {HttpRequest} request
-   *
-   * @returns {Boolean}
    */
   shouldParsePayload (request: HttpRequest): boolean {
     return this.hasConfiguredMethod(request) && request.hasPayload()
@@ -62,10 +51,6 @@ export class BodyparserMiddleware implements Middleware {
 
   /**
    * Determine whether to parse incoming request body.
-   *
-   * @param {HttpRequest} request
-   *
-   * @returns {Boolean}
    */
   hasConfiguredMethod (request: HttpRequest): boolean {
     return request.isMethod(
@@ -75,10 +60,6 @@ export class BodyparserMiddleware implements Middleware {
 
   /**
    * Parse incoming request body and return the result.
-   *
-   * @param {HttpRequest} request
-   *
-   * @returns {Boolean}
    */
   async parse (request: HttpRequest): Promise<void> {
     if (this.isJson(request)) {
@@ -102,10 +83,6 @@ export class BodyparserMiddleware implements Middleware {
 
   /**
    * Determine whether the given `request` contains a JSON body.
-   *
-   * @param {HttpRequest} request
-   *
-   * @returns {Boolean}
    */
   protected isJson (request: HttpRequest): boolean {
     return request.isContentType(
@@ -115,10 +92,6 @@ export class BodyparserMiddleware implements Middleware {
 
   /**
    * Returns the parsed JSON data.
-   *
-   * @param {HttpRequest} request
-   *
-   * @returns {Boolean}
    */
   async parseJson (request: HttpRequest): Promise<void> {
     const body = await this.collectBodyFrom(request, { limit: this.options().json().limit() })
@@ -130,10 +103,6 @@ export class BodyparserMiddleware implements Middleware {
 
   /**
    * Determine whether the given `request` contains a text body.
-   *
-   * @param {HttpRequest} request
-   *
-   * @returns {Boolean}
    */
   protected isText (request: HttpRequest): boolean {
     return request.isContentType(
@@ -143,10 +112,6 @@ export class BodyparserMiddleware implements Middleware {
 
   /**
    * Returns the parsed text data.
-   *
-   * @param {HttpRequest} request
-   *
-   * @returns {*}
    */
   async parseText (request: HttpRequest): Promise<void> {
     const body = await this.collectBodyFrom(request, { limit: this.options().text().limit() })
@@ -156,10 +121,6 @@ export class BodyparserMiddleware implements Middleware {
 
   /**
    * Determine whether the given `request` contains form-url-encoded data.
-   *
-   * @param {HttpRequest} request
-   *
-   * @returns {Boolean}
    */
   protected isFormUrlEncoded (request: HttpRequest): boolean {
     return request.isContentType(
@@ -169,10 +130,6 @@ export class BodyparserMiddleware implements Middleware {
 
   /**
    * Returns the parsed form data.
-   *
-   * @param {HttpRequest} request
-   *
-   * @returns {*}
    */
   async parseFormUrlEncoded (request: HttpRequest): Promise<void> {
     const body = await this.collectBodyFrom(request, { limit: this.options().form().limit() })
@@ -186,10 +143,6 @@ export class BodyparserMiddleware implements Middleware {
 
   /**
    * Determine whether the given `request` contains multipart data.
-   *
-   * @param {HttpRequest} request
-   *
-   * @returns {Boolean}
    */
   protected isMultipart (request: HttpRequest): boolean {
     return request.isContentType(
@@ -199,41 +152,56 @@ export class BodyparserMiddleware implements Middleware {
 
   /**
    * Returns the parsed multipart data.
-   *
-   * @param {HttpRequest} request
-   *
-   * @returns {*}
    */
   async parseMultipart (request: HttpRequest): Promise<void> {
-    const form = new Formidable.IncomingForm({
+    const form = Formidable({
       multiples: true,
       encoding: this.options().encoding() as any, // TODO make Formidable BufferEncoding compatible with Node BufferEncoding
       maxFields: this.options().multipart().maxFields(),
-      maxFileSize: this.options().multipart().maxFileSize()
+      maxFileSize: this.options().multipart().maxFileSize(),
+      maxTotalFileSize: this.options().multipart().maxTotalFileSize()
     })
 
     const { files, fields }: { fields: Fields, files: Files } = await new Promise((resolve, reject) => {
       form.parse(request.req(), (error, fields: Fields, files: Files) => {
         if (error) {
-          return Str(error.message).includesAll('maxFileSize', 'exceeded')
-            ? reject(HttpError.payloadTooLarge('maxFileSize exceeded'))
-            : reject(error)
+          if (Str(error.message).includesAll('maxFileSize')) {
+            return reject(HttpError.payloadTooLarge('maxFileSize exceeded'))
+          }
+
+          if (Str(error.message).includesAll('maxTotalFileSize', 'exceeded')) {
+            return reject(HttpError.payloadTooLarge('maxTotalFileSize exceeded'))
+          }
+
+          reject(error)
         }
 
-        resolve({ fields, files })
+        resolve({ fields: firstValues(form, fields), files })
       })
     })
 
     request.setFiles(files)
-    request.setPayload(fields)
+    request.setPayload(
+      this.resolveMultipartFields(fields)
+    )
+  }
+
+  /**
+   * Returns the fields as an object and properties that are an
+   * array with a single value are resolved to that value.
+   */
+  private resolveMultipartFields (fields: Fields): object {
+    return Object.fromEntries(
+      Object.entries(fields).map(([key, value]) => {
+        return Array.isArray(value) && value.length === 1
+          ? [key, value[0]]
+          : [key, value]
+      })
+    )
   }
 
   /**
    * Fetch the incoming data from the given `request`.
-   *
-   * @param {HttpRequest} request
-   *
-   * @returns {*}
    */
   async collectBodyFrom (request: HttpRequest, options: { limit: number}): Promise<string> {
     let body = ''
@@ -243,11 +211,7 @@ export class BodyparserMiddleware implements Middleware {
     )
 
     try {
-      // this .pipe(new PassThrough()) workaround is needed because
-      // stream iteration on requests is currently broken in Node.js
-      // https://github.com/nodejs/node/issues/38262
-      for await (const chunk of request.req().pipe(new PassThrough())) {
-        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+      for await (const chunk of request.req()) {
         body += chunk
 
         if (body.length > options.limit) {

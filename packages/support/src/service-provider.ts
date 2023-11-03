@@ -1,13 +1,12 @@
-'use strict'
 
-import { tap, esmRequire } from '@supercharge/goodies'
+import { resolveDefaultImport, tap } from '@supercharge/goodies'
 import { Application, ConfigStore, ServiceProvider as ServiceProviderContract } from '@supercharge/contracts'
 
 type Callback = () => void
 
 export class ServiceProvider implements ServiceProviderContract {
   /**
-   * Stores the service provider meta data.
+   * Stores the interla service provider data.
    */
   private readonly meta: {
     /**
@@ -28,8 +27,6 @@ export class ServiceProvider implements ServiceProviderContract {
 
   /**
    * Create a new service provider instance.
-   *
-   * @param app
    */
   constructor (app: Application) {
     this.meta = { app, bootingCallbacks: [], bootedCallbacks: [] }
@@ -37,8 +34,6 @@ export class ServiceProvider implements ServiceProviderContract {
 
   /**
    * Returns the application instance.
-   *
-   * @returns {Application}
    */
   app (): Application {
     return this.meta.app
@@ -46,8 +41,6 @@ export class ServiceProvider implements ServiceProviderContract {
 
   /**
    * Returns the config instance.
-   *
-   * @returns {ConfigStore}
    */
   config (): ConfigStore {
     return this.app().config()
@@ -76,10 +69,6 @@ export class ServiceProvider implements ServiceProviderContract {
 
   /**
    * Register a booting callback that runs before the `boot` method is called.
-   *
-   * @param callback Function
-   *
-   * @returns {ServiceProvider}
    */
   booting (callback: Callback): this {
     return tap(this, () => {
@@ -89,8 +78,6 @@ export class ServiceProvider implements ServiceProviderContract {
 
   /**
    * Returns the registered booting callbacks.
-   *
-   * @returns {Callback[]}
    */
   bootingCallbacks (): Callback[] {
     return this.meta.bootingCallbacks
@@ -98,10 +85,6 @@ export class ServiceProvider implements ServiceProviderContract {
 
   /**
    * Register a booted callback that runs after the `boot` method was called.
-   *
-   * @param callback Function
-   *
-   * @returns {ServiceProvider}
    */
   booted (callback: Callback): this {
     return tap(this, () => {
@@ -111,8 +94,6 @@ export class ServiceProvider implements ServiceProviderContract {
 
   /**
    * Returns the registered booted callbacks.
-   *
-   * @returns {Callback[]}
    */
   bootedCallbacks (): Callback[] {
     return this.meta.bootedCallbacks
@@ -138,18 +119,13 @@ export class ServiceProvider implements ServiceProviderContract {
 
   /**
    * Merge the content of the configuration file located at the
-   * given `path` with the existing app configuration.
-   *
-   * @param {String} path
-   * @param {String} key
-   *
-   * @returns {ServiceProvider}
+   * given `filePath` with the existing app configuration.
    */
-  mergeConfigFrom (path: string, key: string): this {
-    this.config().set(key, Object.assign(
-      esmRequire(path), this.config().get(key)
-    ))
+  async mergeConfigFrom (path: string, key: string): Promise<void> {
+    const config = await resolveDefaultImport(path)
 
-    return this
+    this.config().set(key, Object.assign(
+      config, this.config().get(key)
+    ))
   }
 }

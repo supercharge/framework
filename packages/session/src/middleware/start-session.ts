@@ -1,6 +1,5 @@
-'use strict'
 
-import { SessionManager } from '../session-manager'
+import { SessionManager } from '../session-manager.js'
 import { InteractsWithTime } from '@supercharge/support'
 import { Session, HttpContext, HttpResponse, NextHandler, HttpRequest } from '@supercharge/contracts'
 
@@ -21,9 +20,6 @@ export class StartSessionMiddleware extends InteractsWithTime {
 
   /**
    * Handle the incoming request.
-   *
-   * @param {HttpContext} ctx
-   * @param {NextHandler} next
    */
   async handle ({ request, response }: HttpContext, next: NextHandler): Promise<void> {
     const session = await this.startSession(request)
@@ -49,8 +45,6 @@ export class StartSessionMiddleware extends InteractsWithTime {
 
   /**
    * Save the session data to storage.
-   *
-   * @param {HttpRequest} request
    */
   addSessionCookieToResponse (session: Session, response: HttpResponse): void {
     response.cookie(session.name(), session.id(), cookie => {

@@ -1,4 +1,3 @@
-'use strict'
 
 import { Context } from 'koa'
 import { tap } from '@supercharge/goodies'
@@ -12,8 +11,6 @@ export class HttpRedirect implements HttpRedirectContract {
 
   /**
    * Create a new instance.
-   *
-   * @param ctx
    */
   constructor (ctx: Context) {
     this.ctx = ctx
@@ -21,8 +18,6 @@ export class HttpRedirect implements HttpRedirectContract {
 
   /**
    * Redirect the request back to the previous path.
-   *
-   * @param {Object} options
    */
   back (options?: { fallback: string }): this {
     const fallback = options ? options.fallback : ''
@@ -34,8 +29,6 @@ export class HttpRedirect implements HttpRedirectContract {
 
   /**
    * Redirect the request to the given URL `path`.
-   *
-   * @param url string
    */
   to (path: string): this {
     return tap(this, () => {
@@ -48,8 +41,6 @@ export class HttpRedirect implements HttpRedirectContract {
    * which is useful for POST/PUT requests containing content.
    *
    * More details: Details: https://developer.mozilla.org/de/docs/Web/HTTP/Status
-   *
-   * @returns {HttpRedirect}
    */
   withPayload (): this {
     return tap(this, () => {

@@ -1,4 +1,3 @@
-'use strict'
 
-export { Encrypter, EncrypterOptions } from './encrypter'
-export { EncryptionServiceProvider } from './encryption-service-provider'
+export { Encrypter, EncrypterOptions } from './encrypter.js'
+export { EncryptionServiceProvider } from './encryption-service-provider.js'

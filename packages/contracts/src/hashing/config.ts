@@ -1,10 +1,16 @@
-'use strict'
+
+import { HasherCtor } from './hasher.js'
 
 export interface HashConfig {
   /**
    * The hashing driver name.
    */
-  driver: 'bcrypt' | 'scrypt' | string
+  driver: 'bcrypt' | 'scrypt'
+
+  /**
+   * The map of drivers and their factory function
+   */
+  drivers: Record<this['driver'], HasherCtor>
 
   /**
    * The bcrypt hashing config.

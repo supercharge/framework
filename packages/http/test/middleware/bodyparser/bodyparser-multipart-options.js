@@ -1,8 +1,7 @@
-'use strict'
 
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { BodyparserOptions } = require('../../../dist')
+import { test } from 'uvu'
+import { expect } from 'expect'
+import { BodyparserOptions } from '../../../dist/index.js'
 
 test('maxFileSize defaults to 200mb', () => {
   expect(new BodyparserOptions({ }).multipart().maxFileSize()).toEqual(

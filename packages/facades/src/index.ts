@@ -1,14 +1,13 @@
-'use strict'
 
-import { AppFacade } from './app'
-import { EnvFacade } from './env'
-import { HashFacade } from './hash'
-import { ViewFacade } from './view'
-import { LogFacade } from './logger'
-import { CryptFacade } from './crypt'
-import { RouteFacade } from './route'
-import { ConfigFacade } from './config'
-import { DatabaseFacade } from './database'
+import { AppFacade } from './app.js'
+import { EnvFacade } from './env.js'
+import { HashFacade } from './hash.js'
+import { ViewFacade } from './view.js'
+import { LogFacade } from './logger.js'
+import { CryptFacade } from './crypt.js'
+import { RouteFacade } from './route.js'
+import { ConfigFacade } from './config.js'
+import { DatabaseFacade } from './database.js'
 import { Application, ConfigStore, Database as DatabaseContract, Encrypter, EnvStore, Logger, HttpRouter, ViewEngine, Hasher } from '@supercharge/contracts'
 
 const Log: Logger = new LogFacade() as unknown as Logger
@@ -21,7 +20,7 @@ const Route: HttpRouter = new RouteFacade() as unknown as HttpRouter
 const Config: ConfigStore = new ConfigFacade() as unknown as ConfigStore
 const Database: DatabaseContract = new DatabaseFacade() as unknown as DatabaseContract
 
-export * from './facade'
+export { Facade } from './facade.js'
 export {
   App,
   Config,

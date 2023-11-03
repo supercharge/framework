@@ -1,8 +1,7 @@
-'use strict'
 
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { makeApp } = require('./helpers')
+import { test } from 'uvu'
+import { expect } from 'expect'
+import { makeApp } from './helpers/index.js'
 
 test('renders raw helper', async () => {
   const app = makeApp()

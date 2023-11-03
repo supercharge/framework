@@ -1,4 +1,3 @@
-'use strict'
 
 export class DatabaseManagerProxy<T extends object> {
   /**
@@ -13,8 +12,6 @@ export class DatabaseManagerProxy<T extends object> {
 
   /**
    * Create a new call through handler for the given `Class`.
-   *
-   * @param {class} Class
    */
   constructor (Class: T) {
     this.class = Class
@@ -22,11 +19,6 @@ export class DatabaseManagerProxy<T extends object> {
 
   /**
    * The trap for getting values on the given `target`.
-   *
-   * @param target
-   * @param property
-   *
-   * @returns {*}
    */
   get<R> (target: any, property: string): R | Function {
     if (Reflect.has(target, property)) {

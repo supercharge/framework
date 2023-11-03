@@ -9,8 +9,12 @@
   "files": [
     "dist"
   ],
-  "main": "dist",
+  "type": "module",
+  "main": "dist/index.js",
   "types": "dist",
+  "exports": {
+    ".": "./dist/index.js"
+  },
   "dependencies": {
     "@supercharge/contracts": "^3.20.4",
     "@supercharge/fs": "~3.4.0",
@@ -18,9 +22,8 @@
     "dotenv": "~16.3.1"
   },
   "devDependencies": {
-    "@types/lodash": "~4.14.199",
+    "@types/lodash": "~4.14.200",
     "c8": "~8.0.1",
-    "cross-env": "~7.0.3",
     "expect": "~29.7.0",
     "typescript": "~5.2.2",
     "uvu": "~0.5.6"
@@ -51,9 +54,8 @@
     "watch": "npm run dev",
     "lint": "eslint src --ext .js,.ts",
     "lint:fix": "npm run lint -- --fix",
-    "test": "npm run build && npm run lint && npm run test:coverage",
-    "test:run": "cross-env NODE_ENV=testing uvu --ignore helpers --ignore fixtures",
-    "test:coverage": "c8 --include=dist npm run test:run && npm run test:report",
-    "test:report": "c8 report --reporter=html"
+    "test": "npm run build && npm run lint && npm run test:run",
+    "test:run": "NODE_ENV=testing c8 --include=dist uvu --ignore helpers --ignore fixtures",
+    "posttest": "c8 report --reporter=html"
   }
 }

@@ -1,10 +1,10 @@
-'use strict'
 
 module.exports = {
   env: {
     node: true,
-    es2020: true
+    es2022: true
   },
+  ignorePatterns: ['dist/**'],
   extends: [
     '@supercharge/typescript'
   ],

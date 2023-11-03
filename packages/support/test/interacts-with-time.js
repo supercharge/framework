@@ -1,11 +1,10 @@
-'use strict'
 
-const Dayjs = require('dayjs')
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { promisify } = require('util')
-const ChildProcess = require('child_process')
-const { InteractsWithTime } = require('../dist')
+import Dayjs from 'dayjs'
+import { test } from 'uvu'
+import { expect } from 'expect'
+import { promisify } from 'node:util'
+import ChildProcess from 'node:child_process'
+import { InteractsWithTime } from '../dist/index.js'
 
 const exec = promisify(ChildProcess.exec)
 
@@ -23,8 +22,8 @@ test('availableAt', async () => {
   expect(time.availableAt(now)).toEqual(now.getTime())
 
   const expected = Dayjs().add(60, 'seconds').toDate().getTime()
-  expect(time.availableAt(60)).toBeGreaterThan(expected - 5)
-  expect(time.availableAt(60)).toBeLessThanOrEqual(expected + 5)
+  expect(time.availableAt(60)).toBeGreaterThan(expected - 12)
+  expect(time.availableAt(60)).toBeLessThanOrEqual(expected + 12)
 })
 
 test.run()

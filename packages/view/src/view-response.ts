@@ -1,9 +1,8 @@
-'use strict'
 
+import { ViewConfigBuilder } from './view-config-builder.js'
 import { HttpResponse, ViewBuilderCallback, ViewEngine, ViewResponseConfig } from '@supercharge/contracts'
-import { ViewConfigBuilder } from './view-config-builder'
 
-export class View {
+export class ViewResponse {
   /**
    * Stores the HTTP response instance.
    */
@@ -12,26 +11,18 @@ export class View {
   /**
    * Stores the view engine instance.
    */
-  private readonly view: ViewEngine
+  private readonly viewEngine: ViewEngine
 
   /**
    * Create a new view manager instance.
-   *
-   * @param {Application} app
    */
-  constructor (response: HttpResponse, view: ViewEngine) {
+  constructor (response: HttpResponse, viewEngine: ViewEngine) {
     this.response = response
-    this.view = view
+    this.viewEngine = viewEngine
   }
 
   /**
    * Render a view template as the response.
-   *
-   * @param {String} template
-   * @param {*} data
-   * @param {Function} callback
-   *
-   * @returns {String}
    */
   async render (template: string, dataOrViewBuilder?: ViewBuilderCallback | any): Promise<HttpResponse>
   async render (template: string, data?: any, viewBuilder?: ViewBuilderCallback): Promise<HttpResponse>
@@ -48,15 +39,14 @@ export class View {
 
   /**
     * Assigns the rendered HTML of the given `template` as the response payload.
-    *
-    * @param {String} template
-    * @param {*} data
-    * @param {Function} viewBuilder
-    *
-    * @returns {String}
     */
   private async renderView (template: string, data?: any, viewBuilder?: ViewBuilderCallback): Promise<string> {
-    const viewData = { ...this.response.state().all(), ...data }
+    const viewData = {
+      ...this.response.state().all(),
+      ...this.viewEngine.sharedData(),
+      ...data
+    }
+
     const viewConfig: ViewResponseConfig = {}
 
     if (typeof viewBuilder === 'function') {
@@ -65,6 +55,6 @@ export class View {
       )
     }
 
-    return await this.view.render(template, viewData, viewConfig)
+    return await this.viewEngine.render(template, viewData, viewConfig)
   }
 }

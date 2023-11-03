@@ -1,4 +1,3 @@
-'use strict'
 
 import { tap } from '@supercharge/goodies'
 import { ServiceProvider } from '@supercharge/support'
@@ -29,10 +28,6 @@ export class RouteServiceProvider extends ServiceProvider {
 
   /**
    * Load the routes file from the given `path`.
-   *
-   * @param callback
-   *
-   * @returns {this}
    */
   loadRoutesFrom (path: string): this {
     return this.loadRoutesUsing(() => {
@@ -45,10 +40,6 @@ export class RouteServiceProvider extends ServiceProvider {
    * Delete the require cache entry for the given `path` if it exists.
    *
    * @see https://nodejs.org/api/modules.html#modules_caching
-   *
-   * @param path
-   *
-   * @returns {this}
    */
   protected clearRequireCacheFor (path: string): this {
     if (require.cache[path]) {
@@ -61,10 +52,6 @@ export class RouteServiceProvider extends ServiceProvider {
 
   /**
    * Register a callback that will be used to load the application’s routes.
-   *
-   * @param callback
-   *
-   * @returns {this}
    */
   loadRoutesUsing (callback: () => void): this {
     return tap(this, () => {

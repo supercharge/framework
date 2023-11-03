@@ -1,3 +1,2 @@
-'use strict'
 
-export { Config } from './config'
+export { Config } from './config.js'

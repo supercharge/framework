@@ -1,9 +1,8 @@
-'use strict'
 
-import { Logger } from './logger'
+import { Logger } from './logger.js'
 import Winston, { format } from 'winston'
-import { FileChannelConfig, Logger as LoggingContract } from '@supercharge/contracts'
 import { FileTransportInstance } from 'winston/lib/winston/transports'
+import { FileChannelConfig, Logger as LoggingContract } from '@supercharge/contracts'
 
 const { combine, timestamp, printf, splat } = format
 
@@ -15,8 +14,6 @@ export class FileLogger extends Logger<FileChannelConfig> implements LoggingCont
 
   /**
    * Create a new file logger instance.
-   *
-   * @param options
    */
   constructor (options: FileChannelConfig = {}) {
     super(options)
@@ -28,10 +25,6 @@ export class FileLogger extends Logger<FileChannelConfig> implements LoggingCont
 
   /**
    * Ensure the given file logger `options` contain a log file path.
-   *
-   * @param {Object} options
-   *
-   * @throws
    */
   resolveLogFilePath (path?: string): string {
     if (!path) {
@@ -52,8 +45,6 @@ export class FileLogger extends Logger<FileChannelConfig> implements LoggingCont
 
   /**
    * Create a file transport channel.
-   *
-   * @returns {FileTransportInstance}
    */
   createFileTransport (): FileTransportInstance {
     return new Winston.transports.File({

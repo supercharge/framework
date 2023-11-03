@@ -1,8 +1,7 @@
-'use strict'
 
 import Koa from 'koa'
 import cors from '@koa/cors'
-import { Middleware } from './base'
+import { Middleware } from './base.js'
 import { Application, CorsConfig, HttpContext, NextHandler } from '@supercharge/contracts'
 
 export class HandleCorsMiddleware extends Middleware {
@@ -22,8 +21,6 @@ export class HandleCorsMiddleware extends Middleware {
 
   /**
    * Returns the options determining how to serve assets.
-   *
-   * @returns {CorsConfig}
    */
   protected createConfig (): cors.Options {
     const config = this.config()
@@ -41,8 +38,6 @@ export class HandleCorsMiddleware extends Middleware {
 
   /**
    * Returns the CORS config object.
-   *
-   * @returns {CorsConfig}
    */
   config (): CorsConfig {
     return this.app.config().get<CorsConfig>('cors')
@@ -50,9 +45,6 @@ export class HandleCorsMiddleware extends Middleware {
 
   /**
    * Handle the incoming request.
-   *
-   * @param ctx HttpContext
-   * @param next NextHandler
    */
   async handle (ctx: HttpContext, next: NextHandler): Promise<void> {
     return await this.handleCors(ctx.raw, next)

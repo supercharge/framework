@@ -3,20 +3,20 @@
   "description": "Supercharge Node.js framework",
   "version": "1.0.0-beta9",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
   },
   "devDependencies": {
-    "@supercharge/eslint-config-typescript": "~3.0.1",
-    "@supercharge/tsconfig": "~4.0.0",
-    "@types/node": "~20.8.6",
-    "cross-env": "~7.0.3",
-    "eslint": "~8.51.0",
-    "lerna": "~7.3.1",
-    "nx": "16.10.0"
+    "@supercharge/eslint-config-typescript": "~4.0.0",
+    "@supercharge/tsconfig": "~7.0.0",
+    "@types/node": "~20.8.10",
+    "eslint": "~8.52.0",
+    "lerna": "~7.4.2",
+    "nx": "17.0.2"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=20"
   },
   "homepage": "https://superchargejs.com",
   "keywords": [

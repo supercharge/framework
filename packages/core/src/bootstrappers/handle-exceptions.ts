@@ -1,4 +1,3 @@
-'use strict'
 
 import Youch from 'youch'
 // @ts-expect-error
@@ -26,8 +25,6 @@ export class HandleExceptions implements Bootstrapper {
 
   /**
    * Pretty-print the given `error` to the terminal.
-   *
-   * @param {Error} error
    */
   async handle (error: Error): Promise<void> {
     await tap(new Youch(error, {}).toJSON(), output => {

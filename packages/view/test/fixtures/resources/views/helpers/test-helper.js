@@ -1,5 +1,2 @@
-'use strict'
 
-function testHelper () {}
-
-module.exports = testHelper
+export default function testHelper () {}

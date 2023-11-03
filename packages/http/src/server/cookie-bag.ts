@@ -1,10 +1,9 @@
-'use strict'
 
 import Cookie from 'cookie'
 import * as Cookies from 'cookies'
 import { tap } from '@supercharge/goodies'
-import { RequestCookieBuilder, ResponseCookieBuilder } from './cookies'
-import { CookieBag as CookieBagContract, CookieOptions, RequestCookieBuilderCallback, ResponseCookieBuilderCallback } from '@supercharge/contracts'
+import { RequestCookieBuilder, ResponseCookieBuilder } from './cookies/index.js'
+import { CookieBag as CookieBagContract, CookieConfig, RequestCookieBuilderCallback, ResponseCookieBuilderCallback } from '@supercharge/contracts'
 
 export class CookieBag implements CookieBagContract {
   /**
@@ -15,23 +14,18 @@ export class CookieBag implements CookieBagContract {
   /**
    * Stores the default cookie options.
    */
-  private readonly options: CookieOptions & { signed: boolean }
+  private readonly options: CookieConfig & { signed: boolean }
 
   /**
    * Create a new instance.
    */
-  constructor (cookies: Cookies, options?: CookieOptions) {
+  constructor (cookies: Cookies, options?: CookieConfig) {
     this.cookies = cookies
     this.options = { signed: true, ...options }
   }
 
   /**
    * Returns the attribute value for the given `name` or the `defaultValue`.
-   *
-   * @param {String} name
-   * @param {RequestCookieBuilderCallback} callback
-   *
-   * @returns {String|undefined}
    */
   get (name: string, callback?: RequestCookieBuilderCallback): string | undefined {
     if (typeof callback === 'function') {
@@ -45,11 +39,6 @@ export class CookieBag implements CookieBagContract {
   /**
    * Set an attribute for the given `name` and assign the `value`.
    * This will override an existing attribute for the given `name`.
-   *
-   * @param {String} name
-   * @param {String?} value
-   *
-   * @returns {ThisType}
    */
   set (name: string, value?: string | null, cookieBuilder?: ResponseCookieBuilderCallback): this {
     if (typeof cookieBuilder === 'function') {
@@ -64,10 +53,6 @@ export class CookieBag implements CookieBagContract {
 
   /**
    * Determine whether the attribute for the given `name` exists.
-   *
-   * @param {String} name
-   *
-   * @returns {Boolean}
    */
   has (name: string): boolean {
     const parsed = Cookie.parse(this.cookies.request.headers.cookie ?? '')
@@ -77,10 +62,6 @@ export class CookieBag implements CookieBagContract {
 
   /**
    * Deletes a cookie with the given `name`.
-   *
-   * @param {String} name
-   *
-   * @returns {this}
    */
   delete (name: string): this {
     return this.set(name, undefined)

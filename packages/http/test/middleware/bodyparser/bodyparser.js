@@ -1,16 +1,15 @@
-'use strict'
 
-const Path = require('path')
-const { test } = require('uvu')
-const { expect } = require('expect')
-const deepmerge = require('deepmerge')
-const Supertest = require('supertest')
-const { Server } = require('../../../dist')
-const { setupApp } = require('../../helpers')
-const defaultBodyparserConfig = require('./fixtures/bodyparser-config')
+import { test } from 'uvu'
+import { expect } from 'expect'
+import deepmerge from 'deepmerge'
+import Supertest from 'supertest'
+import { fileURLToPath } from 'node:url'
+import { Server } from '../../../dist/index.js'
+import { setupApp } from '../../helpers/index.js'
+import defaultBodyparserConfig from './fixtures/bodyparser-config.js'
 
-const testFile1Path = Path.resolve(__dirname, 'fixtures', 'test-multipart-file-1.txt')
-const testFile2Path = Path.resolve(__dirname, 'fixtures', 'test-multipart-file-2.txt')
+const testFile1Path = fileURLToPath(import.meta.resolve('./fixtures/test-multipart-file-1.txt'))
+const testFile2Path = fileURLToPath(import.meta.resolve('./fixtures/test-multipart-file-2.txt'))
 
 function createHttpServer (bodyparserConfig) {
   const app = setupApp({
@@ -158,12 +157,22 @@ test('parse multipart fields and files', async () => {
 
 test('fails when exceeding the maxFileSize limit', async () => {
   await Supertest(
-    createHttpServer({ multipart: { maxFileSize: '10b' } })
+    createHttpServer({ multipart: { maxFileSize: '10b', maxTotalFileSize: '200b' } })
   )
     .post('/')
     .attach('uploads', testFile1Path)
     .set('Content-Type', 'multipart/form-data')
     .expect(413, 'maxFileSize exceeded')
+})
+
+test('fails when exceeding the maxTotalFileSize limit', async () => {
+  await Supertest(
+    createHttpServer({ multipart: { maxFileSize: '50b', maxTotalFileSize: '12b' } })
+  )
+    .post('/')
+    .attach('uploads', testFile1Path)
+    .set('Content-Type', 'multipart/form-data')
+    .expect(413, 'maxTotalFileSize exceeded')
 })
 
 test('throws for unsupported content type', async () => {

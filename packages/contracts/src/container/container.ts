@@ -1,6 +1,5 @@
-'use strict'
 
-import { Class } from '..'
+import { Class } from '../index.js'
 
 /**
  * Defines the shape of the container `factory` callback method.

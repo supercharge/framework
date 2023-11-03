@@ -1,4 +1,3 @@
-'use strict'
 
 import Fs from 'node:fs'
 import { Manifest, ManifestChunk } from 'vite'
@@ -40,10 +39,6 @@ export class ViteManifest {
 
   /**
    * Determine whether the given `entrypoint` exists in the manifest.
-   *
-   * @param entrypoint
-   *
-   * @returns {Boolean}
    */
   hasEntrypoint (entrypoint: string): boolean {
     try {

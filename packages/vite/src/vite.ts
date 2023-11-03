@@ -1,10 +1,9 @@
-'use strict'
 
 import Fs from 'node:fs'
 import Path from 'node:path'
-import Str from '@supercharge/strings'
+import { Str } from '@supercharge/strings'
 import { Arr } from '@supercharge/arrays'
-import { ViteManifest } from './vite-manifest'
+import { ViteManifest } from './vite-manifest.js'
 import { HtmlString } from '@supercharge/support'
 import { Application } from '@supercharge/contracts'
 

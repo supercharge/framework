@@ -1,7 +1,6 @@
-'use strict'
 
 import Map from '@supercharge/map'
-import Str from '@supercharge/strings'
+import { Str } from '@supercharge/strings'
 import { className, isClass } from '@supercharge/classes'
 import { tap, upon, isFunction } from '@supercharge/goodies'
 import { Class, Container as ContainerContract, BindingFactory } from '@supercharge/contracts'
@@ -38,11 +37,6 @@ export class Container implements ContainerContract {
 
   /**
    * Register a binding in the container.
-   *
-   * @param {String} namespace
-   * @param {Function} factory
-   *
-   * @returns {Container}
    */
   bind (namespace: string | Class, factory: BindingFactory<any>, options?: { singleton?: boolean }): this {
     this.ensureNamespace(namespace)
@@ -60,8 +54,6 @@ export class Container implements ContainerContract {
 
   /**
    * Ensure the given `namespace` is a string or a class constructor.
-   *
-   * @param {String|Class} namespace
    */
   private ensureNamespace (namespace: string | Class): void {
     if (isClass(namespace)) {
@@ -77,11 +69,6 @@ export class Container implements ContainerContract {
 
   /**
    * Register a shared binding (singleton) in the container.
-   *
-   * @param {String} abstract
-   * @param {Function} factory
-   *
-   * @returns {Container}
    */
   singleton (namespace: string | Class, factory: BindingFactory<any>): this {
     return this.bind(namespace, factory, { singleton: true })
@@ -89,10 +76,6 @@ export class Container implements ContainerContract {
 
   /**
    * Determine whether the given `namespace` is bound in the container.
-   *
-   * @param {String} namespace
-   *
-   * @returns {Boolean}
    */
   hasBinding (namespace: string | Class): boolean {
     return this.isAlias(namespace) || this.isSingleton(namespace) || this.bindings.has(
@@ -102,10 +85,6 @@ export class Container implements ContainerContract {
 
   /**
    * Determine whether the given `namespace` is bound as a singleton in the container.
-   *
-   * @param {String} namespace
-   *
-   * @returns {Boolean}
    */
   hasSingletonBinding (namespace: string | Class): boolean {
     return this.singletons.has(
@@ -115,10 +94,6 @@ export class Container implements ContainerContract {
 
   /**
    * Returns the resolved namespace identifier as a string.
-   *
-   * @param {String|Class} namespace
-   *
-   * @returns {String}
    */
   private resolveNamespace (namespace: string | Class): string {
     return isClass(namespace)
@@ -128,10 +103,6 @@ export class Container implements ContainerContract {
 
   /**
    * Determine whether the given `namespace` is a singleton.
-   *
-   * @param {String} namespace
-   *
-   * @returns {Boolean}
    */
   isSingleton (namespace: string | Class): boolean {
     return this.hasSingletonBinding(namespace) || this.bindings.contains((key, binding) => {
@@ -141,10 +112,6 @@ export class Container implements ContainerContract {
 
   /**
    * Resolve the given namespace from the container.
-   *
-   * @param {String} namespace
-   *
-   * @returns {*}
    */
   make<T = any> (namespace: string): T
   make<T> (namespace: Class<T>): T
@@ -177,12 +144,6 @@ export class Container implements ContainerContract {
 
   /**
    * Run the factory function for the given binding that resolves the related instance.
-   *
-   * @param {String} namespace
-   *
-   * @returns {*}
-   *
-   * @throws
    */
   private build<T> (namespace: string | Class): T {
     return upon(this.getFactoryFor(namespace), factory => {
@@ -192,12 +153,6 @@ export class Container implements ContainerContract {
 
   /**
    * Returns the factory callback for the given namespace.
-   *
-   * @param {String} namespace
-   *
-   * @returns {Function}
-   *
-   * @throws
    */
   private getFactoryFor (namespace: string | Class): any {
     if (this.hasBinding(namespace)) {
@@ -213,10 +168,6 @@ export class Container implements ContainerContract {
 
   /**
    * Returns a factory function for the given namespace.
-   *
-   * @param {String} namespace
-   *
-   * @returns {Function}
    */
   resolveFactoryFor (namespace: string | Class): any {
     const name = this.resolveNamespace(namespace)
@@ -228,10 +179,6 @@ export class Container implements ContainerContract {
 
   /**
    * Returns a factory function for the given class constructor.
-   *
-   * @param Constructor
-   *
-   * @returns {Function}
    */
   createFactoryFor (Constructor: Class): any {
     return (container: Container) => {
@@ -292,11 +239,6 @@ export class Container implements ContainerContract {
 
   /**
    * Assign the given `alias` to the concrete `namespace`.
-   *
-   * @param namespace
-   * @param alias
-   *
-   * @returns {this}
    */
   private addAlias (namespace: string, alias: string): this {
     const aliases = this.aliases.getOrDefault(namespace, [])
@@ -328,8 +270,6 @@ export class Container implements ContainerContract {
 
   /**
    * Flush all bindings and resolved instances from the containter.
-   *
-   * @returns {this}
    */
   flush (): this {
     return tap(this, () => {

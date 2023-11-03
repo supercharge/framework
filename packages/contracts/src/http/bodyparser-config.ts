@@ -1,13 +1,5 @@
-'use strict'
 
-import { HttpMethods } from './methods'
-
-/**
- * @deprecated The `BodyparserOptions` is deprecated in favor of the `BodyparserConfig`
- * interface. We’ll remove the `BodyparserOptions` interface in the upcoming release
- * of the Supercharge framework. You might switch already to the renamed interface.
- */
-export type BodyparserOptions = BodyparserConfig
+import { HttpMethods } from './methods.js'
 
 export interface BodyparserConfig {
   /**
@@ -155,9 +147,18 @@ export interface BodyparserConfig {
      * Multipart File Size Limit
      * ------------------------------------------------------------------------
      *
-     * This option configures the limit of an uploaded file.
+     * This option configures the size limit of a single uploaded file.
      */
     maxFileSize: string | number
+
+    /**
+     * ------------------------------------------------------------------------
+     * Multipart Batch File Size Limit
+     * ------------------------------------------------------------------------
+     *
+     * This option configures the size limit of all uploaded files.
+     */
+    maxTotalFileSize: string | number
 
     /**
      * ------------------------------------------------------------------------

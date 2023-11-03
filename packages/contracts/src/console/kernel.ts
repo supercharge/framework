@@ -1,4 +1,3 @@
-'use strict'
 
 export interface ConsoleKernel {
   /**
@@ -15,8 +14,6 @@ export interface ConsoleKernel {
 
   /**
    * Handle an incoming console command for the given `input`.
-   *
-   * @param {Array} input - command line arguments (argv)
    */
   run(input?: string[]): Promise<any>
 }

@@ -1,6 +1,5 @@
-'use strict'
 
-import { Route } from './route'
+import { Route } from './route.js'
 import { tap } from '@supercharge/goodies'
 import { HttpRouteCollection, RouteObjectAttributes } from '@supercharge/contracts'
 
@@ -19,10 +18,6 @@ export class RouteCollection implements HttpRouteCollection {
 
   /**
    * Register a new route to the collection.
-   *
-   * @param {Route} route
-   *
-   * @returns {}
    */
   public add (route: Route | Route[]): Route | Route[] {
     return tap(route, () => {
@@ -32,8 +27,6 @@ export class RouteCollection implements HttpRouteCollection {
 
   /**
    * Returns all registered routes.
-   *
-   * @returns {Route[]}
    */
   public all (): Route[] {
     return this.routes
@@ -41,8 +34,6 @@ export class RouteCollection implements HttpRouteCollection {
 
   /**
    * Clear all registered routes.
-   *
-   * @returns {this}
    */
   public clear (): this {
     return tap(this, () => {
@@ -52,8 +43,6 @@ export class RouteCollection implements HttpRouteCollection {
 
   /**
    * Returns the number of routes registerd to this route collection.
-   *
-   * @returns {Number}
    */
   public count (): number {
     return this.routes.length

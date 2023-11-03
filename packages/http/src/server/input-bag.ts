@@ -1,91 +1,143 @@
-'use strict'
 
-import { tap } from '@supercharge/goodies'
-import { Dict, InputBag as InputBagContract } from '@supercharge/contracts'
+import _ from 'lodash'
+import { InputBag as InputBagContract } from '@supercharge/contracts'
 
-export class InputBag<T> implements InputBagContract<T> {
+export class InputBag<Properties> implements InputBagContract<Properties> {
   /**
-   * Stores the request headers as an object.
+   * Stores the attributes of this input bag.
    */
-  protected attributes: Dict<T>
+  protected properties: Record<keyof Properties, Properties[keyof Properties]>
 
   /**
    * Create a new instance.
    */
-  constructor (attributes: Dict<T>) {
-    this.attributes = attributes ?? {}
+  constructor (attributes: Properties) {
+    this.properties = attributes
   }
 
   /**
-   * Returns an object with all `keys` existing in the input bag.
+   * Returns the properties object of this input bag.
    */
-  all<Key extends keyof Dict<T> = string> (...keys: Key[] | Key[][]): Dict<T> {
+  toJSON (): Properties {
+    return this.all()
+  }
+
+  /**
+   * Returns all properties within this input bag or an object with all `keys` that exist in the bag.
+   */
+  all (): Properties
+  all <R extends Record<string, any>>(): R
+  all<Key extends keyof Properties> (...keys: Key[] | Key[][]): Partial<Record<keyof Properties, Properties[keyof Properties]>>
+  all<Key extends keyof Properties> (...keys: Key[] | Key[][]): Partial<Record<keyof Properties, Properties[keyof Properties]>> {
     if (keys.length === 0) {
-      return this.attributes
+      return this.properties
     }
 
     return ([] as Key[])
       .concat(...keys)
-      .reduce((carry: Dict<T>, key) => {
-        carry[key] = this.get(key)
+      .reduce<Partial<Properties>>((carry, key) => {
+      carry[key] = this.get(key)
 
-        return carry
-      }, {})
+      return carry
+    }, {})
   }
 
   /**
-   * Returns the input value for the given `name`. Returns `undefined`
-   * if the given `name` does not exist in the input bag.
-   *
-   * @param {Key} name
-   * @param {Value} defaultValue
-   *
-   * @returns {Value | Dict<T>[Key] |undefined}
+   * Returns the input value for the given `key`. Returns `undefined`
+   * if the given `key` does not exist in the input bag.
    */
-  get<Value = any, Key extends keyof Dict<T> = string> (name: Key): Value | Dict<T>[Key] | undefined
-  get<Value = any, Key extends keyof Dict<T> = string> (name: Key, defaultValue: Value): Value | Dict<T>[Key]
-  get<Value = any, Key extends keyof Dict<T> = string> (name: Key, defaultValue?: Value): Value | Dict<T>[Key] | undefined {
-    return this.attributes[name] ?? defaultValue
+  get<Key extends keyof Properties> (key: Key): Properties[Key]
+  get<Value = any, Key extends keyof Properties = any> (key: Key, defaultValue: Value): Properties[Key] | Value
+  get<Value = any> (key: string, defaultValue: Value): Value | undefined
+  get<Value = any, Key extends keyof Properties = any> (key: Key, defaultValue?: Value): Properties[Key] | Value {
+    const value = _.get(this.properties, key) as Properties[Key]
+
+    return defaultValue !== undefined
+      ? value ?? defaultValue
+      : value
   }
 
   /**
-   * Set an input for the given `name` and assign the `value`. This
-   * overrides a possibly existing input with the same `name`.
-   *
-   * @param {String} name
-   * @param {*} value
-   *
-   * @returns {this}
+   * Set an input for the given `key` and assign the `value`. This
+   * overrides a possibly existing input with the same `key`.
    */
-  set (name: string, value: any): this {
-    return tap(this, () => {
-      this.attributes[name] = value
-    })
+  set<Key extends keyof Properties> (key: Key, value: Properties[Key]): this
+  set (values: Partial<Properties>): this
+  set<Key extends keyof Properties> (key: Key | Partial<Properties>, value?: any): this
+  set<Key extends keyof Properties> (key: Key | Partial<Properties>, value?: any): this {
+    if (typeof key === 'string') {
+      _.set(this.properties, key, value)
+
+      return this
+    }
+
+    if (this.isObject(key)) {
+      return this.merge(key)
+    }
+
+    throw new Error(`Invalid argument when setting values via ".set()". Expected a key-value-pair or object as the first argument. Received ${String(key)}.`)
   }
 
   /**
-   * Removes the input with the given `name`.
-   *
-   * @param {String} name
-   *
-   * @returns {this}
+   * Merge the given `data` object with the existing input bag.
    */
-  remove (name: string): this {
-    return tap(this, () => {
-      const { [name]: _, ...rest } = this.attributes
+  merge (data: Partial<Properties>): this {
+    if (this.isObject(data)) {
+      _.merge(this.properties, data)
 
-      this.attributes = rest
-    })
+      return this
+    }
+
+    throw new Error(`Invalid argument when merging values via ".merge()". Expected an object. Received "${typeof data}".`)
   }
 
   /**
-   * Determine whether the HTTP header for the given `name` exists.
-   *
-   * @param {String} name
-   *
-   * @returns {Boolean}
+   * Determine whether the given `input` is an object.
    */
-  has (name: keyof Dict<T>): boolean {
-    return !!this.get(name)
+  protected isObject (input: any): input is Record<string, any> {
+    return !!input && input.constructor.name === 'Object'
+  }
+
+  /**
+   * Determine whether the input bag contains an item for the given `key`,
+   * independently from the key’s assigned value. If you need to ensure
+   * that a value is not `undefined`, use the related `has` method.
+   */
+  exists<Key extends keyof Properties> (key: Key): boolean {
+    return _.has(this.properties, key)
+  }
+
+  /**
+   * Determine whether an item with the given `key` exists in the input bag
+   * and the assigned value is not `undefined`. The assigned value could
+   * also be `null`. Empty states should explcitely use `undefinied`.
+   */
+  has<Key extends keyof Properties> (key: Key): boolean {
+    return this.get(key) !== undefined
+  }
+
+  /**
+   * Determine whether the input bag is missing a value for the given `key`.
+   */
+  isMissing<Key extends keyof Properties> (key: Key): boolean {
+    return !this.has(key)
+  }
+
+  /**
+   * Remove the input bag item for the given `key`.
+   */
+  remove<Key extends keyof Properties> (key: Key): this {
+    _.unset(this.properties, key)
+
+    return this
+  }
+
+  /**
+   * Removes all data from the input bag.
+   */
+  clear (): this {
+    this.properties = {} as any
+
+    return this
   }
 }

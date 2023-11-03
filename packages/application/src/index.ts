@@ -1,3 +1,2 @@
-'use strict'
 
-export { Application } from './application'
+export { Application } from './application.js'

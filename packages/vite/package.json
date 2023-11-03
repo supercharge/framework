@@ -6,6 +6,15 @@
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
   },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist",
+  "exports": {
+    ".": "./dist/index.js"
+  },
   "dependencies": {
     "@supercharge/arrays": "~4.3.0",
     "@supercharge/contracts": "^3.20.4",
@@ -16,22 +25,18 @@
   "devDependencies": {
     "@supercharge/application": "^3.20.4",
     "@supercharge/http": "^3.20.4",
-    "@supercharge/tsconfig": "~4.0.0",
+    "@supercharge/tsconfig": "~7.0.0",
     "@supercharge/view": "^3.20.4",
-    "@vitest/coverage-c8": "~0.33.0",
-    "@vitest/coverage-v8": "~0.33.0",
     "c8": "~8.0.1",
+    "expect": "~29.7.0",
     "supertest": "~6.3.3",
     "typescript": "~5.2.2",
-    "vite": "~4.4.11",
-    "vitest": "~0.33.0"
+    "uvu": "~0.5.6",
+    "vite": "~4.5.0"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=20"
   },
-  "files": [
-    "dist"
-  ],
   "homepage": "https://superchargejs.com",
   "keywords": [
     "vite",
@@ -43,7 +48,6 @@
     "superchargejs"
   ],
   "license": "MIT",
-  "main": "dist",
   "peerDependencies": {
     "vite": "^3.0.0 || ^4.0.0"
   },
@@ -61,8 +65,7 @@
     "lint": "eslint src",
     "lint:fix": "npm run lint -- --fix",
     "test": "npm run build && npm run lint && npm run test:run",
-    "test:watch": "vitest",
-    "test:run": "vitest run --coverage"
-  },
-  "types": "dist"
+    "test:run": "c8 --include=dist uvu --ignore helpers --ignore fixtures",
+    "posttest": "c8 report --reporter=html"
+  }
 }

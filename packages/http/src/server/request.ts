@@ -1,19 +1,30 @@
-'use strict'
 
 import * as Koa from 'koa'
 import { Files } from 'formidable'
-import { FileBag } from './file-bag'
-import Str from '@supercharge/strings'
-import { CookieBag } from './cookie-bag'
+import { FileBag } from './file-bag.js'
 import { Mixin as Many } from 'ts-mixer'
+import { InputBag } from './input-bag.js'
 import { Arr } from '@supercharge/arrays'
+import { Str } from '@supercharge/strings'
 import { tap } from '@supercharge/goodies'
-import { ParameterBag } from './parameter-bag'
+import { CookieBag } from './cookie-bag.js'
+import { IncomingMessage } from 'node:http'
+import { IncomingHttpHeaders } from 'node:http2'
+import { ParsedUrlQuery } from 'node:querystring'
 import { Macroable } from '@supercharge/macroable'
-import { RequestHeaderBag } from './request-header-bag'
-import { InteractsWithState } from './interacts-with-state'
-import { IncomingHttpHeaders, IncomingMessage } from 'http'
-import { CookieOptions, HttpContext, HttpMethods, HttpRequest, InteractsWithContentTypes, Protocol, RequestCookieBuilderCallback } from '@supercharge/contracts'
+import { RequestHeaderBag } from './request-header-bag.js'
+import { QueryParameterBag } from './query-parameter-bag.js'
+import { InteractsWithState } from './interacts-with-state.js'
+import {
+  CookieConfig,
+  InteractsWithContentTypes,
+  HttpContext,
+  HttpMethods,
+  HttpRequest,
+  HttpRequestHeaders,
+  Protocol,
+  RequestCookieBuilderCallback
+} from '@supercharge/contracts'
 
 declare module 'koa' {
   interface Request extends Koa.BaseRequest {
@@ -37,19 +48,16 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
   /**
    * The default cookie options.
    */
-  private readonly cookieOptions: CookieOptions
+  private readonly cookieConfig: CookieConfig
 
   /**
    * Create a new response instance.
-   *
-   * @param ctx
-   * @param cookieOptions
    */
-  constructor (ctx: HttpContext, cookieOptions: CookieOptions) {
+  constructor (ctx: HttpContext, cookieConfig: CookieConfig) {
     super(ctx.raw)
 
     this.meta = { ctx }
-    this.cookieOptions = cookieOptions
+    this.cookieConfig = cookieConfig
   }
 
   /**
@@ -92,8 +100,8 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
   /**
    * Returns the request’s query parameters.
    */
-  query (): ParameterBag<string | string[]> {
-    return new ParameterBag<string | string[]>(this.koaCtx.query)
+  query<QueryParams = ParsedUrlQuery> (): QueryParameterBag<QueryParams> {
+    return new QueryParameterBag<QueryParams>(this.koaCtx.query as QueryParams)
   }
 
   /**
@@ -106,18 +114,14 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
   /**
    * Returns the request’s path parameters.
    */
-  params (): ParameterBag<string> {
+  params<PathParams extends Record<string, string> = {}> (): InputBag<PathParams> {
     if (!this.koaCtx.params) {
       this.koaCtx.params = {}
     }
 
-    return new ParameterBag(this.koaCtx.params)
+    return new InputBag<PathParams>(this.koaCtx.params as PathParams)
   }
 
-  /**
-   * Returns the path parameter for the given `name`. Returns the
-   * `defaultValue` if a parameter for the name doesn’t exist.
-   */
   param (name: string): string | undefined
   param (name: string, defaultValue: string): string
   param (name: string, defaultValue?: string): string | undefined {
@@ -128,7 +132,7 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
    * Returns the cookie bag.
    */
   cookies (): CookieBag {
-    return new CookieBag(this.koaCtx.cookies, this.cookieOptions)
+    return new CookieBag(this.koaCtx.cookies, this.cookieConfig)
   }
 
   /**
@@ -198,10 +202,6 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
 
   /**
    * Assign the given `payload` as the request body.
-   *
-   * @param {*} payload
-   *
-   * @returns {this}
    */
   setPayload (payload: any): this {
     return tap(this, () => {
@@ -218,10 +218,6 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
 
   /**
    * Store the given raw `payload` for this request.
-   *
-   * @param {*} payload
-   *
-   * @returns {this}
    */
   setRawPayload (payload: any): this {
     return tap(this, () => {
@@ -231,8 +227,6 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
 
   /**
    * Returns all files on the request.
-   *
-   * @returns {FileBag}
    */
   files (): FileBag {
     return FileBag.createFromBase(this.koaCtx.request.files)
@@ -240,12 +234,8 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
 
   /**
    * Assign the given `files` to the request.
-   *
-   * @param {Files} files
-   *
-   * @returns {this}
    */
-  setFiles (files: any): this {
+  setFiles (files: Files): this {
     return tap(this, () => {
       this.koaCtx.request.files = files
     })
@@ -254,77 +244,25 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
   /**
    * Returns the request header bag.
    */
-  headers (): RequestHeaderBag {
-    return new RequestHeaderBag(this.koaCtx)
+  headers<RequestHeaders = HttpRequestHeaders> (): InputBag<RequestHeaders> {
+    return new RequestHeaderBag<RequestHeaders>(this.koaCtx.headers as RequestHeaders)
   }
 
   /**
    * Returns the request header identified by the given `key`. The default
    * value will be returned if no header is present for the given key.
-   *
-   * @param {String} key
-   * @param {String|String[]} defaultValue
-   *
-   * @returns {String}
    */
-  header<Header extends keyof IncomingHttpHeaders> (key: Header): IncomingHttpHeaders[Header]
-  header<T, Header extends keyof IncomingHttpHeaders> (key: Header, defaultValue: T): IncomingHttpHeaders[Header] | T
-  header<T, Header extends keyof IncomingHttpHeaders> (key: Header, defaultValue?: T): IncomingHttpHeaders[Header] | T {
+  header<Header extends keyof HttpRequestHeaders> (key: Header): HttpRequestHeaders[Header]
+  header<T, Header extends keyof HttpRequestHeaders> (key: Header, defaultValue: T): HttpRequestHeaders[Header] | T
+  header<T, Header extends keyof HttpRequestHeaders> (key: Header, defaultValue?: T): HttpRequestHeaders[Header] | T {
     return this.headers().get(key, defaultValue)
   }
 
   /**
    * Determine whether the request contains a header with the given `key`.
-   *
-   * @returns {Boolean}
    */
-  hasHeader (key: string): boolean {
+  hasHeader<Header extends keyof HttpRequestHeaders> (key: Header): boolean {
     return this.headers().has(key)
-  }
-
-  /**
-   * Determine whether the request is sending JSON payload.
-   *
-   * @returns {Boolean}
-   */
-  isJson (): boolean {
-    return Str(
-      this.contentType()
-    ).contains('/json', '+json')
-  }
-
-  /**
-   * Determine whether the request is asking for a JSON response.
-   *
-   * @returns {Boolean}
-   */
-  wantsJson (): boolean {
-    return Str(
-      this.header('accept')
-    ).contains('/json', '+json')
-  }
-
-  /**
-   * Determine whether the request is asking for an HTML response.
-   *
-   * @returns {Boolean}
-   */
-  wantsHtml (): boolean {
-    return Str(
-      this.header('accept')
-    ).contains('text/html')
-  }
-
-  /**
-   * Returns the request’s content mime type from the `Content-Type` header field.
-   *
-   * @example
-   * ```
-   * request.contentType()
-   * ```
-   */
-  contentType (): IncomingHttpHeaders['content-type'] {
-    return this.header('content-type')
   }
 
   /**
@@ -339,6 +277,33 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
     const length = this.header('content-length')
 
     return Number(length) || 0
+  }
+
+  /**
+   * Determine whether the request method is cacheable.
+   * Cacheable methods are `HEAD` and `GET`.
+   *
+   * @see https://tools.ietf.org/html/rfc7231#section-4.2.3
+   */
+  isMethodCacheable (): boolean {
+    return ['GET', 'HEAD'].includes(this.method().toUpperCase())
+  }
+
+  /**
+   * Determine whether the request method is not cacheable.
+   * Not cacheable methods are `POST`, `PUT`, `DELETE`, `PATCH`, and `OPTIONS`.
+   *
+   * @see https://tools.ietf.org/html/rfc7231#section-4.2.3
+   */
+  isMethodNotCacheable (): boolean {
+    return !this.isMethodCacheable()
+  }
+
+  /**
+   * Returns the client’s user agent.
+   */
+  userAgent (): IncomingHttpHeaders['user-agent'] {
+    return this.header('user-agent')
   }
 
   /**
@@ -370,41 +335,49 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
   }
 
   /**
-   * Determine whether the request method is cacheable.
-   * Cacheable methods are `HEAD` and `GET`.
-   *
-   * @see https://tools.ietf.org/html/rfc7231#section-4.2.3
-   *
-   * @returns {Boolean}
+   * Determine whether the request is sending JSON payload.
    */
-  isMethodCacheable (): boolean {
-    return ['GET', 'HEAD'].includes(this.method().toUpperCase())
+  isJson (): boolean {
+    return Str(
+      this.contentType()
+    ).contains('/json', '+json')
   }
 
   /**
-   * Determine whether the request method is not cacheable.
-   * Not cacheable methods are `POST`, `PUT`, `DELETE`, `PATCH`, and `OPTIONS`.
-   *
-   * @see https://tools.ietf.org/html/rfc7231#section-4.2.3
-   *
-   * @returns {Boolean}
+   * Determine whether the request is asking for a JSON response.
    */
-  isMethodNotCacheable (): boolean {
-    return !this.isMethodCacheable()
+  wantsJson (): boolean {
+    return Str(
+      this.header('accept')
+    ).contains('/json', '+json')
   }
 
   /**
-   * Returns the client’s user agent.
+   * Determine whether the request is asking for an HTML response.
    */
-  userAgent (): IncomingHttpHeaders['user-agent'] {
-    return this.header('user-agent')
+  wantsHtml (): boolean {
+    return Str(
+      this.header('accept')
+    ).contains('text/html')
+  }
+
+  /**
+   * Returns the request’s content mime type from the `Content-Type` header field.
+   *
+   * @example
+   * ```
+   * request.contentType()
+   * ```
+   */
+  contentType (): HttpRequestHeaders['content-type'] {
+    return this.header('content-type')
   }
 
   /**
    * Determine whether the request the request is an XMLHttpRequest.
    */
   isXmlHttpRequest (): boolean {
-    return this.header('X-Requested-With') === 'XMLHttpRequest'
+    return this.headers<IncomingHttpHeaders>().get('X-Requested-With') === 'XMLHttpRequest'
   }
 
   /**
@@ -419,17 +392,18 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
    * Determine whether the request is the result of a PJAX call.
    */
   isPjax (): boolean {
-    return this.hasHeader('X-PJAX')
+    return this.headers<IncomingHttpHeaders>().has('X-PJAX')
   }
 
   /**
    * Determine whether the request is the result of a prefetch call.
    */
   isPrefetch (): boolean {
-    return Arr.from([
-      this.header('X-moz', '') as string,
-      this.header('Purpose', '') as string
-    ]).map(header => header.toLowerCase())
-      .has(header => header === 'prefetch')
+    return Arr
+      .from([
+        this.headers<IncomingHttpHeaders>().get('X-moz'),
+        this.headers<IncomingHttpHeaders>().get('Purpose')
+      ])
+      .has(value => typeof value === 'string' && value.toLowerCase() === 'prefetch')
   }
 }

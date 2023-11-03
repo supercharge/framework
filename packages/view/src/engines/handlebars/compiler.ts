@@ -1,14 +1,15 @@
-'use strict'
 
-import Path from 'path'
+import Path from 'node:path'
 import Fs from '@supercharge/fs'
-import Str from '@supercharge/strings'
-import Collect from '@supercharge/collections'
-import { esmResolve, tap } from '@supercharge/goodies'
+import { fileURLToPath } from 'node:url'
+import { Str } from '@supercharge/strings'
+import { Collect } from '@supercharge/collections'
 import Handlebars, { HelperDelegate } from 'handlebars'
+import { resolveDefaultImport, tap } from '@supercharge/goodies'
 import { Logger, ViewConfig, ViewEngine, ViewResponseConfig } from '@supercharge/contracts'
+import { ViewBaseCompiler } from './base-compiler.js'
 
-export class HandlebarsCompiler implements ViewEngine {
+export class HandlebarsCompiler extends ViewBaseCompiler implements ViewEngine {
   /**
      * The handlebars renderer instance.
      */
@@ -31,10 +32,10 @@ export class HandlebarsCompiler implements ViewEngine {
 
   /**
    * Create a new renderer instance.
-   *
-   * @param app
    */
   constructor (logger: Logger, config: ViewConfig['handlebars']) {
+    super()
+
     this.config = config
     this.logger = logger
     this.extension = '.hbs'
@@ -43,8 +44,6 @@ export class HandlebarsCompiler implements ViewEngine {
 
   /**
    * Returns the path to view layouts.
-   *
-   * @returns {string}
    */
   async layoutLocation (): Promise<string> {
     const layoutLocation = String(this.config.layouts)
@@ -58,8 +57,6 @@ export class HandlebarsCompiler implements ViewEngine {
 
   /**
    * Returns the path to view layouts.
-   *
-   * @returns {string}
    */
   defaultLayout (): string {
     return this.config.defaultLayout
@@ -67,8 +64,6 @@ export class HandlebarsCompiler implements ViewEngine {
 
   /**
    * Returns the path to view templates.
-   *
-   * @returns {string}
    */
   async viewsLocation (): Promise<string> {
     const viewsLocation = String(this.config.views)
@@ -82,8 +77,6 @@ export class HandlebarsCompiler implements ViewEngine {
 
   /**
    * Returns the path to the partial views.
-   *
-   * @returns {string}
    */
   async partialsLocations (): Promise<string[]> {
     return await Collect(this.config.partials).filter(async path => {
@@ -93,15 +86,14 @@ export class HandlebarsCompiler implements ViewEngine {
 
   /**
    * Returns the path to the view helpers.
-   *
-   * @returns {string}
    */
   async helpersLocations (): Promise<string[]> {
-    return await Collect(Path.resolve(__dirname, 'helpers'))
+    const packagedHelpersPath = fileURLToPath(import.meta.resolve('./helpers'))
+
+    return await Collect(packagedHelpersPath)
       .concat(this.config.helpers)
-      .filter(async path => {
-        return await Fs.exists(path)
-      }).all()
+      .filter(async path => await Fs.exists(path))
+      .all()
   }
 
   /**
@@ -133,10 +125,6 @@ export class HandlebarsCompiler implements ViewEngine {
 
   /**
    * Determine whether the given file is a script file and not a TypeScript definition.
-   *
-   * @param {String} file
-   *
-   * @returns {Boolean}
    */
   isViewFile (file: string): boolean {
     return file.endsWith(this.extension)
@@ -144,8 +132,6 @@ export class HandlebarsCompiler implements ViewEngine {
 
   /**
    * Register the given partial view `file` to the handlebars engine.
-   *
-   * @param {string} file
    */
   async registerPartialFromFile (file: string, basePath: string): Promise<void> {
     try {
@@ -159,11 +145,6 @@ export class HandlebarsCompiler implements ViewEngine {
 
   /**
    * Register a partial view with the given `name` and `content` to the handlebars engine.
-   *
-   * @param {String} name
-   * @param {String} content
-   *
-   * @returns {this}
    */
   registerPartial (name: string, content: string): this {
     return tap(this, () => {
@@ -173,8 +154,6 @@ export class HandlebarsCompiler implements ViewEngine {
 
   /**
    * Determine whether a partial view with the given `name` is registered.
-   *
-   * @param {string} name
    */
   hasPartial (name: string): boolean {
     return !!this.handlebars.partials[name]
@@ -185,11 +164,6 @@ export class HandlebarsCompiler implements ViewEngine {
    * name derives from the path by removing the base path and
    * view fileextension. For example, a partial view located
    * at `nav/center.hbs` receives the partial name `nav/center`.
-   *
-   * @param {String} path
-   * @param {String} basePath
-   *
-   * @returns {String}
    */
   partialNameFrom (path: string, basePath: string): string {
     return Str(path)
@@ -209,38 +183,34 @@ export class HandlebarsCompiler implements ViewEngine {
     )
       .flatMap(async helpersPath => await Fs.allFiles(helpersPath))
       .filter(helper => this.isScriptFile(helper))
-      .forEach(async helper => this.registerHelperFromFile(helper))
+      .forEach(async helper => await this.registerHelperFromFile(helper))
   }
 
   /**
    * Determine whether the given file is a script file and not a TypeScript definition.
-   *
-   * @param {String} file
-   *
-   * @returns {Boolean}
    */
   isScriptFile (file: string): boolean {
-    return file.endsWith('.d.ts')
-      ? false
-      : ['.js', '.ts'].includes(Path.extname(file))
+    if (file.endsWith('.d.ts')) {
+      return false
+    }
+
+    return ['.js', '.ts'].includes(
+      Fs.extension(file)
+    )
   }
 
   /**
    * Register a Handlebars view helper from the given file `path`.
-   *
-   * @param {string} path
    */
-  registerHelperFromFile (path: string): void {
+  async registerHelperFromFile (path: string): Promise<void> {
     const name = Fs.filename(path)
-    const helper: HelperDelegate = esmResolve(require(path))
+    const helper: HelperDelegate = await resolveDefaultImport(path)
 
     this.registerHelper(name, helper)
   }
 
   /**
    * Determine whether a view helper with the given `name` is registered.
-   *
-   * @param {string} name
    */
   hasHelper (name: string): boolean {
     return typeof this.handlebars.helpers[name] === 'function'
@@ -248,15 +218,12 @@ export class HandlebarsCompiler implements ViewEngine {
 
   /**
    * Register a view helper with the given `name` and `content` to the view engine.
-   *
-   * @param {string} name
-   * @param {HelperDelegate} fn
    */
-  registerHelper (name: string, fn: HelperDelegate): this {
+  registerHelper (name: string, helperFn: HelperDelegate): this {
     try {
-      typeof fn === 'function'
-        ? this.handlebars.registerHelper(name, fn)
-        : this.logger.warning(`View helper "${name}" is not a function, received "${typeof fn}"`)
+      typeof helperFn === 'function'
+        ? this.handlebars.registerHelper(name, helperFn)
+        : this.logger.warning(`View helper "${name}" is not a function, received "${typeof helperFn}"`)
     } catch (error: any) {
       this.logger.warning(`WARNING: failed to load helper "${name}": ${String(error.message)}`)
     }
@@ -266,10 +233,6 @@ export class HandlebarsCompiler implements ViewEngine {
 
   /**
    * Determine whether the given `view` exists.
-   *
-   * @param {String} view
-   *
-   * @returns {Boolean}
    */
   async exists (view: string): Promise<boolean> {
     const viewPath = this.ensureExtension(
@@ -281,12 +244,6 @@ export class HandlebarsCompiler implements ViewEngine {
 
   /**
    * Returns the rendered HTML view.
-   *
-   * @param {string} view
-   * @param {*} data
-   * @param {ViewConfig} viewConfig
-   *
-   * @returns {String}
    */
   async render (view: string, data: any, viewConfig: ViewResponseConfig = {}): Promise<string> {
     return this.hasLayout(viewConfig)
@@ -296,10 +253,6 @@ export class HandlebarsCompiler implements ViewEngine {
 
   /**
    * Determine whether to render a view with a layout.
-   *
-   * @param viewConfig
-   *
-   * @returns {Boolean}
    */
   private hasLayout (viewConfig: ViewResponseConfig): boolean {
     return !!this.baseLayout(viewConfig)
@@ -308,10 +261,6 @@ export class HandlebarsCompiler implements ViewEngine {
   /**
    * Returns the base layout name. Prefers a configured layout from the
    * given `viewConfig` over a possibly configured default layout.
-   *
-   * @param viewConfig
-   *
-   * @returns {String}
    */
   private baseLayout (viewConfig: ViewResponseConfig): string {
     return viewConfig.layout ?? this.defaultLayout()
@@ -320,11 +269,6 @@ export class HandlebarsCompiler implements ViewEngine {
   /**
    * Returns a rendered HTML view. The rendered `view` will be
    * placed into a `content` placeholder of the default layout.
-   *
-   * @param view
-   * @param data
-   *
-   * @returns {String}
    */
   async renderWithLayout (view: string, data: any, viewConfig: ViewResponseConfig): Promise<string> {
     const layout = await this.compile(this.baseLayout(viewConfig), { isLayout: true })
@@ -337,11 +281,6 @@ export class HandlebarsCompiler implements ViewEngine {
 
   /**
    * Returns the HTML of the given `view`.
-   *
-   * @param {String} view
-   * @param {*} data
-   *
-   * @returns {String}
    */
   async renderView (view: string, data: any): Promise<string> {
     const template = await this.compile(view, { isLayout: false })
@@ -351,26 +290,17 @@ export class HandlebarsCompiler implements ViewEngine {
 
   /**
    * Compile the given `template` to a render function.
-   *
-   * @param view
-   *
-   * @returns {Function}
    */
-  async compile (view: string, options: ReadTemplateOptions = {}): Promise<HandlebarsTemplateDelegate> {
+  async compile (view: string, config: ReadTemplateConfig = {}): Promise<HandlebarsTemplateDelegate> {
     return this.handlebars.compile(
-      await this.readTemplate(view, options)
+      await this.readTemplate(view, config)
     )
   }
 
   /**
    * Reads and returns the view `template` from the hard disk.
-   *
-   * @param template
-   * @param options
-   *
-   * @returns {String}
    */
-  async readTemplate (template: string, { isLayout = false }: ReadTemplateOptions): Promise<string> {
+  async readTemplate (template: string, { isLayout = false }: ReadTemplateConfig): Promise<string> {
     const view = isLayout
       ? Path.resolve(await this.layoutLocation(), template)
       : Path.resolve(await this.viewsLocation(), template)
@@ -384,8 +314,6 @@ export class HandlebarsCompiler implements ViewEngine {
 
   /**
    * Ensure the view file exists.
-   *
-   * @throws
    */
   async ensureViewExists (view: string): Promise<void> {
     const file = this.ensureExtension(view)
@@ -397,16 +325,12 @@ export class HandlebarsCompiler implements ViewEngine {
 
   /**
    * Appends the view file extension when needed.
-   *
-   * @param {String} template
-   *
-   * @returns {String}
    */
   ensureExtension (template: string): string {
     return Str(template).finish(this.extension).get()
   }
 }
 
-interface ReadTemplateOptions {
+interface ReadTemplateConfig {
   isLayout?: boolean
 }

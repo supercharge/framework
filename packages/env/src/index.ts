@@ -1,3 +1,2 @@
-'use strict'
 
-export { Env } from './env'
+export { Env } from './env.js'

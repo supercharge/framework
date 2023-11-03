@@ -1,4 +1,3 @@
-'use strict'
 
-export * from './handler'
-export * from './http-error'
+export * from './handler.js'
+export * from './http-error.js'

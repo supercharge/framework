@@ -13,7 +13,13 @@
     ],
     "references": [
         {
+            "path": "../config"
+        },
+        {
             "path": "../contracts"
+        },
+        {
+            "path": "../env"
         }
     ]
 }

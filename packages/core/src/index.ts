@@ -1,6 +1,5 @@
-'use strict'
 
-export { Application } from './application'
+export { Application } from './application.js'
 
 export {
   BootServiceProviders,
@@ -9,10 +8,10 @@ export {
   LoadConfiguration,
   LoadEnvironmentVariables,
   RegisterServiceProviders
-} from './bootstrappers'
+} from './bootstrappers/index.js'
 
-export { ConsoleKernel } from './console/kernel'
-export { ErrorHandler, HttpError } from './errors'
-export { HttpKernel } from './http/kernel'
-export { RouteServiceProvider } from './providers'
+export { ConsoleKernel } from './console/kernel.js'
+export { ErrorHandler, HttpError } from './errors/index.js'
+export { HttpKernel } from './http/kernel.js'
+export { RouteServiceProvider } from './providers/index.js'
 export { Command } from '@supercharge/console'

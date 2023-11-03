@@ -1,7 +1,6 @@
-'use strict'
 
-export * from './group'
-export * from './pending-route'
-export * from './route-collection'
-export * from './route'
-export * from './router'
+export * from './group.js'
+export * from './pending-route.js'
+export * from './route-collection.js'
+export * from './route.js'
+export * from './router.js'

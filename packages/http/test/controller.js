@@ -1,9 +1,8 @@
-'use strict'
 
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { setupApp } = require('./helpers')
-const { Controller } = require('../dist')
+import { test } from 'uvu'
+import { expect } from 'expect'
+import { setupApp } from './helpers/index.js'
+import { Controller } from '../dist/index.js'
 
 const app = setupApp()
 

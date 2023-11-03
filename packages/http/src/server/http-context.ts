@@ -1,7 +1,6 @@
-'use strict'
 
 import { RouterContext } from '@koa/router'
-import { InteractsWithState } from './interacts-with-state'
+import { InteractsWithState } from './interacts-with-state.js'
 import { Application, HttpContext as HttpContextContract, HttpRequest, HttpResponse, HttpResponseCtor, HttpRequestCtor, HttpConfig } from '@supercharge/contracts'
 
 export class HttpContext extends InteractsWithState implements HttpContextContract {
@@ -17,9 +16,6 @@ export class HttpContext extends InteractsWithState implements HttpContextContra
 
   /**
    * Create a new HTTP context instance.
-   *
-   * @param {RouterContext} ctx
-   * @param {Application} app
    */
   constructor (ctx: RouterContext, app: Application, cookieConfig: HttpConfig['cookie']) {
     super(ctx)
@@ -30,11 +26,6 @@ export class HttpContext extends InteractsWithState implements HttpContextContra
 
   /**
    * Returns a wrapped HTTP context for the raw Koa HTTP `ctx`.
-   *
-   * @param {RouterContext} ctx
-   * @param {Application} app
-   *
-   * @returns {HttpContext}
    */
   static wrap (ctx: RouterContext, app: Application, cookieConfig: HttpConfig['cookie']): HttpContext {
     return new this(ctx, app, cookieConfig)
@@ -42,8 +33,6 @@ export class HttpContext extends InteractsWithState implements HttpContextContra
 
   /**
    * Returns the raw Koa HTTP context instance.
-   *
-   * @returns {RouterContext}
    */
   get raw (): RouterContext {
     return this.koaCtx
@@ -51,8 +40,6 @@ export class HttpContext extends InteractsWithState implements HttpContextContra
 
   /**
    * Returns the HTTP request instance.
-   *
-   * @returns {HttpRequest}
    */
   get request (): HttpRequest {
     /**
@@ -67,8 +54,6 @@ export class HttpContext extends InteractsWithState implements HttpContextContra
 
   /**
    * Returns the HTTP response instance.
-   *
-   * @returns {HttpResponse}
    */
   get response (): HttpResponse {
     /**

@@ -1,4 +1,3 @@
-'use strict'
 
 import JSON from '@supercharge/json'
 import { Str } from '@supercharge/strings'
@@ -53,10 +52,6 @@ export class Encrypter implements EncryptionContract {
 
   /**
    * Encrypt the given `value`.
-   *
-   * @param value
-   *
-   * @returns {String}
    */
   encrypt (value: any): string {
     const iv = Str.random(use => use.characters().numbers().length(16))
@@ -78,11 +73,6 @@ export class Encrypter implements EncryptionContract {
 
   /**
    * Base64-encode the given `value` (RFC 4648).
-   *
-   * @param value
-   * @param encoding
-   *
-   * @returns {String}
    */
   protected base64UrlEncode (value: any): string {
     return this
@@ -94,11 +84,6 @@ export class Encrypter implements EncryptionContract {
 
   /**
    * Base64-encode the given `value`.
-   *
-   * @param value
-   * @param encoding
-   *
-   * @returns {String}
    */
   protected base64Encode (value: any, encoding?: BufferEncoding): string {
     return typeof value === 'string'
@@ -108,10 +93,6 @@ export class Encrypter implements EncryptionContract {
 
   /**
    * Returns an HMAC for the given `value`.
-   *
-   * @param value
-   *
-   * @returns {String}
    */
   protected hmac (value: string): string {
     return this.base64Encode(
@@ -121,11 +102,6 @@ export class Encrypter implements EncryptionContract {
 
   /**
    * Determine whether the given `hash` is a valid HMAC for the related `value`.
-   *
-   * @param hash
-   * @param value
-   *
-   * @returns {Boolean}
    */
   protected isInvalidHmac (hash: string, value: any): boolean {
     return this.hmac(value) !== hash
@@ -133,10 +109,6 @@ export class Encrypter implements EncryptionContract {
 
   /**
    * Decrypt the given `value`.
-   *
-   * @param value
-   *
-   * @returns {T | undefined}
    */
   decrypt<T extends any>(value: string): T | undefined {
     if (typeof value !== 'string') {
@@ -144,6 +116,10 @@ export class Encrypter implements EncryptionContract {
     }
 
     const [encryptedEncoded, ivEncoded, hmac] = value.split('.')
+
+    if (!encryptedEncoded || !ivEncoded || !hmac) {
+      throw new Error('Invalid string value provided to the "decrypt" method, it does not contain the required fields.')
+    }
 
     const encrypted = this.base64UrlDecode(encryptedEncoded, 'hex')
     const iv = this.base64UrlDecode(ivEncoded)
@@ -162,11 +138,6 @@ export class Encrypter implements EncryptionContract {
 
   /**
    * Base64-decode the given `value`.
-   *
-   * @param encoded
-   * @param outputEncoding
-   *
-   * @returns {String}
    */
   protected base64UrlDecode (encoded: any, outputEncoding?: BufferEncoding): string {
     return Buffer.from(encoded, 'base64').toString(outputEncoding)

@@ -1,9 +1,7 @@
-'use strict'
 
-const Path = require('path')
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { ServiceProvider } = require('../dist')
+import { test } from 'uvu'
+import { expect } from 'expect'
+import { ServiceProvider } from '../dist/index.js'
 
 let config = {}
 
@@ -109,21 +107,33 @@ test('provider.callBootedCallbacks()', async () => {
 test('provider.mergeConfigFrom()', async () => {
   const serviceProvider = new ServiceProvider(appMock)
 
-  serviceProvider.mergeConfigFrom(
-    Path.resolve(__dirname, 'fixtures', 'test-config.js'), 'test'
+  await serviceProvider.mergeConfigFrom(
+    import.meta.resolve('./fixtures/test-config.js'), 'test'
   )
 
   expect(serviceProvider.config().has('test')).toBe(true)
 })
 
+test('provider.mergeConfigFrom() throws for file without default export', async () => {
+  const serviceProvider = new ServiceProvider(appMock)
+  const filePath = import.meta.resolve('./fixtures/test-config-without-default-export.js')
+
+  await expect(
+    serviceProvider.mergeConfigFrom(filePath, 'test')
+  ).rejects.toThrow(`Missing "export default" in module "${filePath}"`)
+
+  expect(serviceProvider.config().all()).toEqual({})
+  expect(serviceProvider.config().has('test')).toBe(false)
+})
+
 test('provider.mergeConfigFrom() throws for unavailable file', async () => {
   const serviceProvider = new ServiceProvider(appMock)
 
-  expect(() => {
+  await expect(
     serviceProvider.mergeConfigFrom(
-      Path.resolve(__dirname, 'fixtures', 'unavailable.js'), 'test'
+      import.meta.resolve('./fixtures/unavailable.js'), 'test'
     )
-  }).toThrow()
+  ).rejects.toThrow('Cannot find module')
 
   expect(serviceProvider.config().all()).toEqual({})
   expect(serviceProvider.config().has('test')).toBe(false)

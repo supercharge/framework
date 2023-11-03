@@ -1,8 +1,7 @@
-'use strict'
 
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { BcryptHasher } = require('../dist/bcrypt-hasher')
+import { test } from 'uvu'
+import { expect } from 'expect'
+import { BcryptHasher } from '../dist/bcrypt-hasher.js'
 
 test('defaults to 12 rounds', async () => {
   const bcrypt = new BcryptHasher({})

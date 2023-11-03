@@ -1,6 +1,5 @@
-'use strict'
 
-class TestServiceProvider {
+export default class TestServiceProvider {
   register (app) {
     app.bind('test-register', () => {
       return true
@@ -20,5 +19,3 @@ class TestServiceProvider {
   callBootingCallbacks () {}
   callBootedCallbacks () {}
 }
-
-module.exports = TestServiceProvider

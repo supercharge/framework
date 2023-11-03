@@ -1,14 +1,13 @@
-'use strict'
 
 import { tap } from '@supercharge/goodies'
 import { HelperDelegate } from 'handlebars'
 import { Manager } from '@supercharge/manager'
-import { HandlebarsCompiler } from './engines/handlebars'
-import { Application, ViewConfig, ViewEngine, ViewResponseConfig } from '@supercharge/contracts'
+import { HandlebarsCompiler } from './engines/handlebars/index.js'
+import { Application, ViewConfig, ViewEngine, ViewResponseConfig, ViewSharedData } from '@supercharge/contracts'
 
-export class ViewManager extends Manager implements ViewEngine {
+export class ViewManager extends Manager<Application> implements ViewEngine {
   /**
-   * Stores the view configuration object.
+   * Stores the internal view configuration object.
    */
   private readonly meta: {
     config: ViewConfig
@@ -16,8 +15,6 @@ export class ViewManager extends Manager implements ViewEngine {
 
   /**
    * Create a new view manager instance.
-   *
-   * @param {Application} app
    */
   constructor (app: Application, config: ViewConfig) {
     super(app)
@@ -28,21 +25,17 @@ export class ViewManager extends Manager implements ViewEngine {
 
   /**
    * Validate the view config.
-   *
-   * @throws
    */
   private validateConfig (): void {
-    this.ensureConfig('view', () => {
+    this.app.config().ensure('view', () => {
       throw new Error('Missing view configuration file. Make sure the "config/view.ts" file exists.')
     })
 
-    this.ensureConfig('view.driver')
+    this.app.config().ensure('view.driver')
   }
 
   /**
    * Returns the default driver name.
-   *
-   * @returns {String}
    */
   defaultDriver (): string {
     return this.meta.config.driver
@@ -51,10 +44,6 @@ export class ViewManager extends Manager implements ViewEngine {
   /**
    * Returns the driver instance. This method exists to retrieve
    * IntelliSense because of the method’s specific return value.
-   *
-   * @param {String} name
-   *
-   * @returns {ViewEngine}
    */
   protected override driver (name?: string): ViewEngine {
     return super.driver(name)
@@ -62,8 +51,6 @@ export class ViewManager extends Manager implements ViewEngine {
 
   /**
    * Create a Handlebars view renderer instance.
-   *
-   * @returns {ViewEngine}
    */
   protected createHandlebarsDriver (): ViewEngine {
     return new HandlebarsCompiler(this.app.logger(), this.meta.config.handlebars)
@@ -71,12 +58,6 @@ export class ViewManager extends Manager implements ViewEngine {
 
   /**
    * Render the given view.
-   *
-   * @param {String} view
-   * @param {*} data
-   * @param {ViewConfig} config
-   *
-   * @returns {String} the rendered view
    */
   async render (view: string, data: any, config?: ViewResponseConfig): Promise<string> {
     return await this.driver().render(view, data, config)
@@ -84,11 +65,6 @@ export class ViewManager extends Manager implements ViewEngine {
 
   /**
    * Render the given view.
-   *
-   * @param {String} view
-   * @param {*} data
-   *
-   * @returns {String} the rendered view
    */
   async exists (view: string): Promise<boolean> {
     return await this.driver().exists(view)
@@ -96,11 +72,6 @@ export class ViewManager extends Manager implements ViewEngine {
 
   /**
    * Register a partial view with the given `name` and `content` to the handlebars engine.
-   *
-   * @param {String} name
-   * @param {String} content
-   *
-   * @returns {this}
    */
   registerPartial (name: string, content: string): this {
     return tap(this, () => {
@@ -110,8 +81,6 @@ export class ViewManager extends Manager implements ViewEngine {
 
   /**
    * Determine whether a partial view with the given `name` is registered.
-   *
-   * @param {string} name
    */
   hasPartial (name: string): boolean {
     return this.driver().hasPartial(name)
@@ -119,11 +88,6 @@ export class ViewManager extends Manager implements ViewEngine {
 
   /**
    * Register a view helper with the given `name` and `content` to the view engine.
-   *
-   * @param {String} name
-   * @param {HelperDelegate} fn
-   *
-   * @returns {this}
    */
   registerHelper (name: string, fn: HelperDelegate): this {
     return tap(this, () => {
@@ -133,11 +97,34 @@ export class ViewManager extends Manager implements ViewEngine {
 
   /**
    * Determine whether a view helper with the given `name` is registered.
-   *
-   * @param {string} name
    */
   hasHelper (name: string): boolean {
     return this.driver().hasHelper(name)
+  }
+
+  /**
+   * Share a given state of data to all views, across HTTP requests.
+   *
+   * @example
+   * ```
+   * import { View } from '@supercharge/facades'
+   *
+   * View.share({ key: 'value' })
+   * ```
+   */
+  share<K extends keyof ViewSharedData> (key: K, value: ViewSharedData[K]): this
+  share (values: Partial<ViewSharedData>): this
+  share (key: string | any, value?: any): this {
+    this.driver().share(key, value)
+
+    return this
+  }
+
+  /**
+   * Returns the shared data.
+   */
+  sharedData (): Record<string, any> {
+    return this.driver().sharedData()
   }
 
   /**

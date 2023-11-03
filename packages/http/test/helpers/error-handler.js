@@ -1,7 +1,6 @@
-'use strict'
 
-module.exports = class ErrorHandler {
-  handle (ctx, error) {
+export default class ErrorHandler {
+  handle (error, ctx) {
     // console.log('Received error in testing error handler', { error })
 
     ctx.response.status(error.status || error.statusCode || 500)

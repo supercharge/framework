@@ -1,4 +1,3 @@
-'use strict'
 
 import { LogChannelConfig } from '@supercharge/contracts'
 import Winston, { format, Logger as WinstonLogger } from 'winston'
@@ -17,8 +16,6 @@ export class Logger<LoggingChannelConfig extends LogChannelConfig> {
 
   /**
    * Create a new console logger instance.
-   *
-   * @param options
    */
   constructor (options: LoggingChannelConfig) {
     this.config = options = options ?? {}
@@ -28,8 +25,6 @@ export class Logger<LoggingChannelConfig extends LogChannelConfig> {
 
   /**
    * Create a logger instance.
-   *
-   * @returns {Logger}
    */
   createLogger (): WinstonLogger {
     Winston.addColors(this.colors())
@@ -46,8 +41,6 @@ export class Logger<LoggingChannelConfig extends LogChannelConfig> {
   /**
    * Returns the extended color palette containing the corresponding
    * colors for the added logging levels "emergency" and "critical".
-   *
-   * @returns {AbstractConfigSetColors}
    */
   colors (): AbstractConfigSetColors {
     return Object.assign({
@@ -67,8 +60,6 @@ export class Logger<LoggingChannelConfig extends LogChannelConfig> {
    * Returns an object of logging levels. Winston uses abbreviations for the
    * "emergency" and "critical" logs levels. The returned log levels extend
    * the default levels with full-named aliases.
-   *
-   * @returns {Object}
    */
   levels (): AbstractConfigSetLevels {
     return Object.assign({
@@ -81,8 +72,6 @@ export class Logger<LoggingChannelConfig extends LogChannelConfig> {
    * The winston logger does not log error messages when passing
    * down error objects. When receiving an error instance, this
    * logger will handle it properly and show the stacktrace.
-   *
-   * @returns {Format}
    */
   handleErrorLogs (): any {
     const formatter = format(log => {
@@ -96,10 +85,6 @@ export class Logger<LoggingChannelConfig extends LogChannelConfig> {
 
   /**
    * Determine whether the given `log` item is an error.
-   *
-   * @param log
-   *
-   * @returns {Boolean}
    */
   isError (log: any): boolean {
     return log instanceof Error
@@ -107,8 +92,6 @@ export class Logger<LoggingChannelConfig extends LogChannelConfig> {
 
   /**
    * Log the given `message` at debug level.
-   *
-   * @param message
    */
   debug (message: string, ...context: any[]): void {
     this.logger.debug(message, ...context)
@@ -116,8 +99,6 @@ export class Logger<LoggingChannelConfig extends LogChannelConfig> {
 
   /**
    * Log the given `message` at info level.
-   *
-   * @param message
    */
   info (message: string, ...context: any[]): void {
     this.logger.info(message, ...context)
@@ -125,8 +106,6 @@ export class Logger<LoggingChannelConfig extends LogChannelConfig> {
 
   /**
    * Log the given `message` at notice level.
-   *
-   * @param message
    */
   notice (message: string, ...context: any[]): void {
     this.logger.notice(message, ...context)
@@ -134,8 +113,6 @@ export class Logger<LoggingChannelConfig extends LogChannelConfig> {
 
   /**
    * Log the given `message` at warning level.
-   *
-   * @param message
    */
   warning (message: string, ...context: any[]): void {
     this.logger.warning(message, ...context)
@@ -143,8 +120,6 @@ export class Logger<LoggingChannelConfig extends LogChannelConfig> {
 
   /**
    * Log the given `message` at error level.
-   *
-   * @param message
    */
   error (message: string, ...context: any[]): void {
     this.logger.error(message, ...context)
@@ -152,8 +127,6 @@ export class Logger<LoggingChannelConfig extends LogChannelConfig> {
 
   /**
    * Log the given `message` at critical level.
-   *
-   * @param message
    */
   critical (message: string, ...context: any[]): void {
     this.logger.crit(message, ...context)
@@ -161,8 +134,6 @@ export class Logger<LoggingChannelConfig extends LogChannelConfig> {
 
   /**
    * Log the given `message` at alert level.
-   *
-   * @param message
    */
   alert (message: string, ...context: any[]): void {
     this.logger.alert(message, ...context)
@@ -170,8 +141,6 @@ export class Logger<LoggingChannelConfig extends LogChannelConfig> {
 
   /**
    * Log the given `message` at emergency level.
-   *
-   * @param message
    */
   emergency (message: string, ...context: any[]): void {
     this.logger.emerg(message, ...context)

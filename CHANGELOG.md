@@ -1,5 +1,68 @@
 # Changelog
 
+## [4.0.0](https://github.com/supercharge/framework/compare/v3.20.4...v4.0.0) - 2023-xx-xx
+
+### Added
+- `@supercharge/contracts`
+    - add `HttpDefaultRequestHeaders` and `HttpDefaultRequestHeader` interfaces: these are strict contracts for HTTP headers allowing IntelliSense for individual headers. IntelliSense is not supported on Node.js’s `IncomingHttpHeaders` interface because it contains an index signature which opens the interfaces to basically anything … the newly added interfaces are strict for allowed keys
+    - add `HttpRequestHeaders` and `HttpRequestHeader` interfaces: `HttpRequestHeaders` is an interface to be used by developers for augmentation to add custom, project-specific request headers. For example, this can be used to add headers for rate limiting
+- `@supercharge/hashing`
+    - add `createHash` method: create a Node.js `Hash` instance for a given input
+    - add `md5` method: create a Node.js MD5 hash
+    - add `sha256` method: create a Node.js SHA256 hash
+    - add `sha512` method: create a Node.js SHA512 hash
+- `@supercharge/view`
+    - add `share` method: share data across view templates. This is useful for data like your app name
+    - add `sharedData` method: returns the shared data
+
+### Updated
+- bump dependencies
+- `@supercharge/contracts`
+    - `StateBag`: add `exists` method to determine whether the state bag contains an entry `key`, no matter what value is assigned to the key
+
+### Removed
+- `@supercharge/contracts`
+    - removed `BodyparserOptions`: use `BodyparserConfig` instead
+    - removed `CookieOptions`: use `CookieConfig` instead
+    - removed `CorsOptions`: use `CorsConfig` instead
+    - removed `HashBuilderOptions`: use `HashBuilderConfig` instead
+    - removed `StaticAssetsOptions`: use `StaticAssetsConfig` instead
+
+### Breaking Changes
+- all packages of the framework moved to ESM
+- require Node.js v20
+- `@supercharge/contracts`
+    - removed export `RequestHeaderBag` contract. The `Request` interface uses the `InputBag<IncomingHttpHeaders>` instead
+    - removed export `RequestStateData`, use `HttpStateData` instead
+    - `StateBag`: the `has(key)` method now determines whether the value for a given `key` is not `undefined`. If you want to check whether a given `key` is present in the state bag, independently from the value, use the newly added `exists(key)` method
+    - `StateBag`:
+        - the `isMissing(key)` method now determines whether a value for a given `key` is `undefined` (related to `has(key)`, because `isMissing` is doing the opposite of `has`)
+        - rename the `add(key, value)` method to `set(key, value)`
+        - remove the `add(key, value)` method
+- `@supercharge/hashing`
+    - removed `bcrypt` package from being installed automatically, users must install it explicitely when the hashing driver should use bcrypt
+    - hashing options require a factory function to return the hash driver constructor
+- `@supercharge/view`
+    - export for the view response changed from `View` to `ViewResponse`
+- `@supercharge/http`
+    - the `RequestHeaderBag` extends the `InputBag` which changes the behavior of the `has(key)` method: it returns `false` if the stored value is `undefined` and returns `true` otherwise
+
+    This pull request switches the parameters of the error report, handle, render method:
+- `@supercharge/core`
+    - switch the parameters of the error’s and error handler’s `report`, `handle`, `render` methods:
+    ```ts
+    // before
+    handle(ctx: HttpContext, error: Error)
+    report(ctx: HttpContext, error: Error)
+    render(ctx: HttpContext, error: Error)
+
+    // now
+    handle(error: Error, ctx: HttpContext)
+    report(error: Error, ctx: HttpContext)
+    render(error: Error, ctx: HttpContext)
+    ```
+
+
 ## [3.20.4](https://github.com/supercharge/framework/compare/v3.20.3...v3.20.4) - 2023-10-15
 
 ### Updated

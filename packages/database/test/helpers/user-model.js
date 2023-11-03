@@ -1,8 +1,8 @@
-'use strict'
 
-const { Model } = require('../../dist')
+import PostModel from './post-model.js'
+import { Model } from '../../dist/index.js'
 
-module.exports = class UserModel extends Model {
+export default class UserModel extends Model {
   static get tableName () {
     return 'users_table'
   }
@@ -19,8 +19,6 @@ module.exports = class UserModel extends Model {
   }
 
   static get relationMappings () {
-    const PostModel = require('./post-model')
-
     return {
       posts: {
         relation: Model.HasManyRelation,

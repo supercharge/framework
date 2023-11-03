@@ -1,14 +1,13 @@
-'use strict'
 
-const Path = require('path')
-const deepmerge = require('deepmerge')
-const ErrorHandler = require('./error-handler')
-const { HttpServiceProvider } = require('../../dist')
-const { Application } = require('@supercharge/application')
-const { ViewServiceProvider } = require('@supercharge/view')
+import deepmerge from 'deepmerge'
+import { fileURLToPath } from 'node:url'
+import ErrorHandler from './error-handler.js'
+import { Application } from '@supercharge/application'
+import { ViewServiceProvider } from '@supercharge/view'
+import { HttpServiceProvider } from '../../dist/index.js'
 
 const defaultOptions = {
-  appRoot: Path.resolve(__dirname)
+  appRoot: fileURLToPath(import.meta.resolve('./'))
 }
 
 /**
@@ -18,7 +17,7 @@ const defaultOptions = {
  *
  * @returns {Application}
  */
-exports.setupApp = function makeApp (config) {
+export function setupApp (config) {
   config = deepmerge(defaultOptions, { ...config })
 
   const app = Application

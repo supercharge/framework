@@ -1,6 +1,5 @@
-'use strict'
 
-import { UploadedFile } from './uploaded-file'
+import { UploadedFile } from './uploaded-file.js'
 
 export interface FileBag {
   /**
@@ -20,10 +19,6 @@ export interface FileBag {
 
   /**
    * Determine whether a file or list of files exists for the given `name`.
-   *
-   * @param {String} name
-   *
-   * @returns {Boolean}
    */
   has(name: string): boolean
 

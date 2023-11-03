@@ -1,6 +1,5 @@
-'use strict'
 
-import { HttpRoute as Route, RouteObjectAttributes } from './route'
+import { HttpRoute as Route, RouteObjectAttributes } from './route.js'
 
 export interface HttpRouteCollection {
   /**

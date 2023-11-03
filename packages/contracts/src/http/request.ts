@@ -1,23 +1,23 @@
-'use strict'
 
-import { FileBag } from './file-bag'
-import { HttpMethods } from './methods'
-import { HttpContext } from './context'
-import { CookieBag } from './cookie-bag'
-import { ParameterBag } from './parameter-bag'
-import { CookieOptions } from './cookie-options'
+import { FileBag } from './file-bag.js'
+import { InputBag } from './input-bag.js'
+import { HttpMethods } from './methods.js'
+import { HttpContext } from './context.js'
+import { CookieBag } from './cookie-bag.js'
+import { IncomingMessage } from 'node:http'
+import { IncomingHttpHeaders } from 'node:http2'
+import { CookieConfig } from './cookie-config.js'
 import { MacroableCtor } from '@supercharge/macroable'
-import { RequestHeaderBag } from './request-header-bag'
-import { IncomingHttpHeaders, IncomingMessage } from 'http'
-import { InteractsWithState } from './concerns/interacts-with-state'
-import { RequestCookieBuilderCallback } from './cookie-options-builder'
-import { InteractsWithContentTypes } from './concerns/interacts-with-content-types'
+import { QueryParameterBag } from './query-parameter-bag.js'
+import { InteractsWithState } from './concerns/interacts-with-state.js'
+import { RequestCookieBuilderCallback } from './cookie-config-builder.js'
+import { InteractsWithContentTypes } from './concerns/interacts-with-content-types.js'
 
 export interface HttpRequestCtor extends MacroableCtor {
   /**
    * Create a new HTTP request instance.
    */
-  new (context: HttpContext, cookieOptions: CookieOptions): HttpRequest
+  new (context: HttpContext, cookieConfig: CookieConfig): HttpRequest
 }
 
 export type Protocol = 'http' | 'https' | string
@@ -67,7 +67,7 @@ export interface HttpRequest extends InteractsWithState, InteractsWithContentTyp
   /**
    * Returns the query parameter bag.
    */
-  query(): ParameterBag<string | string[]>
+  query<QueryParams extends Record<string, string | string[]> = {}>(): QueryParameterBag<QueryParams>
 
   /**
    * Returns the plain query string, without the leading ?.
@@ -77,7 +77,7 @@ export interface HttpRequest extends InteractsWithState, InteractsWithContentTyp
   /**
    * Returns the path parameter bag.
    */
-  params(): ParameterBag<string>
+  params<PathParams extends Record<string, string> = {}> (): InputBag<PathParams>
 
   /**
    * Returns the path parameter for the given `name`. Returns the
@@ -170,7 +170,7 @@ export interface HttpRequest extends InteractsWithState, InteractsWithContentTyp
   /**
    * Returns the request header bag.
    */
-  headers(): RequestHeaderBag
+  headers<RequestHeaders = IncomingHttpHeaders>(): InputBag<RequestHeaders>
 
   /**
    * Returns the request header identified by the given `key`. The default

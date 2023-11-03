@@ -1,21 +1,17 @@
-'use strict'
 
-const Path = require('node:path')
-const Crypto = require('node:crypto')
-const Fs = require('node:fs/promises')
-const { DatabaseManager } = require('../../dist')
-const { Application } = require('@supercharge/core')
+import Path from 'node:path'
+import Crypto from 'node:crypto'
+import Fs from 'node:fs/promises'
+import { fileURLToPath } from 'node:url'
+import { Application } from '@supercharge/core'
+import { DatabaseManager } from '../../dist/index.js'
 
-exports.makeDb = makeDb
-exports.makeApp = makeApp
-exports.clearDbDirectory = clearDbDirectory
-
-const databaseDirectory = Path.resolve(__dirname, '..', 'fixtures')
+const databaseDirectory = fileURLToPath(import.meta.resolve('./../fixtures'))
 
 /**
  * @returns {Database}
  */
-function makeDb (app, dbDirectory = databaseDirectory) {
+export function makeDb (app, dbDirectory = databaseDirectory) {
   const application = (app || makeApp(undefined, dbDirectory))
 
   return new DatabaseManager(application.config().get('database'))
@@ -24,7 +20,7 @@ function makeDb (app, dbDirectory = databaseDirectory) {
 /**
  * @returns {Database}
  */
-async function clearDbDirectory (dbDirectory = databaseDirectory) {
+export async function clearDbDirectory (dbDirectory = databaseDirectory) {
   const sqliteFiles = [].concat(
     await Fs.readdir(dbDirectory)
   ).filter(file => file.endsWith('.sqlite'))
@@ -39,7 +35,7 @@ async function clearDbDirectory (dbDirectory = databaseDirectory) {
  *
  * @returns {Application}
  */
-function makeApp (config = {}, dbDirectory) {
+export function makeApp (config = {}, dbDirectory) {
   const app = new Application()
 
   app.config().set('database', {
@@ -61,7 +57,7 @@ function makeApp (config = {}, dbDirectory) {
  */
 function createSqliteConnectionConfig (dbDirectory) {
   const id = Crypto.randomBytes(28).toString('hex').slice(0, 5)
-  const dbPath = dbDirectory || Path.join(__dirname, '../fixtures')
+  const dbPath = dbDirectory || fileURLToPath(import.meta.resolve('./../fixtures'))
   const dbFile = `${dbPath}/database-${id}.sqlite`
 
   return {

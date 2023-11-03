@@ -1,6 +1,5 @@
-'use strict'
 
-import { BootstrapperCtor, ErrorHandlerCtor, EnvStore, Logger, ConfigStore, Container, ServiceProvider } from '..'
+import { BootstrapperCtor, ErrorHandlerCtor, EnvStore, Logger, ConfigStore, Container, ServiceProvider } from '../index.js'
 
 type Callback = (app: Application) => Promise<unknown> | unknown
 
@@ -56,36 +55,26 @@ export interface Application extends Container {
 
   /**
    * Returns an absolute path into the application’s config directory.
-   *
-   * @param {String} path
    */
   configPath (...paths: string[]): string
 
   /**
    * Returns an absolute path into the application’s public directory.
-   *
-   * @param {String} path
    */
   publicPath (...paths: string[]): string
 
   /**
    * Returns an absolute path into the application’s resources directory.
-   *
-   * @param {String} path
    */
   resourcePath (...paths: string[]): string
 
   /**
    * Returns an absolute path into the application’s storage directory.
-   *
-   * @param {String} path
    */
   storagePath (...paths: string[]): string
 
   /**
    * Returns an absolute path into the application’s database directory.
-   *
-   * @param {String} path
    */
   databasePath (...paths: string[]): string
 
@@ -97,15 +86,11 @@ export interface Application extends Container {
   /**
    * Returns the path to directory of the environment file.
    * By default, this is the application's base path.
-   *
-   * @param {String} path - an optional path appended to the config path
    */
   environmentPath(): string
 
   /**
    * Set the directory for the environment file.
-   *
-   * @param {String} path
    */
   useEnvironmentPath(path: string): this
 
@@ -119,8 +104,6 @@ export interface Application extends Container {
    * Only pass the file name of your environment file as an argument and not a full
    * file system path. Use the `app.useEnvironmentPath(<path>)` method to change
    * the path from which your environment files will be loaded on app start.
-   *
-   * @param {String} file
    */
   loadEnvironmentFrom(file: string): this
 
@@ -131,8 +114,6 @@ export interface Application extends Container {
 
   /**
    * Prepare booting application by running the array of `bootstrappers`.
-   *
-   * @param {Array} bootstrappers
    */
   bootstrapWith(bootstrappers: BootstrapperCtor[]): Promise<void>
 

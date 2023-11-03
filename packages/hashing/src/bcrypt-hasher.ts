@@ -1,9 +1,9 @@
-'use strict'
 
 import Bcrypt from 'bcrypt'
+import { BaseHasher } from './base-hasher.js'
 import { Hasher as HasherContract, HashConfig } from '@supercharge/contracts'
 
-export class BcryptHasher implements HasherContract {
+export class BcryptHasher extends BaseHasher implements HasherContract {
   /**
    * The cost factor.
    */
@@ -13,15 +13,13 @@ export class BcryptHasher implements HasherContract {
    * Create a new instance.
    */
   constructor ({ rounds }: HashConfig['bcrypt'] = {}) {
+    super()
+
     this.rounds = rounds ?? this.rounds
   }
 
   /**
    * Hash the given `value`.
-   *
-   * @param value
-   *
-   * @returns {String}
    */
   async make (value: string): Promise<string> {
     return await Bcrypt.hash(value, this.rounds)
@@ -29,10 +27,6 @@ export class BcryptHasher implements HasherContract {
 
   /**
    * Compare a the `plain` text value against the given `hashedValue`.
-   *
-   * @param plain
-   *
-   * @returns {Boolean}
    */
   async check (plain: string, hashedValue: string): Promise<boolean> {
     return await Bcrypt.compare(plain, hashedValue)
@@ -40,10 +34,6 @@ export class BcryptHasher implements HasherContract {
 
   /**
    * Determine whether the given hash value has been hashed using the configured options.
-   *
-   * @param {String} hashedValue
-   *
-   * @returns {Boolean}
    */
   needsRehash (hashedValue: string): boolean {
     if (typeof hashedValue !== 'string') {

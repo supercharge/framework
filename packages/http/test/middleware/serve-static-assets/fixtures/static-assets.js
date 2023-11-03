@@ -1,6 +1,5 @@
-'use strict'
 
-module.exports = {
+export default {
   maxage: 123,
 
   defer: false,

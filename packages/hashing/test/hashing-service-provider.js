@@ -1,13 +1,12 @@
-'use strict'
 
-const Path = require('path')
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { Application } = require('@supercharge/application')
-const { HashManager, HashingServiceProvider } = require('../dist')
+import { test } from 'uvu'
+import { expect } from 'expect'
+import { fileURLToPath } from 'node:url'
+import { Application } from '@supercharge/application'
+import { HashManager, HashingServiceProvider } from '../dist/index.js'
 
 const app = Application.createWithAppRoot(
-  Path.resolve(__dirname, 'fixtures')
+  fileURLToPath(import.meta.resolve('./fixtures'))
 )
 
 test('register hash manager', async () => {

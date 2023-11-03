@@ -1,10 +1,9 @@
-'use strict'
 
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { Server } = require('../dist')
-const Supertest = require('supertest')
-const { setupApp } = require('./helpers')
+import { test } from 'uvu'
+import { expect } from 'expect'
+import Supertest from 'supertest'
+import { Server } from '../dist/index.js'
+import { setupApp } from './helpers/index.js'
 
 let app = setupApp()
 
@@ -36,6 +35,60 @@ test('request.query() returns the querystring', async () => {
   await Supertest(server.callback())
     .get('/?name=Supercharge&marcus=isCool')
     .expect(200, { name: 'Supercharge', marcus: 'isCool' })
+})
+
+test('request.query().toQuerystring() returns the querystring', async () => {
+  const server = app
+    .make(Server)
+    .use(({ request, response }) => {
+      if (request.query().has('addFoo')) {
+        request.query().set('foo', 'bar')
+      }
+      return response.payload(
+        request.query().toQuerystring()
+      )
+    })
+
+  await Supertest(server.callback())
+    .get('/')
+    .expect(200, '')
+
+  await Supertest(server.callback())
+    .get('/?name=Supercharge&marcus=isCool')
+    .expect(200, 'name=Supercharge&marcus=isCool')
+
+  await Supertest(server.callback())
+    .get('/?addFoo=1&name=Supercharge')
+    .expect(200, 'addFoo=1&name=Supercharge&foo=bar')
+})
+
+test('request.query().toQuerystringDecoded()', async () => {
+  const server = app
+    .make(Server)
+    .use(({ request, response }) => {
+      if (request.query().has('addFoo')) {
+        request.query().set('foo', 'bar')
+      }
+      return response.payload(
+        request.query().toQuerystringDecoded()
+      )
+    })
+
+  await Supertest(server.callback())
+    .get('/')
+    .expect(200, '')
+
+  await Supertest(server.callback())
+    .get('/?name=Supercharge&marcus=isCool')
+    .expect(200, 'name=Supercharge&marcus=isCool')
+
+  await Supertest(server.callback())
+    .get('/?name=Supercharge&marcus[]=isCool&marcus[]=isQuery')
+    .expect(200, 'name=Supercharge&marcus[]=isCool,isQuery')
+
+  await Supertest(server.callback())
+    .get('/?addFoo=1&name=Supercharge')
+    .expect(200, 'addFoo=1&name=Supercharge&foo=bar')
 })
 
 test('request.all() returns merged query params, payload, and files', async () => {
@@ -401,14 +454,14 @@ test('request.cookies().has(cookieName) works without request cookies', async ()
 
 test('creating a cookie uses default options', async () => {
   const cookieTTL = 123
-  const cookieOptions = {
+  const cookieConfig = {
     maxAge: cookieTTL,
     path: '/path',
     sameSite: 'lax',
     signed: false
   }
 
-  const server = setupApp({ http: { cookie: cookieOptions } })
+  const server = setupApp({ http: { cookie: cookieConfig } })
     .make(Server)
     .use(({ response }) => {
       return response.payload('ok').cookie('foo', 'bar')
@@ -652,6 +705,10 @@ test('querystring', async () => {
   await Supertest(server.callback())
     .get('/?name=Supercharge')
     .expect(200, { querystring: 'name=Supercharge' })
+
+  await Supertest(server.callback())
+    .get('/?name=Supercharge&foo=bar')
+    .expect(200, { querystring: 'name=Supercharge&foo=bar' })
 })
 
 test('fullUrl', async () => {
@@ -762,7 +819,7 @@ test('isPjax', async () => {
       expect(request.isPjax()).toBe(true)
 
       request.headers().set('X-PJAX', '')
-      expect(request.isPjax()).toBe(false)
+      expect(request.isPjax()).toBe(true)
 
       request.headers().set('X-PJAX', undefined)
       expect(request.isPjax()).toBe(false)
@@ -809,6 +866,9 @@ test('isPrefetch', async () => {
       request.headers().set('X-moz', 'Prefetch')
       expect(request.isPrefetch()).toBe(true)
 
+      request.headers().set('X-moz', undefined)
+      expect(request.isPrefetch()).toBe(false)
+
       request.headers().remove('X-moz')
 
       request.headers().set('Purpose', '')
@@ -819,6 +879,9 @@ test('isPrefetch', async () => {
 
       request.headers().set('Purpose', 'Prefetch')
       expect(request.isPrefetch()).toBe(true)
+
+      request.headers().set('Purpose', undefined)
+      expect(request.isPrefetch()).toBe(false)
 
       return response.payload('ok')
     })

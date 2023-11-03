@@ -1,9 +1,8 @@
-'use strict'
 
 import Youch from 'youch'
-import { HttpError } from './http-error'
 import { tap } from '@supercharge/goodies'
-import Collect from '@supercharge/collections'
+import { HttpError } from './http-error.js'
+import { Collect } from '@supercharge/collections'
 import { Application, ErrorHandler as ErrorHandlerContract, HttpContext, Logger, ViewEngine } from '@supercharge/contracts'
 
 export class ErrorHandler implements ErrorHandlerContract {
@@ -20,7 +19,7 @@ export class ErrorHandler implements ErrorHandlerContract {
   /**
    * Stores the list of report callbacks.
    */
-  protected readonly reportCallbacks: Array<(ctx: HttpContext, error: HttpError) => void | Promise<void>>
+  protected readonly reportCallbacks: Array<(error: HttpError, ctx: HttpContext) => void | Promise<void>>
 
   /**
    * Create a new error handler instance.
@@ -74,20 +73,19 @@ export class ErrorHandler implements ErrorHandlerContract {
   /**
    * Determine whether to report the given `error`.
    */
-  shouldntReport (error: any): boolean {
-    return this.dontReport().concat(this.ignoredErrors).some(ErrorConstructor => {
-      return error instanceof ErrorConstructor
-    })
+  shouldNotReport (error: Error): boolean {
+    return this
+      .dontReport()
+      .concat(this.ignoredErrors)
+      .some(ErrorConstructor => {
+        return error instanceof ErrorConstructor
+      })
   }
 
   /**
    * Register a reportable callback.
-   *
-   * @param  {Function} reportUsing
-   *
-   * @returns {ErrorHandler}
    */
-  reportable (reportUsing: (ctx: HttpContext, error: any) => void | Promise<void>): ErrorHandler {
+  reportable (reportUsing: (error: any, ctx: HttpContext) => void | Promise<void>): ErrorHandler {
     return tap(this, () => {
       this.reportCallbacks.push(reportUsing)
     })
@@ -95,10 +93,6 @@ export class ErrorHandler implements ErrorHandlerContract {
 
   /**
    * Returns the error’s context for logging.
-   *
-   * @param {*}error
-   *
-   * @returns {Record<string, any>}
    */
   errorContext (error: any): Record<string, any> {
     if (typeof error.context === 'function') {
@@ -110,10 +104,6 @@ export class ErrorHandler implements ErrorHandlerContract {
 
   /**
    * Returns the default logging context.
-   *
-   * @param {HttpContext} ctx
-   *
-   * @returns {*}
    */
   context (_ctx: HttpContext): any {
     return {}
@@ -121,32 +111,26 @@ export class ErrorHandler implements ErrorHandlerContract {
 
   /**
    * Handle the given error.
-   *
-   * @param {HttpContext} ctx
-   * @param {Error} error
    */
-  async handle (ctx: HttpContext, error: any): Promise<void> {
-    await this.report(ctx, error)
-    await this.render(ctx, error)
+  async handle (error: any, ctx: HttpContext): Promise<void> {
+    await this.report(error, ctx)
+    await this.render(error, ctx)
   }
 
   /**
    * Report an error.
-   *
-   * @param {HttpContext} ctx
-   * @param {HttpError} error
    */
-  async report (ctx: HttpContext, error: any): Promise<void> {
-    if (this.shouldntReport(error)) {
+  async report (error: any, ctx: HttpContext): Promise<void> {
+    if (this.shouldNotReport(error)) {
       return
     }
 
-    if (await this.errorReported(ctx, error)) {
+    if (await this.errorReported(error, ctx)) {
       return
     }
 
     const handled = await Collect(this.reportCallbacks).any(async reportCallback => {
-      return await reportCallback(ctx, error)
+      return await reportCallback(error, ctx)
     })
 
     if (handled) {
@@ -163,70 +147,54 @@ export class ErrorHandler implements ErrorHandlerContract {
   }
 
   /**
-   * Determine whether the given `error` is implementing a `handle` method and
-   * that `handle` method returns a truthy value, like a valid HTTP response.
-   *
-   * @param {HttpContext} ctx
-   * @param {Error} error
-   *
-   * @returns {*}
+   * Determine whether the given `error` is implementing a `report` method and
+   * that `report` method returns a truthy value, like a valid HTTP response.
    */
-  async errorReported (ctx: HttpContext, error: any): Promise<unknown> {
+  async errorReported (error: any, ctx: HttpContext): Promise<unknown> {
     if (typeof error.report !== 'function') {
       return false
     }
 
-    return await error.report(error, ctx)
+    return !!(await error.report(error, ctx))
   }
 
   /**
    * Render the error into an HTTP response.
-   *
-   * @param {HttpContext} ctx
-   * @param {HttpError} error
    */
-  async render (ctx: HttpContext, error: any): Promise<any> {
-    if (await this.errorRendered(ctx, error)) {
+  async render (error: any, ctx: HttpContext): Promise<any> {
+    if (await this.errorRendered(error, ctx)) {
       return
     }
 
     const httpError = HttpError.wrap(error)
 
     if (ctx.request.wantsJson()) {
-      return this.renderJsonResponse(ctx, httpError)
+      return this.renderJsonResponse(httpError, ctx)
     }
 
     if (this.app.env().isProduction()) {
-      return this.renderJsonResponse(ctx, httpError)
+      return this.renderJsonResponse(httpError, ctx)
     }
 
-    return await this.renderViewResponse(ctx, httpError)
+    return await this.renderViewResponse(httpError, ctx)
   }
 
   /**
    * Determine whether the given `error` is implementing a `render` method and
    * that `render` method returns a truthy value, like a valid HTTP response.
-   *
-   * @param {HttpContext} ctx
-   * @param {Error} error
-   *
-   * @returns {*}
    */
-  async errorRendered (ctx: HttpContext, error: any): Promise<unknown> {
+  async errorRendered (error: any, ctx: HttpContext): Promise<unknown> {
     if (typeof error.render !== 'function') {
       return false
     }
 
-    return await error.render(ctx, error)
+    return await error.render(error, ctx)
   }
 
   /**
    * Creates a JSON response depending on the app’s environment.
-   *
-   * @param {HttpContext} ctx
-   * @param {HttpError} error
    */
-  protected renderJsonResponse (ctx: HttpContext, error: HttpError): void {
+  protected renderJsonResponse (error: HttpError, ctx: HttpContext): void {
     const { message, stack, status: statusCode } = error
 
     this.app.env().isProduction()
@@ -236,11 +204,8 @@ export class ErrorHandler implements ErrorHandlerContract {
 
   /**
    * Creates an HTML response depending on the app’s environment.
-   *
-   * @param {HttpContext} ctx
-   * @param {HttpError} error
    */
-  protected async renderViewResponse (ctx: HttpContext, error: HttpError): Promise<void> {
+  protected async renderViewResponse (error: HttpError, ctx: HttpContext): Promise<void> {
     if (await this.isMissingTemplateFor(error)) {
       return await this.renderYouchResponse(ctx, error)
     }
@@ -258,10 +223,6 @@ export class ErrorHandler implements ErrorHandlerContract {
 
   /**
    * Determine whether a view template file is missing for the given `error`.
-   *
-   * @param {HttpError} error
-   *
-   * @returns {Boolean}
    */
   protected async isMissingTemplateFor (error: HttpError): Promise<boolean> {
     return !await this.templateExistsFor(error)
@@ -269,10 +230,6 @@ export class ErrorHandler implements ErrorHandlerContract {
 
   /**
    * Determine whether a view template file exists for the given `error`.
-   *
-   * @param {HttpError} error
-   *
-   * @returns {Boolean}
    */
   protected async templateExistsFor (error: HttpError): Promise<boolean> {
     return await this.view().exists(
@@ -282,10 +239,6 @@ export class ErrorHandler implements ErrorHandlerContract {
 
   /**
    * Returns the view template file for the given `error`.
-   *
-   * @param {HttpError} error
-   *
-   * @returns {String}
    */
   protected viewTemplateFor (error: HttpError): string {
     return `errors/${error.status}`
@@ -293,9 +246,6 @@ export class ErrorHandler implements ErrorHandlerContract {
 
   /**
    * Renders an HTML response containing details about the given `error`.
-   *
-   * @param {HttpContext} ctx
-   * @param {HttpError} error
    */
   async renderYouchResponse ({ request, response }: HttpContext, error: HttpError): Promise<void> {
     response.payload(

@@ -1,6 +1,5 @@
-'use strict'
 
-import { CookieOptions } from './cookie-options'
+import { CookieConfig } from './cookie-config.js'
 
 export type RequestCookieBuilderCallback = (cookieBuilder: RequestCookieBuilder) => void
 export type ResponseCookieBuilderCallback = (cookieBuilder: ResponseCookieBuilder) => void
@@ -72,5 +71,5 @@ export interface ResponseCookieBuilder {
   /**
    * Merge the given `config` with the default HTTP cookie config.
    */
-  useConfig (config: Partial<CookieOptions>): this
+  useConfig (config: Partial<CookieConfig>): this
 }

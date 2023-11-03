@@ -1,8 +1,7 @@
-'use strict'
 
-import { ViewManager } from './manager'
+import { ViewManager } from './view-manager.js'
+import { ViewResponse } from './view-response.js'
 import { ServiceProvider } from '@supercharge/support'
-import { View as ViewResponse } from './view-response'
 import { HttpResponse, HttpResponseCtor, ViewBuilderCallback } from '@supercharge/contracts'
 
 /**

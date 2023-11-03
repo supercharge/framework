@@ -1,3 +1,2 @@
-'use strict'
 
-export * from './plugin'
+export * from './plugin.js'

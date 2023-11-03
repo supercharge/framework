@@ -6,8 +6,12 @@
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
   },
-  "main": "dist",
+  "type": "module",
+  "main": "dist/index.js",
   "types": "dist",
+  "exports": {
+    ".": "./dist/index.js"
+  },
   "files": [
     "dist"
   ],
@@ -15,7 +19,7 @@
     "@supercharge/contracts": "^3.20.4",
     "@supercharge/manager": "^3.20.4",
     "@supercharge/support": "^3.20.4",
-    "knex": "~2.5.1",
+    "knex": "~3.0.1",
     "objection": "~3.1.2",
     "sqlite3": "~5.1.6"
   },
@@ -27,7 +31,7 @@
     "uvu": "~0.5.6"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=20"
   },
   "homepage": "https://superchargejs.com",
   "keywords": [
@@ -54,9 +58,8 @@
     "watch": "npm run dev",
     "lint": "eslint src --ext .js,.ts",
     "lint:fix": "npm run lint -- --fix",
-    "test": "npm run build && npm run test:run",
-    "test:run": "c8 --include=dist uvu --ignore fixtures",
-    "posttest": "npm run test:coverage",
-    "test:coverage": "c8 report --reporter=html"
+    "test": "npm run build && npm run lint && npm run test:run",
+    "test:run": "c8 --include=dist uvu --ignore helpers --ignore fixtures",
+    "posttest": "c8 report --reporter=html"
   }
 }

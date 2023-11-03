@@ -1,9 +1,8 @@
-'use strict'
 
-const Sinon = require('sinon')
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { ConsoleLogger } = require('../dist/console-logger')
+import Sinon from 'sinon'
+import { test } from 'uvu'
+import { expect } from 'expect'
+import { ConsoleLogger } from '../dist/console-logger.js'
 
 test('logs debug message to console', () => {
   const consoleLogStub = Sinon.stub(process.stdout, 'write').returns(() => {})

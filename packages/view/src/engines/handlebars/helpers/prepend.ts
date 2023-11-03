@@ -1,11 +1,7 @@
-'use strict'
 
 /**
  * Push content to the beginning of an assets stack identified by the
  * given `stackName`. Check out the `stack` helper for more details.
- *
- * @param {String} stackName
- * @param {Object} context
  */
 export default function prepend (stackName: string, context: any): void {
   if (!context) {

@@ -1,4 +1,3 @@
-'use strict'
 
 import { InteractsWithTime } from '@supercharge/support'
 import { SessionDriver, HttpContext } from '@supercharge/contracts'
@@ -18,9 +17,6 @@ export class CookieSessionDriver extends InteractsWithTime implements SessionDri
 
   /**
    * Create a new cookie session driver instance.
-   *
-   * @param {Number} lifetimeInSeconds
-   * @param {HttpRequest} ctx
    */
   constructor (lifetimeInSeconds: number, ctx: HttpContext) {
     super()

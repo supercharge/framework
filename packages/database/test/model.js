@@ -1,15 +1,15 @@
-'use strict'
 
 /**
  * @typedef {import('@supercharge/contracts').Database } Database
  */
-const { test } = require('uvu')
-const { expect } = require('expect')
-const UserModel = require('./helpers/user-model')
-const { DatabaseServiceProvider } = require('../dist')
-const { makeApp, clearDbDirectory } = require('./helpers')
 
-let app
+import { test } from 'uvu'
+import { expect } from 'expect'
+import UserModel from './helpers/user-model.js'
+import { DatabaseServiceProvider } from '../dist/index.js'
+import { makeApp, clearDbDirectory } from './helpers/index.js'
+
+let app = makeApp()
 
 test.before(async () => {
   app = makeApp()

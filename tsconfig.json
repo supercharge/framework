@@ -2,7 +2,7 @@
     "extends": "@supercharge/tsconfig",
     "compilerOptions": {
         "composite": true,
-        "skipLibCheck": true
+        "removeComments": false,
     },
     "exclude": [
         "node_modules",

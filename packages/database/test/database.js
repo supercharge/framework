@@ -1,10 +1,8 @@
-'use strict'
 
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { DatabaseManager } = require('../dist')
-
-const { makeDb, makeApp } = require('./helpers')
+import { test } from 'uvu'
+import { expect } from 'expect'
+import { DatabaseManager } from '../dist/index.js'
+import { makeDb, makeApp } from './helpers/index.js'
 
 test('throws for missing connection name', async t => {
   const app = makeApp({

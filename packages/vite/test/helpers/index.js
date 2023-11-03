@@ -1,17 +1,16 @@
-'use strict'
 
-const Path = require('path')
-const Fs = require('@supercharge/fs')
-const { Application } = require('@supercharge/application')
+import Fs from '@supercharge/fs'
+import { fileURLToPath } from 'node:url'
+import { Application } from '@supercharge/application'
 
 /**
  * Returns a test application.
  *
  * @returns {Application}
  */
-function makeApp () {
+export function makeApp () {
   const app = Application.createWithAppRoot(
-    Path.resolve(__dirname, '../fixtures')
+    fileURLToPath(new URL('./../fixtures', import.meta.url))
   )
 
   app.config().set('view', {
@@ -33,7 +32,7 @@ function makeApp () {
  * @param {Object} content
  * @param {String} buildDirectory
  */
-async function createViteManifest (app, content, buildDirectory = 'build') {
+export async function createViteManifest (app, content, buildDirectory = 'build') {
   const manifest = content || {
     'resources/js/app.js': {
       file: 'assets/app.version.js'
@@ -77,7 +76,7 @@ async function createViteManifest (app, content, buildDirectory = 'build') {
 /**
  * @param {Application} app
  */
-async function clearViteManifest (app, buildDirectory = 'build') {
+export async function clearViteManifest (app, buildDirectory = 'build') {
   const manifestPath = app.publicPath(`${buildDirectory}/manifest.json`)
 
   if (await Fs.exists(manifestPath)) {
@@ -88,25 +87,17 @@ async function clearViteManifest (app, buildDirectory = 'build') {
 /**
  * @param {Application} app
  */
-async function createViteHotReloadFile (app) {
+export async function createViteHotReloadFile (app) {
   await Fs.writeFile(app.publicPath('hot'), 'http://localhost:3000')
 }
 
 /**
  * @param {Application} app
  */
-async function clearViteHotReloadFile (app) {
+export async function clearViteHotReloadFile (app) {
   const hotReloadFilePath = app.publicPath('hot')
 
   if (await Fs.exists(hotReloadFilePath)) {
     await Fs.removeFile(hotReloadFilePath)
   }
-}
-
-module.exports = {
-  makeApp,
-  clearViteManifest,
-  createViteManifest,
-  clearViteHotReloadFile,
-  createViteHotReloadFile
 }

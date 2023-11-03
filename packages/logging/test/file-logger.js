@@ -1,12 +1,11 @@
-'use strict'
 
-const Path = require('path')
-const { test } = require('uvu')
-const { expect } = require('expect')
-const Fs = require('@supercharge/fs')
-const { FileLogger } = require('../dist/file-logger')
+import { test } from 'uvu'
+import { expect } from 'expect'
+import Fs from '@supercharge/fs'
+import { fileURLToPath } from 'node:url'
+import { FileLogger } from '../dist/file-logger.js'
 
-const logFile = Path.resolve(__dirname, 'test.log')
+const logFile = fileURLToPath(import.meta.resolve('./test.log'))
 
 function logWrite () {
   return new Promise(resolve => {

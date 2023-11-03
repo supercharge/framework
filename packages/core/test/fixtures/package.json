@@ -1,4 +1,5 @@
 {
   "name": "core-test-fixtures",
-  "version": "1.2.3"
+  "version": "1.2.3",
+  "type": "module"
 }

@@ -1,8 +1,7 @@
-'use strict'
 
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { BodyparserOptions } = require('../../../dist')
+import { test } from 'uvu'
+import { expect } from 'expect'
+import { BodyparserOptions } from '../../../dist/index.js'
 
 test('limit defaults to 56kb', () => {
   expect(new BodyparserOptions({ }).text().limit()).toEqual(

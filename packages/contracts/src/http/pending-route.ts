@@ -1,7 +1,6 @@
-'use strict'
 
-import { HttpRoute } from './route'
-import { RouteHandler } from './router'
+import { HttpRoute } from './route.js'
+import { RouteHandler } from './router.js'
 
 export interface PendingRoute {
   /**

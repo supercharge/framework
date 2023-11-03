@@ -1,4 +1,3 @@
-'use strict'
 
-export * from './request-cookie-builder'
-export * from './response-cookie-builder'
+export * from './request-cookie-builder.js'
+export * from './response-cookie-builder.js'

@@ -1,4 +1,3 @@
-'use strict'
 
 import { Application } from '@supercharge/contracts'
 import MethodMissing from '@supercharge/method-missing'
@@ -11,10 +10,6 @@ export class Facade extends MethodMissing {
 
   /**
    * Set the application instance.
-   *
-   * @param {Application} app
-   *
-   * @returns {Facade}
    */
   static setApplication (app: Application): typeof Facade {
     this.app = app
@@ -24,10 +19,6 @@ export class Facade extends MethodMissing {
 
   /**
    * Returns the container binding name.
-   *
-   * @returns {String}
-   *
-   * @throws
    */
   getContainerNamespace (): string {
     throw new Error(`The facade ${this.constructor.name} must implement the getContainerNamespace method.`)
@@ -35,10 +26,6 @@ export class Facade extends MethodMissing {
 
   /**
    * Returns the facade instance resolved from the IoC container.
-   *
-   * @param {String} namespace
-   *
-   * @returns {*}
    */
   resolveFacadeInstance (namespace: string): unknown {
     return Facade.app.make(namespace)
@@ -46,8 +33,6 @@ export class Facade extends MethodMissing {
 
   /**
    * Returns the facade instance.
-   *
-   * @returns {*}
    */
   getFacadeInstance (): any {
     const facade = this.resolveFacadeInstance(
@@ -63,11 +48,6 @@ export class Facade extends MethodMissing {
 
   /**
    * Pass through all calls to the facaded instance.
-   *
-   * @param {String} methodName
-   * @param {Array} args
-   *
-   * @returns {*}
    */
   __call (methodName: string, args: unknown[]): unknown {
     if (this.getFacadeInstance()[methodName]) {

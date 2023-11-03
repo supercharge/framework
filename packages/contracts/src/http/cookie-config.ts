@@ -1,6 +1,5 @@
-'use strict'
 
-export interface CookieOptions {
+export interface CookieConfig {
   /**
    * The time or date in the future at which the cookie expires.
    */

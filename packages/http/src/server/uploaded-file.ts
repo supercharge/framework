@@ -1,4 +1,3 @@
-'use strict'
 
 import { File as FormidableFile } from 'formidable'
 import { UploadedFile as UploadedFileContract } from '@supercharge/contracts'
@@ -23,6 +22,8 @@ export class UploadedFile implements UploadedFileContract {
     if (this.file.originalFilename) {
       return this.file.originalFilename
     }
+
+    return undefined
   }
 
   /**
@@ -47,6 +48,8 @@ export class UploadedFile implements UploadedFileContract {
     if (this.file.mimetype) {
       return this.file.mimetype
     }
+
+    return undefined
   }
 
   /**
@@ -58,8 +61,6 @@ export class UploadedFile implements UploadedFileContract {
 
   /**
    * Returns the JSON object of this file.
-   *
-   * @returns {Object}
    */
   toJSON (): { [key: string]: any } {
     return {

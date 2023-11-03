@@ -1,6 +1,5 @@
-'use strict'
 
-import { QueryBuilder } from './query-builder'
+import { QueryBuilder } from './query-builder.js'
 import { Constructor, MaybeCompositeId, MaybeSingleQueryBuilder, Model as BaseModel, NumberQueryBuilder, QueryBuilderType, TransactionOrKnex } from 'objection'
 
 export class Model extends BaseModel {
@@ -8,7 +7,7 @@ export class Model extends BaseModel {
    * Both of these type definitions are needed to make sure that every model
    * inheriting from this base class has the fluent query builder available.
    */
-  override QueryBuilderType!: QueryBuilder<this>
+  declare QueryBuilderType: QueryBuilder<this>
   static override QueryBuilder = QueryBuilder
 
   /**

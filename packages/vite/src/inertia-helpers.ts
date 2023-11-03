@@ -1,4 +1,3 @@
-'use strict'
 
 /**
  * Resolves the inertia page component for the given `path` from the available `pages`.

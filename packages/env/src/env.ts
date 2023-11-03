@@ -1,16 +1,10 @@
-'use strict'
 
-import Str from '@supercharge/strings'
+import { Str } from '@supercharge/strings'
 import { EnvStore } from '@supercharge/contracts'
 
 export class Env implements EnvStore {
   /**
    * Returns the value of the request environment variable.
-   *
-   * @param {String} key
-   * @param {String} defaultValue
-   *
-   * @returns {*}
    */
   get (key: string): string
   get (key: string, defaultValue: any): string
@@ -21,12 +15,6 @@ export class Env implements EnvStore {
   /**
    * This method is similar to the `Env.get` method, except that
    * it throws an error when the value is not existent in the environment.
-   *
-   * @param {String} key
-   *
-   * @returns {String}
-   *
-   * @throws
    */
   getOrFail (key: string): string {
     const value = this.get(key)
@@ -40,10 +28,6 @@ export class Env implements EnvStore {
 
   /**
    * Returns the environment variable identified by the given `key` as a number.
-   *
-   * @param {String} key
-   *
-   * @returns {Number}
    */
   number (key: string): number
   number (key: string, defaultValue: number): number
@@ -59,10 +43,6 @@ export class Env implements EnvStore {
 
   /**
    * Returns the environment variable identified by the given `key` as a boolean value.
-   *
-   * @param {String} key
-   *
-   * @returns {Boolean}
    */
   boolean (key: string): boolean
   boolean (key: string, defaultValue: boolean): boolean
@@ -79,9 +59,6 @@ export class Env implements EnvStore {
 
   /**
    * Set the value of an environment variable.
-   *
-   * @param {String} key
-   * @param {String} value
    */
   set (key: string, value: string): this {
     process.env[key] = value
@@ -91,10 +68,6 @@ export class Env implements EnvStore {
 
   /**
    * Determine whether the given `value` is null or undefined.
-   *
-   * @param {String} value
-   *
-   * @returns {Boolean}
    */
   isEmpty (value?: string | null): boolean {
     switch (value) {
@@ -116,8 +89,6 @@ export class Env implements EnvStore {
 
   /**
    * Determine whether the `NODE_ENV` variable is set to `production`.
-   *
-   * @returns {Boolean}
    */
   isProduction (): boolean {
     return this.is('production')
@@ -125,8 +96,6 @@ export class Env implements EnvStore {
 
   /**
    * Determine whether the `NODE_ENV` variable is **not** set to `production`.
-   *
-   * @returns {Boolean}
    */
   isNotProduction (): boolean {
     return !this.isProduction()
@@ -134,8 +103,6 @@ export class Env implements EnvStore {
 
   /**
    * Determine whether the `NODE_ENV` variable is set to `testing`.
-   *
-   * @returns {Boolean}
    */
   isTesting (): boolean {
     return this.is('test') || this.is('testing')
@@ -143,10 +110,6 @@ export class Env implements EnvStore {
 
   /**
    * Determine whether the `NODE_ENV` variable equals the given `environment`.
-   *
-   * @param {String} environment
-   *
-   * @returns {Boolean}
    */
   is (environment: string): boolean {
     return Str(

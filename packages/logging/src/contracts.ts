@@ -1,4 +1,3 @@
-'use strict'
 
 import { Logger } from '@supercharge/contracts'
 

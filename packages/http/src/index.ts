@@ -1,4 +1,3 @@
-'use strict'
 
 export {
   Middleware,
@@ -9,7 +8,7 @@ export {
   BodyparserOptions,
   HandleCorsMiddleware,
   ServeStaticAssetsMiddleware
-} from './middleware'
+} from './middleware/index.js'
 
 export {
   RouteGroup,
@@ -17,7 +16,7 @@ export {
   RouteCollection,
   Route,
   Router
-} from './routing'
+} from './routing/index.js'
 
 export {
   CookieBag,
@@ -25,7 +24,7 @@ export {
   FileBag,
   HttpContext,
   HttpRedirect,
-  ParameterBag,
+  InputBag,
   Request,
   RequestHeaderBag,
   Response,
@@ -33,6 +32,6 @@ export {
   Server,
   StateBag,
   UploadedFile
-} from './server'
+} from './server/index.js'
 
-export { HttpServiceProvider } from './http-service-provider'
+export { HttpServiceProvider } from './http-service-provider.js'

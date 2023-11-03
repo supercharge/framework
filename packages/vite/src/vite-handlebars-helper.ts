@@ -1,6 +1,5 @@
-'use strict'
 
-import { Vite } from './vite'
+import { Vite } from './vite.js'
 import { HelperOptions } from 'handlebars'
 import { Application } from '@supercharge/contracts'
 

@@ -1,8 +1,7 @@
-'use strict'
 
 import { Files } from 'formidable'
 import { tap } from '@supercharge/goodies'
-import { UploadedFile } from './uploaded-file'
+import { UploadedFile } from './uploaded-file.js'
 import { FileBag as FileBagContract } from '@supercharge/contracts'
 
 interface UploadedFileType {
@@ -24,18 +23,22 @@ export class FileBag implements FileBagContract {
 
   /**
    * Convert the given `files` to Supercharge uploaded file instances.
-   *
-   * @param {Files} files
-   *
-   * @returns {FileBag}
    */
   static createFromBase (files?: Files): FileBag {
     const uploadedFiles = Object
       .entries(files ?? {})
-      .reduce((carry: UploadedFileType, [name, value]) => {
-        carry[name] = Array.isArray(value)
-          ? value.map(file => new UploadedFile(file))
-          : new UploadedFile(value)
+      .reduce((carry: UploadedFileType, [filename, file]) => {
+        if (file == null) {
+          return carry
+        }
+
+        if (Array.isArray(file)) {
+          carry[filename] = file.length === 1
+            ? new UploadedFile(file.pop() as any)
+            : file.map(file => new UploadedFile(file))
+        } else {
+          carry[filename] = new UploadedFile(file as any)
+        }
 
         return carry
       }, {})
@@ -63,10 +66,6 @@ export class FileBag implements FileBagContract {
   /**
    * Returns the uploaded file or file array  for the given `name`. Returns
    * `undefined` if no file exists on the request for the given `name`.
-   *
-   * @param {String} name
-   *
-   * @returns {UploadedFile|UploadedFile[]|undefined}
    */
   get (name: string): UploadedFile | UploadedFile[] | undefined {
     return this.files[name]
@@ -75,11 +74,6 @@ export class FileBag implements FileBagContract {
   /**
    * A a file header for the given `name` and assign the `value`.
    * This will override an existing header for the given `name`.
-   *
-   * @param {String} name
-   * @param {UploadedFile|UploadedFile[]} value
-   *
-   * @returns {this}
    */
   add (name: string, value: UploadedFile | UploadedFile[]): this {
     return tap(this, () => {
@@ -89,10 +83,6 @@ export class FileBag implements FileBagContract {
 
   /**
    * Determine whether the HTTP header for the given `name` exists.
-   *
-   * @param {String} name
-   *
-   * @returns {Boolean}
    */
   has (name: string): boolean {
     return !!this.get(name)

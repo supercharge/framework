@@ -1,9 +1,9 @@
-'use strict'
 
-import { StateBag } from './state-bag'
+import { StateBag } from './state-bag.js'
+import { InputBag } from './input-bag.js'
 import { tap } from '@supercharge/goodies'
 import { RouterContext } from '@koa/router'
-import { InteractsWithState as InteractsWithStateContract, RequestStateData } from '@supercharge/contracts'
+import { InteractsWithState as InteractsWithStateContract, HttpStateData } from '@supercharge/contracts'
 
 export class InteractsWithState implements InteractsWithStateContract {
   /**
@@ -13,8 +13,6 @@ export class InteractsWithState implements InteractsWithStateContract {
 
   /**
    * Create a new instance.
-   *
-   * @param ctx
    */
   constructor (ctx: RouterContext) {
     this.koaCtx = ctx
@@ -22,25 +20,20 @@ export class InteractsWithState implements InteractsWithStateContract {
 
   /**
    * Returns the shared state bag for this HTTP context.
-   *
-   * @returns {StateBag}
    */
   state (): StateBag {
-    return StateBag.from(this.koaCtx)
+    return new InputBag(this.koaCtx.state)
   }
 
   /**
    * Share a given `state` across HTTP requests. Any previously
    * set state will be merged with the given `state`.
-   *
-   * @returns {ThisType}
    */
-  share<K extends keyof RequestStateData> (key: K, value: RequestStateData[K]): this
-  share (key: string, value: any): this
-  share (values: RequestStateData): this
-  share<K extends keyof RequestStateData> (key: K | string | RequestStateData, value?: any): this {
+  share<Key extends keyof HttpStateData> (key: Key, value: HttpStateData[Key]): this
+  share (values: Partial<HttpStateData>): this
+  share<Key extends keyof HttpStateData> (key: Key | HttpStateData, value?: any): this {
     return tap(this, () => {
-      this.state().add(key, value)
+      this.state().set(key, value)
     })
   }
 }

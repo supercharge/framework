@@ -1,3 +1,2 @@
-'use strict'
 
-export * from './handlebars'
+export * from './handlebars/index.js'

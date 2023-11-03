@@ -1,10 +1,9 @@
-'use strict'
 
-const { test } = require('uvu')
-const { expect } = require('expect')
-const { makeApp } = require('./helpers')
-const { Application } = require('@supercharge/application')
-const { ViewServiceProvider, ViewManager } = require('../dist')
+import { test } from 'uvu'
+import { expect } from 'expect'
+import { makeApp } from './helpers/index.js'
+import { Application } from '@supercharge/application'
+import { ViewServiceProvider, ViewManager } from '../dist/index.js'
 
 test('throws without view config', async () => {
   const app = new Application()

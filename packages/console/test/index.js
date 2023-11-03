@@ -1,7 +1,6 @@
-'use strict'
 
-const { test } = require('uvu')
-const { expect } = require('expect')
+import { test } from 'uvu'
+import { expect } from 'expect'
 
 test.skip('TODO', () => {
   expect(true).toBeFalse()

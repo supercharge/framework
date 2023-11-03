@@ -1,6 +1,5 @@
-'use strict'
 
-export { DatabaseManager } from './database-manager'
-export { DatabaseServiceProvider } from './database-service-provider'
-export { Model } from './model'
-export { QueryBuilder } from './query-builder'
+export { DatabaseManager } from './database-manager.js'
+export { DatabaseServiceProvider } from './database-service-provider.js'
+export { Model } from './model.js'
+export { QueryBuilder } from './query-builder.js'

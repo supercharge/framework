@@ -1,10 +1,9 @@
-'use strict'
 
-const { test } = require('uvu')
-const { expect } = require('expect')
-const Supertest = require('supertest')
-const { setupApp } = require('./helpers')
-const { Response, HttpRedirect, Server } = require('../dist')
+import { test } from 'uvu'
+import { expect } from 'expect'
+import Supertest from 'supertest'
+import { setupApp } from './helpers/index.js'
+import { Response, HttpRedirect, Server } from '../dist/index.js'
 
 let app = setupApp()
 
@@ -508,7 +507,7 @@ test('get response header default value', async () => {
     .make(Server)
     .use(async ({ response }, next) => {
       return response.payload(
-        response.headers().get('name', 'defaultValue')
+        response.headers().get('unavailable-header', 'defaultValue')
       )
     })
 

@@ -1,7 +1,6 @@
-'use strict'
 
-import { Model } from './model'
-import { DatabaseManager } from './database-manager'
+import { Model } from './model.js'
+import { DatabaseManager } from './database-manager.js'
 import { ServiceProvider } from '@supercharge/support'
 import { DatabaseConfig } from '@supercharge/contracts'
 
