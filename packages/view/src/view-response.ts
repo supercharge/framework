@@ -2,7 +2,7 @@
 import { ViewConfigBuilder } from './view-config-builder.js'
 import { HttpResponse, ViewBuilderCallback, ViewEngine, ViewResponseConfig } from '@supercharge/contracts'
 
-export class View {
+export class ViewResponse {
   /**
    * Stores the HTTP response instance.
    */
@@ -11,14 +11,14 @@ export class View {
   /**
    * Stores the view engine instance.
    */
-  private readonly view: ViewEngine
+  private readonly viewEngine: ViewEngine
 
   /**
    * Create a new view manager instance.
    */
-  constructor (response: HttpResponse, view: ViewEngine) {
+  constructor (response: HttpResponse, viewEngine: ViewEngine) {
     this.response = response
-    this.view = view
+    this.viewEngine = viewEngine
   }
 
   /**
@@ -50,6 +50,6 @@ export class View {
       )
     }
 
-    return await this.view.render(template, viewData, viewConfig)
+    return await this.viewEngine.render(template, viewData, viewConfig)
   }
 }

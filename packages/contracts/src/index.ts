@@ -74,6 +74,6 @@ export { Dict } from './utils/dict.js'
 
 export { ViewConfig } from './view/config.js'
 export { ViewConfigBuilder } from './view/config-builder.js'
-export { ViewEngine } from './view/engine.js'
+export { ViewEngine, ViewSharedData } from './view/engine.js'
 export { ViewBuilderCallback } from './view/response.js'
 export { ViewResponseConfig } from './view/response-config.js'

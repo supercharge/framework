@@ -8,6 +8,9 @@
     - add `md5` method: create a Node.js MD5 hash
     - add `sha256` method: create a Node.js SHA256 hash
     - add `sha512` method: create a Node.js SHA512 hash
+- `@supercharge/view`
+    - add `share` method: share data across view templates. This is useful for data like your app name
+    - add `sharedData` method: returns the shared data
 
 ### Updated
 - bump dependencies
@@ -27,6 +30,8 @@
 - `@supercharge/hashing`
     - removed `bcrypt` package from being installed automatically, users must install it explicitely when the hashing driver should use bcrypt
     - hashing options require a factory function to return the hash driver constructor
+- `@supercharge/view`
+    - export for the view response changed from `View` to `ViewResponse`
 
 
 

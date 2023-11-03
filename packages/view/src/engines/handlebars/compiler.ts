@@ -7,8 +7,9 @@ import { Str } from '@supercharge/strings'
 import { Collect } from '@supercharge/collections'
 import Handlebars, { HelperDelegate } from 'handlebars'
 import { Logger, ViewConfig, ViewEngine, ViewResponseConfig } from '@supercharge/contracts'
+import { ViewBaseCompiler } from './base-compiler.js'
 
-export class HandlebarsCompiler implements ViewEngine {
+export class HandlebarsCompiler extends ViewBaseCompiler implements ViewEngine {
   /**
      * The handlebars renderer instance.
      */
@@ -33,6 +34,8 @@ export class HandlebarsCompiler implements ViewEngine {
    * Create a new renderer instance.
    */
   constructor (logger: Logger, config: ViewConfig['handlebars']) {
+    super()
+
     this.config = config
     this.logger = logger
     this.extension = '.hbs'

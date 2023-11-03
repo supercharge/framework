@@ -3,7 +3,7 @@ import { tap } from '@supercharge/goodies'
 import { HelperDelegate } from 'handlebars'
 import { Manager } from '@supercharge/manager'
 import { HandlebarsCompiler } from './engines/handlebars/index.js'
-import { Application, ViewConfig, ViewEngine, ViewResponseConfig } from '@supercharge/contracts'
+import { Application, ViewConfig, ViewEngine, ViewResponseConfig, ViewSharedData } from '@supercharge/contracts'
 
 export class ViewManager extends Manager<Application> implements ViewEngine {
   /**
@@ -100,6 +100,31 @@ export class ViewManager extends Manager<Application> implements ViewEngine {
    */
   hasHelper (name: string): boolean {
     return this.driver().hasHelper(name)
+  }
+
+  /**
+   * Share a given state of data to all views, across HTTP requests.
+   *
+   * @example
+   * ```
+   * import { View } from '@supercharge/facades'
+   *
+   * View.share({ key: 'value' })
+   * ```
+   */
+  share<K extends keyof ViewSharedData> (key: K, value: ViewSharedData[K]): this
+  share (values: Partial<ViewSharedData>): this
+  share (key: string | any, value?: any): this {
+    this.driver().share(key, value)
+
+    return this
+  }
+
+  /**
+   * Returns the shared data.
+   */
+  sharedData (): Record<string, any> {
+    return this.driver().sharedData()
   }
 
   /**
