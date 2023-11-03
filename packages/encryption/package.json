@@ -1,7 +1,7 @@
 {
   "name": "@supercharge/encryption",
   "description": "The Supercharge encryption package",
-  "version": "3.20.4",
+  "version": "4.0.0-alpha.0",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
@@ -16,13 +16,13 @@
     ".": "./dist/index.js"
   },
   "dependencies": {
-    "@supercharge/contracts": "^3.20.4",
+    "@supercharge/contracts": "^4.0.0-alpha.0",
     "@supercharge/json": "~2.0.0",
     "@supercharge/strings": "~2.0.0",
-    "@supercharge/support": "^3.20.4"
+    "@supercharge/support": "^4.0.0-alpha.0"
   },
   "devDependencies": {
-    "@supercharge/application": "^3.20.4",
+    "@supercharge/application": "^4.0.0-alpha.0",
     "c8": "~8.0.1",
     "expect": "~29.7.0",
     "typescript": "~5.2.2",
