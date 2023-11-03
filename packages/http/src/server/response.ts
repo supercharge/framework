@@ -2,6 +2,8 @@
 import { Mixin as Many } from 'ts-mixer'
 import { tap } from '@supercharge/goodies'
 import { CookieBag } from './cookie-bag.js'
+import { OutgoingHttpHeader } from 'node:http'
+import { OutgoingHttpHeaders } from 'node:http2'
 import { HttpRedirect } from './http-redirect.js'
 import { Macroable } from '@supercharge/macroable'
 import { ResponseHeaderBag } from './response-header-bag.js'
@@ -60,16 +62,18 @@ export class Response extends Many(Macroable, InteractsWithState) implements Htt
   /**
    * Returns the response header bag.
    */
-  headers (): ResponseHeaderBag {
-    return new ResponseHeaderBag(this.koaCtx)
+  headers<ResponseHeaders = OutgoingHttpHeaders> (): ResponseHeaderBag<ResponseHeaders> {
+    return new ResponseHeaderBag<ResponseHeaders>(this.koaCtx)
   }
 
   /**
    * Set a response header with the given `name` and `value`.
    */
-  header (name: string, value: string | string[] | number): this {
+  header<Header extends keyof OutgoingHttpHeaders> (key: Header, value: OutgoingHttpHeaders[Header]): this
+  header (key: string, value: OutgoingHttpHeader): this
+  header (key: string, value: OutgoingHttpHeader): this {
     return tap(this, () => {
-      return this.headers().set(name, value)
+      return this.headers().set(key, value)
     })
   }
 

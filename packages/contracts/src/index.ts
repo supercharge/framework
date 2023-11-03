@@ -45,7 +45,7 @@ export { Middleware, MiddlewareCtor, InlineMiddlewareHandler } from './http/midd
 export { PendingRoute } from './http/pending-route.js'
 export { HttpRedirect } from './http/redirect.js'
 export { HttpRequest, HttpRequestCtor, Protocol } from './http/request.js'
-export { RequestHeaderBag } from './http/request-header-bag.js'
+export { HttpDefaultRequestHeaders, HttpDefaultRequestHeader, HttpRequestHeaders, HttpRequestHeader } from './http/request-headers.js'
 export { HttpResponse, HttpResponseCtor } from './http/response.js'
 export { HttpRouteCollection } from './http/route-collection.js'
 export { HttpRouteGroup } from './http/route-group.js'

@@ -1,6 +1,8 @@
 
+import { InputBag } from './input-bag.js'
 import { HttpContext } from './context.js'
 import { CookieBag } from './cookie-bag.js'
+import { OutgoingHttpHeaders } from 'http2'
 import { HttpRedirect } from './redirect.js'
 import { CookieOptions } from './cookie-options.js'
 import { MacroableCtor } from '@supercharge/macroable'
@@ -31,7 +33,7 @@ export interface HttpResponse<T = any> extends InteractsWithState {
   header (key: string, value: string | string[] | number): this
 
   /**
-   * Returns the response headers.
+   * Returns the response headers bag.
    *
    * @example
    * ```
@@ -39,8 +41,7 @@ export interface HttpResponse<T = any> extends InteractsWithState {
    * // { 'Content-Type': 'application/json' }
    * ```
    */
-  // headers(): HeaderBag<string | string[] | number>
-  headers (): any
+  headers<ResponseHeaders = OutgoingHttpHeaders>(): InputBag<ResponseHeaders>
 
   /**
    * Assign the object’s key-value pairs as response headers.
