@@ -8,7 +8,7 @@ import { HttpRedirect } from './http-redirect.js'
 import { Macroable } from '@supercharge/macroable'
 import { ResponseHeaderBag } from './response-header-bag.js'
 import { InteractsWithState } from './interacts-with-state.js'
-import { CookieOptions, HttpContext, HttpResponse, ResponseCookieBuilderCallback } from '@supercharge/contracts'
+import { CookieConfig, HttpContext, HttpResponse, ResponseCookieBuilderCallback } from '@supercharge/contracts'
 
 export class Response extends Many(Macroable, InteractsWithState) implements HttpResponse {
   /**
@@ -24,16 +24,16 @@ export class Response extends Many(Macroable, InteractsWithState) implements Htt
   /**
    * The default cookie options.
    */
-  private readonly cookieOptions: CookieOptions
+  private readonly cookieConfig: CookieConfig
 
   /**
    * Create a new response instance.
    */
-  constructor (ctx: HttpContext, cookieOptions: CookieOptions) {
+  constructor (ctx: HttpContext, cookieConfig: CookieConfig) {
     super(ctx.raw)
 
     this.meta = { ctx }
-    this.cookieOptions = cookieOptions
+    this.cookieConfig = cookieConfig
   }
 
   /**
@@ -111,7 +111,7 @@ export class Response extends Many(Macroable, InteractsWithState) implements Htt
    * Returns the cookie bag.
    */
   cookies (): CookieBag {
-    return new CookieBag(this.koaCtx.cookies, this.cookieOptions)
+    return new CookieBag(this.koaCtx.cookies, this.cookieConfig)
   }
 
   /**

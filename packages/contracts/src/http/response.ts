@@ -13,7 +13,7 @@ export interface HttpResponseCtor extends MacroableCtor {
   /**
    * Create a new HTTP response instance.
    */
-  new (context: HttpContext, cookieOptions: CookieConfig): HttpResponse
+  new (context: HttpContext, cookieConfig: CookieConfig): HttpResponse
 }
 
 export interface HttpResponse<T = any> extends InteractsWithState {

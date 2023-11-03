@@ -17,7 +17,7 @@ export interface HttpRequestCtor extends MacroableCtor {
   /**
    * Create a new HTTP request instance.
    */
-  new (context: HttpContext, cookieOptions: CookieConfig): HttpRequest
+  new (context: HttpContext, cookieConfig: CookieConfig): HttpRequest
 }
 
 export type Protocol = 'http' | 'https' | string
