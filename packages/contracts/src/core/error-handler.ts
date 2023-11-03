@@ -16,15 +16,15 @@ export interface ErrorHandler {
   /**
    * Handle the given error.
    */
-  handle(ctx: HttpContext, error: Error): Promise<void>
+  handle(error: Error, ctx: HttpContext): Promise<void>
 
   /**
    * Report an error.
    */
-  report(context: HttpContext, error: Error): void | Promise<void>
+  report(error: Error, ctx: HttpContext): void | Promise<void>
 
   /**
    * Render an error into an HTTP response.
    */
-  render(context: HttpContext, error: Error): Promise<any>
+  render(error: Error, ctx: HttpContext): Promise<any>
 }

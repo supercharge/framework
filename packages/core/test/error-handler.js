@@ -183,7 +183,7 @@ test('calls report callbacks', async () => {
 
   class CustomErrorHandler extends ErrorHandler {
     register () {
-      this.reportable((_, error) => {
+      this.reportable(error => {
         reportedError = error
       })
     }
@@ -215,7 +215,7 @@ test('report callbacks can stop the reportable chain', async () => {
         .reportable(() => {
           return true
         })
-        .reportable((_ctx, error) => {
+        .reportable(error => {
           reportedError = error
         })
     }
@@ -448,7 +448,7 @@ class ReportedError extends ReportingError {
 }
 
 class RenderError extends Error {
-  render (ctx, error) {
+  render (error, ctx) {
     return ctx.response.payload({
       message: error.message,
       foo: 'bar',

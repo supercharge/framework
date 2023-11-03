@@ -1,6 +1,6 @@
 
 export default class ErrorHandler {
-  handle (ctx, error) {
+  handle (error, ctx) {
     // console.log('Received error in testing error handler', { error })
 
     ctx.response.status(error.status || error.statusCode || 500)
