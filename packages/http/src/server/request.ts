@@ -8,13 +8,23 @@ import { Arr } from '@supercharge/arrays'
 import { Str } from '@supercharge/strings'
 import { tap } from '@supercharge/goodies'
 import { CookieBag } from './cookie-bag.js'
+import { IncomingMessage } from 'node:http'
+import { IncomingHttpHeaders } from 'node:http2'
 import { ParsedUrlQuery } from 'node:querystring'
 import { Macroable } from '@supercharge/macroable'
 import { RequestHeaderBag } from './request-header-bag.js'
 import { QueryParameterBag } from './query-parameter-bag.js'
 import { InteractsWithState } from './interacts-with-state.js'
-import { IncomingHttpHeaders, IncomingMessage } from 'node:http'
-import { CookieOptions, HttpContext, HttpMethods, HttpRequest, InteractsWithContentTypes, Protocol, RequestCookieBuilderCallback } from '@supercharge/contracts'
+import {
+  CookieOptions,
+  InteractsWithContentTypes,
+  HttpContext,
+  HttpMethods,
+  HttpRequest,
+  HttpRequestHeaders,
+  Protocol,
+  RequestCookieBuilderCallback
+} from '@supercharge/contracts'
 
 declare module 'koa' {
   interface Request extends Koa.BaseRequest {
@@ -234,25 +244,94 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
   /**
    * Returns the request header bag.
    */
-  headers (): RequestHeaderBag {
-    return new RequestHeaderBag(this.koaCtx)
+  headers<RequestHeaders = HttpRequestHeaders> (): InputBag<RequestHeaders> {
+    return new RequestHeaderBag<RequestHeaders>(this.koaCtx.headers as RequestHeaders)
   }
 
   /**
    * Returns the request header identified by the given `key`. The default
    * value will be returned if no header is present for the given key.
    */
-  header<Header extends keyof IncomingHttpHeaders> (key: Header): IncomingHttpHeaders[Header]
-  header<T, Header extends keyof IncomingHttpHeaders> (key: Header, defaultValue: T): IncomingHttpHeaders[Header] | T
-  header<T, Header extends keyof IncomingHttpHeaders> (key: Header, defaultValue?: T): IncomingHttpHeaders[Header] | T {
+  header<Header extends keyof HttpRequestHeaders> (key: Header): HttpRequestHeaders[Header]
+  header<T, Header extends keyof HttpRequestHeaders> (key: Header, defaultValue: T): HttpRequestHeaders[Header] | T
+  header<T, Header extends keyof HttpRequestHeaders> (key: Header, defaultValue?: T): HttpRequestHeaders[Header] | T {
     return this.headers().get(key, defaultValue)
   }
 
   /**
    * Determine whether the request contains a header with the given `key`.
    */
-  hasHeader (key: string): boolean {
+  hasHeader<Header extends keyof HttpRequestHeaders> (key: Header): boolean {
     return this.headers().has(key)
+  }
+
+  /**
+   * Returns the request’s content size as a number retrieved from the `Content-Length` header field.
+   *
+   * @example
+   * ```
+   * request.contentLength()
+   * ```
+   */
+  contentLength (): number {
+    const length = this.header('content-length')
+
+    return Number(length) || 0
+  }
+
+  /**
+   * Determine whether the request method is cacheable.
+   * Cacheable methods are `HEAD` and `GET`.
+   *
+   * @see https://tools.ietf.org/html/rfc7231#section-4.2.3
+   */
+  isMethodCacheable (): boolean {
+    return ['GET', 'HEAD'].includes(this.method().toUpperCase())
+  }
+
+  /**
+   * Determine whether the request method is not cacheable.
+   * Not cacheable methods are `POST`, `PUT`, `DELETE`, `PATCH`, and `OPTIONS`.
+   *
+   * @see https://tools.ietf.org/html/rfc7231#section-4.2.3
+   */
+  isMethodNotCacheable (): boolean {
+    return !this.isMethodCacheable()
+  }
+
+  /**
+   * Returns the client’s user agent.
+   */
+  userAgent (): IncomingHttpHeaders['user-agent'] {
+    return this.header('user-agent')
+  }
+
+  /**
+   * Determine whether the request contains any of the given content `types`.
+   * This method compares the "Content-Type" header value with all of the
+   * given `types` determining whether one of the content types matches.
+   *
+   * @example
+   * ```
+   * // Request with Content-Type: text/html; charset=utf-8
+   * request.isContentType('text/html') // true
+   * request.isContentType('text/html', 'application/json') // true
+   * request.isContentType(['text/html', 'application/json'])  // true
+   *
+   * // Request with Content-Type: application/json
+   * request.isContentType('json') // true
+   * request.isContentType('application/*')  // true
+   *
+   * request.isContentType('json', 'html') // true
+   * request.isContentType('html') // false
+   * ```
+   */
+  isContentType (types: string[]): boolean
+  isContentType (...types: string[]): boolean
+  isContentType (...types: string[] | string[][]): boolean {
+    return !!this.koaCtx.request.is(
+      ([] as string[]).concat(...types)
+    )
   }
 
   /**
@@ -290,84 +369,15 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
    * request.contentType()
    * ```
    */
-  contentType (): IncomingHttpHeaders['content-type'] {
+  contentType (): HttpRequestHeaders['content-type'] {
     return this.header('content-type')
-  }
-
-  /**
-   * Returns the request’s content size as a number retrieved from the `Content-Length` header field.
-   *
-   * @example
-   * ```
-   * request.contentLength()
-   * ```
-   */
-  contentLength (): number {
-    const length = this.header('content-length')
-
-    return Number(length) || 0
-  }
-
-  /**
-   * Determine whether the request contains any of the given content `types`.
-   * This method compares the "Content-Type" header value with all of the
-   * given `types` determining whether one of the content types matches.
-   *
-   * @example
-   * ```
-   * // Request with Content-Type: text/html; charset=utf-8
-   * request.isContentType('text/html') // true
-   * request.isContentType('text/html', 'application/json') // true
-   * request.isContentType(['text/html', 'application/json'])  // true
-   *
-   * // Request with Content-Type: application/json
-   * request.isContentType('json') // true
-   * request.isContentType('application/*')  // true
-   *
-   * request.isContentType('json', 'html') // true
-   * request.isContentType('html') // false
-   * ```
-   */
-  isContentType (types: string[]): boolean
-  isContentType (...types: string[]): boolean
-  isContentType (...types: string[] | string[][]): boolean {
-    return !!this.koaCtx.request.is(
-      ([] as string[]).concat(...types)
-    )
-  }
-
-  /**
-   * Determine whether the request method is cacheable.
-   * Cacheable methods are `HEAD` and `GET`.
-   *
-   * @see https://tools.ietf.org/html/rfc7231#section-4.2.3
-   */
-  isMethodCacheable (): boolean {
-    return ['GET', 'HEAD'].includes(this.method().toUpperCase())
-  }
-
-  /**
-   * Determine whether the request method is not cacheable.
-   * Not cacheable methods are `POST`, `PUT`, `DELETE`, `PATCH`, and `OPTIONS`.
-   *
-   * @see https://tools.ietf.org/html/rfc7231#section-4.2.3
-   */
-  isMethodNotCacheable (): boolean {
-    return !this.isMethodCacheable()
-  }
-
-  /**
-   * Returns the client’s user agent.
-   */
-  userAgent (): IncomingHttpHeaders['user-agent'] {
-    return this.header('user-agent')
   }
 
   /**
    * Determine whether the request the request is an XMLHttpRequest.
    */
   isXmlHttpRequest (): boolean {
-    return this.header('X-Requested-With') === 'XMLHttpRequest'
+    return this.headers<IncomingHttpHeaders>().get('X-Requested-With') === 'XMLHttpRequest'
   }
 
   /**
@@ -382,17 +392,18 @@ export class Request extends Many(Macroable, InteractsWithState) implements Http
    * Determine whether the request is the result of a PJAX call.
    */
   isPjax (): boolean {
-    return this.hasHeader('X-PJAX')
+    return this.headers<IncomingHttpHeaders>().has('X-PJAX')
   }
 
   /**
    * Determine whether the request is the result of a prefetch call.
    */
   isPrefetch (): boolean {
-    return Arr.from([
-      this.header('X-moz', '') as string,
-      this.header('Purpose', '') as string
-    ]).map(header => header.toLowerCase())
-      .has(header => header === 'prefetch')
+    return Arr
+      .from([
+        this.headers<IncomingHttpHeaders>().get('X-moz'),
+        this.headers<IncomingHttpHeaders>().get('Purpose')
+      ])
+      .has(value => typeof value === 'string' && value.toLowerCase() === 'prefetch')
   }
 }

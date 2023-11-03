@@ -3,6 +3,9 @@
 ## [4.0.0](https://github.com/supercharge/framework/compare/v3.20.4...v4.0.0) - 2023-xx-xx
 
 ### Added
+- `@supercharge/contracts`
+    - add `HttpDefaultRequestHeaders` and `HttpDefaultRequestHeader` interfaces: these are strict contracts for HTTP headers allowing IntelliSense for individual headers. IntelliSense is not supported on Node.js’s `IncomingHttpHeaders` interface because it contains an index signature which opens the interfaces to basically anything … the newly added interfaces are strict for allowed keys
+    - add `HttpRequestHeaders` and `HttpRequestHeader` interfaces: `HttpRequestHeaders` is an interface to be used by developers for augmentation to add custom, project-specific request headers. For example, this can be used to add headers for rate limiting
 - `@supercharge/hashing`
     - add `createHash` method: create a Node.js `Hash` instance for a given input
     - add `md5` method: create a Node.js MD5 hash
@@ -21,6 +24,7 @@
 - all packages of the framework moved to ESM
 - require Node.js v20
 - `@supercharge/contracts`
+    - removed export `RequestHeaderBag` contract. The `Request` interface uses the `InputBag<IncomingHttpHeaders>` instead
     - removed export `RequestStateData`, use `HttpStateData` instead
     - `StateBag`: the `has(key)` method now determines whether the value for a given `key` is not `undefined`. If you want to check whether a given `key` is present in the state bag, independently from the value, use the newly added `exists(key)` method
     - `StateBag`:
@@ -32,6 +36,8 @@
     - hashing options require a factory function to return the hash driver constructor
 - `@supercharge/view`
     - export for the view response changed from `View` to `ViewResponse`
+- `@supercharge/http`
+    - the `RequestHeaderBag` extends the `InputBag` which changes the behavior of the `has(key)` method: it returns `false` if the stored value is `undefined` and returns `true` otherwise
 
 
 

@@ -507,7 +507,7 @@ test('get response header default value', async () => {
     .make(Server)
     .use(async ({ response }, next) => {
       return response.payload(
-        response.headers().get('name', 'defaultValue')
+        response.headers().get('unavailable-header', 'defaultValue')
       )
     })
 
