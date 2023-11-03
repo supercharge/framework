@@ -26,11 +26,11 @@ coverage
 .env
 .env.**
 
-# IDEs and editors
+# IDEs, editors, tools
 .idea
 .vscode
-
 .vagrant
+.nx
 
 tsconfig.tsbuildinfo
 
