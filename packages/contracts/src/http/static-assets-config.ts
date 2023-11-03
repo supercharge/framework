@@ -1,11 +1,4 @@
 
-/**
- * @deprecated The `StaticAssetsOptions` is deprecated in favor of the `StaticAssetsConfig`
- * interface. We’ll remove the `StaticAssetsOptions` interface in the upcoming release
- * of the Supercharge framework. You might switch already to the renamed interface.
- */
-export type StaticAssetsOptions = StaticAssetsConfig
-
 export interface StaticAssetsConfig {
   /**
    * Define the maximum amount of seconds to cache a static resource

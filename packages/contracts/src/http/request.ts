@@ -6,18 +6,18 @@ import { HttpContext } from './context.js'
 import { CookieBag } from './cookie-bag.js'
 import { IncomingMessage } from 'node:http'
 import { IncomingHttpHeaders } from 'node:http2'
-import { CookieOptions } from './cookie-options.js'
+import { CookieConfig } from './cookie-config.js'
 import { MacroableCtor } from '@supercharge/macroable'
 import { QueryParameterBag } from './query-parameter-bag.js'
 import { InteractsWithState } from './concerns/interacts-with-state.js'
-import { RequestCookieBuilderCallback } from './cookie-options-builder.js'
+import { RequestCookieBuilderCallback } from './cookie-config-builder.js'
 import { InteractsWithContentTypes } from './concerns/interacts-with-content-types.js'
 
 export interface HttpRequestCtor extends MacroableCtor {
   /**
    * Create a new HTTP request instance.
    */
-  new (context: HttpContext, cookieOptions: CookieOptions): HttpRequest
+  new (context: HttpContext, cookieOptions: CookieConfig): HttpRequest
 }
 
 export type Protocol = 'http' | 'https' | string

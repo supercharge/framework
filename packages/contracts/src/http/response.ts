@@ -4,16 +4,16 @@ import { HttpContext } from './context.js'
 import { CookieBag } from './cookie-bag.js'
 import { OutgoingHttpHeaders } from 'http2'
 import { HttpRedirect } from './redirect.js'
-import { CookieOptions } from './cookie-options.js'
+import { CookieConfig } from './cookie-config.js'
 import { MacroableCtor } from '@supercharge/macroable'
 import { InteractsWithState } from './concerns/interacts-with-state.js'
-import { ResponseCookieBuilderCallback } from './cookie-options-builder.js'
+import { ResponseCookieBuilderCallback } from './cookie-config-builder.js'
 
 export interface HttpResponseCtor extends MacroableCtor {
   /**
    * Create a new HTTP response instance.
    */
-  new (context: HttpContext, cookieOptions: CookieOptions): HttpResponse
+  new (context: HttpContext, cookieOptions: CookieConfig): HttpResponse
 }
 
 export interface HttpResponse<T = any> extends InteractsWithState {
