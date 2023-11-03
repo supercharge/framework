@@ -20,6 +20,14 @@
 - `@supercharge/contracts`
     - `StateBag`: add `exists` method to determine whether the state bag contains an entry `key`, no matter what value is assigned to the key
 
+### Removed
+- `@supercharge/contracts`
+    - removed `BodyparserOptions`: use `BodyparserConfig` instead
+    - removed `CookieOptions`: use `CookieConfig` instead
+    - removed `CorsOptions`: use `CorsConfig` instead
+    - removed `HashBuilderOptions`: use `HashBuilderConfig` instead
+    - removed `StaticAssetsOptions`: use `StaticAssetsConfig` instead
+
 ### Breaking Changes
 - all packages of the framework moved to ESM
 - require Node.js v20

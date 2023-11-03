@@ -1,5 +1,5 @@
 
-import { RequestCookieBuilderCallback, ResponseCookieBuilderCallback } from './cookie-options-builder.js'
+import { RequestCookieBuilderCallback, ResponseCookieBuilderCallback } from './cookie-config-builder.js'
 
 export interface CookieBag {
   /**

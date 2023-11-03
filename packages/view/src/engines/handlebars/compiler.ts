@@ -2,10 +2,10 @@
 import Path from 'node:path'
 import Fs from '@supercharge/fs'
 import { fileURLToPath } from 'node:url'
-import { resolveDefaultImport, tap } from '@supercharge/goodies'
 import { Str } from '@supercharge/strings'
 import { Collect } from '@supercharge/collections'
 import Handlebars, { HelperDelegate } from 'handlebars'
+import { resolveDefaultImport, tap } from '@supercharge/goodies'
 import { Logger, ViewConfig, ViewEngine, ViewResponseConfig } from '@supercharge/contracts'
 import { ViewBaseCompiler } from './base-compiler.js'
 
@@ -291,16 +291,16 @@ export class HandlebarsCompiler extends ViewBaseCompiler implements ViewEngine {
   /**
    * Compile the given `template` to a render function.
    */
-  async compile (view: string, options: ReadTemplateOptions = {}): Promise<HandlebarsTemplateDelegate> {
+  async compile (view: string, config: ReadTemplateConfig = {}): Promise<HandlebarsTemplateDelegate> {
     return this.handlebars.compile(
-      await this.readTemplate(view, options)
+      await this.readTemplate(view, config)
     )
   }
 
   /**
    * Reads and returns the view `template` from the hard disk.
    */
-  async readTemplate (template: string, { isLayout = false }: ReadTemplateOptions): Promise<string> {
+  async readTemplate (template: string, { isLayout = false }: ReadTemplateConfig): Promise<string> {
     const view = isLayout
       ? Path.resolve(await this.layoutLocation(), template)
       : Path.resolve(await this.viewsLocation(), template)
@@ -331,6 +331,6 @@ export class HandlebarsCompiler extends ViewBaseCompiler implements ViewEngine {
   }
 }
 
-interface ReadTemplateOptions {
+interface ReadTemplateConfig {
   isLayout?: boolean
 }

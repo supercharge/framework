@@ -1,13 +1,6 @@
 
 import { HttpMethods } from './methods.js'
 
-/**
- * @deprecated The `BodyparserOptions` is deprecated in favor of the `BodyparserConfig`
- * interface. We’ll remove the `BodyparserOptions` interface in the upcoming release
- * of the Supercharge framework. You might switch already to the renamed interface.
- */
-export type BodyparserOptions = BodyparserConfig
-
 export interface BodyparserConfig {
   /**
    * --------------------------------------------------------------------------

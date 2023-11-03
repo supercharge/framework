@@ -3,7 +3,7 @@ import type { BinaryToTextEncoding, Encoding } from 'node:crypto'
 
 export type HashBuilderCallback = (hashBuilder: HashBuilder) => unknown
 
-export interface HashBuilderOptions {
+export interface HashBuilderConfig {
   inputEncoding?: Encoding
   outputEncoding: BinaryToTextEncoding
 }
