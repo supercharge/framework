@@ -41,7 +41,12 @@ export class ViewResponse {
     * Assigns the rendered HTML of the given `template` as the response payload.
     */
   private async renderView (template: string, data?: any, viewBuilder?: ViewBuilderCallback): Promise<string> {
-    const viewData = { ...this.response.state().all(), ...data }
+    const viewData = {
+      ...this.response.state().all(),
+      ...this.viewEngine.sharedData(),
+      ...data
+    }
+
     const viewConfig: ViewResponseConfig = {}
 
     if (typeof viewBuilder === 'function') {
