@@ -819,7 +819,7 @@ test('isPjax', async () => {
       expect(request.isPjax()).toBe(true)
 
       request.headers().set('X-PJAX', '')
-      expect(request.isPjax()).toBe(false)
+      expect(request.isPjax()).toBe(true)
 
       request.headers().set('X-PJAX', undefined)
       expect(request.isPjax()).toBe(false)
@@ -866,6 +866,9 @@ test('isPrefetch', async () => {
       request.headers().set('X-moz', 'Prefetch')
       expect(request.isPrefetch()).toBe(true)
 
+      request.headers().set('X-moz', undefined)
+      expect(request.isPrefetch()).toBe(false)
+
       request.headers().remove('X-moz')
 
       request.headers().set('Purpose', '')
@@ -876,6 +879,9 @@ test('isPrefetch', async () => {
 
       request.headers().set('Purpose', 'Prefetch')
       expect(request.isPrefetch()).toBe(true)
+
+      request.headers().set('Purpose', undefined)
+      expect(request.isPrefetch()).toBe(false)
 
       return response.payload('ok')
     })

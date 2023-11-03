@@ -94,7 +94,7 @@ export class InputBag<Properties> implements InputBagContract<Properties> {
   /**
    * Determine whether the given `input` is an object.
    */
-  private isObject (input: any): input is Record<string, any> {
+  protected isObject (input: any): input is Record<string, any> {
     return !!input && input.constructor.name === 'Object'
   }
 
