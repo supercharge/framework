@@ -47,6 +47,20 @@
 - `@supercharge/http`
     - the `RequestHeaderBag` extends the `InputBag` which changes the behavior of the `has(key)` method: it returns `false` if the stored value is `undefined` and returns `true` otherwise
 
+    This pull request switches the parameters of the error report, handle, render method:
+- `@supercharge/core`
+    - switch the parameters of the error’s and error handler’s `report`, `handle`, `render` methods:
+    ```ts
+    // before
+    handle(ctx: HttpContext, error: Error)
+    report(ctx: HttpContext, error: Error)
+    render(ctx: HttpContext, error: Error)
+
+    // now
+    handle(error: Error, ctx: HttpContext)
+    report(error: Error, ctx: HttpContext)
+    render(error: Error, ctx: HttpContext)
+    ```
 
 
 ## [3.20.4](https://github.com/supercharge/framework/compare/v3.20.3...v3.20.4) - 2023-10-15
