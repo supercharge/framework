@@ -2,6 +2,11 @@
 import { HelperDelegate } from 'handlebars'
 import { ViewResponseConfig } from './response-config.js'
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface ViewSharedData {
+  //
+}
+
 export interface ViewEngine {
   /**
    * Boot the view engine. This may contain loading partial views
@@ -40,4 +45,22 @@ export interface ViewEngine {
    */
   hasHelper (name: string): boolean
 
+  /**
+   * Share a given state of data to all views, across HTTP requests.
+   *
+   * @example
+   * ```
+   * import { View } from '@supercharge/facades'
+   *
+   * View.share({ key: 'value' })
+   * ```
+   */
+  share<K extends keyof ViewSharedData> (key: K, value: ViewSharedData[K]): this
+  share (values: Partial<ViewSharedData>): this
+  share (key: string | any, value?: any): this
+
+  /**
+   * Returns the shared data.
+   */
+  sharedData(): Record<string, any>
 }
