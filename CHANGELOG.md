@@ -1,6 +1,6 @@
 # Changelog
 
-## [4.0.0](https://github.com/supercharge/framework/compare/v3.20.4...v4.0.0) - 2023-xx-xx
+## [4.0.0-alpha.0](https://github.com/supercharge/framework/compare/v3.20.4...v4.0.0-alpha.0) - 2023-11-xx
 
 ### Added
 - `@supercharge/contracts`
