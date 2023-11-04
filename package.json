@@ -11,9 +11,9 @@
     "@supercharge/eslint-config-typescript": "~4.0.0",
     "@supercharge/tsconfig": "~7.0.0",
     "@types/node": "~20.8.10",
-    "eslint": "~8.52.0",
+    "eslint": "~8.53.0",
     "lerna": "~7.4.2",
-    "nx": "17.0.2"
+    "nx": "17.0.3"
   },
   "engines": {
     "node": ">=20"
