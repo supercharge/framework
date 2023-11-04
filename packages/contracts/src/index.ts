@@ -24,6 +24,7 @@ export { HashBuilder, HashBuilderCallback, HashBuilderConfig } from './hashing/h
 export { HashConfig } from './hashing/config.js'
 export { BaseHasher } from './hashing/base-hasher.js'
 export { Hasher } from './hashing/hasher.js'
+export { HashAlgorithms, HashAlgorithm } from './hashing/hash-algorithms.js'
 
 export { BodyparserConfig } from './http/bodyparser-config.js'
 export { HttpConfig } from './http/config.js'

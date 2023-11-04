@@ -1,7 +1,7 @@
 
 import { HashBuilder } from './hash-builder.js'
 import Crypto, { BinaryLike, Encoding, Hash } from 'node:crypto'
-import { BaseHasher as BaseHasherContract, HashBuilderCallback, HashBuilderConfig } from '@supercharge/contracts'
+import { BaseHasher as BaseHasherContract, HashAlgorithm, HashBuilderCallback, HashBuilderConfig } from '@supercharge/contracts'
 
 export class BaseHasher implements BaseHasherContract {
   /**
@@ -9,7 +9,7 @@ export class BaseHasher implements BaseHasherContract {
    * and the related `input` with (optional) `inputEncoding`. When `input`
    * is a string and `inputEncoding` is omitted, it defaults to `utf8`.
    */
-  createHash (algorithm: string, input: string | BinaryLike, inputEncoding?: Encoding): Hash {
+  createHash (algorithm: HashAlgorithm, input: string | BinaryLike, inputEncoding?: Encoding): Hash {
     return typeof input === 'string' && typeof inputEncoding === 'string'
       ? Crypto.createHash(algorithm).update(input, inputEncoding)
       : Crypto.createHash(algorithm).update(input)
@@ -50,7 +50,7 @@ export class BaseHasher implements BaseHasherContract {
    * user input. This function resolves a hash builder callback and creates
    * the hash value for the provided algorithm and i/o encoding options.
    */
-  private hash (algorithm: string, input: string | BinaryLike, inputEncodingOrHashBuilder?: Encoding | HashBuilderCallback): Hash | string {
+  private hash (algorithm: HashAlgorithm, input: string | BinaryLike, inputEncodingOrHashBuilder?: Encoding | HashBuilderCallback): Hash | string {
     if (typeof inputEncodingOrHashBuilder === 'string') {
       return this.createHash(algorithm, input, inputEncodingOrHashBuilder)
     }
