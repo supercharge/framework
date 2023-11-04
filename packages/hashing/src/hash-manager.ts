@@ -1,7 +1,7 @@
 
 import type { BinaryLike, Encoding, Hash } from 'node:crypto'
 import { Manager } from '@supercharge/manager'
-import { Application, Hasher, HashConfig, HashBuilderCallback } from '@supercharge/contracts'
+import { Application, Hasher, HashConfig, HashBuilderCallback, HashAlgorithm } from '@supercharge/contracts'
 
 export class HashManager extends Manager<Application> implements Hasher {
   /**
@@ -74,7 +74,7 @@ export class HashManager extends Manager<Application> implements Hasher {
    * and the related `input` with (optional) `inputEncoding`. When `input`
    * is a string and `inputEncoding` is omitted, it defaults to `utf8`.
    */
-  createHash (algorithm: string, input: string | BinaryLike, inputEncoding?: Encoding): Hash {
+  createHash (algorithm: HashAlgorithm, input: string | BinaryLike, inputEncoding?: Encoding): Hash {
     return this.driver().createHash(algorithm, input, inputEncoding)
   }
 

@@ -1,6 +1,7 @@
 
-import type { BinaryLike, Encoding, Hash } from 'node:crypto'
+import { HashAlgorithm } from './hash-algorithms.js'
 import { HashBuilderCallback } from './hash-builder.js'
+import type { BinaryLike, Encoding, Hash } from 'node:crypto'
 
 export interface BaseHasher {
   /**
@@ -8,7 +9,7 @@ export interface BaseHasher {
    * and the related `input` with (optional) `inputEncoding`. When `input`
    * is a string and `inputEncoding` is omitted, it defaults to `utf8`.
    */
-  createHash (algorithm: string, input: string | BinaryLike, inputEncoding?: Encoding): Hash
+  createHash (algorithm: HashAlgorithm, input: string | BinaryLike, inputEncoding?: Encoding): Hash
 
   /**
    * Returns an MD5 hash instance for the given `content`.

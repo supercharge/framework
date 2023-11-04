@@ -37,7 +37,6 @@ export type HttpDefaultRequestHeader = keyof HttpDefaultRequestHeaders
  *  }
  * ```
  */
-
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface HttpRequestHeaders extends HttpDefaultRequestHeaders {
   //
