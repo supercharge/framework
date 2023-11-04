@@ -6,6 +6,7 @@
 - `@supercharge/contracts`
     - add `HttpDefaultRequestHeaders` and `HttpDefaultRequestHeader` interfaces: these are strict contracts for HTTP headers allowing IntelliSense for individual headers. IntelliSense is not supported on Node.js’s `IncomingHttpHeaders` interface because it contains an index signature which opens the interfaces to basically anything … the newly added interfaces are strict for allowed keys
     - add `HttpRequestHeaders` and `HttpRequestHeader` interfaces: `HttpRequestHeaders` is an interface to be used by developers for augmentation to add custom, project-specific request headers. For example, this can be used to add headers for rate limiting
+    - add `HashAlgorithms` interface and `HashAlgorithm` type: `HashAlgorithms` is an interface providing the supported hash algorithms of Node.js v20 for IntelliSense, improving the developer experience when working with hashes
 - `@supercharge/hashing`
     - add `createHash` method: create a Node.js `Hash` instance for a given input
     - add `md5` method: create a Node.js MD5 hash
