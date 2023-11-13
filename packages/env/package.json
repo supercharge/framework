@@ -22,7 +22,7 @@
     "dotenv": "~16.3.1"
   },
   "devDependencies": {
-    "@types/lodash": "~4.14.200",
+    "@types/lodash": "~4.14.201",
     "c8": "~8.0.1",
     "expect": "~29.7.0",
     "typescript": "~5.2.2",

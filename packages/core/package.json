@@ -27,7 +27,7 @@
     "@supercharge/set": "~2.2.1",
     "@supercharge/support": "^4.0.0-alpha.0",
     "dotenv": "~16.3.1",
-    "youch": "~3.3.2",
+    "youch": "~3.3.3",
     "youch-terminal": "~2.2.3"
   },
   "devDependencies": {
