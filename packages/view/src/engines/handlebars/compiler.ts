@@ -4,10 +4,13 @@ import Fs from '@supercharge/fs'
 import { fileURLToPath } from 'node:url'
 import { Str } from '@supercharge/strings'
 import { Collect } from '@supercharge/collections'
+import { ViewBaseCompiler } from './base-compiler.js'
 import Handlebars, { HelperDelegate } from 'handlebars'
 import { resolveDefaultImport, tap } from '@supercharge/goodies'
 import { Logger, ViewConfig, ViewEngine, ViewResponseConfig } from '@supercharge/contracts'
-import { ViewBaseCompiler } from './base-compiler.js'
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const __dirname = Path.dirname(fileURLToPath(import.meta.url))
 
 export class HandlebarsCompiler extends ViewBaseCompiler implements ViewEngine {
   /**
@@ -88,7 +91,7 @@ export class HandlebarsCompiler extends ViewBaseCompiler implements ViewEngine {
    * Returns the path to the view helpers.
    */
   async helpersLocations (): Promise<string[]> {
-    const packagedHelpersPath = fileURLToPath(import.meta.resolve('./helpers'))
+    const packagedHelpersPath = Path.resolve(__dirname, './helpers')
 
     return await Collect(packagedHelpersPath)
       .concat(this.config.helpers)

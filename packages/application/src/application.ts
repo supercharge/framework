@@ -1,5 +1,6 @@
 
 import Fs from 'node:fs'
+import Path from 'node:path'
 import { globbySync } from 'globby'
 import { Env } from '@supercharge/env'
 import { PackageJson } from 'type-fest'
@@ -71,6 +72,10 @@ export class Application extends Container implements ApplicationContract {
    * Returns the given `fileUrlOrPath` to a path without without the `file:` prefix.
    */
   private resolveFileURLToPath (fileUrlOrPath: string): string {
+    // if (typeof fileURLToPath !== 'string') {
+    //   throw new Error(`Parameter to "resolveFileURLToPath" must be a string. Received "${typeof fileURLToPath}"`)
+    // }
+
     return (fileUrlOrPath ?? '').startsWith('file:')
       ? fileURLToPath(fileUrlOrPath)
       : fileUrlOrPath
@@ -183,7 +188,7 @@ export class Application extends Container implements ApplicationContract {
   resolveFromBasePath (...destination: string[]): string {
     const basePath = Str(this.basePath()).rtrim('/').get()
 
-    const filePath = import.meta.resolve(
+    const filePath = Path.resolve(
       `${basePath}/${destination.join('/')}`
     )
 
@@ -285,7 +290,7 @@ export class Application extends Container implements ApplicationContract {
    * Returns the resolved path to the environment file.
    */
   environmentFilePath (): string {
-    const environmentFilePath = import.meta.resolve(
+    const environmentFilePath = Path.resolve(
       [this.environmentPath(), this.environmentFile()].join('/')
     )
 

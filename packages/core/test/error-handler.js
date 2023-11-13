@@ -1,6 +1,7 @@
 
 import Sinon from 'sinon'
 import { test } from 'uvu'
+import Path from 'node:path'
 import { expect } from 'expect'
 import Supertest from 'supertest'
 import { fileURLToPath } from 'node:url'
@@ -18,7 +19,8 @@ const viewMock = {
   }
 }
 
-const appRootPath = fileURLToPath(import.meta.resolve('./fixtures'))
+const __dirname = Path.dirname(fileURLToPath(import.meta.url))
+const appRootPath = Path.resolve(__dirname, './fixtures')
 
 function createApp () {
   const app = Application

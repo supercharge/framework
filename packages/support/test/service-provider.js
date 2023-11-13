@@ -1,7 +1,11 @@
 
 import { test } from 'uvu'
+import Path from 'node:path'
 import { expect } from 'expect'
+import { fileURLToPath } from 'node:url'
 import { ServiceProvider } from '../dist/index.js'
+
+const __dirname = Path.dirname(fileURLToPath(import.meta.url))
 
 let config = {}
 
@@ -108,7 +112,7 @@ test('provider.mergeConfigFrom()', async () => {
   const serviceProvider = new ServiceProvider(appMock)
 
   await serviceProvider.mergeConfigFrom(
-    import.meta.resolve('./fixtures/test-config.js'), 'test'
+    Path.resolve(__dirname, './fixtures/test-config.js'), 'test'
   )
 
   expect(serviceProvider.config().has('test')).toBe(true)
@@ -116,7 +120,7 @@ test('provider.mergeConfigFrom()', async () => {
 
 test('provider.mergeConfigFrom() throws for file without default export', async () => {
   const serviceProvider = new ServiceProvider(appMock)
-  const filePath = import.meta.resolve('./fixtures/test-config-without-default-export.js')
+  const filePath = Path.resolve(__dirname, './fixtures/test-config-without-default-export.js')
 
   await expect(
     serviceProvider.mergeConfigFrom(filePath, 'test')
@@ -131,7 +135,7 @@ test('provider.mergeConfigFrom() throws for unavailable file', async () => {
 
   await expect(
     serviceProvider.mergeConfigFrom(
-      import.meta.resolve('./fixtures/unavailable.js'), 'test'
+      Path.resolve('./fixtures/unavailable.js'), 'test'
     )
   ).rejects.toThrow('Cannot find module')
 

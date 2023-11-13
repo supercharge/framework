@@ -4,6 +4,7 @@
  */
 
 import { test } from 'uvu'
+import Path from 'node:path'
 import { expect } from 'expect'
 import Fs from '@supercharge/fs'
 import Supertest from 'supertest'
@@ -12,7 +13,8 @@ import { Server } from '@supercharge/http'
 import { setupApp } from './helpers/index.js'
 import { StartSessionMiddleware } from '../dist/index.js'
 
-const sessionFileLocation = fileURLToPath(import.meta.resolve('./fixtures'))
+const __dirname = Path.dirname(fileURLToPath(import.meta.url))
+const sessionFileLocation = Path.resolve(__dirname, './fixtures')
 
 /**
  * @returns {Server}

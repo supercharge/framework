@@ -1,6 +1,11 @@
 
+import Path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { Application } from '@supercharge/application'
 import { ViewServiceProvider } from '../../dist/index.js'
+
+const __dirname = Path.dirname(fileURLToPath(import.meta.url))
+const appRoot = Path.resolve(__dirname, './../fixtures')
 
 /**
  * Returns a test application.
@@ -8,8 +13,6 @@ import { ViewServiceProvider } from '../../dist/index.js'
  * @returns {Application}
  */
 export function makeApp () {
-  const appRoot = import.meta.resolve('./../fixtures')
-
   const app = Application.createWithAppRoot(appRoot)
 
   app.config().set('view', {

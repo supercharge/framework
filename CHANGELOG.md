@@ -1,6 +1,13 @@
 # Changelog
 
-## [4.0.0-alpha.0](https://github.com/supercharge/framework/compare/v3.20.4...v4.0.0-alpha.0) - 2023-11-xx
+## [4.0.0-alpha.1](https://github.com/supercharge/framework/compare/v4.0.0-alpha.0...v4.0.0-alpha.1) - 2023-11-xx
+
+### Updated
+- bump dependencies
+- replace `import.meta.resolve` with `Path.resolve` because `import.meta.resolve` sometimes returns a Promise in Node.js
+
+
+## [4.0.0-alpha.0](https://github.com/supercharge/framework/compare/v3.20.4...v4.0.0-alpha.0) - 2023-11-13
 
 ### Added
 - `@supercharge/contracts`

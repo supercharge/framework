@@ -1,4 +1,5 @@
 
+import Path from 'node:path'
 import deepmerge from 'deepmerge'
 import { fileURLToPath } from 'node:url'
 import ErrorHandler from './error-handler.js'
@@ -6,8 +7,11 @@ import { Application } from '@supercharge/application'
 import { ViewServiceProvider } from '@supercharge/view'
 import { HttpServiceProvider } from '../../dist/index.js'
 
+const __dirname = Path.dirname(fileURLToPath(import.meta.url))
+const appRoot = Path.resolve(__dirname, './')
+
 const defaultOptions = {
-  appRoot: fileURLToPath(import.meta.resolve('./'))
+  appRoot
 }
 
 /**

@@ -1,9 +1,13 @@
 
+import Path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { Application } from '@supercharge/application'
 import { BcryptHasher } from '../../dist/bcrypt-hasher.js'
 import { ScryptHasher } from '../../dist/scrypt-hasher.js'
 import { HashingServiceProvider } from '../../dist/index.js'
+
+const __dirname = Path.dirname(fileURLToPath(import.meta.url))
+const fixturesPath = Path.resolve(__dirname, './fixtures')
 
 /**
  * Returns a test application.
@@ -13,9 +17,7 @@ import { HashingServiceProvider } from '../../dist/index.js'
  * @returns {Promise<Application>}
  */
 export async function setupApp (hashConfig = {}) {
-  const app = Application.createWithAppRoot(
-    fileURLToPath(import.meta.resolve('./'))
-  )
+  const app = Application.createWithAppRoot(fixturesPath)
 
   app.config()
     .set('app.key', 'app-key-1234')

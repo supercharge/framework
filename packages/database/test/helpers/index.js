@@ -6,7 +6,8 @@ import { fileURLToPath } from 'node:url'
 import { Application } from '@supercharge/core'
 import { DatabaseManager } from '../../dist/index.js'
 
-const databaseDirectory = fileURLToPath(import.meta.resolve('./../fixtures'))
+const __dirname = Path.dirname(fileURLToPath(import.meta.url))
+const databaseDirectory = Path.resolve(__dirname, './../fixtures')
 
 /**
  * @returns {Database}
@@ -57,7 +58,7 @@ export function makeApp (config = {}, dbDirectory) {
  */
 function createSqliteConnectionConfig (dbDirectory) {
   const id = Crypto.randomBytes(28).toString('hex').slice(0, 5)
-  const dbPath = dbDirectory || fileURLToPath(import.meta.resolve('./../fixtures'))
+  const dbPath = dbDirectory || databaseDirectory
   const dbFile = `${dbPath}/database-${id}.sqlite`
 
   return {

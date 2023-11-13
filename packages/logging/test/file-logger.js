@@ -1,11 +1,13 @@
 
 import { test } from 'uvu'
+import Path from 'node:path'
 import { expect } from 'expect'
 import Fs from '@supercharge/fs'
 import { fileURLToPath } from 'node:url'
 import { FileLogger } from '../dist/file-logger.js'
 
-const logFile = fileURLToPath(import.meta.resolve('./test.log'))
+const __dirname = Path.dirname(fileURLToPath(import.meta.url))
+const logFile = Path.resolve(__dirname, './test.log')
 
 function logWrite () {
   return new Promise(resolve => {

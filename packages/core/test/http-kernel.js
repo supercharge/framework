@@ -1,6 +1,7 @@
 
 import Sinon from 'sinon'
 import { test } from 'uvu'
+import Path from 'node:path'
 import { expect } from 'expect'
 import Supertest from 'supertest'
 import MockedEnv from 'mocked-env'
@@ -8,7 +9,8 @@ import { fileURLToPath } from 'node:url'
 import { Server } from '@supercharge/http'
 import { HttpKernel, Application, ErrorHandler } from '../dist/index.js'
 
-const appRootPath = fileURLToPath(import.meta.resolve('./fixtures'))
+const __dirname = Path.dirname(fileURLToPath(import.meta.url))
+const appRootPath = Path.resolve(__dirname, './fixtures')
 
 let app = createApp()
 

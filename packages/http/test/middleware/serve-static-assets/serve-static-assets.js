@@ -1,14 +1,18 @@
 
 import { test } from 'uvu'
+import Path from 'node:path'
 import Supertest from 'supertest'
 import { fileURLToPath } from 'node:url'
 import { setupApp } from '../../helpers/index.js'
 import defaultStaticAssetsConfig from './fixtures/static-assets.js'
 import { ServeStaticAssetsMiddleware, Server } from '../../../dist/index.js'
 
+const __dirname = Path.dirname(fileURLToPath(import.meta.url))
+const fixturesPath = Path.resolve(__dirname, './fixtures')
+
 const app = setupApp({
   static: defaultStaticAssetsConfig,
-  appRoot: fileURLToPath(import.meta.resolve('./fixtures'))
+  appRoot: fixturesPath
 })
 
 async function createHttpServer () {

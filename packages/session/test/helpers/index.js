@@ -1,10 +1,12 @@
 
+import Path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import ErrorHandler from './error-handler.js'
 import { Application } from '@supercharge/core'
 import { SessionServiceProvider } from '../../dist/index.js'
 
-const appRootPath = fileURLToPath(import.meta.resolve('./fixtures'))
+const __dirname = Path.dirname(fileURLToPath(import.meta.url))
+const appRootPath = Path.resolve(__dirname, './fixtures')
 
 /**
  * Returns a test application.

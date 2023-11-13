@@ -1,11 +1,13 @@
 
 import Sinon from 'sinon'
 import { test } from 'uvu'
+import Path from 'node:path'
 import { expect } from 'expect'
 import { fileURLToPath } from 'node:url'
 import { Application, ConsoleKernel } from '../dist/index.js'
 
-const appRootPath = fileURLToPath(import.meta.resolve('./fixtures'))
+const __dirname = Path.dirname(fileURLToPath(import.meta.url))
+const appRootPath = Path.resolve(__dirname, './fixtures')
 
 const app = Application.createWithAppRoot(appRootPath)
 app.config().set('app.key', 1234)
@@ -32,7 +34,7 @@ test('.bootstrap()', async () => {
 })
 
 test('.loadCommandsFromPaths()', async () => {
-  const commandsPath = fileURLToPath(import.meta.resolve('./fixtures/app/console/commands'))
+  const commandsPath = Path.resolve(__dirname, './fixtures/app/console/commands')
 
   const kernel = ConsoleKernel.for(app)
   await kernel.loadCommandsFromPaths(commandsPath)
@@ -45,7 +47,7 @@ test('.loadCommandsFromPaths()', async () => {
 })
 
 test('.run()', async () => {
-  const commandsPath = fileURLToPath(import.meta.resolve('./fixtures/app/console/commands'))
+  const commandsPath = Path.resolve(__dirname, './fixtures/app/console/commands')
 
   const kernel = ConsoleKernel.for(app)
   await kernel.loadCommandsFromPaths(commandsPath)

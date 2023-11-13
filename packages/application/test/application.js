@@ -1,5 +1,6 @@
 
 import { test } from 'uvu'
+import Path from 'node:path'
 import { expect } from 'expect'
 import { Env } from '@supercharge/env'
 import { fileURLToPath } from 'node:url'
@@ -8,26 +9,26 @@ import { Application } from '../dist/index.js'
 import { LogManager } from '@supercharge/logging'
 import TestServiceProvider from './fixtures/bootstrap/test-service-provider.js'
 
-const appRootPath = fileURLToPath(import.meta.resolve('.'))
-const fixturesPath = fileURLToPath(import.meta.resolve('./fixtures'))
+const __dirname = Path.dirname(fileURLToPath(import.meta.url))
+const fixturesPath = Path.resolve(__dirname, './fixtures')
 
 test('app.env()', async () => {
-  const app = Application.createWithAppRoot(appRootPath)
+  const app = Application.createWithAppRoot(__dirname)
   expect(app.env()).toBeInstanceOf(Env)
 })
 
 test('app.config()', async () => {
-  const app = Application.createWithAppRoot(appRootPath)
+  const app = Application.createWithAppRoot(__dirname)
   expect(app.config()).toBeInstanceOf(Config)
 })
 
 test('app.logger()', async () => {
-  const app = Application.createWithAppRoot(appRootPath)
+  const app = Application.createWithAppRoot(__dirname)
   expect(app.logger()).toBeInstanceOf(LogManager)
 })
 
 test('app.key()', async () => {
-  const app = Application.createWithAppRoot(appRootPath)
+  const app = Application.createWithAppRoot(__dirname)
   expect(() => app.key()).toThrow('Missing app key. Please set the APP_KEY environment variable.')
 
   app.config().set('app.key', 1234)
@@ -35,7 +36,7 @@ test('app.key()', async () => {
 })
 
 test('app.registerBaseBindings()', async () => {
-  const app = Application.createWithAppRoot(appRootPath)
+  const app = Application.createWithAppRoot(__dirname)
 
   expect(app.hasBinding('app')).toBe(true)
   expect(app.hasBinding('container')).toBe(true)
@@ -45,7 +46,7 @@ test('app.registerBaseBindings()', async () => {
 })
 
 test('app.registerBaseServiceProviders()', async () => {
-  const app = Application.createWithAppRoot(appRootPath)
+  const app = Application.createWithAppRoot(__dirname)
   expect(app.hasBinding('logger')).toBe(true)
 })
 
@@ -55,31 +56,31 @@ test('app.version()', async () => {
 })
 
 test('app.basePath()', async () => {
-  const app = Application.createWithAppRoot(appRootPath)
-  expect(app.basePath()).toEqual(appRootPath)
+  const app = Application.createWithAppRoot(__dirname)
+  expect(app.basePath()).toEqual(__dirname)
 })
 
 test('app.environmentFile()', async () => {
-  const app = Application.createWithAppRoot(appRootPath)
+  const app = Application.createWithAppRoot(__dirname)
   expect(app.environmentFile()).toEqual('.env')
 })
 
 test('app.loadEnvironmentFrom()', async () => {
   const app = Application
-    .createWithAppRoot(appRootPath)
+    .createWithAppRoot(__dirname)
     .loadEnvironmentFrom('./fixtures/.env')
 
   expect(app.environmentFile()).toEqual('./fixtures/.env')
 })
 
 test('app.environmentPath() uses appRoot by default', async () => {
-  const app = Application.createWithAppRoot(appRootPath)
-  expect(app.environmentPath()).toEqual(appRootPath)
+  const app = Application.createWithAppRoot(__dirname)
+  expect(app.environmentPath()).toEqual(__dirname)
 })
 
 test('app.useEnvironmentPath()', async () => {
   const app = Application
-    .createWithAppRoot(appRootPath)
+    .createWithAppRoot(__dirname)
     .useEnvironmentPath('fixtures')
 
   expect(app.environmentPath()).toEqual(fixturesPath)
@@ -87,111 +88,111 @@ test('app.useEnvironmentPath()', async () => {
 
 test('app.environmentFilePath()', async () => {
   const app = Application
-    .createWithAppRoot(appRootPath)
+    .createWithAppRoot(__dirname)
     .loadEnvironmentFrom('secrets.env')
     .useEnvironmentPath('fixtures')
 
   expect(app.environmentFilePath()).toEqual(
-    fileURLToPath(import.meta.resolve('./fixtures/secrets.env'))
+    Path.resolve(__dirname, 'fixtures/secrets.env')
   )
 })
 
 test('app.configPath()', async () => {
-  const app = Application.createWithAppRoot(appRootPath)
+  const app = Application.createWithAppRoot(__dirname)
 
   expect(app.configPath()).toEqual(
-    fileURLToPath(import.meta.resolve('./config'))
+    Path.resolve(__dirname, 'config')
   )
 })
 
 test('resolves configPath for parameter', async () => {
-  const app = Application.createWithAppRoot(appRootPath)
+  const app = Application.createWithAppRoot(__dirname)
 
   expect(app.configPath('service.js')).toEqual(
-    fileURLToPath(import.meta.resolve('./config/service.js'))
+    Path.resolve(__dirname, 'config/service.js')
   )
 })
 
 test('app.publicPath()', async () => {
-  const app = Application.createWithAppRoot(appRootPath)
+  const app = Application.createWithAppRoot(__dirname)
 
   expect(app.publicPath()).toEqual(
-    fileURLToPath(import.meta.resolve('./public'))
+    Path.resolve(__dirname, 'public')
   )
 
   expect(app.publicPath('test')).toEqual(
-    fileURLToPath(import.meta.resolve('./public/test'))
+    Path.resolve(__dirname, 'public/test')
   )
 
   expect(app.publicPath('foo/bar')).toEqual(
-    fileURLToPath(import.meta.resolve('./public/foo/bar'))
+    Path.resolve(__dirname, 'public/foo/bar')
   )
 
   expect(app.publicPath('foo', 'bar')).toEqual(
-    fileURLToPath(import.meta.resolve('./public/foo/bar'))
+    Path.resolve(__dirname, 'public/foo/bar')
   )
 })
 
 test('resolves publicPath for parameter', async () => {
-  const app = Application.createWithAppRoot(appRootPath)
+  const app = Application.createWithAppRoot(__dirname)
 
   expect(app.publicPath('assets/font.woff2')).toEqual(
-    fileURLToPath(import.meta.resolve('./public/assets/font.woff2'))
+    Path.resolve(__dirname, 'public/assets/font.woff2')
   )
 })
 
 test('app.resourcePath()', async () => {
-  const app = Application.createWithAppRoot(appRootPath)
+  const app = Application.createWithAppRoot(__dirname)
 
   expect(app.resourcePath()).toEqual(
-    fileURLToPath(import.meta.resolve('./resources'))
+    Path.resolve(__dirname, 'resources')
   )
 })
 
 test('resolves resourcePath for parameter', async () => {
-  const app = Application.createWithAppRoot(appRootPath)
+  const app = Application.createWithAppRoot(__dirname)
 
   expect(app.resourcePath('views/mails/test.hbs')).toEqual(
-    fileURLToPath(import.meta.resolve('./resources/views/mails/test.hbs'))
+    Path.resolve(__dirname, 'resources/views/mails/test.hbs')
   )
 })
 
 test('app.storagePath()', async () => {
-  const app = Application.createWithAppRoot(appRootPath)
+  const app = Application.createWithAppRoot(__dirname)
 
   expect(app.storagePath()).toEqual(
-    fileURLToPath(import.meta.resolve('./storage'))
+    Path.resolve(__dirname, 'storage')
   )
 })
 
 test('resolves storagePath for parameter', async () => {
-  const app = Application.createWithAppRoot(appRootPath)
+  const app = Application.createWithAppRoot(__dirname)
 
   expect(app.storagePath('cache/file.txt')).toEqual(
-    fileURLToPath(import.meta.resolve('./storage/cache/file.txt'))
+    Path.resolve(__dirname, 'storage/cache/file.txt')
   )
 })
 
 test('app.databasePath()', async () => {
-  const app = Application.createWithAppRoot(appRootPath)
+  const app = Application.createWithAppRoot(__dirname)
 
   expect(app.databasePath()).toEqual(
-    fileURLToPath(import.meta.resolve('./database'))
+    Path.resolve(__dirname, 'database')
   )
 })
 
 test('resolves databasePath for parameter', async () => {
-  const app = Application.createWithAppRoot(appRootPath)
+  const app = Application.createWithAppRoot(__dirname)
 
   expect(app.databasePath('migrations/file.sql')).toEqual(
-    fileURLToPath(import.meta.resolve('./database/migrations/file.sql'))
+    Path.resolve(__dirname, 'database/migrations/file.sql')
   )
 })
 
 test('calls booting callbacks before booting service providers', async () => {
   let called = false
 
-  const app = Application.createWithAppRoot(appRootPath).booting(() => {
+  const app = Application.createWithAppRoot(__dirname).booting(() => {
     called = true
   })
 
@@ -200,7 +201,7 @@ test('calls booting callbacks before booting service providers', async () => {
 })
 
 test('app.isRunningInConsole()', async () => {
-  const app = Application.createWithAppRoot(appRootPath)
+  const app = Application.createWithAppRoot(__dirname)
 
   expect(app.isRunningInConsole()).toBe(false)
 
@@ -223,7 +224,7 @@ test('app.withCustomErrorHandler()', async () => {
   class CustomErrorHandler { }
 
   const app = Application
-    .createWithAppRoot(appRootPath)
+    .createWithAppRoot(__dirname)
     .withErrorHandler(CustomErrorHandler)
 
   expect(app.make('error.handler')).toBeInstanceOf(CustomErrorHandler)
@@ -268,7 +269,7 @@ test('shutdown', async () => {
   }
 
   const app = Application
-    .createWithAppRoot(appRootPath)
+    .createWithAppRoot(__dirname)
     .register(new CustomServiceProvider())
 
   // 'stopped' is bound in the "register" method of the custom provider

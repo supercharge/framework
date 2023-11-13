@@ -1,5 +1,6 @@
 
 import { test } from 'uvu'
+import Path from 'node:path'
 import { expect } from 'expect'
 import deepmerge from 'deepmerge'
 import Supertest from 'supertest'
@@ -8,8 +9,10 @@ import { Server } from '../../../dist/index.js'
 import { setupApp } from '../../helpers/index.js'
 import defaultBodyparserConfig from './fixtures/bodyparser-config.js'
 
-const testFile1Path = fileURLToPath(import.meta.resolve('./fixtures/test-multipart-file-1.txt'))
-const testFile2Path = fileURLToPath(import.meta.resolve('./fixtures/test-multipart-file-2.txt'))
+const __dirname = Path.dirname(fileURLToPath(import.meta.url))
+
+const testFile1Path = Path.resolve(__dirname, './fixtures/test-multipart-file-1.txt')
+const testFile2Path = Path.resolve(__dirname, './fixtures/test-multipart-file-2.txt')
 
 function createHttpServer (bodyparserConfig) {
   const app = setupApp({
