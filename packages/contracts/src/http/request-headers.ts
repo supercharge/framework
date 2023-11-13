@@ -1,22 +1,13 @@
 
-import { IncomingHttpHeaders } from 'http2'
-
-// copy every declared property from http.IncomingHttpHeaders
-// but remove index signatures
+import { IncomingHttpHeaders } from 'node:http2'
+import { RemoveIndexSignature } from '../utils/object.js'
 
 /**
  * This type copies over all properties from the `IncomingHttpHeaders` type
  * except the index signature. The index signature is nice to use custom
  * HTTP headers, but it throws away IntelliSense which we want to keep.
  */
-export type HttpDefaultRequestHeaders = {
-  [K in keyof IncomingHttpHeaders as string extends K
-    ? never
-    : number extends K
-      ? never
-      : K
-  ]: IncomingHttpHeaders[K];
-}
+export type HttpDefaultRequestHeaders = RemoveIndexSignature<IncomingHttpHeaders>
 
 export type HttpDefaultRequestHeader = keyof HttpDefaultRequestHeaders
 

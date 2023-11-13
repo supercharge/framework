@@ -71,7 +71,7 @@ export { Htmlable } from './support/htmlable.js'
 export { ServiceProvider, ServiceProviderCtor } from './support/service-provider.js'
 
 export { Class } from './utils/class.js'
-export { Dict } from './utils/dict.js'
+export { Dict, RemoveIndexSignature } from './utils/object.js'
 
 export { ViewConfig } from './view/config.js'
 export { ViewConfigBuilder } from './view/config-builder.js'
