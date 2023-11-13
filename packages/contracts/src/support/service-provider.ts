@@ -1,6 +1,8 @@
 
 import { Application } from '../index.js'
 
+type BootCallback = () => Promise<unknown> | unknown
+
 export type ServiceProviderCtor =
   /**
    * Create a new service provider instance.
@@ -31,22 +33,22 @@ export interface ServiceProvider {
   /**
    * Register a booting callback that runs before the `boot` method is called.
    */
-  booting (callback: () => void): this
+  booting (callback: BootCallback): this
 
   /**
    * Register a booted callback that runs after the `boot` method was called.
    */
-  booted (callback: () => void): this
+  booted (callback: BootCallback): this
 
   /**
    * Call the registered booting callbacks.
    */
-  callBootingCallbacks (): void
+  callBootingCallbacks (): Promise<void>
 
   /**
    * Call the registered booted callbacks.
    */
-  callBootedCallbacks (): void
+  callBootedCallbacks (): Promise<void>
 
   /**
    * Merge the content of the configuration file located at the

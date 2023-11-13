@@ -2,7 +2,7 @@
 import { resolveDefaultImport, tap } from '@supercharge/goodies'
 import { Application, ConfigStore, ServiceProvider as ServiceProviderContract } from '@supercharge/contracts'
 
-type Callback = () => void
+type BootCallback = () => Promise<unknown> | unknown
 
 export class ServiceProvider implements ServiceProviderContract {
   /**
@@ -17,12 +17,12 @@ export class ServiceProvider implements ServiceProviderContract {
     /**
      * All registered booting callbacks.
      */
-    bootingCallbacks: Callback[]
+    bootingCallbacks: BootCallback[]
 
     /**
      * All registered booted callbacks.
      */
-    bootedCallbacks: Callback[]
+    bootedCallbacks: BootCallback[]
   }
 
   /**
@@ -70,7 +70,7 @@ export class ServiceProvider implements ServiceProviderContract {
   /**
    * Register a booting callback that runs before the `boot` method is called.
    */
-  booting (callback: Callback): this {
+  booting (callback: BootCallback): this {
     return tap(this, () => {
       this.meta.bootingCallbacks.push(callback)
     })
@@ -79,14 +79,14 @@ export class ServiceProvider implements ServiceProviderContract {
   /**
    * Returns the registered booting callbacks.
    */
-  bootingCallbacks (): Callback[] {
+  bootingCallbacks (): BootCallback[] {
     return this.meta.bootingCallbacks
   }
 
   /**
    * Register a booted callback that runs after the `boot` method was called.
    */
-  booted (callback: Callback): this {
+  booted (callback: BootCallback): this {
     return tap(this, () => {
       this.meta.bootedCallbacks.push(callback)
     })
@@ -95,26 +95,35 @@ export class ServiceProvider implements ServiceProviderContract {
   /**
    * Returns the registered booted callbacks.
    */
-  bootedCallbacks (): Callback[] {
+  bootedCallbacks (): BootCallback[] {
     return this.meta.bootedCallbacks
   }
 
   /**
    * Call the registered booting callbacks.
    */
-  callBootingCallbacks (): void {
-    this.bootingCallbacks().forEach(callback => {
-      callback()
-    })
+  async callBootingCallbacks (): Promise<void> {
+    await this.runCallbacks(
+      this.bootingCallbacks()
+    )
   }
 
   /**
    * Call the registered booted callbacks.
    */
-  callBootedCallbacks (): void {
-    this.bootedCallbacks().forEach(callback => {
-      callback()
-    })
+  async callBootedCallbacks (): Promise<void> {
+    await this.runCallbacks(
+      this.bootedCallbacks()
+    )
+  }
+
+  /**
+   * Run the given booting/booted provider `callbacks`.
+   */
+  private async runCallbacks (callbacks: BootCallback[]): Promise<void> {
+    for (const callback of callbacks) {
+      await callback()
+    }
   }
 
   /**

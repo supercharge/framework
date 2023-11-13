@@ -396,13 +396,13 @@ export class Application extends Container implements ApplicationContract {
    * Boot the given service `provider`.
    */
   private async bootProvider (provider: ServiceProvider): Promise<void> {
-    provider.callBootingCallbacks()
+    await provider.callBootingCallbacks()
 
     if (typeof provider.boot === 'function') {
       await provider.boot(this)
     }
 
-    provider.callBootedCallbacks()
+    await provider.callBootedCallbacks()
   }
 
   /**
