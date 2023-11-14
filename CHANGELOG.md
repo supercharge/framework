@@ -2,6 +2,10 @@
 
 ## [4.0.0-alpha.1](https://github.com/supercharge/framework/compare/v4.0.0-alpha.0...v4.0.0-alpha.1) - 2023-11-xx
 
+### Added
+- `@supercharge/http`
+    - show requested URL when no route matches
+
 ### Updated
 - bump dependencies
 - replace `import.meta.resolve` with `Path.resolve` because `import.meta.resolve` sometimes returns a Promise in Node.js

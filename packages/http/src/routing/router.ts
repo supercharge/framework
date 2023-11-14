@@ -11,8 +11,8 @@ import { RouteCollection } from './route-collection.js'
 import { isNullish, tap } from '@supercharge/goodies'
 import { HandleErrorMiddleware } from '../middleware/handle-error.js'
 import { HttpContext, HttpRedirect, Response } from '../server/index.js'
+import KoaRouter, { RouterContext, Middleware as KoaMiddleware } from '@koa/router'
 import { Class, isConstructor, isFunction, isNotConstructor } from '@supercharge/classes'
-import KoaRouter, { RouterContext, Middleware as KoaMiddleware, RouterParamContext } from '@koa/router'
 import { HttpRouter, RouteHandler, RouteAttributes, HttpMethods, MiddlewareCtor, NextHandler, Middleware, Application, HttpConfig } from '@supercharge/contracts'
 
 export class Router implements HttpRouter {
@@ -101,11 +101,11 @@ export class Router implements HttpRouter {
    * Ensure the router found a matching route for the request.
    */
   private ensureMatchedRoute (): KoaMiddleware {
-    return async function ({ _matchedRoute }: RouterParamContext, next: NextHandler): Promise<void> {
+    return async function ({ _matchedRoute, request }: RouterContext, next: NextHandler): Promise<void> {
       await next()
 
-      if (typeof _matchedRoute === 'undefined') {
-        throw HttpError.notFound('No route found')
+      if (_matchedRoute == null) {
+        throw HttpError.notFound(`No route found for requested URL "${request.url}"`)
       }
     }
   }
