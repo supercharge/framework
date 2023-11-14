@@ -47,7 +47,7 @@ export class InputBag<Properties> implements InputBagContract<Properties> {
    * if the given `key` does not exist in the input bag.
    */
   get<Key extends keyof Properties> (key: Key): Properties[Key]
-  get<Value = any, Key extends keyof Properties = any> (key: Key, defaultValue: Value): Properties[Key] | Value
+  get<Key extends keyof Properties> (key: Key, defaultValue: Properties[Key]): NonNullable<Properties[Key]>
   get<Value = any> (key: string, defaultValue: Value): Value | undefined
   get<Value = any, Key extends keyof Properties = any> (key: Key, defaultValue?: Value): Properties[Key] | Value {
     const value = _.get(this.properties, key) as Properties[Key]

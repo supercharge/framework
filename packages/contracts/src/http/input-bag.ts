@@ -17,7 +17,7 @@ export interface InputBag<Properties = Record<string, any>> {
    * `undefined` if the input bag doesn’t contain the given `name`.
    */
   get<Key extends keyof Properties> (name: Key): Properties[Key]
-  get<Value = any, Key extends keyof Properties = any> (name: Key, defaultValue: Value): Properties[Key] | Value
+  get<Key extends keyof Properties> (name: Key, defaultValue: Properties[Key]): NonNullable<Properties[Key]>
 
   /**
    * Set an input for the given `name` and assign the `value`. This
