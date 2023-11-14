@@ -16,19 +16,19 @@
             "path": "../application"
         },
         {
-            "path": "../config"
-        },
-        {
-            "path": "../env"
+            "path": "../console"
         },
         {
             "path": "../contracts"
         },
         {
-            "path": "../container"
+            "path": "../http"
         },
         {
-            "path": "../http"
+            "path": "../support"
+        },
+        {
+            "path": "../view"
         }
     ]
 }

@@ -16,7 +16,10 @@
             "path": "../contracts"
         },
         {
-            "path": "../contracts"
+            "path": "../manager"
+        },
+        {
+            "path": "../support"
         }
     ]
 }

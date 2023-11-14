@@ -25,6 +25,15 @@
         },
         {
             "path": "../support"
+        },
+        {
+            "path": "../core"
+        },
+        {
+            "path": "../http"
+        },
+        {
+            "path": "../view"
         }
     ]
 }
