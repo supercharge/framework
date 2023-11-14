@@ -11,6 +11,7 @@
 - replace `import.meta.resolve` with `Path.resolve` because `import.meta.resolve` sometimes returns a Promise in Node.js
 - `@supercharge/contracts`
     - update `InputBag#get` to correctly resolve the return type for an available default value
+- add missing path references to `tsconfig.json` files of all packages
 
 
 ## [4.0.0-alpha.0](https://github.com/supercharge/framework/compare/v3.20.4...v4.0.0-alpha.0) - 2023-11-13
