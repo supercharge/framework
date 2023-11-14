@@ -13,7 +13,9 @@ export class RequestHeaderBag<RequestHeaders> extends InputBag<RequestHeaders> {
    * Returns the input value for the given `name`. Returns `undefined`
    * if the given `name` does not exist in the input bag.
    */
-  override get<Value = any, Key extends keyof RequestHeaders = any> (key: Key, defaultValue?: Value): RequestHeaders[Key] | Value | undefined {
+  override get<Key extends keyof RequestHeaders> (key: Key, defaultValue?: RequestHeaders[Key]): RequestHeaders[Key]
+  override get<Key extends keyof RequestHeaders> (key: Key, defaultValue: RequestHeaders[Key]): NonNullable<RequestHeaders[Key]>
+  override get<Key extends keyof RequestHeaders> (key: Key, defaultValue: RequestHeaders[Key]): RequestHeaders[Key] {
     switch (key) {
       case 'referrer':
       case 'referer':
