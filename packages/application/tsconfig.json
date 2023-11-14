@@ -16,10 +16,16 @@
             "path": "../config"
         },
         {
+            "path": "../container"
+        },
+        {
             "path": "../contracts"
         },
         {
             "path": "../env"
+        },
+        {
+            "path": "../logging"
         }
     ]
 }
