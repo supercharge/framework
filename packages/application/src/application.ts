@@ -72,10 +72,6 @@ export class Application extends Container implements ApplicationContract {
    * Returns the given `fileUrlOrPath` to a path without without the `file:` prefix.
    */
   private resolveFileURLToPath (fileUrlOrPath: string): string {
-    // if (typeof fileURLToPath !== 'string') {
-    //   throw new Error(`Parameter to "resolveFileURLToPath" must be a string. Received "${typeof fileURLToPath}"`)
-    // }
-
     return (fileUrlOrPath ?? '').startsWith('file:')
       ? fileURLToPath(fileUrlOrPath)
       : fileUrlOrPath
