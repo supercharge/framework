@@ -13,6 +13,9 @@
     - update `InputBag#get` to correctly resolve the return type for an available default value
 - add missing path references to `tsconfig.json` files of all packages
 
+### Breaking Changes
+- bump to Vite 5: this is a breaking change for apps using/requiring Vite 4 (or lower)
+
 
 ## [4.0.0-alpha.0](https://github.com/supercharge/framework/compare/v3.20.4...v4.0.0-alpha.0) - 2023-11-13
 
