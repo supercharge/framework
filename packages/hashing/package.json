@@ -1,7 +1,7 @@
 {
   "name": "@supercharge/hashing",
   "description": "The Supercharge hashing package",
-  "version": "4.0.0-alpha.0",
+  "version": "4.0.0-alpha.1",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
@@ -19,12 +19,12 @@
   },
   "dependencies": {
     "@phc/format": "~1.0.0",
-    "@supercharge/contracts": "^4.0.0-alpha.0",
-    "@supercharge/manager": "^4.0.0-alpha.0",
-    "@supercharge/support": "^4.0.0-alpha.0"
+    "@supercharge/contracts": "^4.0.0-alpha.1",
+    "@supercharge/manager": "^4.0.0-alpha.1",
+    "@supercharge/support": "^4.0.0-alpha.1"
   },
   "devDependencies": {
-    "@supercharge/application": "^4.0.0-alpha.0",
+    "@supercharge/application": "^4.0.0-alpha.1",
     "@types/bcrypt": "^5.0.2",
     "bcrypt": "~5.1.1",
     "c8": "~8.0.1",

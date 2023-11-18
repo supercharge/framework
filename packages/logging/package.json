@@ -1,7 +1,7 @@
 {
   "name": "@supercharge/logging",
   "description": "The Supercharge logging package",
-  "version": "4.0.0-alpha.0",
+  "version": "4.0.0-alpha.1",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
@@ -18,9 +18,9 @@
     "./drivers/console": "./dist/console-logger.js"
   },
   "dependencies": {
-    "@supercharge/contracts": "^4.0.0-alpha.0",
-    "@supercharge/manager": "^4.0.0-alpha.0",
-    "@supercharge/support": "^4.0.0-alpha.0",
+    "@supercharge/contracts": "^4.0.0-alpha.1",
+    "@supercharge/manager": "^4.0.0-alpha.1",
+    "@supercharge/support": "^4.0.0-alpha.1",
     "chalk": "~5.3.0",
     "winston": "~3.11.0"
   },
