@@ -8,9 +8,9 @@ export interface HashConfig {
   driver: 'bcrypt' | 'scrypt'
 
   /**
-   * The map of drivers and their factory function
+   * The map of drivers and their constructors.
    */
-  drivers: Record<this['driver'], HasherCtor>
+  drivers: Partial<Record<this['driver'], HasherCtor> >
 
   /**
    * The bcrypt hashing config.
