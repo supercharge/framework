@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.0.0-alpha.2](https://github.com/supercharge/framework/compare/v4.0.0-alpha.1...v4.0.0-alpha.2) - 2023-12-03
+
+### Added
+- `@supercharge/env`
+    - add generic methods `Env.get` methods for tightened types
+        - `get<R extends string> (key: string): R`
+        - `get<R extends string> (key: string, defaultValue: R): R`
+- `@supercharge/contracts`
+    - allow users to define only selected hashing driver constructros in `HashConfig#drivers`
+
+### Updated
+- bump dependencies
+
+
 ## [4.0.0-alpha.1](https://github.com/supercharge/framework/compare/v4.0.0-alpha.0...v4.0.0-alpha.1) - 2023-11-18
 
 ### Added
