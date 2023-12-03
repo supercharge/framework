@@ -12,6 +12,8 @@
 
 ### Updated
 - bump dependencies
+- `@supercharge/vite`
+    - add Vite `^5.0.0` as a peer dependency
 
 
 ## [4.0.0-alpha.1](https://github.com/supercharge/framework/compare/v4.0.0-alpha.0...v4.0.0-alpha.1) - 2023-11-18
@@ -63,6 +65,8 @@
 ### Breaking Changes
 - all packages of the framework moved to ESM
 - require Node.js v20
+- `@supercharge/manager`
+    - remove `ensureConfig` method: use `this.app.config().ensure()` within a method of your `Manager` class instead
 - `@supercharge/contracts`
     - removed export `RequestHeaderBag` contract. The `Request` interface uses the `InputBag<IncomingHttpHeaders>` instead
     - removed export `RequestStateData`, use `HttpStateData` instead
