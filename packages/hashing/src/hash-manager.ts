@@ -1,6 +1,7 @@
 
-import type { BinaryLike, Encoding, Hash } from 'node:crypto'
 import { Manager } from '@supercharge/manager'
+import type { BinaryLike, Encoding, Hash } from 'node:crypto'
+import { MissingHasherError } from './missing-hasher-error.js'
 import { Application, Hasher, HashConfig, HashBuilderCallback, HashAlgorithm } from '@supercharge/contracts'
 
 export class HashManager extends Manager<Application> implements Hasher {
@@ -24,6 +25,10 @@ export class HashManager extends Manager<Application> implements Hasher {
   protected createBcryptDriver (): Hasher {
     const BcryptHasher = this.hashConfig().drivers.bcrypt
 
+    if (!BcryptHasher) {
+      throw new MissingHasherError('bcrypt')
+    }
+
     return new BcryptHasher({
       rounds: this.app.config().get('hashing.bcrypt.rounds', 10)
     })
@@ -34,6 +39,10 @@ export class HashManager extends Manager<Application> implements Hasher {
   */
   protected createScryptDriver (): Hasher {
     const ScryptHasher = this.hashConfig().drivers.scrypt
+
+    if (!ScryptHasher) {
+      throw new MissingHasherError('scrypt')
+    }
 
     return new ScryptHasher(
       this.hashConfig().scrypt
