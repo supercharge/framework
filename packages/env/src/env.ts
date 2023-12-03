@@ -7,7 +7,9 @@ export class Env implements EnvStore {
    * Returns the value of the request environment variable.
    */
   get (key: string): string
+  get<R extends string> (key: string): R
   get (key: string, defaultValue: any): string
+  get<R extends string> (key: string, defaultValue: R): R
   get (key: string, defaultValue?: any): string {
     return String(process.env[key] ?? defaultValue ?? '')
   }

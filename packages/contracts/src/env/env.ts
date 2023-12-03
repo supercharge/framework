@@ -4,7 +4,9 @@ export interface EnvStore {
    * Returns the value of the request environment variable.
    */
   get (key: string): string
-  get (key: string, defaultValue: any): string
+  get<R extends string> (key: string): R
+  get (key: string, defaultValue: string): string
+  get<R extends string> (key: string, defaultValue: R): R
 
   /**
    * This method is similar to the `Env.get` method, except that it throws
@@ -16,13 +18,13 @@ export interface EnvStore {
    * Returns the environment variable identified by the given `key` as a number.
    */
   number (key: string): number
-  number (key: string, defaultValue?: number): number
+  number (key: string, defaultValue: number): number
 
   /**
    * Returns the environment variable identified by the given `key` as a boolean value.
    */
   boolean (key: string): boolean
-  boolean (key: string, defaultValue?: boolean): boolean
+  boolean (key: string, defaultValue: boolean): boolean
 
   /**
    * Set the value of an environment variable.
