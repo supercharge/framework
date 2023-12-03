@@ -22,10 +22,10 @@
     "dotenv": "~16.3.1"
   },
   "devDependencies": {
-    "@types/lodash": "~4.14.201",
+    "@types/lodash": "~4.14.202",
     "c8": "~8.0.1",
     "expect": "~29.7.0",
-    "typescript": "~5.2.2",
+    "typescript": "~5.3.2",
     "uvu": "~0.5.6"
   },
   "engines": {

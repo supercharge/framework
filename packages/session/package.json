@@ -31,12 +31,12 @@
     "@supercharge/core": "^4.0.0-alpha.1",
     "@supercharge/http": "^4.0.0-alpha.1",
     "@supercharge/view": "^4.0.0-alpha.1",
-    "@types/lodash": "~4.14.201",
+    "@types/lodash": "~4.14.202",
     "@types/ms": "~0.7.34",
     "c8": "~8.0.1",
     "expect": "~29.7.0",
     "supertest": "~6.3.3",
-    "typescript": "~5.2.2",
+    "typescript": "~5.3.2",
     "uvu": "~0.5.6"
   },
   "engines": {

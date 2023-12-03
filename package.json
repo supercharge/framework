@@ -8,11 +8,11 @@
     "url": "https://github.com/supercharge/framework/issues"
   },
   "devDependencies": {
-    "@supercharge/eslint-config-typescript": "~4.0.0",
+    "@supercharge/eslint-config-typescript": "~4.0.1",
     "@supercharge/tsconfig": "~7.0.0",
-    "@types/node": "~20.9.1",
-    "eslint": "~8.53.0",
-    "lerna": "~7.4.2",
+    "@types/node": "~20.10.2",
+    "eslint": "~8.55.0",
+    "lerna": "~8.0.0",
     "nx": "17.1.2"
   },
   "engines": {
