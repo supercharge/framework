@@ -3,7 +3,7 @@ export interface SessionConfig {
   /**
    * The session driver name.
    */
-  driver: 'file' | 'memory' | 'cookie' | string
+  driver: 'file' | 'memory' | 'cookie'
 
   /**
    * Stores the session cookie name.
