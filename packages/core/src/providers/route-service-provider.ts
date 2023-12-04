@@ -31,8 +31,7 @@ export class RouteServiceProvider extends ServiceProvider {
    */
   loadRoutesFrom (path: string): this {
     return this.loadRoutesUsing(async () => {
-      // we may need to bypass the module cache, like by appending a query parameter `${path}?update=${Date.now()}`
-      await import(path)
+      await import(`${path}?imported=${Date.now()}`)
     })
   }
 
