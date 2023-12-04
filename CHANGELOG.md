@@ -9,6 +9,8 @@
         - `get<R extends string> (key: string, defaultValue: R): R`
 - `@supercharge/contracts`
     - allow users to define only selected hashing driver constructros in `HashConfig#drivers`
+- `@supercharge/core`
+    - bypass import cache when dynamically importing routes from file path
 
 ### Updated
 - bump dependencies
