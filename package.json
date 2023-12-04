@@ -45,8 +45,7 @@
     "release": "npm run build && lerna publish --force-publish",
     "test": "lerna run test",
     "test:nocache": "npm test -- --skip-nx-cache",
-    "watch": "npm run dev",
-    "postinstall": "mkdir -p .nx"
+    "watch": "npm run dev"
   },
   "workspaces": [
     "packages/*"
