@@ -3,7 +3,7 @@ import Youch from 'youch'
 import { tap } from '@supercharge/goodies'
 import { HttpError } from './http-error.js'
 import { Collect } from '@supercharge/collections'
-import { Application, ErrorHandler as ErrorHandlerContract, HttpContext, Logger, ViewEngine } from '@supercharge/contracts'
+import { Application, ErrorHandler as ErrorHandlerContract, HttpContext, Logger, RenderableError, ReportableError, ViewEngine } from '@supercharge/contracts'
 
 export class ErrorHandler implements ErrorHandlerContract {
   /**
@@ -19,7 +19,7 @@ export class ErrorHandler implements ErrorHandlerContract {
   /**
    * Stores the list of report callbacks.
    */
-  protected readonly reportCallbacks: Array<(error: HttpError, ctx: HttpContext) => void | Promise<void>>
+  protected readonly reportCallbacks: Array<(error: any, ctx: HttpContext) => Promise<void> | void>
 
   /**
    * Create a new error handler instance.
@@ -67,7 +67,7 @@ export class ErrorHandler implements ErrorHandlerContract {
    * Returns an array of errors that should not be reported.
    */
   dontReport (): ErrorConstructor[] {
-    return ([] as ErrorConstructor[])
+    return []
   }
 
   /**
@@ -112,7 +112,7 @@ export class ErrorHandler implements ErrorHandlerContract {
   /**
    * Handle the given error.
    */
-  async handle (error: any, ctx: HttpContext): Promise<void> {
+  async handle (error: Error, ctx: HttpContext): Promise<void> {
     await this.report(error, ctx)
     await this.render(error, ctx)
   }
@@ -120,7 +120,7 @@ export class ErrorHandler implements ErrorHandlerContract {
   /**
    * Report an error.
    */
-  async report (error: any, ctx: HttpContext): Promise<void> {
+  async report (error: Error, ctx: HttpContext): Promise<void> {
     if (this.shouldNotReport(error)) {
       return
     }
@@ -150,7 +150,7 @@ export class ErrorHandler implements ErrorHandlerContract {
    * Determine whether the given `error` is implementing a `report` method and
    * that `report` method returns a truthy value, like a valid HTTP response.
    */
-  async errorReported (error: any, ctx: HttpContext): Promise<unknown> {
+  async errorReported (error: ReportableError, ctx: HttpContext): Promise<unknown> {
     if (typeof error.report !== 'function') {
       return false
     }
@@ -161,7 +161,7 @@ export class ErrorHandler implements ErrorHandlerContract {
   /**
    * Render the error into an HTTP response.
    */
-  async render (error: any, ctx: HttpContext): Promise<any> {
+  async render (error: Error, ctx: HttpContext): Promise<any> {
     if (await this.errorRendered(error, ctx)) {
       return
     }
@@ -183,7 +183,7 @@ export class ErrorHandler implements ErrorHandlerContract {
    * Determine whether the given `error` is implementing a `render` method and
    * that `render` method returns a truthy value, like a valid HTTP response.
    */
-  async errorRendered (error: any, ctx: HttpContext): Promise<unknown> {
+  async errorRendered (error: RenderableError, ctx: HttpContext): Promise<unknown> {
     if (typeof error.render !== 'function') {
       return false
     }

@@ -1,13 +1,13 @@
 
-import { HttpContext } from '@supercharge/contracts'
 import { HttpError as BaseHttpError } from '@supercharge/errors'
+import { HttpContext, RenderableError, ReportableError } from '@supercharge/contracts'
 
-export class HttpError extends BaseHttpError {
+export class HttpError extends BaseHttpError implements RenderableError, ReportableError {
   /**
    * Create a new HTTP error instance.
    */
-  constructor (message: string) {
-    super(message)
+  constructor (message: string, cause?: any) {
+    super(message, { cause })
 
     this.withStatus(500)
   }
@@ -16,7 +16,7 @@ export class HttpError extends BaseHttpError {
    * Returns a new HTTP error instance wrapping the given `error`.
    */
   static wrap (error: Error): HttpError {
-    const err = new this(error.message).withStatus(
+    const err = new this(error.message, error).withStatus(
       this.retrieveStatusFrom(error)
     )
 
