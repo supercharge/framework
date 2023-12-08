@@ -30,9 +30,9 @@
     "c8": "~8.0.1",
     "expect": "~29.7.0",
     "supertest": "~6.3.3",
-    "typescript": "~5.3.2",
+    "typescript": "~5.3.3",
     "uvu": "~0.5.6",
-    "vite": "~5.0.4"
+    "vite": "~5.0.6"
   },
   "engines": {
     "node": ">=20"

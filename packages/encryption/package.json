@@ -25,7 +25,7 @@
     "@supercharge/application": "^4.0.0-alpha.1",
     "c8": "~8.0.1",
     "expect": "~29.7.0",
-    "typescript": "~5.3.2",
+    "typescript": "~5.3.3",
     "uvu": "~0.5.6"
   },
   "engines": {
