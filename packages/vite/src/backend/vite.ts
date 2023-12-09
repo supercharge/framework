@@ -11,14 +11,14 @@ export type ViteTagAttributes = Record<string, any>
 
 export class Vite {
   /**
-   * Stores the entrypoints.
-   */
-  private readonly entrypoints: Arr<string>
-
-  /**
    * Stores the Vite config instance.
    */
   private readonly viteConfig: ViteConfig
+
+  /**
+   * Stores the entrypoints.
+   */
+  private entrypoints: Arr<string>
 
   /**
    * Stores the cached Vite manifest file.
@@ -28,16 +28,25 @@ export class Vite {
   /**
    * Create a new instance.
    */
-  constructor (viteConfig: ViteConfig, entrypoints: string | string[]) {
+  constructor (viteConfig: ViteConfig) {
     this.viteConfig = viteConfig
-    this.entrypoints = Arr.from(entrypoints)
+    this.entrypoints = Arr.from()
   }
 
   /**
-   * Generate HTML tags for the given `entrypoints`.
+   * Create a new instance with the given `viteConfig`.
    */
-  static from (viteConfig: ViteConfig, entrypoints: string[]): Vite {
-    return new this(viteConfig, entrypoints)
+  static from (viteConfig: ViteConfig): Vite {
+    return new this(viteConfig)
+  }
+
+  /**
+   * Generate HTML tags for the given Vite entrypoints.
+   */
+  generateTagsFromEntrypoints (entrypoints: string | string[], userProvidedAttributes: string): HtmlString {
+    this.entrypoints = Arr.from(entrypoints)
+
+    return this.generateTags(userProvidedAttributes)
   }
 
   /**

@@ -1,13 +1,12 @@
 
 import { Vite } from './vite.js'
 import { HelperOptions } from 'handlebars'
-import { ViteConfig } from './vite-config.js'
 
 export class ViteHandlebarsHelper {
   /**
    * Stores the Vite config instance.
    */
-  private readonly viteConfig: ViteConfig
+  private readonly vite: Vite
 
   /**
    * Stores the Vite entrypoints for which we should generate HTML tags.
@@ -22,8 +21,8 @@ export class ViteHandlebarsHelper {
   /**
    * Create a new instance.
    */
-  constructor (viteConfig: ViteConfig, ...args: any[] | any[][]) {
-    this.viteConfig = viteConfig
+  constructor (vite: Vite, ...args: any[] | any[][]) {
+    this.vite = vite
     this.handlebarsOptions = args.pop()
     this.entrypoints = this.findEntrypoints(...args)
   }
@@ -69,9 +68,9 @@ export class ViteHandlebarsHelper {
    * Generate the Vite CSS and JavaScript tags for the HTML header.
    */
   generateTags (): string {
-    return Vite
-      .from(this.viteConfig, this.entrypoints)
-      .generateTags(
+    return this.vite
+      .generateTagsFromEntrypoints(
+        this.entrypoints,
         this.attributesFromOptionsHash()
       )
       .toString()
