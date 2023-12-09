@@ -56,7 +56,7 @@ export class ViteManifest {
     const chunk = this.manifest[entrypoint]
 
     if (!chunk) {
-      throw new Error(`Entrypoint not found in manifest: ${entrypoint}`)
+      throw new Error(`Entrypoint not found in manifest: "${entrypoint}"`)
     }
 
     return chunk

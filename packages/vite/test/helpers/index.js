@@ -1,7 +1,16 @@
 
+/**
+ * @typedef {import('@supercharge/contracts').ViteConfig} ViteConfigContract
+ */
+
+import Path from 'node:path'
 import Fs from '@supercharge/fs'
 import { fileURLToPath } from 'node:url'
 import { Application } from '@supercharge/application'
+import { ViteConfig, HotReloadFile } from '../../dist/index.js'
+
+const __dirname = Path.dirname(fileURLToPath(import.meta.url))
+const fixturesPath = Path.resolve(__dirname, '../fixtures')
 
 /**
  * Returns a test application.
@@ -9,30 +18,33 @@ import { Application } from '@supercharge/application'
  * @returns {Application}
  */
 export function makeApp () {
-  const app = Application.createWithAppRoot(
-    fileURLToPath(new URL('./../fixtures', import.meta.url))
-  )
+  const app = Application.createWithAppRoot(fixturesPath)
 
-  app.config().set('view', {
-    driver: 'handlebars',
-    handlebars: {
-      views: app.resourcePath('views'),
-      partials: app.resourcePath('views/partials'),
-      helpers: app.resourcePath('views/helpers')
+  app.config()
+    .set('view', {
+      driver: 'handlebars',
+      handlebars: {
+        views: app.resourcePath('views'),
+        partials: app.resourcePath('views/partials'),
+        helpers: app.resourcePath('views/helpers')
       // layouts: app.resourcePath('views/layouts')
       // defaultLayout: 'app'
-    }
-  })
+      }
+    })
+    .set('vite', {
+      assetsUrl: '/build',
+      hotReloadFilePath: app.publicPath('build/.vite/hot.json'),
+      manifestFilePath: app.publicPath('build/.vite/manifest.json')
+    })
 
   return app
 }
 
 /**
- * @param {Application} app
+ * @param {ViteConfig} viteConfig
  * @param {Object} content
- * @param {String} buildDirectory
  */
-export async function createViteManifest (app, content, buildDirectory = 'build') {
+export async function createViteManifest (viteConfig, content) {
   const manifest = content || {
     'resources/js/app.js': {
       file: 'assets/app.version.js'
@@ -68,7 +80,11 @@ export async function createViteManifest (app, content, buildDirectory = 'build'
     }
   }
 
-  const manifestPath = app.publicPath(`${buildDirectory}/manifest.json`)
+  if (!viteConfig) {
+    viteConfig = createViteConfig()
+  }
+
+  const manifestPath = viteConfig.manifestFilePath()
 
   await Fs.outputJSON(manifestPath, manifest)
 }
@@ -76,8 +92,9 @@ export async function createViteManifest (app, content, buildDirectory = 'build'
 /**
  * @param {Application} app
  */
-export async function clearViteManifest (app, buildDirectory = 'build') {
-  const manifestPath = app.publicPath(`${buildDirectory}/manifest.json`)
+export async function clearViteManifest () {
+  const viteConfig = createViteConfig()
+  const manifestPath = viteConfig.manifestFilePath()
 
   if (await Fs.exists(manifestPath)) {
     await Fs.removeFile(manifestPath)
@@ -85,19 +102,46 @@ export async function clearViteManifest (app, buildDirectory = 'build') {
 }
 
 /**
- * @param {Application} app
+ * @param {ViteConfigContract} viteConfig
  */
-export async function createViteHotReloadFile (app) {
-  await Fs.writeFile(app.publicPath('hot'), 'http://localhost:3000')
+export function createViteConfig (viteConfig) {
+  const app = makeApp()
+  const defaultViteConfig = app.config().get('vite')
+
+  if (typeof viteConfig === 'object') {
+    return ViteConfig.from({
+      ...defaultViteConfig,
+      ...viteConfig
+    })
+  }
+
+  return ViteConfig.from(defaultViteConfig)
 }
 
 /**
- * @param {Application} app
+ * @param {ViteConfig} viteConfig
  */
-export async function clearViteHotReloadFile (app) {
-  const hotReloadFilePath = app.publicPath('hot')
-
-  if (await Fs.exists(hotReloadFilePath)) {
-    await Fs.removeFile(hotReloadFilePath)
+export function createViteHotReloadFile (viteConfig) {
+  if (!viteConfig) {
+    viteConfig = createViteConfig()
   }
+
+  HotReloadFile
+    .from(viteConfig.hotReloadFilePath())
+    .writeFileSync({
+      viteDevServerUrl: 'http://localhost:3000'
+    })
+}
+
+/**
+ * @param {ViteConfig} viteConfig
+ */
+export function clearViteHotReloadFile (viteConfig) {
+  if (!viteConfig) {
+    viteConfig = createViteConfig()
+  }
+
+  HotReloadFile
+    .from(viteConfig.hotReloadFilePath())
+    .deleteHotfile()
 }

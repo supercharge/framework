@@ -1,4 +1,10 @@
 
+export interface HotReloadFileContent {
+  viteDevServerUrl: string
+}
+
+export type DevServerUrl = `${'http' | 'https'}://${string}:${number}`
+
 export interface PluginConfigContract {
   /**
    * The path or paths to the entrypoints to compile with Vite.
@@ -38,5 +44,3 @@ export interface PluginConfigContract {
    */
   ssrOutputDirectory?: string
 }
-
-export type DevServerUrl = `${'http' | 'https'}://${string}:${number}`

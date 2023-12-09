@@ -1,7 +1,8 @@
 
-import { ViewEngine } from '@supercharge/contracts'
+import { ViteConfig } from './backend/vite-config.js'
 import { ServiceProvider } from '@supercharge/support'
-import { ViteHandlebarsHelper } from './vite-handlebars-helper.js'
+import { ViteHandlebarsHelper } from './backend/vite-handlebars-helper.js'
+import { ViewEngine, ViteConfig as ViteConfigContract } from '@supercharge/contracts'
 
 export class ViteServiceProvider extends ServiceProvider {
   /**
@@ -17,8 +18,12 @@ export class ViteServiceProvider extends ServiceProvider {
   private registerViteViewHelpers (): void {
     const view = this.app().make<ViewEngine>('view')
 
-    view.registerHelper('vite', (...entrypoints: string[] | string[][]) => {
-      return new ViteHandlebarsHelper(this.app(), ...entrypoints).generateTags()
+    const viteConfig = ViteConfig.from(
+      this.app().config().get<ViteConfigContract>('vite')
+    )
+
+    view.registerHelper('vite', (...args: any[]) => {
+      return new ViteHandlebarsHelper(viteConfig, ...args).generateTags()
     })
   }
 }

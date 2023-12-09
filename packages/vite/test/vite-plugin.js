@@ -172,7 +172,7 @@ test('configures the Vite dev server', async () => {
   const plugin = supercharge('resources/js/app.ts')
 
   const config = plugin.config({}, { command: 'serve' })
-  expect(config.base).toEqual('')
+  expect(config.base).toEqual('/')
   expect(config.server.origin).toEqual('__supercharge_vite_placeholder__')
 })
 
