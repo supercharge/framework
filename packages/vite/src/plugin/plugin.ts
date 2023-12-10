@@ -39,7 +39,7 @@ function resolvePluginConfig (config: string | string[] | PluginConfigContract):
     config.publicDirectory = Str(config.publicDirectory).trim().ltrim('/').get()
 
     if (config.publicDirectory === '') {
-      throw new Error('supercharge-vite-plugin: the publicDirectory option must be a subdirectory, like "public"')
+      throw new Error('supercharge-vite-plugin: the "publicDirectory" option must be a subdirectory, like "public"')
     }
   }
 
@@ -47,7 +47,7 @@ function resolvePluginConfig (config: string | string[] | PluginConfigContract):
     config.buildDirectory = Str(config.buildDirectory).trim().ltrim('/').rtrim('/').get()
 
     if (config.buildDirectory === '') {
-      throw new Error('supercharge-vite-plugin: the buildDirectory option must be a subdirectory, like "build"')
+      throw new Error('supercharge-vite-plugin: the "buildDirectory" option must be a subdirectory, like "build"')
     }
   }
 
@@ -55,7 +55,7 @@ function resolvePluginConfig (config: string | string[] | PluginConfigContract):
     config.ssrOutputDirectory = Str(config.ssrOutputDirectory).trim().ltrim('/').rtrim('/').get()
 
     if (config.ssrOutputDirectory === '') {
-      throw new Error('supercharge-vite-plugin: the ssrOutputDirectory option must be a subdirectory, like "ssr"')
+      throw new Error('supercharge-vite-plugin: the "ssrOutputDirectory" option must be a subdirectory, like "ssr"')
     }
   }
 
@@ -67,7 +67,7 @@ function resolvePluginConfig (config: string | string[] | PluginConfigContract):
     buildDirectory: config.buildDirectory ?? 'build',
     ssr: config.ssr ?? config.input,
     ssrOutputDirectory: config.ssrOutputDirectory ?? 'bootstrap/ssr',
-    hotFilePath: config.hotFilePath ?? Path.join(publicDirectory, 'hot'),
+    hotFilePath: config.hotFilePath ?? Path.join(publicDirectory, '.vite', 'hot'),
   }
 }
 
