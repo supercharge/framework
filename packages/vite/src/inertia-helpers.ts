@@ -20,6 +20,6 @@ export async function resolvePageComponent<T> (path: string, pages: Record<strin
   }
 
   return typeof page === 'function'
-    ? page()
+    ? await page()
     : page
 }
