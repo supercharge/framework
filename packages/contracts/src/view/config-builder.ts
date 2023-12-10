@@ -5,4 +5,9 @@ export interface ViewConfigBuilder {
    * the file name of the layout file in the configured layouts folder.
    */
   layout(name: string): this
+
+  /**
+   * Render this view without a base layout.
+   */
+  withoutLayout(): this
 }

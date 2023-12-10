@@ -24,4 +24,13 @@ export class ViewConfigBuilder implements ViewConfigBuilderContract {
       this.config.layout = name
     })
   }
+
+  /**
+   * Render this view without a base layout.
+   */
+  withoutLayout (): this {
+    this.layout('')
+
+    return this
+  }
 }
