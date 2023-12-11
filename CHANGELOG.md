@@ -9,13 +9,23 @@
         - `get<R extends string> (key: string, defaultValue: R): R`
 - `@supercharge/contracts`
     - allow users to define only selected hashing driver constructros in `HashConfig#drivers`
+    - export a `ViteConfig` interface
 - `@supercharge/core`
     - bypass import cache when dynamically importing routes from file path
+- `@supercharge/vite`
+    - create `vite` container binding
+    - add a `ViteConfig` instance wrapping a Vite configuration JS object (will be used by a config/vite.ts file)
+    - throw `InertiaPageNotFoundError` error when a given component is missing
+    - support `attributes` in the `vite` Handlebars helper: `{{ vite input="resources/js/app.js" attributes='data-turbo-track="reload" async' }}`
 
 ### Updated
 - bump dependencies
 - `@supercharge/vite`
     - add Vite `^5.0.0` as a peer dependency
+
+### Breaking Changes
+- `@supercharge/vite`
+    - require Vite `>=4.0.0` as a peer dependency
 
 
 ## [4.0.0-alpha.1](https://github.com/supercharge/framework/compare/v4.0.0-alpha.0...v4.0.0-alpha.1) - 2023-11-18

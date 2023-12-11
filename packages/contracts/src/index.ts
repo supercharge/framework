@@ -78,3 +78,5 @@ export { ViewConfigBuilder } from './view/config-builder.js'
 export { ViewEngine, ViewSharedData } from './view/engine.js'
 export { ViewBuilderCallback } from './view/response.js'
 export { ViewResponseConfig } from './view/response-config.js'
+
+export { ViteConfig } from './vite/config.js'

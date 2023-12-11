@@ -27,26 +27,26 @@ test('throws when missing configuration', async () => {
 
 test('throws for empty publicDirectory configuration', async () => {
   expect(() => supercharge({ input: 'app.ts', publicDirectory: '' }))
-    .toThrow('supercharge-vite-plugin: the publicDirectory option must be a subdirectory, like "public"')
+    .toThrow('supercharge-vite-plugin: the "publicDirectory" option must be a subdirectory, like "public"')
 
   expect(() => supercharge({ input: 'app.ts', publicDirectory: '      /   ' }))
-    .toThrow('supercharge-vite-plugin: the publicDirectory option must be a subdirectory, like "public"')
+    .toThrow('supercharge-vite-plugin: the "publicDirectory" option must be a subdirectory, like "public"')
 })
 
 test('throws for empty buildDirectory configuration', async () => {
   expect(() => supercharge({ input: 'app.ts', buildDirectory: '' }))
-    .toThrow('supercharge-vite-plugin: the buildDirectory option must be a subdirectory, like "build"')
+    .toThrow('supercharge-vite-plugin: the "buildDirectory" option must be a subdirectory, like "build"')
 
   expect(() => supercharge({ input: 'app.ts', buildDirectory: '      /   ' }))
-    .toThrow('supercharge-vite-plugin: the buildDirectory option must be a subdirectory, like "build"')
+    .toThrow('supercharge-vite-plugin: the "buildDirectory" option must be a subdirectory, like "build"')
 })
 
 test('throws for empty ssrOutputDirectory configuration', async () => {
   expect(() => supercharge({ input: 'app.ts', ssrOutputDirectory: '' }))
-    .toThrow('supercharge-vite-plugin: the ssrOutputDirectory option must be a subdirectory, like "ssr"')
+    .toThrow('supercharge-vite-plugin: the "ssrOutputDirectory" option must be a subdirectory, like "ssr"')
 
   expect(() => supercharge({ input: 'app.ts', ssrOutputDirectory: '      /   ' }))
-    .toThrow('supercharge-vite-plugin: the ssrOutputDirectory option must be a subdirectory, like "ssr"')
+    .toThrow('supercharge-vite-plugin: the "ssrOutputDirectory" option must be a subdirectory, like "ssr"')
 })
 
 test('uses "supercharge" as the name', async () => {
@@ -172,7 +172,7 @@ test('configures the Vite dev server', async () => {
   const plugin = supercharge('resources/js/app.ts')
 
   const config = plugin.config({}, { command: 'serve' })
-  expect(config.base).toEqual('')
+  expect(config.base).toEqual('/')
   expect(config.server.origin).toEqual('__supercharge_vite_placeholder__')
 })
 

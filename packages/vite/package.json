@@ -49,7 +49,7 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "vite": "^3.0.0 || ^4.0.0 || ^5.0.0"
+    "vite": ">=4.0.0"
   },
   "publishConfig": {
     "access": "public"
