@@ -7,11 +7,9 @@ import { HttpServiceProvider } from '@supercharge/http'
 import { ViewServiceProvider } from '@supercharge/view'
 import { clearViteHotReloadFile, clearViteManifest, createViteManifest, makeApp } from './helpers/index.js'
 
-const app = makeApp()
-
 test.before.each(async () => {
-  await clearViteManifest(app)
-  await clearViteHotReloadFile(app)
+  await clearViteManifest()
+  await clearViteHotReloadFile()
 })
 
 test('registers view helpers', async () => {
@@ -28,9 +26,9 @@ test('registers view helpers', async () => {
   expect(view.hasHelper('vite')).toBe(true)
 })
 
-test('render vite view helper with unnamed arguments', async () => {
+test('render Vite view helper with unnamed arguments', async () => {
   const app = makeApp()
-  await createViteManifest(app)
+  await createViteManifest()
 
   await app
     .register(new HttpServiceProvider(app))
@@ -41,14 +39,15 @@ test('render vite view helper with unnamed arguments', async () => {
   const rendered = await app.make('view').render('test-vite-helper-unnamed-arguments')
 
   expect(rendered).toEqual(
-    '<script type="module" src="/build/assets/app.version.js"></script>' +
-      '<link rel="stylesheet" href="/build/assets/app.version.css" />' + EOL
+    '<link href="/build/assets/app.version.css" rel="stylesheet" />' +
+    '<script src="/build/assets/app.version.js" type="module"></script>' +
+    EOL
   )
 })
 
-test('render vite view helper with named "input" arguments', async () => {
+test('render Vite view helper with named "input" arguments', async () => {
   const app = makeApp()
-  await createViteManifest(app)
+  await createViteManifest()
 
   await app
     .register(new HttpServiceProvider(app))
@@ -59,14 +58,34 @@ test('render vite view helper with named "input" arguments', async () => {
   const rendered = await app.make('view').render('test-vite-helper-hash-arguments')
 
   expect(rendered).toEqual(
-    '<script type="module" src="/build/assets/app.from-hash.version.js"></script>' +
-      '<link rel="stylesheet" href="/build/assets/app.version.css" />' + EOL
+    '<link href="/build/assets/app.version.css" rel="stylesheet" />' +
+    '<script src="/build/assets/app.from-hash.version.js" type="module"></script>' +
+    EOL
+  )
+})
+
+test('render Vite view helper with named "input" and "attributes"', async () => {
+  const app = makeApp()
+  await createViteManifest()
+
+  await app
+    .register(new HttpServiceProvider(app))
+    .register(new ViewServiceProvider(app))
+    .register(new ViteServiceProvider(app))
+    .boot()
+
+  const rendered = await app.make('view').render('test-vite-helper-with-attributes')
+
+  expect(rendered).toEqual(
+    '<link href="/build/assets/app.version.css" rel="stylesheet" data-turbo-track="reload" async />' +
+    '<script src="/build/assets/app.from-hash.version.js" type="module" data-turbo-track="reload" async></script>' +
+    EOL
   )
 })
 
 test('fails to render vite view helper with named "input" arguments and wrong type', async () => {
   const app = makeApp()
-  await createViteManifest(app)
+  await createViteManifest()
 
   await app
     .register(new HttpServiceProvider(app))
