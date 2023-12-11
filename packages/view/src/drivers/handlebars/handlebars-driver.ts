@@ -4,15 +4,19 @@ import Fs from '@supercharge/fs'
 import { fileURLToPath } from 'node:url'
 import { Str } from '@supercharge/strings'
 import { Collect } from '@supercharge/collections'
-import { ViewBaseCompiler } from './base-compiler.js'
+import { ViewBaseDriver } from '../base-driver.js'
 import Handlebars, { HelperDelegate } from 'handlebars'
 import { resolveDefaultImport, tap } from '@supercharge/goodies'
 import { Logger, ViewConfig, ViewEngine, ViewResponseConfig } from '@supercharge/contracts'
 
+interface ReadTemplateConfig {
+  isLayout?: boolean
+}
+
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const __dirname = Path.dirname(fileURLToPath(import.meta.url))
 
-export class HandlebarsCompiler extends ViewBaseCompiler implements ViewEngine {
+export class HandlebarsDriver extends ViewBaseDriver implements ViewEngine {
   /**
      * The handlebars renderer instance.
      */
@@ -55,7 +59,7 @@ export class HandlebarsCompiler extends ViewBaseCompiler implements ViewEngine {
       return layoutLocation
     }
 
-    throw new Error(`Path to view layouts not existing. Received ${layoutLocation}`)
+    throw new Error(`Path to view layouts not existing. Received "${layoutLocation}"`)
   }
 
   /**
@@ -75,7 +79,7 @@ export class HandlebarsCompiler extends ViewBaseCompiler implements ViewEngine {
       return viewsLocation
     }
 
-    throw new Error(`Path to view files not existing. Received ${viewsLocation}`)
+    throw new Error(`Path to view files not existing. Received "${viewsLocation}"`)
   }
 
   /**
@@ -248,7 +252,7 @@ export class HandlebarsCompiler extends ViewBaseCompiler implements ViewEngine {
   /**
    * Returns the rendered HTML view.
    */
-  async render (view: string, data: any, viewConfig: ViewResponseConfig = {}): Promise<string> {
+  async render (view: string, data: any, viewConfig: ViewResponseConfig): Promise<string> {
     return this.hasLayout(viewConfig)
       ? await this.renderWithLayout(view, data, viewConfig)
       : await this.renderView(view, data)
@@ -322,7 +326,7 @@ export class HandlebarsCompiler extends ViewBaseCompiler implements ViewEngine {
     const file = this.ensureExtension(view)
 
     if (await Fs.notExists(file)) {
-      throw new Error(`View file does not exist. Tried to load ${file}`)
+      throw new Error(`View file does not exist. Tried to load "${file}"`)
     }
   }
 
@@ -332,8 +336,4 @@ export class HandlebarsCompiler extends ViewBaseCompiler implements ViewEngine {
   ensureExtension (template: string): string {
     return Str(template).finish(this.extension).get()
   }
-}
-
-interface ReadTemplateConfig {
-  isLayout?: boolean
 }

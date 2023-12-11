@@ -10,6 +10,7 @@
 - `@supercharge/contracts`
     - allow users to define only selected hashing driver constructros in `HashConfig#drivers`
     - export a `ViteConfig` interface
+    - extend `ViewConfigBuilder` interface: add `withoutLayout` method
 - `@supercharge/core`
     - bypass import cache when dynamically importing routes from file path
 - `@supercharge/vite`
@@ -22,10 +23,15 @@
 - bump dependencies
 - `@supercharge/vite`
     - add Vite `^5.0.0` as a peer dependency
+- `@supercharge/view`
+    - implement `withoutLayout` method on `ViewConfigBuilder` instance
+    - rename view `engines` folder to `drivers`
 
 ### Breaking Changes
 - `@supercharge/vite`
     - require Vite `>=4.0.0` as a peer dependency
+- `@supercharge/view`
+    - rename `HandlebarsCompiler` to `HandlebarsDriver`
 
 
 ## [4.0.0-alpha.1](https://github.com/supercharge/framework/compare/v4.0.0-alpha.0...v4.0.0-alpha.1) - 2023-11-18

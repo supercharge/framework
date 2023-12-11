@@ -2,7 +2,7 @@
 import { tap } from '@supercharge/goodies'
 import { HelperDelegate } from 'handlebars'
 import { Manager } from '@supercharge/manager'
-import { HandlebarsCompiler } from './engines/handlebars/index.js'
+import { HandlebarsDriver } from './drivers/handlebars/index.js'
 import { Application, ViewConfig, ViewEngine, ViewResponseConfig, ViewSharedData } from '@supercharge/contracts'
 
 export class ViewManager extends Manager<Application> implements ViewEngine {
@@ -53,7 +53,7 @@ export class ViewManager extends Manager<Application> implements ViewEngine {
    * Create a Handlebars view renderer instance.
    */
   protected createHandlebarsDriver (): ViewEngine {
-    return new HandlebarsCompiler(this.app.logger(), this.meta.config.handlebars)
+    return new HandlebarsDriver(this.app.logger(), this.meta.config.handlebars)
   }
 
   /**
