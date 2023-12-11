@@ -15,6 +15,7 @@
         - `ReportableError` defines the `report(error, httpContext)` method
 - `@supercharge/core`
     - bypass import cache when dynamically importing routes from file path
+    - keep the original error as the `cause` when wrapping that error into an `HttpError`
 - `@supercharge/vite`
     - create `vite` container binding
     - add a `ViteConfig` instance wrapping a Vite configuration JS object (will be used by a config/vite.ts file)
