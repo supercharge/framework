@@ -1,15 +1,5 @@
 
-export class InertiaPageNotFoundError extends Error {
-  /**
-   * Create a new instance.
-   */
-  constructor (path: string) {
-    super(`Inertia page not found: ${path}`)
-
-    this.name = 'PageNotFoundError'
-    InertiaPageNotFoundError.captureStackTrace(this, this.constructor)
-  }
-}
+import { InertiaPageNotFoundError } from './inertia-page-not-found-error.js'
 
 /**
  * Resolves the inertia page component for the given `path` from the available `pages`.
