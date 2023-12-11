@@ -1,9 +1,9 @@
 
-import Fs from 'node:fs'
 import Path from 'node:path'
 import { AddressInfo } from 'node:net'
 import { Str } from '@supercharge/strings'
-import { DevServerUrl, PluginConfigContract } from './contracts/plugin.js'
+import { HotReloadFile } from './hotfile.js'
+import { DevServerUrl, PluginConfigContract } from './types.js'
 import { ConfigEnv, Plugin, ResolvedConfig, UserConfig, ViteDevServer } from 'vite'
 
 /**
@@ -39,7 +39,7 @@ function resolvePluginConfig (config: string | string[] | PluginConfigContract):
     config.publicDirectory = Str(config.publicDirectory).trim().ltrim('/').get()
 
     if (config.publicDirectory === '') {
-      throw new Error('supercharge-vite-plugin: the publicDirectory option must be a subdirectory, like "public"')
+      throw new Error('supercharge-vite-plugin: the "publicDirectory" option must be a subdirectory, like "public"')
     }
   }
 
@@ -47,7 +47,7 @@ function resolvePluginConfig (config: string | string[] | PluginConfigContract):
     config.buildDirectory = Str(config.buildDirectory).trim().ltrim('/').rtrim('/').get()
 
     if (config.buildDirectory === '') {
-      throw new Error('supercharge-vite-plugin: the buildDirectory option must be a subdirectory, like "build"')
+      throw new Error('supercharge-vite-plugin: the "buildDirectory" option must be a subdirectory, like "build"')
     }
   }
 
@@ -55,7 +55,7 @@ function resolvePluginConfig (config: string | string[] | PluginConfigContract):
     config.ssrOutputDirectory = Str(config.ssrOutputDirectory).trim().ltrim('/').rtrim('/').get()
 
     if (config.ssrOutputDirectory === '') {
-      throw new Error('supercharge-vite-plugin: the ssrOutputDirectory option must be a subdirectory, like "ssr"')
+      throw new Error('supercharge-vite-plugin: the "ssrOutputDirectory" option must be a subdirectory, like "ssr"')
     }
   }
 
@@ -67,7 +67,7 @@ function resolvePluginConfig (config: string | string[] | PluginConfigContract):
     buildDirectory: config.buildDirectory ?? 'build',
     ssr: config.ssr ?? config.input,
     ssrOutputDirectory: config.ssrOutputDirectory ?? 'bootstrap/ssr',
-    hotFilePath: config.hotFilePath ?? Path.join(publicDirectory, 'hot'),
+    hotFilePath: config.hotFilePath ?? Path.join(publicDirectory, '.vite', 'hot'),
   }
 }
 
@@ -87,24 +87,27 @@ function resolveSuperchargePlugin (pluginConfig: Required<PluginConfigContract>)
      * configuration for a project using the Supercharge directory structure.
      */
     config (userConfig: UserConfig, { command }: ConfigEnv): UserConfig {
-      const useSsr = !!userConfig.build?.ssr
+      const isSsrBuild = !!userConfig.build?.ssr
 
       return {
-        base: userConfig.base ?? (command === 'build' ? resolveBase(pluginConfig) : ''),
+        base: userConfig.base ?? (command === 'build' ? resolveBase(pluginConfig) : '/'),
+
         publicDir: userConfig.publicDir ?? false,
+
         build: {
-          manifest: !useSsr,
-          outDir: userConfig.build?.outDir ?? resolveOutDir(pluginConfig, useSsr),
+          manifest: !isSsrBuild,
+          outDir: userConfig.build?.outDir ?? resolveOutDir(pluginConfig, isSsrBuild),
           rollupOptions: {
-            input: userConfig.build?.rollupOptions?.input ?? resolveInput(pluginConfig, useSsr)
+            input: userConfig.build?.rollupOptions?.input ?? resolveInput(pluginConfig, isSsrBuild)
           },
           assetsInlineLimit: userConfig.build?.assetsInlineLimit ?? 0,
         },
+
         server: {
           origin: '__supercharge_vite_placeholder__',
-          host: 'localhost',
           ...userConfig.server
         },
+
         ssr: {
           noExternal: noExternalInertiaHelpers(userConfig),
         },
@@ -135,19 +138,18 @@ function resolveSuperchargePlugin (pluginConfig: Required<PluginConfigContract>)
      * Configure the Vite server.
      */
     configureServer (server: ViteDevServer) {
+      const hotfile = new HotReloadFile(
+        Path.join(resolvedConfig.root, pluginConfig.hotFilePath)
+      )
+
       server.httpServer?.once('listening', () => {
         const address = server.httpServer?.address()
 
         if (isAddressInfo(address)) {
           viteDevServerUrl = resolveDevServerUrl(address, server.config)
-          Fs.writeFileSync(pluginConfig.hotFilePath, viteDevServerUrl)
+          hotfile.writeFileSync({ viteDevServerUrl })
         }
       })
-
-      process.on('SIGINT', process.exit)
-      process.on('SIGHUP', process.exit)
-      process.on('SIGTERM', process.exit)
-      process.on('exit', () => deleteHotFile(pluginConfig))
     }
   }
 }
@@ -184,15 +186,6 @@ function resolveInput (pluginConfig: Required<PluginConfigContract>, useSsr: boo
  */
 function isAddressInfo (address: string | AddressInfo | null | undefined): address is AddressInfo {
   return typeof address === 'object'
-}
-
-/**
- * Delete a possibly existing hot-reload file.
- */
-function deleteHotFile ({ hotFilePath }: Required<PluginConfigContract>): void {
-  if (Fs.existsSync(hotFilePath)) {
-    Fs.rmSync(hotFilePath)
-  }
 }
 
 /**

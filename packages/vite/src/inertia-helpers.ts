@@ -1,4 +1,16 @@
 
+export class InertiaPageNotFoundError extends Error {
+  /**
+   * Create a new instance.
+   */
+  constructor (path: string) {
+    super(`Inertia page not found: ${path}`)
+
+    this.name = 'PageNotFoundError'
+    InertiaPageNotFoundError.captureStackTrace(this, this.constructor)
+  }
+}
+
 /**
  * Resolves the inertia page component for the given `path` from the available `pages`.
  *
@@ -16,10 +28,10 @@ export async function resolvePageComponent<T> (path: string, pages: Record<strin
   const page = pages[path]
 
   if (page == null) {
-    throw new Error(`Inertia page not found: ${path}`)
+    throw new InertiaPageNotFoundError(path)
   }
 
   return typeof page === 'function'
-    ? page()
+    ? await page()
     : page
 }

@@ -1,13 +1,12 @@
 
 import { Vite } from './vite.js'
 import { HelperOptions } from 'handlebars'
-import { Application } from '@supercharge/contracts'
 
 export class ViteHandlebarsHelper {
   /**
-   * Stores the application instance.
+   * Stores the Vite config instance.
    */
-  private readonly app: Application
+  private readonly vite: Vite
 
   /**
    * Stores the Vite entrypoints for which we should generate HTML tags.
@@ -19,8 +18,11 @@ export class ViteHandlebarsHelper {
    */
   private readonly handlebarsOptions: HelperOptions
 
-  constructor (app: Application, ...args: any[] | any[][]) {
-    this.app = app
+  /**
+   * Create a new instance.
+   */
+  constructor (vite: Vite, ...args: any[] | any[][]) {
+    this.vite = vite
     this.handlebarsOptions = args.pop()
     this.entrypoints = this.findEntrypoints(...args)
   }
@@ -57,15 +59,31 @@ export class ViteHandlebarsHelper {
    * Splits the given `input` at the comma character and trims each value in the result.
    */
   private resolveStringInput (input: string): string[] {
-    return input.split(',').map(entry => {
-      return entry.trim()
-    })
+    return input
+      .split(',')
+      .map(entry => entry.trim())
   }
 
   /**
    * Generate the Vite CSS and JavaScript tags for the HTML header.
    */
   generateTags (): string {
-    return Vite.generateTags(this.app, this.entrypoints)
+    return this.vite
+      .generateTagsFromEntrypoints(
+        this.entrypoints,
+        this.attributesFromOptionsHash()
+      )
+      .toString()
+  }
+
+  /**
+   * Returns the configured attributes from the Handlebars helper’s `attributes` hash object.
+   */
+  private attributesFromOptionsHash (): string {
+    const attributes = this.handlebarsOptions.hash.attributes
+
+    return typeof attributes === 'string'
+      ? attributes
+      : String(attributes ?? '')
   }
 }

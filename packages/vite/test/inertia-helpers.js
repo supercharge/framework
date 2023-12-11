@@ -1,7 +1,7 @@
 
 import { test } from 'uvu'
 import { expect } from 'expect'
-import { resolvePageComponent } from '../dist/index.js'
+import { resolvePageComponent, InertiaPageNotFoundError } from '../dist/index.js'
 
 const testPage = './fixtures/test-page.js'
 
@@ -16,6 +16,10 @@ test('pass eagerly globed value to resolvePageComponent', async () => {
 })
 
 test('fails for non-existing page', async () => {
+  await expect(
+    resolvePageComponent('./fixtures/not-existing.js', import.meta.glob('./fixtures/*.js'))
+  ).rejects.toThrowError(InertiaPageNotFoundError)
+
   await expect(
     resolvePageComponent('./fixtures/not-existing.js', import.meta.glob('./fixtures/*.js'))
   ).rejects.toThrow('Inertia page not found: ./fixtures/not-existing.js')
