@@ -53,7 +53,7 @@ test('throws for invalid views path', async () => {
 
   await expect(async () => {
     return view.render('test-view')
-  }).rejects.toThrow(`Path to view files not existing. Received ${viewsPath}`)
+  }).rejects.toThrow(`Path to view files not existing. Received "${viewsPath}"`)
 })
 
 test('throws when rendering a view with not-existing layout', async () => {
@@ -77,7 +77,7 @@ test('throws for misconfigured layouts path', async () => {
 
   await expect(async () => {
     await view.render('test-view', { name: 'Supercharge ' }, { layout: 'test' })
-  }).rejects.toThrow(`Path to view layouts not existing. Received ${layoutsPath}`)
+  }).rejects.toThrow(`Path to view layouts not existing. Received "${layoutsPath}"`)
 })
 
 test('throws when rendering a view with not-existing layout', async () => {

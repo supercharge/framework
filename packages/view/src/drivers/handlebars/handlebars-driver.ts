@@ -252,7 +252,7 @@ export class HandlebarsDriver extends ViewBaseDriver implements ViewEngine {
   /**
    * Returns the rendered HTML view.
    */
-  async render (view: string, data: any, viewConfig: ViewResponseConfig): Promise<string> {
+  async render (view: string, data: any, viewConfig: ViewResponseConfig = {}): Promise<string> {
     return this.hasLayout(viewConfig)
       ? await this.renderWithLayout(view, data, viewConfig)
       : await this.renderView(view, data)
