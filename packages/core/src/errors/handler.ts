@@ -1,5 +1,6 @@
 
 import Youch from 'youch'
+import { SetOptional } from 'type-fest'
 import { tap } from '@supercharge/goodies'
 import { HttpError } from './http-error.js'
 import { Collect } from '@supercharge/collections'
@@ -150,7 +151,7 @@ export class ErrorHandler implements ErrorHandlerContract {
    * Determine whether the given `error` is implementing a `report` method and
    * that `report` method returns a truthy value, like a valid HTTP response.
    */
-  async errorReported (error: ReportableError, ctx: HttpContext): Promise<unknown> {
+  async errorReported (error: SetOptional<ReportableError, 'report'>, ctx: HttpContext): Promise<unknown> {
     if (typeof error.report !== 'function') {
       return false
     }
@@ -183,7 +184,7 @@ export class ErrorHandler implements ErrorHandlerContract {
    * Determine whether the given `error` is implementing a `render` method and
    * that `render` method returns a truthy value, like a valid HTTP response.
    */
-  async errorRendered (error: RenderableError, ctx: HttpContext): Promise<unknown> {
+  async errorRendered (error: SetOptional<RenderableError, 'render'>, ctx: HttpContext): Promise<unknown> {
     if (typeof error.render !== 'function') {
       return false
     }
