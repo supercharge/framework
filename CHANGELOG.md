@@ -10,6 +10,9 @@
 - `@supercharge/contracts`
     - allow users to define only selected hashing driver constructros in `HashConfig#drivers`
     - export a `ViteConfig` interface
+    - export `RenderableError` and `ReportableError` interfaces
+        - `RenderableError` defines the `render(error, httpContext)` method
+        - `ReportableError` defines the `report(error, httpContext)` method
 - `@supercharge/core`
     - bypass import cache when dynamically importing routes from file path
 - `@supercharge/vite`
