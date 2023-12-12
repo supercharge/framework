@@ -1,6 +1,6 @@
 # Changelog
 
-## [4.0.0-alpha.2](https://github.com/supercharge/framework/compare/v4.0.0-alpha.1...v4.0.0-alpha.2) - 2023-12-03
+## [4.0.0-alpha.2](https://github.com/supercharge/framework/compare/v4.0.0-alpha.1...v4.0.0-alpha.2) - 2023-12-12
 
 ### Added
 - `@supercharge/env`
