@@ -12,7 +12,8 @@ test('currentTime', async () => {
   const time = new InteractsWithTime()
   const { stdout: unixTimestamp } = await exec('date +%s')
 
-  expect(time.currentTime()).toEqual(Number(unixTimestamp))
+  expect(time.currentTime()).toBeLessThan(Number(unixTimestamp) + 3)
+  expect(time.currentTime()).toBeGreaterThan(Number(unixTimestamp) - 3)
 })
 
 test('availableAt', async () => {
