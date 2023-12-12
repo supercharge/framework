@@ -1,7 +1,7 @@
 {
   "name": "@supercharge/manager",
   "description": "The Supercharge manager package",
-  "version": "4.0.0-alpha.1",
+  "version": "4.0.0-alpha.2",
   "author": "Marcus Pöhls <marcus@superchargejs.com>",
   "bugs": {
     "url": "https://github.com/supercharge/framework/issues"
@@ -16,7 +16,7 @@
     ".": "./dist/index.js"
   },
   "dependencies": {
-    "@supercharge/contracts": "^4.0.0-alpha.1",
+    "@supercharge/contracts": "^4.0.0-alpha.2",
     "@supercharge/strings": "~2.0.0"
   },
   "devDependencies": {
