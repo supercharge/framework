@@ -7,11 +7,12 @@ import { PackageJson } from 'type-fest'
 import { fileURLToPath } from 'node:url'
 import { Arr } from '@supercharge/arrays'
 import { Str } from '@supercharge/strings'
+import { tap } from '@supercharge/goodies'
 import NormalizePath from 'normalize-path'
 import { Config } from '@supercharge/config'
-import { tap, upon } from '@supercharge/goodies'
 import { Collect } from '@supercharge/collections'
 import { Container } from '@supercharge/container'
+import { ApplicationMeta, Callback } from './types/index.js'
 import { LoggingServiceProvider } from '@supercharge/logging'
 import {
   ApplicationCtor,
@@ -56,12 +57,13 @@ export class Application extends Container implements ApplicationContract {
       bootingCallbacks: [],
       serviceProviders: Arr.from(),
 
+      packageJson: undefined,
       isRunningInConsole: false,
 
       env: new Env(),
       environmentFile: '.env',
 
-      config: new Config()
+      config: new Config(),
     }
 
     this.registerBaseBindings()
@@ -151,23 +153,38 @@ export class Application extends Container implements ApplicationContract {
   }
 
   /**
+   * Returns the app name.
+   */
+  name (): string | undefined {
+    return this.packageJson().name
+  }
+
+  /**
    * Returns the application version defined in the `package.json` file.
    */
   version (): string | undefined {
-    return upon(this.readPackageJson(), pkg => {
-      return pkg.version
-    })
+    return this.packageJson().version
   }
 
   /**
    * Read the contents of the application’s `package.json` file.
    */
-  private readPackageJson (): PackageJson {
+  private packageJson (): PackageJson {
+    if (this.meta.packageJson != null) {
+      return this.meta.packageJson
+    }
+
     const packageJsonPath = this.resolveFromBasePath('package.json')
 
-    return JSON.parse(
+    if (!Fs.existsSync(packageJsonPath)) {
+      throw new Error(`Cannot find "package.json" in application base path: "${packageJsonPath}"`)
+    }
+
+    this.meta.packageJson = JSON.parse(
       Fs.readFileSync(packageJsonPath).toString()
     )
+
+    return this.meta.packageJson as PackageJson
   }
 
   /**
@@ -458,47 +475,3 @@ export class Application extends Container implements ApplicationContract {
     })
   }
 }
-
-interface ApplicationMeta {
-  /**
-   * The absolute path to the application’s root directory.
-   */
-  appRoot: string
-
-  /**
-   * The config store instance.
-   */
-  config: ConfigStore
-
-  /**
-   * The env store instance.
-   */
-  env: EnvStore
-
-  /**
-   * The environment file to load during application bootstrapping.
-   */
-  environmentFile: string
-
-  /**
-   * The directory for the environment file.
-   */
-  environmentPath?: string
-
-  /**
-   * Indicate whether the application runs in the console.
-   */
-  isRunningInConsole: boolean
-
-  /**
-   * All booting callbacks.
-   */
-  bootingCallbacks: Callback[]
-
-  /**
-   * All registered service providers.
-   */
-  serviceProviders: Arr<ServiceProvider>
-}
-
-type Callback = (app: Application) => unknown | Promise<unknown>

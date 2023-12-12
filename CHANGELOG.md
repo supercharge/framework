@@ -2,6 +2,12 @@
 
 ## [4.0.0-alpha.3](https://github.com/supercharge/framework/compare/v4.0.0-alpha.2...v4.0.0-alpha.3) - 2023-xx-xx
 
+### Added
+- `@supercharge/application`
+    - add `app.name()` method: returns the application name if available, otherwise `undefined`
+- `@supercharge/contracts`
+    - add `Application.name()` method
+
 ### Fixed
 - `@supercharge/vite`
     - create correct `hotFilePath` to `<publicDirectory>/<buildDirectory>/.vite/hot.json`
