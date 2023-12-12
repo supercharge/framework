@@ -13,7 +13,7 @@ export class Application extends CedarApplication implements ConsoleApplicationC
    * Create a new console application instance.
    */
   constructor (app: App) {
-    super('Supercharge Framework')
+    super(app.name())
 
     app.markAsRunningInConsole()
 
