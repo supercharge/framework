@@ -60,14 +60,15 @@ function resolvePluginConfig (config: string | string[] | PluginConfigContract):
   }
 
   const publicDirectory = config.publicDirectory ?? 'public'
+  const buildDirectory = config.buildDirectory ?? 'build'
 
   return {
     input: config.input,
     publicDirectory,
-    buildDirectory: config.buildDirectory ?? 'build',
+    buildDirectory,
     ssr: config.ssr ?? config.input,
     ssrOutputDirectory: config.ssrOutputDirectory ?? 'bootstrap/ssr',
-    hotFilePath: config.hotFilePath ?? Path.join(publicDirectory, '.vite', 'hot'),
+    hotFilePath: config.hotFilePath ?? Path.join(publicDirectory, buildDirectory, '.vite', 'hot.json'),
   }
 }
 
