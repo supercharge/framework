@@ -1,7 +1,7 @@
 
 import { ViewSharedData } from '@supercharge/contracts'
 
-export class ViewBaseCompiler {
+export class ViewBaseDriver {
   /**
    * Stores the data that is available to all view templates.
    */

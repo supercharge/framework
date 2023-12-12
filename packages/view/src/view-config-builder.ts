@@ -16,6 +16,13 @@ export class ViewConfigBuilder implements ViewConfigBuilderContract {
   }
 
   /**
+   * Create a new view config builder instance.
+   */
+  static from (config: ViewResponseConfig): ViewConfigBuilder {
+    return new this(config)
+  }
+
+  /**
    * Set the base layout used to render this view. The given `name` identifies
    * the file name of the layout file in the configured layouts folder.
    */
@@ -23,5 +30,12 @@ export class ViewConfigBuilder implements ViewConfigBuilderContract {
     return tap(this, () => {
       this.config.layout = name
     })
+  }
+
+  /**
+   * Render this view without a base layout.
+   */
+  withoutLayout (): this {
+    return this.layout('')
   }
 }

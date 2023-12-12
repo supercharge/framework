@@ -40,7 +40,7 @@ export class ViewResponse {
   /**
     * Assigns the rendered HTML of the given `template` as the response payload.
     */
-  private async renderView (template: string, data?: any, viewBuilder?: ViewBuilderCallback): Promise<string> {
+  private async renderView (template: string, data?: any, viewBuilderCallback?: ViewBuilderCallback): Promise<string> {
     const viewData = {
       ...this.response.state().all(),
       ...this.viewEngine.sharedData(),
@@ -49,9 +49,9 @@ export class ViewResponse {
 
     const viewConfig: ViewResponseConfig = {}
 
-    if (typeof viewBuilder === 'function') {
-      viewBuilder(
-        new ViewConfigBuilder(viewConfig)
+    if (typeof viewBuilderCallback === 'function') {
+      viewBuilderCallback(
+        ViewConfigBuilder.from(viewConfig)
       )
     }
 
