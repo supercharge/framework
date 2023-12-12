@@ -11,8 +11,12 @@
     - allow users to define only selected hashing driver constructros in `HashConfig#drivers`
     - export a `ViteConfig` interface
     - extend `ViewConfigBuilder` interface: add `withoutLayout` method
+    - export `RenderableError` and `ReportableError` interfaces
+        - `RenderableError` defines the `render(error, httpContext)` method
+        - `ReportableError` defines the `report(error, httpContext)` method
 - `@supercharge/core`
     - bypass import cache when dynamically importing routes from file path
+    - keep the original error as the `cause` when wrapping that error into an `HttpError`
 - `@supercharge/vite`
     - create `vite` container binding
     - add a `ViteConfig` instance wrapping a Vite configuration JS object (will be used by a config/vite.ts file)

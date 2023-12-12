@@ -19,6 +19,8 @@ export { EnvStore } from './env/env.js'
 
 export { Bootstrapper, BootstrapperCtor } from './core/bootstrapper.js'
 export { ErrorHandler, ErrorHandlerCtor } from './core/error-handler.js'
+export { RenderableError } from './core/renderable-error.js'
+export { ReportableError } from './core/reportable-error.js'
 
 export { HashBuilder, HashBuilderCallback, HashBuilderConfig } from './hashing/hash-builder.js'
 export { HashConfig } from './hashing/config.js'
