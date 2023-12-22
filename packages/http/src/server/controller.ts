@@ -1,7 +1,7 @@
 
-import { Application, Logger } from '@supercharge/contracts'
+import { Application, HttpContext, Logger } from '@supercharge/contracts'
 
-export class Controller {
+export abstract class Controller {
   /**
    * The application instance.
    */
@@ -20,4 +20,9 @@ export class Controller {
   protected logger (): Logger {
     return this.app.make<Logger>('logger')
   }
+
+  /**
+   * Handle the incoming HTTP request.
+   */
+  abstract handle (ctx: HttpContext): Promise<any> | any
 }

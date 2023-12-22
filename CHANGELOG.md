@@ -8,6 +8,12 @@
 - `@supercharge/contracts`
     - add `Application.name()` method
 
+### Updated
+- bump dependencies
+- `@supercharge/http`
+    - make `Controller` class abstract
+    - `Controller` class: add `abstract handle` method definition to transport the information which method needs implementation
+
 ### Fixed
 - `@supercharge/vite`
     - create correct `hotFilePath` to `<publicDirectory>/<buildDirectory>/.vite/hot.json`
