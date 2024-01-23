@@ -79,13 +79,13 @@ export class DatabaseManager {
    * Returns the configuration for the given `connectionName`.
    */
   protected configuration (connectionName: string): Knex.Config | string {
-    const connection = this.config.connections[connectionName]
+    const connectionConfiguration = this.config.connections[connectionName]
 
-    if (!connection) {
+    if (!connectionConfiguration) {
       throw new Error(`Database connection "${connectionName}" is not configured.`)
     }
 
-    return connection
+    return connectionConfiguration
   }
 
   /**
