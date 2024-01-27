@@ -310,9 +310,11 @@ export class Application extends Container implements ApplicationContract {
    * Returns the resolved path to the environment file.
    */
   environmentFilePath (): string {
-    const environmentFilePath = Path.resolve(
-      [this.environmentPath(), this.environmentFile()].join('/')
-    )
+    const environmentFilePath = Path.isAbsolute(this.environmentFile())
+      ? this.environmentFile()
+      : Path.resolve(
+        [this.environmentPath(), this.environmentFile()].join('/')
+      )
 
     return this.resolveFileURLToPath(environmentFilePath)
   }
