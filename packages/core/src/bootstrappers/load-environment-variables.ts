@@ -4,6 +4,7 @@ import Fs from '@supercharge/fs'
 import { Str } from '@supercharge/strings'
 import Dotenv, { DotenvConfigOptions } from 'dotenv'
 import { Application, Bootstrapper } from '@supercharge/contracts'
+import { EnvironmentFileError } from '../errors/environment-file-error.js'
 
 export class LoadEnvironmentVariables implements Bootstrapper {
   /**
@@ -39,6 +40,7 @@ export class LoadEnvironmentVariables implements Bootstrapper {
    */
   async loadDefaultEnvironmentFile (): Promise<void> {
     const envPath = this.app.environmentFilePath()
+    this.app.logger().alert('envPath', envPath)
 
     if (await Fs.notExists(envPath)) {
       throw new Error(`Invalid environment file. Cannot find env file "${envPath}".`)
@@ -53,7 +55,13 @@ export class LoadEnvironmentVariables implements Bootstrapper {
    * Load the given environment `file` content into `process.env`.
    */
   async loadEnvironmentFile (path: string, options: DotenvConfigOptions): Promise<void> {
-    Dotenv.config({ path, ...options })
+    this.app.logger().alert('loading env file from path -->', path)
+
+    const { error } = Dotenv.config({ path, ...options })
+
+    if (error) {
+      throw new EnvironmentFileError(`Failed to load environment file "${path}"`, { cause: error })
+    }
   }
 
   /**
