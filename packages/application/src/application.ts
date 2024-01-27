@@ -153,6 +153,13 @@ export class Application extends Container implements ApplicationContract {
   }
 
   /**
+   * Returns the environment in which the app runs in.
+   */
+  environment (): string {
+    return this.config().get('app.env') ?? ''
+  }
+
+  /**
    * Returns the app name.
    */
   name (): string | undefined {

@@ -17,6 +17,11 @@ export interface Application extends Container {
   key(): string
 
   /**
+   * Returns the environment in which the app runs in.
+   */
+  environment(): string
+
+  /**
    * Returns the app name.
    */
   name(): string | undefined
