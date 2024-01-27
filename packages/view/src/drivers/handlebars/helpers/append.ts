@@ -8,9 +8,9 @@ export default function append (stackName: string, context: any): void {
     throw new Error('Provide a name when using the "append" handlebars helper.')
   }
 
-  context.data.root = context.data.root || {}
-  const stacks = context.data.root.stacks || {}
-  const stack = stacks[stackName] || []
+  context.data.root = context.data.root ?? {}
+  const stacks = context.data.root.stacks ?? {}
+  const stack = stacks[stackName] ?? []
 
   // @ts-expect-error
   stack.push({ mode: 'append', data: context.fn(this) })

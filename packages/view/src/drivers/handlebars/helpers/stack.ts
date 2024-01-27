@@ -15,9 +15,9 @@ export default function stack (name: string, context: any): string {
     throw new Error('Provide a name when using the "stack" handlebars helper.')
   }
 
-  const data = context.data.root || {}
-  const stacks = data.stacks || {}
-  const stack = stacks[name] || []
+  const data = context.data.root ?? {}
+  const stacks = data.stacks ?? {}
+  const stack = stacks[name] ?? []
 
   const content = stack
     .reduce((carry: string[], { mode, data }: { mode: string, data: string }) => {
