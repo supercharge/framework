@@ -40,7 +40,6 @@ export class LoadEnvironmentVariables implements Bootstrapper {
    */
   async loadDefaultEnvironmentFile (): Promise<void> {
     const envPath = this.app.environmentFilePath()
-    this.app.logger().alert('envPath', envPath)
 
     if (await Fs.notExists(envPath)) {
       throw new Error(`Invalid environment file. Cannot find env file "${envPath}".`)
@@ -55,8 +54,6 @@ export class LoadEnvironmentVariables implements Bootstrapper {
    * Load the given environment `file` content into `process.env`.
    */
   async loadEnvironmentFile (path: string, options: DotenvConfigOptions): Promise<void> {
-    this.app.logger().alert('loading env file from path -->', path)
-
     const { error } = Dotenv.config({ path, ...options })
 
     if (error) {
