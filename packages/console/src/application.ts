@@ -1,18 +1,18 @@
 
 import { Command } from './command.js'
 import { Application as CedarApplication } from '@supercharge/cedar'
-import { ConsoleApplication as ConsoleApplicationContract, Application as App } from '@supercharge/contracts'
+import { ConsoleApplication as ConsoleApplicationContract, Application as SuperchargeApp } from '@supercharge/contracts'
 
 export class Application extends CedarApplication implements ConsoleApplicationContract {
   /**
    * The Supercharge application instance.
    */
-  protected readonly supercharge: App
+  protected readonly supercharge: SuperchargeApp
 
   /**
    * Create a new console application instance.
    */
-  constructor (app: App) {
+  constructor (app: SuperchargeApp) {
     super(app.name())
 
     app.markAsRunningInConsole()
