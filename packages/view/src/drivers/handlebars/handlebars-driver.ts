@@ -280,7 +280,7 @@ export class HandlebarsDriver extends ViewBaseDriver implements ViewEngine {
   async renderWithLayout (view: string, data: any, viewConfig: ViewResponseConfig): Promise<string> {
     const layout = await this.compile(this.baseLayout(viewConfig), { isLayout: true })
 
-    const context: any = data || {}
+    const context: any = data ?? {}
     context.content = await this.renderView(view, data)
 
     return layout(context)
