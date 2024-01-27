@@ -32,22 +32,27 @@ export interface EnvStore {
   set (key: string, value: string): this
 
   /**
-   * Determine whether the `NODE_ENV` variable is set to `'production'`.
+   * Determine whether the `NODE_ENV` or `APP_ENV` variable is set to `'production'`.
    */
   isProduction (): boolean
 
   /**
-   * Determine whether the `NODE_ENV` variable is **not** set to `'production'`.
+   * Determine whether the `NODE_ENV` or `APP_ENV` variable is **not** set to `'production'`.
    */
   isNotProduction (): boolean
 
   /**
-   * Determine whether the `NODE_ENV` variable is set to `'test'` or `'testing'`.
+   * Determine whether the `NODE_ENV` or `APP_ENV` variable is set to `'test'` or `'testing'`.
    */
   isTesting (): boolean
 
   /**
-   * Determine whether the `NODE_ENV` environment variable equals the given `environment`.
+   * Determine whether the `NODE_ENV` or `APP_ENV` variable is **not** set to `'test'` or `'testing'`.
+   */
+  isNotTesting (): boolean
+
+  /**
+   * Determine whether the `NODE_ENV` or `APP_ENV` environment variable equals the given `environment`.
    */
   is (environment: string): boolean
 }

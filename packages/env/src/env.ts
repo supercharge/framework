@@ -90,32 +90,39 @@ export class Env implements EnvStore {
   }
 
   /**
-   * Determine whether the `NODE_ENV` variable is set to `production`.
+   * Determine whether the `NODE_ENV` or `APP_ENV` variable is set to `'production'`.
    */
   isProduction (): boolean {
     return this.is('production')
   }
 
   /**
-   * Determine whether the `NODE_ENV` variable is **not** set to `production`.
+   * Determine whether the `NODE_ENV` or `APP_ENV` variable is **not** set to `'production'`.
    */
   isNotProduction (): boolean {
     return !this.isProduction()
   }
 
   /**
-   * Determine whether the `NODE_ENV` variable is set to `testing`.
+   * Determine whether the `NODE_ENV` or `APP_ENV` variable is set to `'test'` or `'testing'`.
    */
   isTesting (): boolean {
     return this.is('test') || this.is('testing')
   }
 
   /**
-   * Determine whether the `NODE_ENV` variable equals the given `environment`.
+   * Determine whether the `NODE_ENV` or `APP_ENV` variable is **not** set to `'test'` or `'testing'`.
+   */
+  isNotTesting (): boolean {
+    return !this.isTesting()
+  }
+
+  /**
+   * Determine whether the `NODE_ENV` or `APP_ENV` environment variable equals the given `environment`.
    */
   is (environment: string): boolean {
     return Str(
-      this.get('NODE_ENV')
+      this.get('NODE_ENV', this.get('APP_ENV'))
     ).lower().equals(environment)
   }
 }
