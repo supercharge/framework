@@ -116,7 +116,7 @@ export class Server implements HttpServerContract {
   /**
    * Returns the HTTP server instance. Returns `undefined ` if the Koa server wasn’t started.
    */
-  private startedServer (): NodeHttpServer | undefined {
+  nodeServer (): NodeHttpServer | undefined {
     return this.meta.server
   }
 
@@ -222,7 +222,7 @@ export class Server implements HttpServerContract {
    * Register the given HTTP middleware to the IoC container and HTTP server instance.
    */
   private bindAndRegisterMiddlewareClass (Middleware: MiddlewareCtor): void {
-    this.ensureHandleMethod(Middleware)
+    this.ensureHandleMethodIn(Middleware)
     this.bindMiddlewareClass(Middleware)
 
     this.koa().use(async (ctx, next) => {
@@ -248,16 +248,14 @@ export class Server implements HttpServerContract {
   /**
    * Ensure that the given `Middleware` implements a `handle` method.
    */
-  private ensureHandleMethod (Middleware: MiddlewareCtor): void {
-    const middleware = this.app().hasBinding(Middleware)
-      ? this.app().make(Middleware)
-      : new Middleware(this.app())
+  private ensureHandleMethodIn (MiddlewareCtor: MiddlewareCtor): void {
+    const middleware = this.app().make(MiddlewareCtor)
 
     if (typeof middleware.handle === 'function') {
       return
     }
 
-    throw new Error(`The Middleware class ${className(Middleware)} must implement a "handle" method.`)
+    throw new Error(`The Middleware class ${className(MiddlewareCtor)} must implement a "handle" method.`)
   }
 
   /**
@@ -327,15 +325,15 @@ export class Server implements HttpServerContract {
    * connections have been processed through the HTTP request lifecycle.
    */
   async stop (): Promise<void> {
-    if (!this.startedServer()) {
+    if (!this.nodeServer()) {
       return
     }
 
     await new Promise<void>((resolve, reject) => {
       this.app().logger().info('Stopping the HTTP server')
 
-      return this.startedServer()?.close(error => {
-        return error
+      return this.nodeServer()?.close(error => {
+        return error != null
           ? reject(error)
           : resolve()
       })

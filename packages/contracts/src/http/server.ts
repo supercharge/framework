@@ -1,8 +1,8 @@
 
 import { HttpRouter } from './router.js'
-import { IncomingMessage, ServerResponse } from 'node:http'
 import { Http2ServerRequest, Http2ServerResponse } from 'node:http2'
 import { InlineMiddlewareHandler, MiddlewareCtor } from './middleware.js'
+import { Server as NodeHttpServer, IncomingMessage, ServerResponse } from 'node:http'
 
 export type HttpServerHandler =
   (req: IncomingMessage | Http2ServerRequest, res: ServerResponse | Http2ServerResponse) => Promise<void>
@@ -54,4 +54,9 @@ export interface HttpServer {
    * connections have been processed through the HTTP request lifecycle.
    */
   stop (): Promise<void>
+
+  /**
+   * Returns the reference to the started Node.js HTTP server.
+   */
+  nodeServer(): NodeHttpServer | undefined
 }
