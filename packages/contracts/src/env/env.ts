@@ -21,7 +21,9 @@ export interface EnvStore {
   number (key: string, defaultValue: number): number
 
   /**
-   * Returns the environment variable identified by the given `key` as a boolean value.
+   * Returns the environment variable identified by the given `key` as a boolean
+   * value. The environment variable values `'true'` and `'1'` translate to a
+   * truthy value, every other value returns `false` or the default value.
    */
   boolean (key: string): boolean
   boolean (key: string, defaultValue: boolean): boolean

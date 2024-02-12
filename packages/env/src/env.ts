@@ -44,15 +44,17 @@ export class Env implements EnvStore {
   }
 
   /**
-   * Returns the environment variable identified by the given `key` as a boolean value.
+   * Returns the environment variable identified by the given `key` as a boolean
+   * value. The environment variable values `'true'` and `'1'` translate to a
+   * truthy value, every other value returns `false` or the default value.
    */
   boolean (key: string): boolean
   boolean (key: string, defaultValue: boolean): boolean
   boolean (key: string, defaultValue?: boolean): boolean {
-    const validTruthy = ['1', 'true']
+    const truthyValues = ['1', 'true']
     key = this.get(key).toLowerCase()
 
-    if (validTruthy.includes(key)) {
+    if (truthyValues.includes(key)) {
       return true
     }
 
