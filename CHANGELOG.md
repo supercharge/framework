@@ -1,6 +1,6 @@
 # Changelog
 
-## [4.0.0-alpha.3](https://github.com/supercharge/framework/compare/v4.0.0-alpha.2...v4.0.0-alpha.3) - 2023-xx-xx
+## [4.0.0-alpha.3](https://github.com/supercharge/framework/compare/v4.0.0-alpha.2...v4.0.0-alpha.3) - 2024-xx-xx
 
 ### Added
 - `@supercharge/application`
@@ -17,6 +17,9 @@
 ### Fixed
 - `@supercharge/vite`
     - create correct `hotFilePath` to `<publicDirectory>/<buildDirectory>/.vite/hot.json`
+
+### Breaking Changes
+- require Node.js 22
 
 
 ## [4.0.0-alpha.2](https://github.com/supercharge/framework/compare/v4.0.0-alpha.1...v4.0.0-alpha.2) - 2023-12-12
