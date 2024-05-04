@@ -19,9 +19,8 @@ export class HandleShutdown implements Bootstrapper {
    */
   async bootstrap (): Promise<void> {
     this.shutdownSignalListener
-      .onShutdown(async () => {
-        await this.app.shutdown()
-      })
+      .onShutdown(async () => await this.app.shutdown())
+      .onShutdown(() => this.shutdownSignalListener.cleanup())
       .listen()
   }
 }
