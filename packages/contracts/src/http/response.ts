@@ -3,6 +3,7 @@ import { InputBag } from './input-bag.js'
 import { HttpContext } from './context.js'
 import { CookieBag } from './cookie-bag.js'
 import { HttpRedirect } from './redirect.js'
+import type { Encrypter } from '../index.js'
 import { OutgoingHttpHeaders } from 'node:http2'
 import { CookieConfig } from './cookie-config.js'
 import { MacroableCtor } from '@supercharge/macroable'
@@ -13,7 +14,7 @@ export interface HttpResponseCtor extends MacroableCtor {
   /**
    * Create a new HTTP response instance.
    */
-  new (context: HttpContext, cookieConfig: CookieConfig): HttpResponse
+  new (context: HttpContext, cookieConfig: CookieConfig, encryption: Encrypter): HttpResponse
 }
 
 export interface HttpResponse<T = any> extends InteractsWithState {

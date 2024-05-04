@@ -5,6 +5,7 @@ import { HttpMethods } from './methods.js'
 import { HttpContext } from './context.js'
 import { CookieBag } from './cookie-bag.js'
 import { IncomingMessage } from 'node:http'
+import type { Encrypter } from '../index.js'
 import { IncomingHttpHeaders } from 'node:http2'
 import { CookieConfig } from './cookie-config.js'
 import { MacroableCtor } from '@supercharge/macroable'
@@ -17,7 +18,7 @@ export interface HttpRequestCtor extends MacroableCtor {
   /**
    * Create a new HTTP request instance.
    */
-  new (context: HttpContext, cookieConfig: CookieConfig): HttpRequest
+  new (context: HttpContext, cookieConfig: CookieConfig, encryption: Encrypter): HttpRequest
 }
 
 export type Protocol = 'http' | 'https' | string

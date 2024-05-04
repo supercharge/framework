@@ -13,7 +13,7 @@ import { HandleErrorMiddleware } from '../middleware/handle-error.js'
 import { HttpContext, HttpRedirect, Response } from '../server/index.js'
 import KoaRouter, { RouterContext, Middleware as KoaMiddleware } from '@koa/router'
 import { Class, isConstructor, isFunction, isNotConstructor } from '@supercharge/classes'
-import { HttpRouter, RouteHandler, RouteAttributes, HttpMethods, MiddlewareCtor, NextHandler, Middleware, Application, HttpConfig } from '@supercharge/contracts'
+import { HttpRouter, RouteHandler, RouteAttributes, HttpMethods, MiddlewareCtor, NextHandler, Middleware, Application, HttpConfig, type Encrypter } from '@supercharge/contracts'
 
 export class Router implements HttpRouter {
   private readonly meta: {
@@ -21,6 +21,11 @@ export class Router implements HttpRouter {
      * Stores the app instance.
      */
     app: Application
+
+    /**
+     * Stores the encrypter instance.
+     */
+    encryption: Encrypter
 
     /**
      * Stores the HTTP configuration object.
@@ -51,9 +56,10 @@ export class Router implements HttpRouter {
   /**
    * Create a new router instance.
    */
-  constructor (app: Application, httpConfig: HttpConfig) {
+  constructor (app: Application, httpConfig: HttpConfig, encryption: Encrypter) {
     this.meta = {
       app,
+      encryption,
       httpConfig,
       groupStack: [],
       middleware: new Map(),
@@ -67,6 +73,13 @@ export class Router implements HttpRouter {
    */
   private app (): Application {
     return this.meta.app
+  }
+
+  /**
+   * Returns the encryption instance.
+   */
+  encryption (): Encrypter {
+    return this.meta.encryption
   }
 
   /**
@@ -251,7 +264,7 @@ export class Router implements HttpRouter {
    * Wrap the given Koa `ctx` into a Supercharge ctx.
    */
   private createContext (ctx: any): HttpContext {
-    return HttpContext.wrap(ctx, this.app(), this.meta.httpConfig.cookie)
+    return HttpContext.wrap(ctx, this.app(), this.meta.httpConfig.cookie, this.encryption())
   }
 
   /**
