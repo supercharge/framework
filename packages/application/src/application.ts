@@ -55,6 +55,7 @@ export class Application extends Container implements ApplicationContract {
     this.meta = {
       appRoot: this.resolveFileURLToPath(basePath),
       bootingCallbacks: [],
+      shutdownCallbacks: [],
       serviceProviders: Arr.from(),
 
       packageJson: undefined,
@@ -352,6 +353,27 @@ export class Application extends Container implements ApplicationContract {
   }
 
   /**
+   * Returns the registered shutdown callbacks.
+   */
+  shutdownCallbacks (): Callback[] {
+    return this.meta.shutdownCallbacks
+  }
+
+  /**
+   * Register a shutdown callback that runs after all service provides ran
+   * their `shutdown` function.
+   */
+  onShutdown (callback: Callback): this {
+    if (typeof callback !== 'function') {
+      throw new Error(`You must pass a function to the application’s "onShutdown" function. Received [${String(callback)}]`)
+    }
+
+    return tap(this, () => {
+      this.meta.shutdownCallbacks.push(callback)
+    })
+  }
+
+  /**
    * Register the configured user-land providers.
    */
   async registerConfiguredProviders (): Promise<void> {
@@ -457,6 +479,8 @@ export class Application extends Container implements ApplicationContract {
     ).forEach(async provider => {
       await this.shutdownProvider(provider)
     })
+
+    await this.runAppCallbacks(this.shutdownCallbacks())
   }
 
   /**

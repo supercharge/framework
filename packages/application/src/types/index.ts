@@ -42,6 +42,12 @@ export interface ApplicationMeta {
   bootingCallbacks: Callback[]
 
   /**
+   * Shutdown callbacks run when the application stops. We’re
+   * using this in the framework to u
+   */
+  shutdownCallbacks: Callback[]
+
+  /**
    * All registered service providers.
    */
   serviceProviders: Arr<ServiceProvider>
