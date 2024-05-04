@@ -3,7 +3,7 @@ export interface LoggingConfig {
   /**
    * The logging driver name.
    */
-  driver: string
+  driver: keyof this['channels']
 
   /**
    * The logging channels config.
@@ -13,12 +13,12 @@ export interface LoggingConfig {
 
 export interface LoggingChannels {
   /**
-   * The file channel.
+   * Stores the configuration for the file channel.
    */
   file?: FileChannelConfig
 
   /**
-   * The console channel.
+   * Stores the configuration for the console channel.
    */
   console?: ConsoleChannelConfig
 }

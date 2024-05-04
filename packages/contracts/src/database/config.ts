@@ -12,7 +12,7 @@ export interface DatabaseConfig {
   /**
    * The default database connection name.
    */
-  connection: string
+  connection: keyof this['connections']
 
   /**
    * The settings of configured database connections.

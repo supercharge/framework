@@ -4,7 +4,7 @@ import { Router } from './routing/index.js'
 import { Request } from './server/request.js'
 import { Response } from './server/response.js'
 import { ServiceProvider } from '@supercharge/support'
-import { ApplicationConfig, HttpConfig } from '@supercharge/contracts'
+import { ApplicationConfig, HttpConfig, type Encrypter } from '@supercharge/contracts'
 
 /**
  * Add container bindings for services from this provider.
@@ -39,7 +39,12 @@ export class HttpServiceProvider extends ServiceProvider {
       .singleton('server', () => {
         const appConfig = this.config().get<ApplicationConfig>('app')
 
-        return new Server(this.app(), appConfig, this.httpConfig())
+        return new Server(
+          this.app(),
+          appConfig,
+          this.httpConfig(),
+          this.encrypter(),
+        )
       })
       .alias('server', 'http.server')
       .alias('server', Server)
@@ -50,8 +55,21 @@ export class HttpServiceProvider extends ServiceProvider {
    */
   private bindRouter (): void {
     this.app()
-      .singleton('route', () => new Router(this.app(), this.httpConfig()))
-      .alias('route', 'router')
+      .singleton('router', () => {
+        return new Router(
+          this.app(),
+          this.httpConfig(),
+          this.encrypter(),
+        )
+      })
+      .alias('router', 'route')
+  }
+
+  /**
+   * Returns the encrypter instance.
+   */
+  private encrypter (): Encrypter {
+    return this.app().make('encryption')
   }
 
   /**

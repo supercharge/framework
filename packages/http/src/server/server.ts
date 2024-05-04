@@ -7,7 +7,7 @@ import { Server as NodeHttpServer } from 'node:http'
 import { BodyparserMiddleware } from '../middleware/index.js'
 import { className, isConstructor } from '@supercharge/classes'
 import { HandleErrorMiddleware } from '../middleware/handle-error.js'
-import { Application, HttpServer as HttpServerContract, Middleware as MiddlewareContract, MiddlewareCtor, HttpRouter, HttpServerHandler, InlineMiddlewareHandler, ApplicationConfig, HttpConfig } from '@supercharge/contracts'
+import { Application, HttpServer as HttpServerContract, Middleware as MiddlewareContract, MiddlewareCtor, HttpRouter, HttpServerHandler, InlineMiddlewareHandler, ApplicationConfig, HttpConfig, type Encrypter } from '@supercharge/contracts'
 
 type Callback = (server: Server) => unknown | Promise<unknown>
 
@@ -25,6 +25,11 @@ export class Server implements HttpServerContract {
      * The HTTP configuration object.
      */
     httpConfig: HttpConfig
+
+    /**
+     * The encrypter instance.
+     */
+    encryption: Encrypter
 
     /**
      * The Koa server instance.
@@ -55,10 +60,11 @@ export class Server implements HttpServerContract {
   /**
    * Create a new HTTP context instance.
    */
-  constructor (app: Application, appConfig: ApplicationConfig, httpConfig: HttpConfig) {
+  constructor (app: Application, appConfig: ApplicationConfig, httpConfig: HttpConfig, encryption: Encrypter) {
     this.meta = {
       app,
       httpConfig,
+      encryption,
       bootedCallbacks: [],
       isBootstrapped: false,
       koa: this.createKoaInstance(appConfig)
@@ -160,6 +166,13 @@ export class Server implements HttpServerContract {
    */
   app (): Application {
     return this.meta.app
+  }
+
+  /**
+   * Returns the encrypter instance.
+   */
+  encryption (): Encrypter {
+    return this.meta.encryption
   }
 
   /**
@@ -292,7 +305,7 @@ export class Server implements HttpServerContract {
    * Wrap the given Koa `ctx` into a Supercharge context.
    */
   private createContext (ctx: any): HttpContext {
-    return HttpContext.wrap(ctx, this.app(), this.cookieConfig())
+    return HttpContext.wrap(ctx, this.app(), this.cookieConfig(), this.encryption())
   }
 
   /**

@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url'
 import { Server } from '@supercharge/http'
 import { ViewServiceProvider } from '@supercharge/view'
 import { Application, ErrorHandler } from '../dist/index.js'
+import { EncryptionServiceProvider } from '@supercharge/encryption'
 
 const viewMock = {
   boot () { },
@@ -29,6 +30,7 @@ function createApp () {
 
   app
     .bind('view', () => viewMock)
+    .register(new EncryptionServiceProvider(app))
 
   app.config()
     .set('app.key', 1234)

@@ -3,7 +3,7 @@ import Os from 'node:os'
 import Set from '@supercharge/set'
 import { Application } from '@supercharge/contracts'
 
-export type OnShutdownCallback = () => Promise<void> | void
+export type OnShutdownCallback = () => Promise<unknown> | unknown
 
 export class ShutdownSignalListener {
   /**
