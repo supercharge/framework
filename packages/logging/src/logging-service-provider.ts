@@ -1,7 +1,7 @@
 
 import { LogManager } from './log-manager.js'
 import { ServiceProvider } from '@supercharge/support'
-import { ServiceProvider as ServiceProviderContract } from '@supercharge/contracts'
+import type { LoggingConfig, ServiceProvider as ServiceProviderContract } from '@supercharge/contracts'
 
 export class LoggingServiceProvider extends ServiceProvider implements ServiceProviderContract {
   /**
@@ -9,7 +9,7 @@ export class LoggingServiceProvider extends ServiceProvider implements ServicePr
    */
   override register (): void {
     this.app().singleton('logger', () => {
-      const loggingConfig = this.app().config().get('logging', { driver: 'console', channels: {} })
+      const loggingConfig = this.app().config().get<LoggingConfig>('logging', { driver: 'console', channels: {} })
 
       return new LogManager(this.app(), loggingConfig)
     })
