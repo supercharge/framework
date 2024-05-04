@@ -64,7 +64,7 @@ export class ConsoleLogger extends Logger<ConsoleChannelConfig> implements Loggi
    * error => bold red
    */
   getColorForLevel (label: string): ChalkInstance {
-    return this.logColors()[label] || Chalk.white
+    return this.logColors()[label] ?? Chalk.white
   }
 
   /**
