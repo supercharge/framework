@@ -1,7 +1,7 @@
 
 import Fs from 'node:fs'
 import Path from 'node:path'
-import { HotReloadFileContent } from './types.js'
+import { HotReloadFileContent } from './vite-plugin-types.js'
 
 export class HotReloadFile {
   /**

@@ -1,5 +1,5 @@
 
-import { supercharge } from './plugin/plugin.js'
+import { supercharge } from './plugin/vite-plugin.js'
 
 export default supercharge
 export { supercharge }
@@ -11,5 +11,5 @@ export { ViteServiceProvider } from './vite-service-provider.js'
 export { resolvePageComponent } from './inertia/inertia-helpers.js'
 export { InertiaPageNotFoundError } from './inertia/inertia-page-not-found-error.js'
 
-export { HotReloadFile } from './plugin/hotfile.js'
-export { PluginConfigContract, DevServerUrl } from './plugin/types.js'
+export { HotReloadFile } from './plugin/vite-hotfile.js'
+export { PluginConfigContract, DevServerUrl } from './plugin/vite-plugin-types.js'

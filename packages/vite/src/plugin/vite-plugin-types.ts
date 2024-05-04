@@ -8,8 +8,15 @@ export type DevServerUrl = `${'http' | 'https'}://${string}:${number}`
 export interface PluginConfigContract {
   /**
    * The path or paths to the entrypoints to compile with Vite.
+   *
+   * @deprecated use the {@link entrypoints} property
    */
   input: string | string[]
+
+  /**
+   * The path or paths to the entrypoints to compile with Vite.
+   */
+  entrypoints: string | string[]
 
   /**
    * The "public" directory name.

@@ -5,7 +5,7 @@ import { Arr } from '@supercharge/arrays'
 import { ViteConfig } from './vite-config.js'
 import { ViteManifest } from './vite-manifest.js'
 import { HtmlString } from '@supercharge/support'
-import { HotReloadFileContent } from '../plugin/types.js'
+import { HotReloadFileContent } from '../plugin/vite-plugin-types.js'
 
 export type ViteTagAttributes = Record<string, any>
 
