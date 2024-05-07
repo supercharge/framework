@@ -4,7 +4,6 @@ import { test } from 'uvu'
 import Path from 'node:path'
 import { expect } from 'expect'
 import Supertest from 'supertest'
-import MockedEnv from 'mocked-env'
 import { fileURLToPath } from 'node:url'
 import { Server } from '@supercharge/http'
 import { HttpKernel, Application, ErrorHandler } from '../dist/index.js'
@@ -67,8 +66,6 @@ test('fails to bootstrap the HTTP kernel when missing a .env file', async () => 
 })
 
 test('loads specific environment from .env.testing file because of NODE_ENV=testing', async () => {
-  const restoreEnv = MockedEnv({ restore: true })
-
   const env = app.env().get('NODE_ENV')
   app.env().set('NODE_ENV', 'testing')
 
@@ -78,8 +75,6 @@ test('loads specific environment from .env.testing file because of NODE_ENV=test
   expect(app.env().get('OVERWRITE')).toEqual('1')
 
   app.env().set('NODE_ENV', env)
-
-  restoreEnv()
 })
 
 test('registers and calls booted callbacks', async () => {

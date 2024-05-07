@@ -34,7 +34,6 @@
     "@supercharge/view": "^4.0.0-alpha.2",
     "c8": "~8.0.1",
     "expect": "~29.7.0",
-    "mocked-env": "~1.3.5",
     "sinon": "~17.0.1",
     "supertest": "~6.3.3",
     "typescript": "~5.4.5",
