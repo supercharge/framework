@@ -20,10 +20,10 @@
     "@supercharge/strings": "~2.0.0"
   },
   "devDependencies": {
-    "c8": "~8.0.1",
+    "c8": "~9.1.0",
     "expect": "~29.7.0",
     "sinon": "~17.0.1",
-    "typescript": "~5.3.3",
+    "typescript": "~5.4.5",
     "uvu": "~0.5.6"
   },
   "engines": {
