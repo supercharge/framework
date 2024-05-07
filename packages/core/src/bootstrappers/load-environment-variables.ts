@@ -31,8 +31,8 @@ export class LoadEnvironmentVariables implements Bootstrapper {
    * in case the environment file does not exist, an error will be thrown.
    */
   async loadEnvironment (): Promise<void> {
-    await this.loadSpecificEnvironmentFile()
     await this.loadDefaultEnvironmentFile()
+    await this.loadSpecificEnvironmentFile()
   }
 
   /**
