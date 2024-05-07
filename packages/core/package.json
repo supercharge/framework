@@ -32,10 +32,10 @@
   },
   "devDependencies": {
     "@supercharge/view": "^4.0.0-alpha.2",
-    "c8": "~8.0.1",
+    "c8": "~9.1.0",
     "expect": "~29.7.0",
     "sinon": "~17.0.1",
-    "supertest": "~6.3.3",
+    "supertest": "~7.0.0",
     "typescript": "~5.4.5",
     "uvu": "~0.5.6"
   },
