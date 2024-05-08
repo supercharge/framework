@@ -1,8 +1,8 @@
 
 import Path from 'node:path'
 import Fs from '@supercharge/fs'
+import { parseEnv } from 'node:util'
 import { Str } from '@supercharge/strings'
-import Dotenv, { DotenvConfigOptions } from 'dotenv'
 import { Application, Bootstrapper } from '@supercharge/contracts'
 import { EnvironmentFileError } from '../errors/environment-file-error.js'
 
@@ -42,23 +42,22 @@ export class LoadEnvironmentVariables implements Bootstrapper {
     const envPath = this.app.environmentFilePath()
 
     if (await Fs.notExists(envPath)) {
-      throw new Error(`Invalid environment file. Cannot find env file "${envPath}".`)
+      throw new EnvironmentFileError(`Invalid environment file. Cannot find env file "${envPath}".`)
     }
 
-    await this.loadEnvironmentFile(
-      this.app.environmentFilePath(), { override: false }
-    )
+    await this.loadEnvironmentFile(envPath)
   }
 
   /**
-   * Load the given environment `file` content into `process.env`.
+   * Load the environment file from the given `path` into `process.env`.
    */
-  async loadEnvironmentFile (path: string, options: DotenvConfigOptions): Promise<void> {
-    const { error } = Dotenv.config({ path, ...options })
+  async loadEnvironmentFile (envFilePath: string): Promise<void> {
+    const content = await Fs.content(envFilePath)
+    const environmentVariables = parseEnv(content)
 
-    if (error) {
-      throw new EnvironmentFileError(`Failed to load environment file "${path}"`, { cause: error })
-    }
+    Object.entries(environmentVariables).forEach(([key, value]) => {
+      process.env[key] = value
+    })
   }
 
   /**
@@ -77,7 +76,7 @@ export class LoadEnvironmentVariables implements Bootstrapper {
       : this.app.resolveFromBasePath(this.app.environmentPath(), `.env.${env}`)
 
     if (await Fs.exists(envFilePath)) {
-      await this.loadEnvironmentFile(envFilePath, { override: true })
+      await this.loadEnvironmentFile(envFilePath)
     }
   }
 }
