@@ -2,8 +2,8 @@
 import Path from 'node:path'
 import { AddressInfo } from 'node:net'
 import { Str } from '@supercharge/strings'
-import { HotReloadFile } from './hotfile.js'
-import { DevServerUrl, PluginConfigContract } from './types.js'
+import { HotReloadFile } from './vite-hotfile.js'
+import { DevServerUrl, PluginConfigContract } from './vite-plugin-types.js'
 import { ConfigEnv, Plugin, ResolvedConfig, UserConfig, ViteDevServer } from 'vite'
 
 /**
@@ -20,7 +20,7 @@ export function supercharge (config: string | string[] | PluginConfigContract): 
  */
 function resolvePluginConfig (config: string | string[] | PluginConfigContract): Required<PluginConfigContract> {
   if (!config) {
-    throw new Error('supercharge-vite-plugin: missing inputs or configuration')
+    throw new Error('supercharge-vite-plugin: missing configuration object')
   }
 
   if (typeof config === 'string') {
@@ -28,11 +28,15 @@ function resolvePluginConfig (config: string | string[] | PluginConfigContract):
   }
 
   if (Array.isArray(config)) {
-    config = { input: config }
+    config = { entrypoints: config }
   }
 
-  if (!config.input) {
-    throw new Error('supercharge-vite-plugin: missing "input" configuration')
+  if (!config.entrypoints && config.input) {
+    config.entrypoints = config.input
+  }
+
+  if (!config.entrypoints) {
+    throw new Error('supercharge-vite-plugin: missing "entrypoints" configuration')
   }
 
   if (typeof config.publicDirectory === 'string') {
